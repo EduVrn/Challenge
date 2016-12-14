@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+
+    <body>
+        <div th:fragment="userInfo">
+            <!-- Replace navbar-default with navbar-inverse to get a black header -->
+            <nav class=" navbar navbar-default navbar-fixed-top" role="navigation">
+                <div class="container">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="/">Challenge</a>
+                    </div>
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <div class="collapse navbar-collapse "> 
+                        <ul class="nav navbar-nav">
+                            <li class="active"><a href="#">Best <span class="sr-only">(current)</span></a></li>
+                            <li><a href="#">Extreme</a></li>
+                            <li><a href="#">Overcoming</a></li>
+                        </ul> 
+                        <ul th:unless="${currentUserConnection == null}"> 
+                            <li>
+                                <p  class="navbar-text navbar-right">
+                                    Signed in using
+                                    <a th:if="${currentUserConnection.providerId == 'facebook'}" class="ml btn btn-social-icon btn-sm btn-facebook">   <i class="fa fa-facebook"></i></a>
+                                    <a th:if="${currentUserConnection.providerId == 'twitter'}"  class="ml btn btn-social-icon btn-sm btn-twitter">    <i class="fa fa-twitter"></i></a>
+                                    <a th:if="${currentUserConnection.providerId == 'github'}"   class="ml btn btn-social-icon btn-sm btn-github">     <i class="fa fa-github"></i></a>
+                                    <a th:if="${currentUserConnection.providerId == 'vk'}"   class="ml btn btn-social-icon btn-sm btn-vk"><i class="fa fa-vk"></i></a>
+
+                                    as <a th:href="${currentUserConnection.profileUrl}" class="navbar-link"><span th:text="${currentUserDisplayName}"/></a>
+                                    with <a><span th:text="${email}"/></a>
+                                    <img th:src="${currentUserConnection.imageUrl}" width="32" height="32" />
+                                </p>
+                            </li>
+                            <li>
+
+                                <form class="navbar-right" method="POST" th:action="@{/logout}">
+                                    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                                    <button>Logout</button>
+                                </form>
+                            </li>
+                        </ul>  
+                    </div>              
+
+
+                </div>
+            </nav>
+        </div>
+
+    </body>
+</html>
+

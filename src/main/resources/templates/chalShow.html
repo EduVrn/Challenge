@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+   <head>
+        <title>Challenge</title>
+
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script src="js/jquery.min.js"></script>
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
+
+        <script src="js/jquery.min.js"></script>
+        <link rel="stylesheet" href="css/pageLoader.css"/>
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-social.css" />
+        <link rel="stylesheet" href="css/font-awesome.css"/>
+        <link rel="stylesheet" href="css/chalStyle.css"/>
+        <style type="text/css">
+            <!--
+            .ml { width: 110px; color: white; text-decoration: none }
+            .ml:hover, a:focus { color: white; text-decoration: none }
+            -->
+        </style>
+
+    </head>
+
+    <body>
+        <div th:replace="fragments/header :: userInfo"/>
+        <div class="content-wrapper">
+            <div class="inner-container container">
+                <div style="margin-top: 100px; " class="row">
+                    <div class="section-header col-md-12">
+                        <h2 th:text="${challenge.getDate()}"></h2>
+                    </div> 
+                </div> 
+                <div class="row">
+                    <div class="chal-photo col-md-6">
+                        <img class="img-responsive img-rounded" th:src="${challenge.getImageURL()}"/>
+                    </div> 
+                    <div class="box-content">
+                        <span class="chal-meta" th:text="${challenge.getDate()}"></span>
+                        <h4>Street racing is typically an unsanctioned and illegal form of auto racing that occurs on 
+                            a public road. Modern street racing traces its roots back to Woodward Avenue, Michigan in the 1960s
+                            when the three main Detroit-based American car companies were producing high-powered performance cars.
+                            A private racing venue was not always available, and therefore the race would be held illegally on public roads. 
+                            Street racing can either be spontaneous or well planned and coordinated.
+                            Well-coordinated races are planned in advance and often have people communicating via 2-way radio/citizens' 
+                            band radio and using police scanners and GPS units to mark locations of local police hot spots. Opponents of street racing cite a lack of safety relative to sanctioned racing events, as well as legal repercussions arising from incidents, among street racing's drawbacks.[citation needed] The term street racing must not be confused with the legal and governed sport of drag racing; see terminology below. 
+                        </h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2 class="comment-heading">Comments Count</h2>
+                        <div class="box-content">
+                            <div class="comment">
+                                <div class="comment-inner">
+                                    <div class="comment-body">
+                                        <h4>Sergei Kovalenko</h4> 
+                                        <span>20 11 2016</span>
+                                        <h4>Incredibly Cool!!!</h4 >
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="comment">
+                                <div class="comment-inner">
+                                    <div class="comment-body">
+                                        <h4>Sergei Zayaikin</h4>
+                                        <span>20 11 2016</span>
+                                        <h4>Wow!</h4>
+                                    </div>
+                                </div>
+                            </div> 
+                        </div> 
+                    </div> 
+                </div>  
+            </div> 
+        </div>
+    </body>
+</html>
+
+
