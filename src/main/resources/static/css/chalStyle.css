@@ -1,0 +1,62 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Dec 5, 2016, 4:09:26 PM
+    Author     : DNS
+*/
+.challenge {
+    margin-bottom: 30px;
+}
+.challenge .chal-photo{
+}
+.challenge .chal-photo-main-page img {
+    width: 100%;
+}
+.challenge .chal-photo img {
+    width: 100%;
+}
+.challenge .chal-photo:hover img:hover {
+
+}
+
+.challenge .chal-photo:hover .overlay-b {
+    visibility: visible;
+}
+.challenge .chal-body h3.chal-title {
+    font-size: 18px;
+    font-weight: normal;
+}
+.challenge .chal-body h3.chal-title a {
+    color: #2c2c2c;
+}
+.challenge .chal-body {
+
+    height:200px;
+}
+.challenge .chal-body .desc {
+}
+.challenge .chal-body h3.chal-title a:hover {
+    color: #FC2727;
+}
+.challenge .chal-body span {
+    display: inline-block;
+    margin: 10px 0;
+}
+h2.chal-title {
+    font-size: 2em;
+    font-weight: normal;
+}
+span.chal-meta {
+    margin: 10px 0;
+    display: block;
+
+}
+@media screen and (max-width: 768px) {
+    h2.chal-title {
+        font-size: 1.6em;
+    }
+}
+

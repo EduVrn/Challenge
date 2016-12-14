@@ -1,0 +1,14 @@
+.panel-heading {
+    cursor: pointer;
+}
+.accordion-toggle:after {
+    /* opening panels */
+    font-family:'FontAwesome';
+    content:"\f077";
+    float: right;
+    color: inherit;
+}
+.panel-heading.collapsed .accordion-toggle:after {
+    /* collapsing panels */
+    content:"\f078";
+}

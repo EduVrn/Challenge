@@ -1,0 +1,340 @@
+
+.dropdown-menu {
+    width: 50%; 
+}
+
+.btn{
+    width: 100%;
+}
+body,
+html {
+    background-color: #ffffff;
+    color: #8c989e;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+    line-height: 24px;
+    -webkit-font-smoothing: antialiased;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    hyphens: auto;
+    -moz-font-feature-settings: "liga=1, dlig=1";
+    -ms-font-feature-settings: "liga", "dlig";
+    -webkit-font-feature-settings: "liga", "dlig";
+    -o-font-feature-settings: "liga", "dlig";
+    font-feature-settings: "liga", "dlig";
+    font-size: 15px;
+}
+@media only screen and (min-width: 800px) {
+    body,
+    html {
+        font-size: 14px;
+    }
+}
+@media only screen and (min-width: 1200px) {
+    body,
+    html {
+        font-size: 16px;
+    }
+}
+@media only screen and (min-width: 1600px) {
+    body,
+    html {
+        font-size: 18px;
+    }
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Montserrat', sans-serif;
+    color: #1c2334;
+    margin-bottom: 25px;
+    margin-top: 20px;
+}
+h3,
+.h3 {
+    line-height: 34px;
+}
+a {
+    outline: none;
+    transition: all .3s ease;
+}
+.NotoFont {
+    font-family: 'Noto Serif', serif;
+    font-weight: normal;
+    color: #1c2334;
+}
+/* Theme Headingsa */
+
+.heading {
+    color: #7e848e;
+}
+.heading em {
+    color: #282c32;
+    font-style: normal;
+}
+/* Used to breath */
+
+.space {
+    padding-top: 90px;
+    padding-bottom: 90px;
+}
+/* Simple helpers */
+
+.m-top-0 {
+    margin-top: 0
+}
+.m-top-50 {
+    margin-top: 50px
+}
+.m-btm-0 {
+    margin-bottom: 0;
+}
+.m-btm-90 {
+    margin-bottom: 90px
+}
+.over-h {
+    overflow-x: hidden;
+}
+/* Old bootstrap full container */
+
+.container-full {
+    padding: 0 15px;
+    margin: 0 auto;
+}
+.line-sep {
+    border-bottom: 4px solid #7e848e;
+    margin: 20px 0px;
+    width: 80px;
+}
+.small-cta {
+    border: none;
+    box-shadow: none;
+    padding: 15px;
+}
+.small-cta h6 {
+    padding: 12px 0;
+    margin: 0;
+    text-transform: uppercase;
+}
+#cta-big .btn {
+    margin-top: 25px;
+}
+
+/* Theme Greay Bg Color */
+
+.grey-bg {
+    background: linear-gradient(#f5f7f9, #f5f7f9) no-repeat 100% 0;
+}
+/*
+* NAVGATION
+*/
+
+.navbar-inverse {
+    background-color: rgb(255, 255, 255);
+    border: 0;
+    border-top: 4px solid #1c2334;
+    box-shadow: 0 1px 5px 1px rgba(64, 64, 70, 0.11);
+}
+.navbar-inverse .navbar-brand {
+    color: #FFF;
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: 2px;
+    background: #1c2334;
+    height: 71px;
+    width: 185px;
+    transition: none;
+}
+.navbar-inverse .navbar-brand img {
+    padding-left: 50px;
+}
+.navbar-inverse .navbar-brand span {
+    padding-left: 3px;
+}
+.navbar-inverse .navbar-brand:hover {
+    background: #1c2334;
+}
+.navbar-inverse .navbar-nav>li>a {
+    padding: 25px 28px;
+    font-size: 16px;
+    border-right: solid #eaeaea 1px;
+    color: #8c989e;
+}
+.navbar-inverse .navbar-nav>li>a:hover,
+.navbar-inverse .navbar-nav>li>a:focus {
+    color: #1c2334;
+}
+.navbar-inverse .navbar-nav>.active>a,
+.navbar-inverse .navbar-nav>.active>a:hover,
+.navbar-inverse .navbar-nav>.active>a:focus,
+.navbar-inverse .navbar-nav>.open>a {
+    color: #1c2334;
+    background-color: rgba(14, 14, 14, 0);
+}
+.navbar-inverse .navbar-nav>.open>a,
+.navbar-inverse .navbar-nav>.open>a:hover,
+.navbar-inverse .navbar-nav>.open>a:focus {
+    background-color: rgba(255, 255, 255, 0);
+    color: #292830;
+    border-color: #eee;
+}
+.dropdown-menu {
+    border: solid #eaeaea 1px;
+    border-radius: 0;
+    box-shadow: 0 2px 4px rgba(216, 216, 229, 0.175);
+    padding: 8px 5px;
+    font-size: 16px;
+}
+.dropdown-menu>li>a {
+    color: #8c989e;
+}
+.navbar-inverse .navbar-toggle {
+    border-color: #333;
+    background: #1c2334;
+    margin: 18px 20px;
+}
+
+
+
+
+
+
+/*
+ * Blog
+ */
+
+.blog-main .blog-item {
+    margin-bottom: 50px;
+}
+.blog-main .pager {
+    margin-top: 90px;
+}
+.post-media,
+.chal-title,
+.post-meta {
+    display: block;
+}
+.chal-title h2.title,
+.chal-title h2.title a {
+    color: rgb(43, 42, 56);
+    font-size: 28px;
+    margin: 0;
+}
+.chal-title h2.title a:hover {
+    color: #48505e;
+}
+.chal-title blockquote {
+    color: #aaa;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+.chal-title blockquote:before {
+    content: "";
+}
+.chal-title blockquote p {
+    font-style: normal;
+    padding-left: 0;
+}
+/* INPUTS */
+
+input[type=text],
+.form-inline input,
+.form-control,
+textarea {
+    border: #dbdbdb solid 1px;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    margin: 3px 0;
+    padding: 5px 10px;
+    webkit-box-shadow: none;
+    height: 40px;
+}
+/*
+ *  TAGS
+ */
+
+.tagcloud a {
+    background-color: #fff;
+    border: 1px solid #eee;
+    color: #434955;
+    display: inline-block;
+    font-size: 15px !important;
+    line-height: 26px;
+    margin: 0 5px 8px;
+    padding: 0 10px;
+    -webkit-transition: .3s;
+    -moz-transition: .3s;
+    -o-transition: .3s;
+    transition: .3s;
+    vertical-align: top;
+}
+.tagcloud a:hover {
+    background-color: #404757;
+    color: #fff;
+    text-decoration: none;
+    border-color: #434955
+}
+/* Note styles */
+
+.note-wrap {
+    min-height: 235px;
+    padding: 35px;
+    margin-bottom: 25px;
+    position: relative;
+    vertical-align: top;
+    display: inline-block;
+    font-family: Englebert, Arial;
+    color: #FFFFFF;
+    background: #00aff0;
+    line-height: 26px;
+    text-align: center;
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.2);
+}
+.note-wrap:before {
+    display: block;
+    content: "";
+    background: rgba(255, 255, 255, 0.95);
+    width: 130px;
+    height: 28px;
+    box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.08);
+    border: 1px solid #f8f8f8;
+    border-radius: 6px/18px 0;
+    position: absolute;
+    top: -13px;
+    left: 50px;
+    -webkit-transform: rotate(-2deg);
+    -moz-transform: rotate(-2deg);
+    -o-transform: rotate(-2deg);
+    -ms-transform: rotate(-2deg);
+    transform: rotate(-2deg);
+}
+.note-wrap a {
+    color: #FFFFFF;
+    text-decoration: none;
+    font-size: 20px;
+    -webkit-transition: all 0.4s ease;
+    -moz-transition: all 0.4s ease;
+    -o-transition: all 0.4s ease;
+    -ms-transition: all 0.4s ease;
+    transition: all 0.4s ease;
+}
+.note-wrap a:hover {
+    color: #D83A25;
+}
+.widget {
+    margin: 25px 0
+}
+.widget ol li a {
+    color: #8c989e;
+    line-height: 34px;
+}
+.widget ol li a:hover {
+    color: #1c2334
+}
