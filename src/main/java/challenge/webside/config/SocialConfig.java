@@ -18,6 +18,7 @@ import org.springframework.social.connect.jdbc.JdbcUsersConnectionRepository;
 import org.springframework.social.security.AuthenticationNameUserIdSource;
 
 import javax.sql.DataSource;
+import org.springframework.social.facebook.connect.FacebookConnectionFactory;
 import org.springframework.social.vkontakte.connect.VKontakteConnectionFactory;
 
 @Configuration
@@ -32,18 +33,18 @@ public class SocialConfig implements SocialConfigurer {
 
     @Override
     public void addConnectionFactories(ConnectionFactoryConfigurer connectionFactoryConfigurer, Environment environment) {
-        //  connectionFactoryConfigurer.addConnectionFactory(new FacebookConnectionFactory(
-        //        environment.getProperty("spring.social.facebook.appId"),
-        //      environment.getProperty("spring.social.facebook.appSecret")));
+          connectionFactoryConfigurer.addConnectionFactory(new FacebookConnectionFactory(
+                environment.getProperty("spring.social.facebook.appId"),
+              environment.getProperty("spring.social.facebook.appSecret")));
         connectionFactoryConfigurer.addConnectionFactory(new TwitterConnectionFactory(
                  environment.getProperty("twitter.consumerKey"),
                 "Hf38AAKRA94i9gThvgXw1bl5XWpKd9vsHEqBg2fZzv1f0dGMhl"));
-      /*  connectionFactoryConfigurer.addConnectionFactory(new GitHubConnectionFactory(
+        connectionFactoryConfigurer.addConnectionFactory(new GitHubConnectionFactory(
                 environment.getProperty("spring.social.github.appId"),
                 environment.getProperty("spring.social.github.appSecret")));
         connectionFactoryConfigurer.addConnectionFactory(new VKontakteConnectionFactory(
                 environment.getProperty("vkontakte.appKey"),
-                environment.getProperty("vkontakte.appSecret")));*/
+                environment.getProperty("vkontakte.appSecret")));
 
     }
 

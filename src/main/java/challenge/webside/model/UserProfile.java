@@ -1,5 +1,7 @@
 package challenge.webside.model;
 
+import challenge.dbside.models.User;
+
 
 public class UserProfile {
 
@@ -14,6 +16,8 @@ public class UserProfile {
     private final String email;
 
     private final String username;
+    
+    private User user;
 
     public UserProfile(String userId, String name, String firstName, String lastName, String email, String username) {
         this.userId = userId;
@@ -65,6 +69,14 @@ public class UserProfile {
         this.lastName = up.getLastName();
         this.email = up.getEmail();
         this.username = up.getUsername();
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getUserId() {

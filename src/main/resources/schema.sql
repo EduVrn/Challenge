@@ -21,6 +21,8 @@ create table UserProfile (
   city varchar(255),
   name  varchar(255),
   username varchar(255),
+  user_entity_id int,
+  constraint fk_userprofile_entities foreign key(user_entity_id) references entities(entity_id),
   primary key (userId));
 create unique index UserProfilePK on UserProfile(userId);
 
@@ -35,11 +37,11 @@ create table users(
       password varchar(50) not null,
       enabled boolean not null);
 
-  create table authorities (
-      username varchar(50) not null,
-      authority varchar(50) not null,
-      constraint fk_authorities_users foreign key(username) references users(username));
-      create unique index ix_auth_username on authorities (username,authority);
+create table authorities (
+    username varchar(50) not null,
+    authority varchar(50) not null,
+    constraint fk_authorities_users foreign key(username) references users(username));
+    create unique index ix_auth_username on authorities (username,authority);
 
 
 create sequence serial start 1;

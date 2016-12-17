@@ -1,5 +1,7 @@
 package challenge.webside.dao;
 
+import challenge.dbside.models.User;
+import challenge.dbside.services.ini.MediaServiceEntity;
 import challenge.webside.model.UserConnection;
 import challenge.webside.model.UserProfile;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -11,10 +13,16 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 
 @Repository
 public class UsersDao {
+
+    @Autowired
+    @Qualifier("storageServiceUser")
+    private MediaServiceEntity serviceEntity;
 
     private JdbcTemplate jdbcTemplate;
 
@@ -60,14 +68,18 @@ public class UsersDao {
     }
 
     public void createUser(String userId, UserProfile profile) {
+        User user = new User();
+        serviceEntity.save(user);
+        profile.setUser(user);
         jdbcTemplate.update("INSERT into users(username,password,enabled) values(?,?,true)",userId, RandomStringUtils.randomAlphanumeric(8));
         jdbcTemplate.update("INSERT into authorities(username,authority) values(?,?)",userId,"USER");
-        jdbcTemplate.update("INSERT into userProfile(userId, email, firstName, lastName, name, username) values(?,?,?,?,?,?)",
+        jdbcTemplate.update("INSERT into userprofile(userId, email, firstName, lastName, name, username, user_entity_id) values(?,?,?,?,?,?,?)",
             userId,
             profile.getEmail(),
             profile.getFirstName(),
             profile.getLastName(),
             profile.getName(),
-            profile.getUsername());
+            profile.getUsername(),
+            profile.getUser().getId());
     }
 }
