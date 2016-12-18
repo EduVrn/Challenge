@@ -1,5 +1,6 @@
 package challenge.dbside.services.ini.impl;
 
+import challenge.dbside.dao.ini.impl.MediaDaoEntity;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,46 +8,39 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import challenge.dbside.models.*;
-import challenge.dbside.dao.ini.MediaDaoEntity;
-import challenge.dbside.services.ini.MediaServiceEntity;
+import challenge.dbside.services.ini.MediaService;
 
 @Service("storageServiceUser")
-public class MediaServiceEntityImpl implements MediaServiceEntity {
+public class MediaServiceEntity<E extends BaseEntity> implements MediaService<E> {
 
     @Autowired
     private MediaDaoEntity dao;
 
     @Override
     @Transactional
-    public void save(BaseEntity entity) {
+    public void save(E entity) {
         dao.save(entity);
     }
 
     @Override
     @Transactional
-    public void update(BaseEntity entity) {
+    public void update(E entity) {
         dao.update(entity);
     }
-    
+
     @Override
     @Transactional
-    public void delete(BaseEntity entity) {
-    	
-    	//BaseEntity entity1 = dao.findById(entity.getId());
-    	
+    public void delete(E entity) {
         dao.delete(entity);
     }
-    
+
     @Override
-    public<T extends BaseEntity> List<T> getAll(Class classType) {
+    public List<E> getAll(Class<E> classType) {
         return dao.getAll(classType);
     }
 
-	@Override
-	public BaseEntity findById(Integer idEntity) {
-		return dao.findById(idEntity);
-	}
-    
-    
-    
+    @Override
+    public E findById(Integer id, Class<E> classType) {
+        return classType.cast(dao.findById(id, classType));
+    }
 }

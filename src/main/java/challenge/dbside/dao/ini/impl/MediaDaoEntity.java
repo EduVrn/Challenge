@@ -1,6 +1,5 @@
 package challenge.dbside.dao.ini.impl;
 
-import challenge.dbside.dao.ini.MediaDaoEntity;
 import challenge.dbside.models.BaseEntity;
 import java.math.BigInteger;
 import java.util.List;
@@ -9,11 +8,10 @@ import javax.persistence.*;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.PlatformTransactionManager;
-
-import challenge.dbside.models.*;
+import challenge.dbside.dao.ini.MediaDao;
 
 @Repository
-public class MediaDaoEntityImpl implements MediaDaoEntity {
+public class MediaDaoEntity<E extends BaseEntity> implements MediaDao<E> {
 
     @PersistenceContext
     private EntityManager em;
@@ -24,7 +22,6 @@ public class MediaDaoEntityImpl implements MediaDaoEntity {
         //this.transactionManager = transactionManager;
     }
     
-    
     public Integer getNextId() {
     	Query q = em.createNativeQuery("select nextval('serial')");
     	BigInteger bi = (BigInteger) q.getResultList().get(0);
@@ -33,38 +30,31 @@ public class MediaDaoEntityImpl implements MediaDaoEntity {
     	return bi.intValue();
     }
 
-    public void save(BaseEntity entity) {
-    	
+    public void save(BaseEntity entity) {   	
     	entity.setId(getNextId());
-    	System.out.println("Save id: " + entity.getId());
-        em.persist(entity);
+    	em.persist(entity);
     }
 
-    public<T extends BaseEntity> List<T> getAll(Class classType) { 
-        List<T> list = em.createQuery("from " + classType.getSimpleName(), classType).getResultList();
+    @Override
+    public List<E> getAll(Class<E> classType) { 
+        List<E> list = em.createQuery("from " + classType.getSimpleName(), classType).getResultList();
         return list;
     }
 
     @Override
     public void delete(BaseEntity entity) {
-    	//TODO: maybe change it a template?
-    	//BaseEntity entity1 = em.find(BaseEntity.class, entity.getId());
-    	System.out.println("Delete id: " + entity.getId());
-    	em.remove(em.merge(entity));
+        em.remove(em.merge(entity));
     }
 
     @Override
     public void update(BaseEntity entity) {
-    	System.out.println("Update id: " + entity.getId());
-    	em.merge(entity);
+        em.merge(entity);
     }
 
-
-	@Override
-	public BaseEntity findById(Integer idEntity) {
-		return em.find(BaseEntity.class, idEntity);
-	}
-   
+    @Override
+    public E findById(Integer id, Class<E> classType) {
+        return classType.cast(em.find(classType, id));
+    } 
 }
 
 

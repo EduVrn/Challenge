@@ -1,7 +1,6 @@
 package challenge.webside.dao;
 
 import challenge.dbside.models.User;
-import challenge.dbside.services.ini.MediaServiceEntity;
 import challenge.webside.model.UserConnection;
 import challenge.webside.model.UserProfile;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -15,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
+import challenge.dbside.services.ini.MediaService;
 
 
 @Repository
@@ -22,7 +22,7 @@ public class UsersDao {
 
     @Autowired
     @Qualifier("storageServiceUser")
-    private MediaServiceEntity serviceEntity;
+    private MediaService serviceEntity;
 
     private JdbcTemplate jdbcTemplate;
 

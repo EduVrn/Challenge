@@ -1,7 +1,6 @@
 package challenge.webside.controllers.util;
 
 import challenge.dbside.models.ChallengeDefinition;
-import challenge.dbside.services.ini.MediaServiceEntity;
 import challenge.webside.dao.UsersDao;
 import challenge.webside.model.UserConnection;
 import challenge.webside.model.UserProfile;
@@ -23,6 +22,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import challenge.dbside.services.ini.MediaService;
 
 @Component
 public class SocialControllerUtil {
@@ -38,7 +38,7 @@ public class SocialControllerUtil {
 
     @Autowired
     @Qualifier("storageServiceUser")
-    private MediaServiceEntity serviceEntity;
+    private MediaService serviceEntity;
 
     public void dumpDbInfo() {
         try {

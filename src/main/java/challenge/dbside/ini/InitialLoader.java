@@ -1,17 +1,15 @@
 package challenge.dbside.ini;
 
+import challenge.dbside.models.BaseEntity;
 import challenge.dbside.models.User;
 import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.ini.TypeOfAttribute;
 import challenge.dbside.models.ini.TypeOfEntity;
-import challenge.dbside.services.ini.MediaServiceTypeOfAttribute;
-import challenge.dbside.services.ini.MediaServiceTypeOfEntity;
-import challenge.dbside.services.ini.MediaServiceEntity;
 import java.util.HashSet;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
+import challenge.dbside.services.ini.MediaService;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,15 +17,15 @@ public class InitialLoader {
 
     @Autowired
     @Qualifier("storageServiceTypeOfAttribute")
-    private MediaServiceTypeOfAttribute serviceAttr;
+    private MediaService serviceAttr;
 
     @Autowired
     @Qualifier("storageServiceTypeOfEntity")
-    private MediaServiceTypeOfEntity serviceEntity;
+    private MediaService serviceEntity;
 
     @Autowired
     @Qualifier("storageServiceUser")
-    private MediaServiceEntity serviceEntityInit;
+    private MediaService serviceEntityInit;
 
     public void initial() {
         //try load from base
@@ -36,7 +34,6 @@ public class InitialLoader {
         //create
         createContext();
         init();
-        //return null;
     }
 
     private void createContext() {
@@ -119,7 +116,7 @@ public class InitialLoader {
         userSet.add(user4);
         user2.setChildren(userSet);
         serviceEntityInit.update(user2);
-
+        
+        //try to get user by id here
     }
-
 }

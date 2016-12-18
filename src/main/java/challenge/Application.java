@@ -4,7 +4,6 @@ import challenge.dbside.ini.InitialLoader;
 import challenge.dbside.models.BaseEntity;
 import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.User;
-import challenge.dbside.services.ini.MediaServiceEntity;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,6 +15,7 @@ import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import challenge.dbside.services.ini.MediaService;
 
 @Configuration
 @EnableAutoConfiguration
@@ -30,7 +30,7 @@ public class Application extends SpringBootServletInitializer {
     }
 
     static void Init(ApplicationContext context) {
-        MediaServiceEntity serviceEntity = (MediaServiceEntity) context.getBean("storageServiceUser");
+        MediaService serviceEntity = (MediaService) context.getBean("storageServiceUser");
         /*Example entity*/
         User user1 = new User();
         serviceEntity.save(user1);
