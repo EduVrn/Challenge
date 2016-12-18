@@ -38,9 +38,9 @@ public class BaseEntity {
     private Integer entityType;
 
     //TODO: parent ?
-    //@ManyToOne(cascade={CascadeType.REFRESH} )
-    //@JoinColumn(name="parent_id")
-    //private BaseEntity parent;
+    @ManyToOne(cascade = {CascadeType.REFRESH})
+    @JoinColumn(name = "parent_id")
+    private BaseEntity parent;
     @OneToMany(/*mappedBy="parent",*/fetch = FetchType.EAGER,
             cascade = {CascadeType.ALL}) //TODO: make LAZY
     @JoinColumn(name = "parent_id")
@@ -90,13 +90,14 @@ public class BaseEntity {
         this.attributes.put(2, attr);
     }
 
-    /*public BaseEntity getParent() {
-		return parent;
-	}
+    public BaseEntity getParent() {
+        return parent;
+    }
 
-	public void setParent(BaseEntity parent) {
-		this.parent = parent;
-	}*/
+    public void setParent(BaseEntity parent) {
+        this.parent = parent;
+    }
+
     public Set<BaseEntity> getChildren() {
         return children;
     }

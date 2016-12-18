@@ -33,12 +33,12 @@ public class SocialConfig implements SocialConfigurer {
 
     @Override
     public void addConnectionFactories(ConnectionFactoryConfigurer connectionFactoryConfigurer, Environment environment) {
-          connectionFactoryConfigurer.addConnectionFactory(new FacebookConnectionFactory(
+        connectionFactoryConfigurer.addConnectionFactory(new FacebookConnectionFactory(
                 environment.getProperty("spring.social.facebook.appId"),
-              environment.getProperty("spring.social.facebook.appSecret")));
+                environment.getProperty("spring.social.facebook.appSecret")));
         connectionFactoryConfigurer.addConnectionFactory(new TwitterConnectionFactory(
-                 environment.getProperty("twitter.consumerKey"),
-                "Hf38AAKRA94i9gThvgXw1bl5XWpKd9vsHEqBg2fZzv1f0dGMhl"));
+                environment.getProperty("twitter.consumerKey"),
+                environment.getProperty("twitter.consumerSecret")));
         connectionFactoryConfigurer.addConnectionFactory(new GitHubConnectionFactory(
                 environment.getProperty("spring.social.github.appId"),
                 environment.getProperty("spring.social.github.appSecret")));
@@ -52,7 +52,6 @@ public class SocialConfig implements SocialConfigurer {
     public UserIdSource getUserIdSource() {
         return new AuthenticationNameUserIdSource();
     }
-    
 
     @Override
     public UsersConnectionRepository getUsersConnectionRepository(ConnectionFactoryLocator connectionFactoryLocator) {

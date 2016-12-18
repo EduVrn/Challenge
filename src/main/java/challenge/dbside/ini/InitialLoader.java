@@ -3,8 +3,10 @@ package challenge.dbside.ini;
 import challenge.dbside.models.BaseEntity;
 import challenge.dbside.models.User;
 import challenge.dbside.models.ChallengeDefinition;
+import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.ini.TypeOfAttribute;
 import challenge.dbside.models.ini.TypeOfEntity;
+import com.google.common.io.BaseEncoding;
 import java.util.HashSet;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +66,10 @@ public class InitialLoader {
         entityChallenge.add(attrImageRef);
         serviceEntity.save(entityChallenge);
 
+        TypeOfEntity entityChallengeInstance = new TypeOfEntity("ChallengeInstance");
+        entityChallengeInstance.add(attrName);
+        serviceEntity.save(entityChallengeInstance);
+
         ContextType contextType = ContextType.getInstance();
 
         contextType.add(attrName);
@@ -71,10 +77,10 @@ public class InitialLoader {
         contextType.add(attrDate);
         contextType.add(attrDescription);//!!!!
         contextType.add(attrImageRef);
-        
-        
+
         contextType.add(entity);
         contextType.add(entityChallenge);
+        contextType.add(entityChallengeInstance);
 
     }
 
@@ -85,13 +91,42 @@ public class InitialLoader {
         ChallengeDefinition chal1 = new ChallengeDefinition();
         chal1.setName("TestChallenge");
         chal1.setDescription("hella awesome");
-        chal1.setImageRef("images/race.jpg");
+        chal1.setImageRef("race.jpg");
         serviceEntityInit.save(chal1);
         User user1 = new User();
         serviceEntityInit.save(user1);
 
+        ChallengeDefinition chal2 = new ChallengeDefinition();
+        chal2.setName("TestOfAcceptenceChallenge");
+        chal2.setDescription("It's ok");
+        chal2.setImageRef("race.jpg");
+        serviceEntityInit.save(chal2);
+        ChallengeInstance chalI = new ChallengeInstance();
+        chalI.setName("Instance N1");
+        serviceEntityInit.save(chalI);
+        ChallengeInstance chalI2 = new ChallengeInstance();
+        chalI2.setName("Instance N2");
+        serviceEntityInit.save(chalI2);
+        Set set = new HashSet();
+        set.add(chalI);
+        set.add(chalI2);
+        chal2.setChildren(set);
+        chalI.setParent(chal2);
+        chalI2.setParent(chal2);
+        serviceEntityInit.update(chal2);
+
+        user1.addAcceptedChallenge(chalI);
+        user1.addAcceptedChallenge(chalI2);
+        serviceEntityInit.update(user1);
+
         User user2 = new User();
+        // serviceEntityInit.save(user2);
         user2.setName("name2");
+//        user2.addAcceptedChallenge(chal1);
+        //      user2.addAcceptedChallenge(chal2);
+        user2.addFriend(user1);
+        //   user2.addAcceptedChallenge(chal2);
+        // user2.addChallenge(chal2);
         serviceEntityInit.save(user2);
 
         User user3 = new User();
@@ -104,19 +139,19 @@ public class InitialLoader {
 
         System.out.println("\n\nUpdate");
         user1.setName("new_name");
-        //user1.setParent(user2);
         serviceEntityInit.update(user1);
 
         user4.setName("new_name4");
-        //user4.setParent(user2);
-        serviceEntityInit.update(user4);
 
-        Set userSet = new HashSet();
-        userSet.add(user1);
-        userSet.add(user4);
-        user2.setChildren(userSet);
-        serviceEntityInit.update(user2);
-        
+        serviceEntityInit.update(user4);
+        for (BaseEntity obj : chal2.getChildren()) {
+            System.out.println(((ChallengeInstance) obj).getAcceptor().getName());
+        }
+
+        user1.getAcceptedChallenges().forEach((c) -> {
+            System.out.println(((ChallengeInstance) c).getName());
+        });
+        // serviceEntityInit.update(user3);
         //try to get user by id here
     }
 }
