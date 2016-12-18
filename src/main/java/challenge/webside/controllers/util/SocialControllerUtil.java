@@ -146,9 +146,8 @@ public class SocialControllerUtil {
         model.addAttribute("currentUserConnection", connection);
         model.addAttribute("currentUserDisplayName", displayName);
         model.addAttribute("currentData", data);
-        model.addAttribute("challenge", (ChallengeDefinition)serviceEntity.findById(id));
-        model.addAttribute("listOfAcceptors", ((ChallengeDefinition)serviceEntity.findById(id)).getAllAcceptors());
-
+        model.addAttribute("challenge", (ChallengeDefinition)serviceEntity.findById(new Integer(id), ChallengeDefinition.class));
+        model.addAttribute("listOfAcceptors", ((ChallengeDefinition)serviceEntity.findById(id, ChallengeDefinition.class)).getAllAcceptors());
     }
 
     /**

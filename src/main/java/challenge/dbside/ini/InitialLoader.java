@@ -143,7 +143,13 @@ public class InitialLoader {
 
         user4.setName("new_name4");
 
-        serviceEntityInit.update(user4);
+        Set userSet = new HashSet();
+        userSet.add(user1);
+        userSet.add(user4);
+        user2.setChildren(userSet);
+        user1.setParent(user2);
+        user4.setParent(user2); 
+        serviceEntityInit.update(user2);
         for (BaseEntity obj : chal2.getChildren()) {
             System.out.println(((ChallengeInstance) obj).getAcceptor().getName());
         }
