@@ -30,9 +30,9 @@ public class MediaDaoEntity<E extends BaseEntity> implements MediaDao<E> {
     	return bi.intValue();
     }
 
-    public void save(BaseEntity entity) {   	
+    public void save(BaseEntity entity) {
     	entity.setId(getNextId());
-    	em.persist(entity);
+        em.merge(entity);
     }
 
     @Override
@@ -43,18 +43,18 @@ public class MediaDaoEntity<E extends BaseEntity> implements MediaDao<E> {
 
     @Override
     public void delete(BaseEntity entity) {
-        em.remove(em.merge(entity));
+    	em.remove(em.merge(entity));
     }
 
     @Override
     public void update(BaseEntity entity) {
-        em.merge(entity);
+    	em.merge(entity);
     }
 
-    @Override
+	@Override
     public E findById(Integer id, Class<E> classType) {
         return classType.cast(em.find(classType, id));
-    } 
+	}
 }
 
 

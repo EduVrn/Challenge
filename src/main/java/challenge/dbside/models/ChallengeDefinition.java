@@ -4,7 +4,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import challenge.dbside.ini.ContextType;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "entities")
@@ -13,6 +15,15 @@ public class ChallengeDefinition extends BaseEntity {
 
     public ChallengeDefinition() {
         super(ChallengeDefinition.class.getSimpleName());
+    }
+    
+    public List<User> getAllAcceptors()
+    {
+        List<User> acceptors=new ArrayList<>();
+        this.getChildren().forEach((chalInstance) -> {
+            acceptors.add(((ChallengeInstance) chalInstance).getAcceptor());
+        });
+        return acceptors;
     }
 
     public String getName() {
@@ -36,7 +47,7 @@ public class ChallengeDefinition extends BaseEntity {
     }
 
     public String getImageRef() {
-        return this.getAttributes()
+        return "images/"+this.getAttributes()
                 .get(ContextType.getInstance().getTypeAttribute("imageref").getId()).getValue();
     }
 
