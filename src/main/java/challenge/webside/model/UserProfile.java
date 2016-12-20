@@ -2,7 +2,6 @@ package challenge.webside.model;
 
 import challenge.dbside.models.User;
 
-
 public class UserProfile {
 
     private final String userId;
@@ -16,17 +15,18 @@ public class UserProfile {
     private final String email;
 
     private final String username;
-    
-    private User user;
 
-    public UserProfile(String userId, String name, String firstName, String lastName, String email, String username) {
+    private User user;
+    private int userEntityId;
+
+    public UserProfile(String userId, String name, String firstName, String lastName, String email, String username, int userEntityId) {
         this.userId = userId;
         this.name = name;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.username = username;
-
+        this.userEntityId =userEntityId;
         fixName();
     }
 
@@ -69,6 +69,7 @@ public class UserProfile {
         this.lastName = up.getLastName();
         this.email = up.getEmail();
         this.username = up.getUsername();
+        this.userEntityId =2 ;
     }
 
     public User getUser() {
@@ -104,11 +105,17 @@ public class UserProfile {
     }
 
     public String toString() {
-        return
-            "name = " + name +
-            ", firstName = " + firstName +
-            ", lastName = " + lastName +
-            ", email = " + email +
-            ", username = " + username;
+        return "name = " + name
+                + ", firstName = " + firstName
+                + ", lastName = " + lastName
+                + ", email = " + email
+                + ", username = " + username;
+    }
+
+    /**
+     * @return the userEntityId
+     */
+    public int getUserEntityId() {
+        return userEntityId;
     }
 }

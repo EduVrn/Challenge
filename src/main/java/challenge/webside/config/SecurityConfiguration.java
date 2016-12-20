@@ -36,12 +36,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .formLogin()
                 .loginPage("/login")
+                .defaultSuccessUrl("/")
                 .loginProcessingUrl("/login/authenticate")
                 .failureUrl("/login?param.error=bad_credentials")
                 .permitAll()
                 .and()
                 .logout()
                 .logoutUrl("/logout")
+                .logoutSuccessUrl("/")
                 .deleteCookies("JSESSIONID")
                 .and()
                 .authorizeRequests()
@@ -50,9 +52,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .rememberMe()
                 .and()
-                .apply(new SpringSocialConfigurer()
-                        .postLoginUrl("/")
-                        .alwaysUsePostLoginUrl(true));
+                .apply(new SpringSocialConfigurer());
     }
 
     @Bean
