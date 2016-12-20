@@ -37,7 +37,7 @@ public class BaseEntity {
     @Column(name = "type_of_entity")
     private Integer entityType;
 
-    //TODO: parent ?
+    //TODO: parent 
     @ManyToOne(cascade = {CascadeType.REFRESH})
     @JoinColumn(name = "parent_id")
     private BaseEntity parent;
@@ -47,8 +47,8 @@ public class BaseEntity {
     private Set<BaseEntity> children;
 
     public BaseEntity() {
-        attributes = new HashMap<Integer, Attribute>();
-        children = new HashSet<BaseEntity>();
+        attributes = new HashMap<>();
+        children = new HashSet<>();
 
     }
 
@@ -56,17 +56,17 @@ public class BaseEntity {
     static int i = 0;
 
     public BaseEntity(String entityName) {
-        children = new HashSet<BaseEntity>();
+        children = new HashSet<>();
 
         TypeOfEntity type = ContextType.getInstance().getTypeEntity(entityName);
         entityType = type.getTypeEntityID();
 
-        attributes = new HashMap<Integer, Attribute>();
-        for (TypeOfAttribute t : type.getAttributes()) {
+        attributes = new HashMap<>();
+        type.getAttributes().forEach((t) -> {
             Attribute attr = new Attribute(t.getId());
 
             attributes.put(t.getId(), attr);
-        }
+        });
     }
 
     //TODO: Only 4 DEBUG!!!
