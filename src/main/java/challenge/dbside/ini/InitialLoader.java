@@ -6,7 +6,6 @@ import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.ini.TypeOfAttribute;
 import challenge.dbside.models.ini.TypeOfEntity;
-import com.google.common.io.BaseEncoding;
 import java.util.HashSet;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,79 +84,78 @@ public class InitialLoader {
     }
 
     public void init() {
+        ChallengeDefinition chalDef1 = new ChallengeDefinition();
+        chalDef1.setName("TestChallenge");
+        chalDef1.setDescription("hella awesome");
+        chalDef1.setImageRef("race.jpg");
 
-        // MediaServiceEntity serviceEntityInit = (MediaServiceEntity) context.getBean("storageServiceUser");
-        /*Example entity*/
-        ChallengeDefinition chal1 = new ChallengeDefinition();
-        chal1.setName("TestChallenge");
-        chal1.setDescription("hella awesome");
-        chal1.setImageRef("race.jpg");
-        serviceEntityInit.save(chal1);
+        serviceEntityInit.save(chalDef1);
         User user1 = new User();
+        user1.setName("User 1");
         serviceEntityInit.save(user1);
 
-        ChallengeDefinition chal2 = new ChallengeDefinition();
-        chal2.setName("TestOfAcceptenceChallenge");
-        chal2.setDescription("It's ok");
-        chal2.setImageRef("race.jpg");
-        serviceEntityInit.save(chal2);
-        ChallengeInstance chalI = new ChallengeInstance();
-        chalI.setName("Instance N1");
-        serviceEntityInit.save(chalI);
-        ChallengeInstance chalI2 = new ChallengeInstance();
-        chalI2.setName("Instance N2");
-        serviceEntityInit.save(chalI2);
-        Set set = new HashSet();
-        set.add(chalI);
-        set.add(chalI2);
-        chal2.setChildren(set);
-        chalI.setParent(chal2);
-        chalI2.setParent(chal2);
-        serviceEntityInit.update(chal2);
-
-        user1.addAcceptedChallenge(chalI);
-        user1.addAcceptedChallenge(chalI2);
+        ChallengeDefinition chalDef2 = new ChallengeDefinition();
+        chalDef2.setName("TestofChalleng");
+        chalDef2.setDescription("It's ok");
+        chalDef2.setImageRef("onTheEdge.jpeg");
+        serviceEntityInit.save(chalDef2);
+        user1.addChallenge(chalDef1);
+        user1.addChallenge(chalDef2);
         serviceEntityInit.update(user1);
+        ChallengeInstance chalInstance1 = new ChallengeInstance();
+        chalInstance1.setName("Instance N1");
+        serviceEntityInit.save(chalInstance1);
+        ChallengeInstance chalUnstance2 = new ChallengeInstance();
+        chalUnstance2.setName("Instance N2");
+        serviceEntityInit.save(chalUnstance2);
+        /*  Set set = new HashSet();
+        set.add(chalInstance1);
+        set.add(chalUnstance2);
+        chalDef2.setChildren(set);
+        chalInstance1.setParent(chalDef2);
+        chalUnstance2.setParent(chalDef2);
+        serviceEntityInit.update(chalDef2);
+
+        user1.addAcceptedChallenge(chalInstance1);
+        user1.addAcceptedChallenge(chalUnstance2);
+       serviceEntityInit.update(user1);
 
         User user2 = new User();
         // serviceEntityInit.save(user2);
-        user2.setName("name2");
+        user2.setName("user2");
 //        user2.addAcceptedChallenge(chal1);
         //      user2.addAcceptedChallenge(chal2);
         user2.addFriend(user1);
         //   user2.addAcceptedChallenge(chal2);
         // user2.addChallenge(chal2);
-        serviceEntityInit.save(user2);
+//        serviceEntityInit.save(user2);
 
         User user3 = new User();
-        user3.setName("name3");
+        user3.setName("user3");
         serviceEntityInit.save(user3);
 
         User user4 = new User();
         user4.setName("name4");
         serviceEntityInit.save(user4);
 
-        System.out.println("\n\nUpdate");
-        user1.setName("new_name");
-        serviceEntityInit.update(user1);
+        user1.setName("User1");
+       // serviceEntityInit.update(user1);
 
-        user4.setName("new_name4");
 
-        Set userSet = new HashSet();
+       /* Set userSet = new HashSet();
         userSet.add(user1);
         userSet.add(user4);
         user2.setChildren(userSet);
         user1.setParent(user2);
         user4.setParent(user2); 
-        serviceEntityInit.update(user2);
-        for (BaseEntity obj : chal2.getChildren()) {
+        serviceEntityInit.update(user2);*/
+ /*    for (BaseEntity obj : chalDef2.getChildren()) {
             System.out.println(((ChallengeInstance) obj).getAcceptor().getName());
         }
 
         user1.getAcceptedChallenges().forEach((c) -> {
             System.out.println(((ChallengeInstance) c).getName());
         });
-        // serviceEntityInit.update(user3);
-        //try to get user by id here
+         */
     }
 }

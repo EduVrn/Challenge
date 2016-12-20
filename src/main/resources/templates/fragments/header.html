@@ -42,6 +42,10 @@
                                     <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
                                     <button>Logout</button>
                                 </form>
+                                <form class="navbar-right" name="profileForm" th:id="'profile'"  method="GET" action="profile">
+                                    <input type="hidden" name="id" th:value="${currentUserProfile.getUserEntityId()}"/>
+                                    <button onclick="document.getElementById('profile').submit();">Profile</button>
+                                </form>
                             </li>
                         </ul>  
                     </div>              

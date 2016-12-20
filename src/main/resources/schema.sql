@@ -21,16 +21,10 @@ create table UserProfile (
   city varchar(255),
   name  varchar(255),
   username varchar(255),
-  user_entity_id int,
-  constraint fk_userprofile_entities foreign key(user_entity_id) references entities(entity_id),
+  userEntityId int,
+  constraint fk_userprofile_entities foreign key(userEntityId) references entities(entity_id),
   primary key (userId));
 create unique index UserProfilePK on UserProfile(userId);
-
-create table Data (
-  userId varchar(255) not null,
-  data varchar(1024),
-  primary key (userId));
-create unique index DataPK on Data(userId);
 
 create table users(
       username varchar(50) not null primary key,

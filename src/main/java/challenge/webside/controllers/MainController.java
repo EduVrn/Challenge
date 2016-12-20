@@ -45,6 +45,12 @@ public class MainController {
         util.setChallengeShow(id,request, currentUser, model);
         return "chalShow";
     }
+    
+     @RequestMapping(value = "/profile", method = GET, produces = "text/plain;charset=UTF-8")
+    public String showProfile(HttpServletRequest request, Principal currentUser, Model model,@RequestParam("id") int userId) {
+        util.setProfileShow(userId,request, currentUser, model);
+        return "profile";
+    }
 
     @RequestMapping("/login")
     public String login(HttpServletRequest request, Principal currentUser, Model model) {

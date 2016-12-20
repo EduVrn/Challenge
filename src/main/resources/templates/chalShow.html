@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-   <head>
+    <head>
         <title>Challenge</title>
 
         <meta charset="utf-8" />
@@ -40,9 +40,29 @@
                         <img class="img-responsive img-rounded" th:src="${challenge.getImageRef()}"/>
                     </div> 
                     <div class="box-content">
+                        <h2 class="chal-title"><a  th:text="${challenge.getName()}"></a></h2>
                         <span class="chal-meta" th:text="${challenge.getDate()}"></span>
                         <h4> legal repercussions arising from incidents, among street racing's drawbacks.[citation needed] The term street racing must not be confused with the legal and governed sport of drag racing; see terminology below. 
                         </h4>
+                    </div>
+                </div>
+                <h2>Creator</h2>
+                <div>
+                    <span class="chal-meta" th:text="${challenge.getCreator().getName()}"></span>
+                </div>
+                <h2>Acceptors</h2>
+                <div th:each="acceptor : ${listOfAcceptors}" >
+                    <div  class="challenge col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div style="border-width: 5" class="panel panel-default">
+                            <div class="box-content panel-body ">                                  
+                                <div class="chal-body">
+                                    <div >
+                                        <img th:src="${currentUserConnection.imageUrl}" class="img-rounded img-responsive" />
+                                    </div>
+                                    <span class="chal-meta" th:text="${acceptor.getName()}"></span>
+                                </div>
+                            </div>
+                        </div> 
                     </div>
                 </div>
                 <div class="row">
