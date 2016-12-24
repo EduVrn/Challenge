@@ -80,7 +80,17 @@ public class ChallengeDefinition extends BaseEntity {
         return creator;
     }
 
-     public void setCreator(User creator) {
+    public void setCreator(User creator) {
         this.creator = creator;
+    }
+    
+    public ChallengeDefinitionStatus getStatus() {
+        return ChallengeDefinitionStatus.valueOf(this.getAttributes()
+                .get(ContextType.getInstance().getTypeAttribute("chalDefStatus").getId()).getValue());
+    }
+    
+    public void setStatus(ChallengeDefinitionStatus status) {
+        this.getAttributes()
+                .get(ContextType.getInstance().getTypeAttribute("chalDefStatus").getId()).setValue(status.name());
     }
 }

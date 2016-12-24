@@ -1,7 +1,9 @@
 package challenge.webside.controllers.util;
 
 import challenge.dbside.models.ChallengeDefinition;
+import challenge.dbside.models.ChallengeDefinitionStatus;
 import challenge.dbside.models.ChallengeInstance;
+import challenge.dbside.models.ChallengeStatus;
 import challenge.dbside.models.User;
 import challenge.webside.dao.UsersDao;
 import challenge.webside.model.UserConnection;
@@ -104,48 +106,20 @@ public class SocialControllerUtil {
         model.addAttribute("currentUserConnection", connection);
         model.addAttribute("currentUserDisplayName", displayName);
         model.addAttribute("currentData", data);
+         if (profile != null)
+            model.addAttribute("challengeRequests", ((User)serviceEntity.findById(profile.getUserEntityId(), User.class)).getChallengeRequests());
+    }
+    
+    public void setModelForMain(HttpServletRequest request, Principal currentUser, Model model) {
+        setModel(request, currentUser, model);
         model.addAttribute("mainChallenge", serviceEntity.getAll(ChallengeDefinition.class).get(0));
-        model.addAttribute("Challenges", serviceEntity.getAll(ChallengeDefinition.class));
-
+        model.addAttribute("Challenges", serviceEntity.getAll(ChallengeDefinition.class));     
     }
 
-    public void setChallengeShow(int id, HttpServletRequest request, Principal currentUser, Model model) {
-
-        // SecurityContext ctx = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
-        String userId = currentUser == null ? null : currentUser.getName();
-        String path = request.getRequestURI();
-        HttpSession session = request.getSession();
-
-        UserConnection connection = null;
-        UserProfile profile = null;
-        String displayName = null;
-        String data = null;
-
-        // Collect info if the user is logged in, i.e. userId is set
-        if (userId != null) {
-
-            // Get the current UserConnection from the http session
-            connection = getUserConnection(session, userId);
-
-            // Get the current UserProfile from the http session
-            profile = getUserProfile(session, userId);
-
-            // Compile the best display name from the connection and the profile
-            displayName = getDisplayName(connection, profile);
-
-        }
-
-        Throwable exception = (Throwable) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
-
-        // Update the model with the information we collected
-        model.addAttribute("exception", exception == null ? null : exception.getMessage());
-        model.addAttribute("currentUserId", userId);
-        model.addAttribute("currentUserProfile", profile);
-        model.addAttribute("currentUserConnection", connection);
-        model.addAttribute("currentUserDisplayName", displayName);
-        model.addAttribute("currentData", data);
-        model.addAttribute("challenge", (ChallengeDefinition) serviceEntity.findById(new Integer(id), ChallengeDefinition.class));
-        model.addAttribute("listOfAcceptors", ((ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class)).getAllAcceptors());
+    public void setModelForChallengeShow(int id, HttpServletRequest request, Principal currentUser, Model model) {
+        setModel(request, currentUser, model);
+        model.addAttribute("challenge", (ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class));
+        model.addAttribute("listOfAcceptors", ((ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class)).getAllAcceptors());   
     }
 
     protected UserProfile getUserProfile(HttpSession session, String userId) {
@@ -190,39 +164,44 @@ public class SocialControllerUtil {
     }
 
     public void setProfileShow(int userDBId, HttpServletRequest request, Principal currentUser, Model model) {
-        String userId = currentUser == null ? null : currentUser.getName();
-        String path = request.getRequestURI();
-        HttpSession session = request.getSession();
-
+        setModel(request, currentUser, model);
         User userWhichProfileRequested = (User) serviceEntity.findById(userDBId, User.class);
-        UserConnection connection = null;
-        UserProfile profile = null;
-        String displayName = null;
-        String data = null;
-
-        // Collect info if the user is logged in, i.e. userId is set
-        if (userId != null) {
-
-            // Get the current UserConnection from the http session
-            connection = getUserConnection(session, userId);
-            // Get the current UserProfile from the http session
-            profile = getUserProfile(session, userId);
-            // Compile the best display name from the connection and the profile
-            displayName = getDisplayName(connection, profile);
-
-        }
-
-        Throwable exception = (Throwable) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
-
-        // Update the model with the information we collected
-        model.addAttribute("exception", exception == null ? null : exception.getMessage());
-        model.addAttribute("currentUserId", userId);
-        model.addAttribute("currentUserProfile", profile);
-        model.addAttribute("currentUserConnection", connection);
-        model.addAttribute("currentUserDisplayName", displayName);
-        model.addAttribute("currentData", data);
         model.addAttribute("listOfDefined", userWhichProfileRequested.getChallenges());
         model.addAttribute("listOfAccepted", userWhichProfileRequested.getAcceptedChallenges());
-
+        model.addAttribute("challengeRequests", userWhichProfileRequested.getChallengeRequests());
+    }
+    
+    public void setModelForAcceptOrDeclineChallenge(HttpServletRequest request, Principal currentUser, Model model, int chalId, boolean accept) {
+        setModel(request, currentUser, model); 
+        ChallengeInstance chalToAccept = (ChallengeInstance)serviceEntity.findById(chalId, ChallengeInstance.class);
+        User user = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
+        if (accept) 
+            user.acceptChallenge(chalToAccept);
+        else
+            user.declineChallenge(chalToAccept);
+        serviceEntity.update(user);
+        
+        model.addAttribute("listOfDefined", user.getChallenges());
+        model.addAttribute("listOfAccepted", user.getAcceptedChallenges());
+        model.addAttribute("challengeRequests", user.getChallengeRequests());
+    }
+    
+    public void setModelForAcceptChallengeDefinition(HttpServletRequest request, Principal currentUser, Model model, int chalId) {
+        setModel(request, currentUser, model);
+        ChallengeDefinition chalToAccept = (ChallengeDefinition)serviceEntity.findById(chalId, ChallengeDefinition.class);
+        User user = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
+        
+        ChallengeInstance chalInstance = new ChallengeInstance();
+        chalInstance.setName(chalToAccept.getName());       
+        chalInstance.setStatus(ChallengeStatus.ACCEPTED);
+        serviceEntity.save(chalInstance);
+        chalToAccept.setStatus(ChallengeDefinitionStatus.ACCEPTED);
+        chalInstance.setAcceptor(user);
+        user.addAcceptedChallenge(chalInstance);
+        serviceEntity.update(user);
+        
+        model.addAttribute("listOfDefined", user.getChallenges());
+        model.addAttribute("listOfAccepted", user.getAcceptedChallenges());
+        model.addAttribute("challengeRequests", user.getChallengeRequests());
     }
 }

@@ -37,7 +37,6 @@
                                 </p>
                             </li>
                             <li>
-
                                 <form class="navbar-right" method="POST" th:action="@{/logout}">
                                     <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
                                     <button>Logout</button>
@@ -46,7 +45,15 @@
                                     <input type="hidden" name="id" th:value="${currentUserProfile.getUserEntityId()}"/>
                                     <button onclick="document.getElementById('profile').submit();">Profile</button>
                                 </form>
+
+                                <div class="navbar-right">
+                                    <button id="notification">
+                                        <span class="glyphicon glyphicon-comment"></span>
+                                    </button>
+                                    <span th:if="${challengeRequests.size() > 0}" class="badge badge-notify" th:text="${challengeRequests.size()}"></span>              
+                                </div>
                             </li>
+
                         </ul>  
                     </div>              
 

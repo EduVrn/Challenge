@@ -31,7 +31,7 @@ public class MainController {
 
     @RequestMapping("/")
     public String home(HttpServletRequest request, Principal currentUser, Model model) {
-        util.setModel(request, currentUser, model);
+        util.setModelForMain(request, currentUser, model);
         return "main";
     }
      @RequestMapping(value="/main1", produces = "text/plain;charset=UTF-8")
@@ -42,7 +42,7 @@ public class MainController {
     
     @RequestMapping(value = "/information", method = GET, produces = "text/plain;charset=UTF-8")
     public String show(HttpServletRequest request, Principal currentUser, Model model,@RequestParam("id") int id) {
-        util.setChallengeShow(id,request, currentUser, model);
+        util.setModelForChallengeShow(id,request, currentUser, model);
         return "chalShow";
     }
     
@@ -57,7 +57,24 @@ public class MainController {
         util.setModel(request, currentUser, model);
         return "login";
     }
-
+    
+    @RequestMapping(value="/accept", method=GET, produces = "text/plain;charset=UTF-8")
+    public String accept(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int chalId) {
+        util.setModelForAcceptOrDeclineChallenge(request, currentUser, model, chalId, true);
+        return "profile";
+    }
+    
+    @RequestMapping(value="/decline", method=GET, produces = "text/plain;charset=UTF-8")
+    public String decline(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int chalId) {
+        util.setModelForAcceptOrDeclineChallenge(request, currentUser, model, chalId, false);
+        return "profile";
+    }
+    
+    @RequestMapping(value="/acceptDefinition", method=GET, produces = "text/plain;charset=UTF-8")
+    public String acceptChallengeDefinition(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int chalId) {
+        util.setModelForAcceptChallengeDefinition(request, currentUser, model, chalId);
+        return "profile";
+    }
    
     @RequestMapping(value= "/updateStatus", method = POST)
     public String updateStatus(

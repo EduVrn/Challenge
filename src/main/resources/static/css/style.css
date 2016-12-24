@@ -338,3 +338,10 @@ textarea {
 .widget ol li a:hover {
     color: #1c2334
 }
+
+.badge-notify {
+    position: relative;
+    top: -15px;
+    left: -20px;
+    background-color: red;
+}

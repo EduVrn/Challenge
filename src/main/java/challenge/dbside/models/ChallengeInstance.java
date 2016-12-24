@@ -23,7 +23,7 @@ public class ChallengeInstance extends BaseEntity {
     private User acceptor;
 
     public String getName() {
-        return this.getAttributes()
+        return (String)this.getAttributes()
                 .get(ContextType.getInstance().getTypeAttribute("name").getId()).getValue();
     }
 
@@ -38,5 +38,15 @@ public class ChallengeInstance extends BaseEntity {
 
     public void setAcceptor(User acceptor) {
         this.acceptor = acceptor;
+    }
+    
+    public ChallengeStatus getStatus() {
+        return ChallengeStatus.valueOf(this.getAttributes()
+                .get(ContextType.getInstance().getTypeAttribute("chalStatus").getId()).getValue());
+    }
+    
+    public void setStatus(ChallengeStatus status) {
+        this.getAttributes()
+                .get(ContextType.getInstance().getTypeAttribute("chalStatus").getId()).setValue(status.name());
     }
 }

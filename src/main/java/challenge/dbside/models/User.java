@@ -52,6 +52,7 @@ public class User extends BaseEntity {
 
     public void addChallenge(ChallengeDefinition chal) {
         chal.setCreator(this);
+        chal.setStatus(ChallengeDefinitionStatus.CREATED);
         listOfChallenges.add(chal);
     }
 
@@ -65,7 +66,37 @@ public class User extends BaseEntity {
     }
 
     public List<ChallengeInstance> getAcceptedChallenges() {
-        return listOfAcceptedChallenges;
+        List<ChallengeInstance> accepted = new ArrayList<>();
+        listOfAcceptedChallenges.forEach(chal -> {
+                if (chal.getStatus() == ChallengeStatus.ACCEPTED)
+                    accepted.add(chal);
+        });
+        return accepted;
+    }
+    
+    public List<ChallengeInstance> getChallengeRequests() {
+        List<ChallengeInstance> requests = new ArrayList<>();
+        listOfAcceptedChallenges.forEach(chal -> {
+                if (chal.getStatus() == ChallengeStatus.AWAITING)
+                    requests.add(chal);
+        });
+        return requests;
+    }
+    
+    public void acceptChallenge(ChallengeInstance chal) {
+        List<ChallengeInstance> requests = getChallengeRequests();
+        if (requests.contains(chal)) {
+            chal.setStatus(ChallengeStatus.ACCEPTED);
+            chal.setAcceptor(this);
+        }
+    }
+    
+    public void declineChallenge(ChallengeInstance chal) {
+        List<ChallengeInstance> requests = getChallengeRequests();
+        if (requests.contains(chal)) {
+            listOfAcceptedChallenges.remove(chal);
+            chal.setAcceptor(null);
+        }
     }
 
     @Override
