@@ -345,3 +345,24 @@ textarea {
     left: -20px;
     background-color: red;
 }
+
+#chal-notification {
+    z-index: 50;
+    width: 400px;
+    top: 60px;
+    display: none;
+    opacity: 1;
+    position: fixed;
+}
+
+.chal-notification-wrap {
+    padding: 10px;
+    overflow: visible;
+    position: relative;
+    width: 400px;
+    opacity: 1;
+    border: 1px solid gray;
+    border-radius: 3px;
+    background-color: white;
+    margin-bottom: 7px;
+}
