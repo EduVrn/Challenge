@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
 import challenge.dbside.services.ini.MediaService;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -75,12 +76,34 @@ public class UsersDao {
         chalDef1.setName("Challenge Of SignUpedUser");
         chalDef1.setDescription("Description");
         chalDef1.setImageRef("race.jpg");
+        chalDef1.setDate(new Date());
         serviceEntity.save(chalDef1);
+         ChallengeDefinition chalDef2 = new ChallengeDefinition();
+        chalDef2.setName("Challenge Of SignUpedUser");
+        chalDef2.setDescription("Description");
+        chalDef2.setImageRef("race.jpg");
+        chalDef2.setDate(new Date());
+        serviceEntity.save(chalDef2);
+                 ChallengeDefinition chalDef3 = new ChallengeDefinition();
+        chalDef3.setName("Challenge Of SignUpedUser");
+        chalDef3.setDescription("Description");
+        chalDef3.setImageRef("race.jpg");
+        chalDef3.setDate(new Date());
+        serviceEntity.save(chalDef3);
+        ChallengeDefinition chalDef4 = new ChallengeDefinition();
+        chalDef4.setName("Challenge Of SignUpedUser");
+        chalDef4.setDescription("Description");
+        chalDef4.setImageRef("race.jpg");
+        chalDef4.setDate(new Date());
+        serviceEntity.save(chalDef4);
         User user = new User();
         user.setName(profile.getName());
         serviceEntity.save(user);
 
         user.addChallenge(chalDef1);
+        user.addChallenge(chalDef2);
+        user.addChallenge(chalDef3);
+        user.addChallenge(chalDef4);
         serviceEntity.update(user);
 
         ChallengeInstance chalInstance1 = new ChallengeInstance();

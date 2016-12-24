@@ -33,9 +33,6 @@
                         <h1><span style="text-align: center;font-size:25" class="glyphicon glyphicon-thumbs-down"></span>2</h1>
                     </div>
                     <form style="min-width: 150;" action="#" method="get">
-                        <input class="btn btn-default text-center" onclick='prompt("Введите название!");prompt("Введите задание!");' value="Create challenge"  />
-                    </form>
-                    <form style="min-width: 150;" action="#" method="get">
                         <input class="btn btn-default text-center" type="submit" value="Followers" />
                     </form>
                     <form style="min-width: 150;" action="#" method="get">
@@ -44,31 +41,31 @@
                 </div>
                 <!-- right side -->
                 <div class="col-md-8 col-sm-6 col-xs-12"> 
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                        <h4>Имя</h4>
-                    </div>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                        <h4>Отчество</h4>
-                    </div> 
-                    <div class="col-md-12">
-                        <h4>12.04.1985</h4>
-                    </div> 
+                     <form class="navbar-right" name="newCallenge" th:id="newChallenge"  method="GET" action="challenge/new">
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                        <input class="btn btn-default text-center" type="submit" name="submit3" value="CreateNewChallenge"/>
+                    </form>
                     <div class="text-center col-md-12">
                         <h2>Challenges</h2>
                         <div th:each="challenge : ${listOfDefined}" >
                             <div  class="challenge col-lg-4 col-md-4 col-sm-6 col-xs-12">
                                 <div style="border-width: 5" class="panel panel-default">
                                     <div class="box-content panel-body ">
+                                        
+                                        <form name="submitForm" th:id="'challenge/update'+${challenge.Id}"  method="GET" action="challenge/update">
+                                            <input type="hidden" name="id" th:value="${challenge.getId()}"/>
+                                          <h2 class="chal-title"><a  th:onclick="'document.getElementById(\'challenge/update'+${challenge.getId()}+'\').submit();'" > <span class="glyphicon glyphicon-wrench" style="font-size: 40px;"/></a></h2>
+                                        </form>
                                         <div class="chal-photo-main-page"> 
                                             <img class="img-rounded" th:src="${challenge.getImageRef()}" alt=""/> 
                                         </div>
                                         <div class="chal-body">
-                                            <form name="submitForm" th:id="'challenge_form'+${challenge.Id}"  method="GET" action="information">
+                                            <form name="submitForm" th:id="'challenge_form'+${challenge.Id}"  method="GET" action="challenge/information">
                                                 <input type="hidden" name="id" th:value="${challenge.getId()}"/>
                                                 <h2 class="chal-title"><a  th:onclick="'document.getElementById(\'challenge_form'+${challenge.getId()}+'\').submit();'" th:text="${challenge.getName()}"></a></h2>
                                             </form>
-                                            <span class="chal-meta" th:text="${challenge.getDate()}"></span>
-                                            <h4 class="desc" th:text="${challenge.getDescription()}"></h4>
+                                            <span class="chal-meta" th:text="${#dates.format(challenge.getDate(), 'yyyy/MM/dd HH:mm')}"></span>
+                                            <h4 class="cut-text desc"  th:text="${challenge.getDescription()}"></h4>
                                         </div>
                                     </div>
                                 </div> 
