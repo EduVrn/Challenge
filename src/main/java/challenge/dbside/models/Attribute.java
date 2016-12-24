@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.*;
+import static javax.persistence.TemporalType.TIMESTAMP;
 
 @Entity(name = "values")
 @IdClass(AttributePK.class)
@@ -58,7 +59,15 @@ public class Attribute implements Serializable {
     public void setValue(String value) {
         this.value = value;
     }
-    
+
+    public Date getDateValue() {
+        return date_value;
+    }
+
+    public void setDateValue(Date value) {
+        this.date_value = value;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

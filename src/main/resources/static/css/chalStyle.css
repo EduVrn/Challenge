@@ -7,6 +7,13 @@ and open the template in the editor.
     Created on : Dec 5, 2016, 4:09:26 PM
     Author     : DNS
 */
+.cut-text {
+  text-overflow: ellipsis; 
+  overflow: hidden; 
+  width: 100%; 
+  white-space: nowrap; 
+}
+
 .challenge {
     margin-bottom: 30px;
 }

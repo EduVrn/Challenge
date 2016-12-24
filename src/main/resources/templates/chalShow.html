@@ -7,7 +7,6 @@
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <script src="js/jquery.min.js"></script>
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
@@ -19,6 +18,10 @@
         <link rel="stylesheet" href="css/font-awesome.css"/>
         <link rel="stylesheet" href="css/chalStyle.css"/>
         <link rel="stylesheet" href="css/style.css"/>
+        <script src="../js/jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="../css/bootstrap-social.css" />
+        <link rel="stylesheet" href="../css/font-awesome.css"/>
+        <link rel="stylesheet" href="../css/chalStyle.css"/>
         <style type="text/css">
             <!--
             .ml { width: 110px; color: white; text-decoration: none }
@@ -34,7 +37,7 @@
             <div class="inner-container container">
                 <div style="margin-top: 100px; " class="row">
                     <div class="section-header col-md-12">
-                        <h2 th:text="${challenge.getDate()}"></h2>
+                        <h2 th:text="${challenge.getName()}"></h2>
                     </div> 
                 </div> 
                 <div class="row">
@@ -42,10 +45,8 @@
                         <img class="img-responsive img-rounded" th:src="${challenge.getImageRef()}"/>
                     </div> 
                     <div class="box-content">
-                        <h2 class="chal-title"><a  th:text="${challenge.getName()}"></a></h2>
-                        <span class="chal-meta" th:text="${challenge.getDate()}"></span>
-                        <h4> legal repercussions arising from incidents, among street racing's drawbacks.[citation needed] The term street racing must not be confused with the legal and governed sport of drag racing; see terminology below. 
-                        </h4>
+                        <h3 th:text="${#dates.format(challenge.getDate(), 'dd/MM/yyyy HH:mm')}"></h3>
+                        <h3  th:text="${challenge.getDescription()}"></h3>
                     </div>
                 </div>
                 <h2>Creator</h2>

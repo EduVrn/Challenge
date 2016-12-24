@@ -57,12 +57,12 @@
                                         <img class="img-rounded" th:src="${mainChallenge.getImageRef()}"  alt=""></img> 
                                     </div>
                                     <div class="chal-body col-md-4 col-sm-12 col-xs-12">
-                                        <form name="submitForm" id="challenge_form" method="GET" action="information">
+                                        <form name="submitForm" id="challenge_form" method="GET" action="challenge/information">
                                             <input type="hidden" name="id" th:value="${mainChallenge.getId()}"/>
                                             <h2 class="chal-title" ><a onclick="document.getElementById('challenge_form').submit();"  th:text="${mainChallenge.getName()}"></a></h2>
                                         </form>
-                                        <span class="chal-meta" th:text="${mainChallenge.getDate()}"></span>
-                                        <h4 class="desc" th:text="${mainChallenge.getDescription()}"></h4>
+                                        <span class="chal-meta" th:text="${#dates.format(mainChallenge.date, 'yyyy/MM/dd HH:mm')}"></span>
+                                        <h4 class="ellipsis desc" th:text="${mainChallenge.getDescription()}"></h4>
                                     </div>
                                 </div> 
                             </div> 
@@ -77,11 +77,11 @@
                                         <img class="img-rounded" th:src="${challenge.getImageRef()}" alt=""/> 
                                     </div>
                                     <div class="chal-body">
-                                        <form name="submitForm" th:id="'challenge_form'+${challenge.Id}"  method="GET" action="information">
+                                        <form name="submitForm" th:id="'challenge_form'+${challenge.Id}"  method="GET" action="challenge/information">
                                             <input type="hidden" name="id" th:value="${challenge.getId()}"/>
                                             <h2 class="chal-title"><a  th:onclick="'document.getElementById(\'challenge_form'+${challenge.getId()}+'\').submit();'" th:text="${challenge.getName()}"></a></h2>
                                         </form>
-                                        <span class="chal-meta" th:text="${challenge.getDate()}"></span>
+                                        <span class="chal-meta" th:text="${#dates.format(challenge.date, 'yyyy/MM/dd HH:mm')}"></span>
                                         <h4 class="desc" th:text="${challenge.getDescription()}"></h4>
                                     </div>
                                 </div>
@@ -95,9 +95,12 @@
         <script src="js/bootstrap.min.js"></script>
         <script src="js/responsiveLayout/plugins.js"></script>
         <script src="js/responsiveLayout/chalAnimating.js"></script>
+<<<<<<< HEAD
         <script src="js/uloginCallback.js"></script>
         <script src="js/showNewChallenges.js"></script>
         <script src="//ulogin.ru/js/ulogin.js"></script>
+=======
+>>>>>>> 43f2ea9b1e93ded89a55efa7c65d6917f6996859
     </body>
 </html>
 

@@ -1,17 +1,15 @@
 package challenge.dbside.ini;
 
-import challenge.dbside.models.BaseEntity;
 import challenge.dbside.models.User;
 import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.ChallengeStatus;
 import challenge.dbside.models.ini.TypeOfAttribute;
 import challenge.dbside.models.ini.TypeOfEntity;
-import java.util.HashSet;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import challenge.dbside.services.ini.MediaService;
+import java.util.Date;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -40,9 +38,9 @@ public class InitialLoader {
 
     private void createContext() {
 
-        TypeOfAttribute attrName = new TypeOfAttribute(1, "name", 1);
+       TypeOfAttribute attrName = new TypeOfAttribute(1, "name", 1);
         TypeOfAttribute attrSurname = new TypeOfAttribute(2, "surname", 1);
-        TypeOfAttribute attrDate = new TypeOfAttribute(3, "date", 2);
+        TypeOfAttribute attrDate = new TypeOfAttribute(3, "date", 1);
         TypeOfAttribute attrDescription = new TypeOfAttribute(4, "description", 1);
         TypeOfAttribute attrImageRef = new TypeOfAttribute(5, "imageref", 1);
         TypeOfAttribute attrChalStatus = new TypeOfAttribute(6, "chalStatus", 1);
@@ -98,6 +96,8 @@ public class InitialLoader {
         chalDef1.setDescription("hella awesome");
         chalDef1.setImageRef("race.jpg");
         
+        chalDef1.setDate(new Date());
+
         serviceEntityInit.save(chalDef1);
         User user1 = new User();
         user1.setName("User 1");
@@ -107,6 +107,7 @@ public class InitialLoader {
         chalDef2.setName("TestofChalleng");
         chalDef2.setDescription("It's ok");
         chalDef2.setImageRef("onTheEdge.jpeg");
+        chalDef2.setDate(new Date());
         serviceEntityInit.save(chalDef2);
         user1.addChallenge(chalDef1);
         user1.addChallenge(chalDef2);
