@@ -78,7 +78,7 @@
                             </div>
                         </div>
                     </div> 
-                    <div class="text-center col-md-12">
+                    <div th:if="${challengeRequests.size() > 0}" class="text-center col-md-12">
                         <h2>Unaccepted Challenges</h2>
                         <div th:each="challenge : ${challengeRequests}" >
                             <div  class="challenge col-lg-12 col-md-4 col-sm-6 col-xs-12">

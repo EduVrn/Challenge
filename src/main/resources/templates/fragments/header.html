@@ -51,7 +51,23 @@
                                         <span class="glyphicon glyphicon-comment"></span>
                                     </button>
                                     <span th:if="${challengeRequests.size() > 0}" class="badge badge-notify" th:text="${challengeRequests.size()}"></span>              
+                                    <div id="chal-notification">
+                                        <div th:each="challenge : ${challengeRequests}" class="chal-notification-wrap">
+                                            <div>
+                                                <span class="chal-meta" th:text="${challenge.getName()}"></span>
+                                                <form name="submitForm" th:id="'accept_form'+${challenge.Id}"  method="GET" action="/accept" style="display: inline-block;">
+                                                    <input type="hidden" name="id" th:value="${challenge.getId()}"/>
+                                                    <input type="submit" class="btn btn-success" value="Accept"/>
+                                                </form>
+                                                <form name="submitForm" th:id="'decline_form'+${challenge.Id}"  method="GET" action="/decline" style="display: inline-block;">
+                                                    <input type="hidden" name="id" th:value="${challenge.getId()}"/>
+                                                    <input type="submit" class="btn btn-danger" value="Decline"/>
+                                                </form>
+                                            </div>
+                                        </div> 
+                                    </div>
                                 </div>
+                                
                             </li>
 
                         </ul>  
