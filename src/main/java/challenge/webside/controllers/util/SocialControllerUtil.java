@@ -1,14 +1,12 @@
 package challenge.webside.controllers.util;
 
 import challenge.dbside.models.ChallengeDefinition;
-import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.User;
 import challenge.webside.dao.UsersDao;
 import challenge.webside.model.UserConnection;
 import challenge.webside.model.UserProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
@@ -22,9 +20,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import challenge.dbside.services.ini.MediaService;
+import java.util.Date;
+import java.util.Objects;
 
 @Component
 public class SocialControllerUtil {
@@ -67,7 +65,6 @@ public class SocialControllerUtil {
     }
 
     public void setModel(HttpServletRequest request, Principal currentUser, Model model) {
-
         // SecurityContext ctx = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
         String userId = currentUser == null ? null : currentUser.getName();
         String path = request.getRequestURI();
@@ -76,76 +73,69 @@ public class SocialControllerUtil {
         UserConnection connection = null;
         UserProfile profile = null;
         String displayName = null;
-        String data = null;
 
         // Collect info if the user is logged in, i.e. userId is set
         if (userId != null) {
-
             // Get the current UserConnection from the http session
             connection = getUserConnection(session, userId);
-
             // Get the current UserProfile from the http session
             profile = getUserProfile(session, userId);
-
             // Compile the best display name from the connection and the profile
             displayName = getDisplayName(connection, profile);
-
         }
 
         Throwable exception = (Throwable) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
 
-        //TODO: access to context without instaniating
-        //ApplicationContext context = new ClassPathXmlApplicationContext("META-INF/beans.xml");        
-        //MediaServiceEntity serviceEntity = (MediaServiceEntity) context.getBean("storageServiceUser");
-        // Update the model with the information we collected
         model.addAttribute("exception", exception == null ? null : exception.getMessage());
         model.addAttribute("currentUserId", userId);
         model.addAttribute("currentUserProfile", profile);
         model.addAttribute("currentUserConnection", connection);
         model.addAttribute("currentUserDisplayName", displayName);
-        model.addAttribute("currentData", data);
+    }
+
+    public void setModelForMain(HttpServletRequest request, Principal currentUser, Model model) {
+        setModel(request, currentUser, model);
         model.addAttribute("mainChallenge", serviceEntity.getAll(ChallengeDefinition.class).get(0));
         model.addAttribute("Challenges", serviceEntity.getAll(ChallengeDefinition.class));
 
     }
 
-    public void setChallengeShow(int id, HttpServletRequest request, Principal currentUser, Model model) {
-
-        // SecurityContext ctx = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
-        String userId = currentUser == null ? null : currentUser.getName();
-        String path = request.getRequestURI();
-        HttpSession session = request.getSession();
-
-        UserConnection connection = null;
-        UserProfile profile = null;
-        String displayName = null;
-        String data = null;
-
-        // Collect info if the user is logged in, i.e. userId is set
-        if (userId != null) {
-
-            // Get the current UserConnection from the http session
-            connection = getUserConnection(session, userId);
-
-            // Get the current UserProfile from the http session
-            profile = getUserProfile(session, userId);
-
-            // Compile the best display name from the connection and the profile
-            displayName = getDisplayName(connection, profile);
-
-        }
-
-        Throwable exception = (Throwable) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
-
-        // Update the model with the information we collected
-        model.addAttribute("exception", exception == null ? null : exception.getMessage());
-        model.addAttribute("currentUserId", userId);
-        model.addAttribute("currentUserProfile", profile);
-        model.addAttribute("currentUserConnection", connection);
-        model.addAttribute("currentUserDisplayName", displayName);
-        model.addAttribute("currentData", data);
-        model.addAttribute("challenge", (ChallengeDefinition) serviceEntity.findById(new Integer(id), ChallengeDefinition.class));
+    public void setModelForChallengeShow(int id, HttpServletRequest request, Principal currentUser, Model model) {
+        setModel(request, currentUser, model);
+        model.addAttribute("challenge", (ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class));
         model.addAttribute("listOfAcceptors", ((ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class)).getAllAcceptors());
+    }
+
+    public void setModelForNewOrUpdatedChalShow(ChallengeDefinition challenge, HttpServletRequest request, Principal currentUser, Model model) {
+
+        setModel(request, currentUser, model);
+        User curDBUser = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
+
+        if (challenge.getId() != null) {
+            ChallengeDefinition chalToUpdate = (ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class);
+            chalToUpdate.setDescription(challenge.getDescription());
+            chalToUpdate.setName(challenge.getName());
+            chalToUpdate.setDate(challenge.getDate());
+            chalToUpdate.setImageRef(challenge.getImageRef());
+            //TODO:check if creator
+            if (Objects.equals(chalToUpdate.getCreator().getId(), curDBUser.getId())) {
+                serviceEntity.update(chalToUpdate);
+            }
+        } else {
+            System.out.println(curDBUser.getName());
+            serviceEntity.save(challenge);
+            curDBUser.addChallenge(challenge);
+            serviceEntity.update(curDBUser);
+        }
+        model.addAttribute("challenge", (ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class));
+        model.addAttribute("listOfAcceptors", ((ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class)).getAllAcceptors());
+    }
+
+    public void setModelForNewChallenge(HttpServletRequest request, Principal currentUser, Model model) {
+        setModel(request, currentUser, model);
+        ChallengeDefinition chalDefNew = new ChallengeDefinition();
+        chalDefNew.setDate(new Date());
+        model.addAttribute("challenge", chalDefNew);
     }
 
     protected UserProfile getUserProfile(HttpSession session, String userId) {
@@ -178,7 +168,6 @@ public class SocialControllerUtil {
         return connection;
     }
 
-
     protected String getDisplayName(UserConnection connection, UserProfile profile) {
 
         // The name is set differently in different providers so we better look in both places...
@@ -190,37 +179,8 @@ public class SocialControllerUtil {
     }
 
     public void setProfileShow(int userDBId, HttpServletRequest request, Principal currentUser, Model model) {
-        String userId = currentUser == null ? null : currentUser.getName();
-        String path = request.getRequestURI();
-        HttpSession session = request.getSession();
-
+        setModel(request, currentUser, model);
         User userWhichProfileRequested = (User) serviceEntity.findById(userDBId, User.class);
-        UserConnection connection = null;
-        UserProfile profile = null;
-        String displayName = null;
-        String data = null;
-
-        // Collect info if the user is logged in, i.e. userId is set
-        if (userId != null) {
-
-            // Get the current UserConnection from the http session
-            connection = getUserConnection(session, userId);
-            // Get the current UserProfile from the http session
-            profile = getUserProfile(session, userId);
-            // Compile the best display name from the connection and the profile
-            displayName = getDisplayName(connection, profile);
-
-        }
-
-        Throwable exception = (Throwable) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
-
-        // Update the model with the information we collected
-        model.addAttribute("exception", exception == null ? null : exception.getMessage());
-        model.addAttribute("currentUserId", userId);
-        model.addAttribute("currentUserProfile", profile);
-        model.addAttribute("currentUserConnection", connection);
-        model.addAttribute("currentUserDisplayName", displayName);
-        model.addAttribute("currentData", data);
         model.addAttribute("listOfDefined", userWhichProfileRequested.getChallenges());
         model.addAttribute("listOfAccepted", userWhichProfileRequested.getAcceptedChallenges());
 
