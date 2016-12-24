@@ -4,9 +4,14 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import challenge.dbside.ini.ContextType;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import javax.persistence.CascadeType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -18,7 +23,7 @@ import javax.persistence.OneToOne;
 public class ChallengeDefinition extends BaseEntity {
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinTable(name = "relationship", 
+    @JoinTable(name = "relationship",
             joinColumns = @JoinColumn(name = "entity_id2", referencedColumnName = "entity_id"),
             inverseJoinColumns = @JoinColumn(name = "entity_id1", referencedColumnName = "entity_id")
     )
@@ -57,7 +62,7 @@ public class ChallengeDefinition extends BaseEntity {
     }
 
     public String getImageRef() {
-        return "images/" + this.getAttributes()
+        return "../images/" + this.getAttributes()
                 .get(ContextType.getInstance().getTypeAttribute("imageref").getId()).getValue();
     }
 
@@ -66,9 +71,16 @@ public class ChallengeDefinition extends BaseEntity {
                 .get(ContextType.getInstance().getTypeAttribute("imageref").getId()).setValue(description);
     }
 
-    public String getDate() {
-        return this.getAttributes()
-                .get(ContextType.getInstance().getTypeAttribute("date").getId()).getValue();
+    public Date getDate()  {
+        try {
+            DateFormat df = new SimpleDateFormat("EEE MMM dd kk:mm:ss z yyyy", Locale.ENGLISH);
+            Date result = df.parse(this.getAttributes()
+                    .get(ContextType.getInstance().getTypeAttribute("date").getId()).getValue());
+            return result;
+        } catch (Exception ex) {
+            return (new Date());
+        }
+
     }
 
     public void setDate(Date date) {

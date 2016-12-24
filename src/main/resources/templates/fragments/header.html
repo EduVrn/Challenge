@@ -31,17 +31,22 @@
                                     <a th:if="${currentUserConnection.providerId == 'github'}"   class="ml btn btn-social-icon btn-sm btn-github">     <i class="fa fa-github"></i></a>
                                     <a th:if="${currentUserConnection.providerId == 'vk'}"   class="ml btn btn-social-icon btn-sm btn-vk"><i class="fa fa-vk"></i></a>
 
-                                    as <a th:href="${currentUserConnection.profileUrl}" class="navbar-link"><span th:text="${currentUserDisplayName}"/></a>
-                                    with <a><span th:text="${email}"/></a>
+                                     <a th:href="${currentUserConnection.profileUrl}" class="navbar-link"><span th:text="${currentUserDisplayName}"/></a>
+                                    
                                     <img th:src="${currentUserConnection.imageUrl}" width="32" height="32" />
                                 </p>
                             </li>
                             <li>
+<<<<<<< HEAD
                                 <form class="navbar-right" method="POST" th:action="@{/logout}">
+=======
+
+                                <form class="navbar-right" method="POST" th:action="@{../logout}">
+>>>>>>> 43f2ea9b1e93ded89a55efa7c65d6917f6996859
                                     <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
                                     <button>Logout</button>
                                 </form>
-                                <form class="navbar-right" name="profileForm" th:id="'profile'"  method="GET" action="profile">
+                                <form class="navbar-right" name="profileForm" th:id="'profile'"  method="GET" action="../profile">
                                     <input type="hidden" name="id" th:value="${currentUserProfile.getUserEntityId()}"/>
                                     <button onclick="document.getElementById('profile').submit();">Profile</button>
                                 </form>

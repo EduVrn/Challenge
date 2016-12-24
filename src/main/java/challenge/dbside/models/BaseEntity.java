@@ -64,7 +64,6 @@ public class BaseEntity {
         attributes = new HashMap<>();
         type.getAttributes().forEach((t) -> {
             Attribute attr = new Attribute(t.getId());
-
             attributes.put(t.getId(), attr);
         });
     }
@@ -146,7 +145,7 @@ public class BaseEntity {
 
     @Override	//TODO: see it
     public int hashCode() {
-        int result = id.hashCode();
+        int result = id!=null ? id.hashCode() : 0;
 
         result = 31 * result + entityType.hashCode();
 
