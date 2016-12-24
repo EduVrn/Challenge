@@ -14,7 +14,7 @@ public class TypeOfAttribute {
 
     private Integer type_of_attribute;
 
-    @Column(name = "name"/*, unique = true*/)
+    @Column(name = "name")
     private String name;
 
     @ManyToMany(mappedBy = "listAttributes")

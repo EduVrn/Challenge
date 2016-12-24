@@ -2,6 +2,7 @@ package challenge.webside.dao;
 
 import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.ChallengeInstance;
+import challenge.dbside.models.ChallengeStatus;
 import challenge.dbside.models.User;
 import challenge.webside.model.UserConnection;
 import challenge.webside.model.UserProfile;
@@ -86,11 +87,12 @@ public class UsersDao {
         ChallengeInstance chalInstance1 = new ChallengeInstance();
         chalInstance1.setName("Instance of SignUpedUser #1");
         chalInstance1.setParent(chalDef1);
-        
+        chalInstance1.setStatus(ChallengeStatus.AWAITING);
         serviceEntity.save(chalInstance1);
         ChallengeInstance chalUnstance2 = new ChallengeInstance();
         chalUnstance2.setName("Instance of SignUpedUser #");
         chalUnstance2.setParent(chalDef1);
+        chalUnstance2.setStatus(ChallengeStatus.AWAITING);
         serviceEntity.save(chalUnstance2);
 
         Set set = new HashSet();

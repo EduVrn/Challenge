@@ -4,6 +4,7 @@ import challenge.dbside.models.BaseEntity;
 import challenge.dbside.models.User;
 import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.ChallengeInstance;
+import challenge.dbside.models.ChallengeStatus;
 import challenge.dbside.models.ini.TypeOfAttribute;
 import challenge.dbside.models.ini.TypeOfEntity;
 import java.util.HashSet;
@@ -44,6 +45,8 @@ public class InitialLoader {
         TypeOfAttribute attrDate = new TypeOfAttribute(3, "date", 2);
         TypeOfAttribute attrDescription = new TypeOfAttribute(4, "description", 1);
         TypeOfAttribute attrImageRef = new TypeOfAttribute(5, "imageref", 1);
+        TypeOfAttribute attrChalStatus = new TypeOfAttribute(6, "chalStatus", 1);
+        TypeOfAttribute attrChalDefStatus = new TypeOfAttribute(7, "chalDefStatus", 1);
         // MediaServiceTypeOfAttribute serviceAttr = (MediaServiceTypeOfAttribute) context.getBean("storageServiceTypeOfAttribute");
 
         serviceAttr.save(attrName);
@@ -51,6 +54,8 @@ public class InitialLoader {
         serviceAttr.save(attrDate);
         serviceAttr.save(attrDescription);
         serviceAttr.save(attrImageRef);
+        serviceAttr.save(attrChalStatus);
+        serviceAttr.save(attrChalDefStatus);
 
         // MediaServiceTypeOfEntity serviceEntity = (MediaServiceTypeOfEntity) context.getBean("storageServiceTypeOfEntity");
         TypeOfEntity entity = new TypeOfEntity("User");
@@ -63,10 +68,12 @@ public class InitialLoader {
         entityChallenge.add(attrDate);
         entityChallenge.add(attrDescription);
         entityChallenge.add(attrImageRef);
+        entityChallenge.add(attrChalDefStatus);
         serviceEntity.save(entityChallenge);
 
         TypeOfEntity entityChallengeInstance = new TypeOfEntity("ChallengeInstance");
         entityChallengeInstance.add(attrName);
+        entityChallengeInstance.add(attrChalStatus);
         serviceEntity.save(entityChallengeInstance);
 
         ContextType contextType = ContextType.getInstance();
@@ -76,6 +83,8 @@ public class InitialLoader {
         contextType.add(attrDate);
         contextType.add(attrDescription);//!!!!
         contextType.add(attrImageRef);
+        contextType.add(attrChalStatus);
+        contextType.add(attrChalDefStatus);
 
         contextType.add(entity);
         contextType.add(entityChallenge);
@@ -88,7 +97,7 @@ public class InitialLoader {
         chalDef1.setName("TestChallenge");
         chalDef1.setDescription("hella awesome");
         chalDef1.setImageRef("race.jpg");
-
+        
         serviceEntityInit.save(chalDef1);
         User user1 = new User();
         user1.setName("User 1");
@@ -104,9 +113,11 @@ public class InitialLoader {
         serviceEntityInit.update(user1);
         ChallengeInstance chalInstance1 = new ChallengeInstance();
         chalInstance1.setName("Instance N1");
+        chalInstance1.setStatus(ChallengeStatus.AWAITING);
         serviceEntityInit.save(chalInstance1);
         ChallengeInstance chalUnstance2 = new ChallengeInstance();
         chalUnstance2.setName("Instance N2");
+        chalUnstance2.setStatus(ChallengeStatus.AWAITING);
         serviceEntityInit.save(chalUnstance2);
         /*  Set set = new HashSet();
         set.add(chalInstance1);

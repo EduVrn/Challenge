@@ -1,0 +1,3 @@
+$('#notification').click(function() {
+});
+
