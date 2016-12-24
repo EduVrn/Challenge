@@ -108,7 +108,6 @@ public class SocialControllerUtil {
         setModel(request, currentUser, model);
         model.addAttribute("challenge", (ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class));
         model.addAttribute("listOfAcceptors", ((ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class)).getAllAcceptors());
-        model.addAttribute("listOfAcceptors", ((ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class)).getAllAcceptors());
     }
 
     public void setModelForNewOrUpdatedChalShow(ChallengeDefinition challenge, HttpServletRequest request, Principal currentUser, Model model) {

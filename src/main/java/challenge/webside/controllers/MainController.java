@@ -50,19 +50,7 @@ public class MainController {
         util.setModelForMain(request, currentUser, model);
         return "main";
     }
-
-    /*   @RequestMapping(value="/main1", produces = "text/plain;charset=UTF-8")
-    public String hom(HttpServletRequest request, Principal currentUser, Model model) {
-        util.setModel(request, currentUser, model);
-        return "main";
-    }
-<<<<<<< HEAD
     
-    @RequestMapping(value = "/information", method = GET, produces = "text/plain;charset=UTF-8")
-    public String show(HttpServletRequest request, Principal currentUser, Model model,@RequestParam("id") int id) {
-        util.setModelForChallengeShow(id,request, currentUser, model);
-=======
-     */
     @RequestMapping(value = "challenge/information", method = GET, produces = "text/plain;charset=UTF-8")
     public String show(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int id) {
         util.setModelForChallengeShow(id, request, currentUser, model);

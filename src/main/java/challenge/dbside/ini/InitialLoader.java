@@ -40,7 +40,7 @@ public class InitialLoader {
 
        TypeOfAttribute attrName = new TypeOfAttribute(1, "name", 1);
         TypeOfAttribute attrSurname = new TypeOfAttribute(2, "surname", 1);
-        TypeOfAttribute attrDate = new TypeOfAttribute(3, "date", 1);
+        TypeOfAttribute attrDate = new TypeOfAttribute(3, "date", 2);
         TypeOfAttribute attrDescription = new TypeOfAttribute(4, "description", 1);
         TypeOfAttribute attrImageRef = new TypeOfAttribute(5, "imageref", 1);
         TypeOfAttribute attrChalStatus = new TypeOfAttribute(6, "chalStatus", 1);
