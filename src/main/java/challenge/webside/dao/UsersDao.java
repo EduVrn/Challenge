@@ -73,6 +73,7 @@ public class UsersDao {
     }
 
     public void createUser(String userId, UserProfile profile) {
+    	
         ChallengeDefinition chalDef1 = new ChallengeDefinition();
         chalDef1.setName("Challenge Of SignUpedUser");
         chalDef1.setDescription("Description");
@@ -97,8 +98,10 @@ public class UsersDao {
         chalDef4.setImageRef("race.jpg");
         chalDef4.setDate(new Date());
         serviceEntity.save(chalDef4);
+        
         User user = new User();
         user.setName(profile.getName());
+        user.setImageRef("AvaDefault.JPG");
         serviceEntity.save(user);
 
         user.addChallenge(chalDef1);

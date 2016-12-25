@@ -64,6 +64,7 @@
     return CellsByRow;
 
 }));
+
 $(window).load(function () {
     var r = $(".chalList");
     isotopeInit = function () {
@@ -82,6 +83,9 @@ $(window).load(function () {
     });
     //isotopeInit();
 });
+
+
+
 
 
 
