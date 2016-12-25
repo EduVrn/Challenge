@@ -105,6 +105,34 @@ public class MainController {
         return "profile";
     }
    
+    
+    @RequestMapping(value="/user4Challenge", method=GET, produces = "text/plain;charset=UTF-8")
+    public String selectUserCandidate4Challenge(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int chalId) {
+    	util.setModelForThrowChallenge2User(request, currentUser, model, chalId);
+    	
+    	return "listSomething";
+    }
+    
+    
+    @RequestMapping(value="/challenge4User", method=GET, produces = "text/plain;charset=UTF-8")
+    public String selectChallengeCandidate4User(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int userId) {
+    	util.setModelForThrowUser2Challenge(request, currentUser, model, userId);    	
+    	return "listSomething";
+    }
+    
+    @RequestMapping(value="/throwChallenge", method=GET, produces = "text/plain;charset=UTF-8")
+    public String throwChallenge2User(HttpServletRequest request, Principal currentUser, Model model, 
+    		@RequestParam("idParent") int challengeId, @RequestParam("id") int userId) {
+    	
+    	//TODO: need make any class with handler creation relation (friends, challenge2User, ...)
+    	util.throwChallenge2User(userId, challengeId);
+    	//TODO: get user id current seanse, this current id - is id user, which throw challenge
+    	util.setProfileShow(userId, request, currentUser, model);
+    	return "profile";
+    }
+    
+    
+    
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         CustomDateEditor editor = new CustomDateEditor(new SimpleDateFormat("yyyy/MM/dd HH:mm"), true);
@@ -128,4 +156,8 @@ public class MainController {
 
         return "index";
     }
+    
+    
+    
+    
 }

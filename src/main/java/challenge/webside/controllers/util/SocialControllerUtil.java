@@ -67,6 +67,7 @@ public class SocialControllerUtil {
         }
     }
 
+     
     public void setModel(HttpServletRequest request, Principal currentUser, Model model) {
         // SecurityContext ctx = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
         String userId = currentUser == null ? null : currentUser.getName();
@@ -94,6 +95,10 @@ public class SocialControllerUtil {
         model.addAttribute("currentUserProfile", profile);
         model.addAttribute("currentUserConnection", connection);
         model.addAttribute("currentUserDisplayName", displayName);
+        //TODO:bike:-)
+        model.addAttribute("foto", "AvaDefault.jpg");
+        
+        
          if (profile != null)
             model.addAttribute("challengeRequests", ((User)serviceEntity.findById(profile.getUserEntityId(), User.class)).getChallengeRequests());
     }
@@ -223,4 +228,56 @@ public class SocialControllerUtil {
         model.addAttribute("listOfAccepted", user.getAcceptedChallenges());
         model.addAttribute("challengeRequests", user.getChallengeRequests());
     }
+    
+    
+    /*
+     * Select user from list 4 challenge
+     * click 'throw' to challenge from your panel (may be make from all place?) 
+     * 
+     * */
+    public void setModelForThrowChallenge2User(HttpServletRequest request, Principal currentUser, Model model, int chalId) {
+    	setModel(request, currentUser, model);
+    	//TODO: ignored all include users
+    	List<User> users = serviceEntity.getAll(User.class);
+    	
+    	model.addAttribute("listSomething", users);
+    	model.addAttribute("idParent", chalId);
+    }
+    
+    public void throwChallenge2User(int userId, int challengeId) {    	
+    	ChallengeDefinition chal = (ChallengeDefinition)serviceEntity.findById(challengeId, ChallengeDefinition.class);
+    	User user = (User)serviceEntity.findById(userId, User.class);
+    	
+    	ChallengeInstance chalIns = new ChallengeInstance();
+    	chalIns.setName(chal.getName());
+    	chalIns.setStatus(ChallengeStatus.AWAITING);
+    	serviceEntity.save(chalIns);
+    	    	
+    	chal.getChildren().add(chalIns);
+    	serviceEntity.update(chal);
+    	
+    	user.addAcceptedChallenge(chalIns);
+    	serviceEntity.update(user);    	
+    }
+    
+    
+    /*
+     * Select challenge from list 4 user 
+     * click 'throw user' from your profile
+     * 
+     */
+    public void setModelForThrowUser2Challenge(HttpServletRequest request, Principal currentUser, Model model, int userId) {
+    	setModel(request, currentUser, model);
+    	//TODO: ignored all include users
+    	User user = (User)serviceEntity.findById(userId, User.class);
+    	
+    	model.addAttribute("listSomething", user.getChallenges());
+    	model.addAttribute("idParent", userId);
+    }
+    
+    
+    
+    
+    
+    
 }
