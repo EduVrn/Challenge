@@ -120,8 +120,8 @@ public class MainController {
     	return "listSomething";
     }
     
-    @RequestMapping(value="/throwChallenge", method=GET, produces = "text/plain;charset=UTF-8")
-    public String throwChallenge2User(HttpServletRequest request, Principal currentUser, Model model, 
+    @RequestMapping(value="/throwChallengeFromChallengeList", method=GET, produces = "text/plain;charset=UTF-8")
+    public String throwChallenge2UserFromChallengeList(HttpServletRequest request, Principal currentUser, Model model, 
     		@RequestParam("idParent") int challengeId, @RequestParam("id") int userId) {
     	
     	//TODO: need make any class with handler creation relation (friends, challenge2User, ...)
@@ -131,6 +131,24 @@ public class MainController {
     	return "profile";
     }
     
+    @RequestMapping(value="/throwChallengeFromUserList", method=GET, produces = "text/plain;charset=UTF-8")
+    public String throwChallenge2UserFromUserList(HttpServletRequest request, Principal currentUser, Model model, 
+    		@RequestParam("idParent") int userId, @RequestParam("id") int challengeId) {
+    	
+    	//TODO: need make any class with handler creation relation (friends, challenge2User, ...)
+    	util.throwChallenge2User(userId, challengeId);
+    	//TODO: get user id current seanse, this current id - is id user, which throw challenge
+    	util.setProfileShow(userId, request, currentUser, model);
+    	return "profile";
+    }
+    
+    
+    @RequestMapping(value="/friends", method=GET, produces = "text/plain;charset=UTF-8")
+    public String selectUserFriends(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int userId) {    	
+    	util.setModelForShowFriends(request, currentUser, model, userId);
+    	
+    	return "listSomething";
+    }
     
     
     @InitBinder

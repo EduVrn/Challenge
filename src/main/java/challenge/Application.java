@@ -62,10 +62,6 @@ public class Application extends SpringBootServletInitializer {
         user2.setChildren(userSet);
         serviceEntity.update(user2);
 
-
-        /*change mechanism and add template*/
-//        User entityUser2 = (User)serviceEntity.findById(user1.getId());
-//        Integer count = entityUser2.getChildren().size();
         /**/
         System.out.println("\n\nDelete");
         serviceEntity.delete(user1);

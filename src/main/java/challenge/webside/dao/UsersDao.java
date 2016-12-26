@@ -20,6 +20,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import challenge.dbside.services.ini.MediaService;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -99,6 +100,8 @@ public class UsersDao {
         chalDef4.setDate(new Date());
         serviceEntity.save(chalDef4);
         
+        List<User> friends = serviceEntity.getAll(User.class);
+        
         User user = new User();
         user.setName(profile.getName());
         user.setImageRef("AvaDefault.JPG");
@@ -110,6 +113,9 @@ public class UsersDao {
         user.addChallenge(chalDef4);
         serviceEntity.update(user);
 
+        
+        //
+        
         ChallengeInstance chalInstance1 = new ChallengeInstance();
         chalInstance1.setName("Instance of SignUpedUser #1");
         chalInstance1.setParent(chalDef1);
@@ -135,6 +141,10 @@ public class UsersDao {
         user.addAcceptedChallenge(chalUnstance2);
         serviceEntity.update(user);
 
+        user.setFriends(friends);
+        serviceEntity.update(user);
+        
+        
         profile.setUser(user);
         jdbcTemplate.update("INSERT into users(username,password,enabled) values(?,?,true)", userId, RandomStringUtils.randomAlphanumeric(8));
         jdbcTemplate.update("INSERT into authorities(username,authority) values(?,?)", userId, "USER");

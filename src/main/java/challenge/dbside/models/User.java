@@ -5,6 +5,8 @@ import java.util.*;
 import javax.persistence.*;
 
 import challenge.dbside.ini.ContextType;
+
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.Where;
 
 @Entity
@@ -30,6 +32,7 @@ public class User extends BaseEntity {
 	@Where(clause = "type_of_entity = 3")
 	private List<ChallengeInstance> listOfAcceptedChallenges;
 
+	//TODO: EAGER fetch type
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "relationship",
 	joinColumns = @JoinColumn(name = "entity_id1", referencedColumnName = "entity_id"),
@@ -38,6 +41,17 @@ public class User extends BaseEntity {
 	@Where(clause = "type_of_entity = 1")
 	private List<User> friends;
 
+	public void setFriends(List<User> users) {
+		this.friends = users;
+	}
+	
+	public List<User> getFriends() {
+		//Hibernate.initialize(this.friends);
+		
+		return this.friends;
+	}
+	
+	
 	public void addFriend(User user) {
 		friends.add(user);
 	}
