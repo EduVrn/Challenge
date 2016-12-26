@@ -190,6 +190,8 @@ public class SocialControllerUtil {
     public void setProfileShow(int userDBId, HttpServletRequest request, Principal currentUser, Model model) {
         setModel(request, currentUser, model);
         User userWhichProfileRequested = (User) serviceEntity.findById(userDBId, User.class);
+
+        model.addAttribute("userProfile", userWhichProfileRequested);             
         model.addAttribute("listOfDefined", userWhichProfileRequested.getChallenges());
         model.addAttribute("listOfAccepted", userWhichProfileRequested.getAcceptedChallenges());
         model.addAttribute("challengeRequests", userWhichProfileRequested.getChallengeRequests());
@@ -242,6 +244,7 @@ public class SocialControllerUtil {
     	
     	model.addAttribute("listSomething", users);
     	model.addAttribute("idParent", chalId);
+    	model.addAttribute("handler", "throwChallengeFromChallengeList");
     }
     
     public void throwChallenge2User(int userId, int challengeId) {    	
@@ -273,11 +276,24 @@ public class SocialControllerUtil {
     	
     	model.addAttribute("listSomething", user.getChallenges());
     	model.addAttribute("idParent", userId);
+    	model.addAttribute("handler", "throwChallengeFromUserList");
     }
     
     
     
+    public void setModelForShowFriends(HttpServletRequest request, Principal currentUser, Model model, int userId) {
+    	setModel(request, currentUser, model);
+    	
+    	User user = (User)serviceEntity.findById(userId, User.class);
+    	
+    	model.addAttribute("listSomething", user.getFriends());
+    	model.addAttribute("idParent", userId);
+    	model.addAttribute("handler", "profile");
+    	
+    }
     
+    
+
     
     
 }

@@ -32,15 +32,14 @@
 
 
 		<h1 class="page-header">
-			<span th:text="${currentUserDisplayName}" />
+			<span th:text="${userProfile.getName()}" />
 		</h1>
 		<div class="row">
 			<!-- left side -->
 			<div class="col-md-4 col-sm-6 col-xs-12">
 				<div>
 					<!-- img th:src="${currentUserConnection.imageUrl}" class="img-rounded img-responsive" /-->
-					<img th:src="${foto}" class="img-rounded img-responsive" />
-
+					<img th:src="${userProfile.getImageRef()}" class="img-rounded img-responsive" />
 
 				</div>
 				<div class="text-center col-md-6 col-sm-6 col-xs-6">
@@ -60,13 +59,13 @@
 					<input class="btn btn-default text-center" type="submit"
 						value="Followers" />
 				</form>
-				<form style="min-width: 150;" action="#" method="get">
-					<input class="btn btn-default text-center" type="submit"
-						value="Friends" />
+				<form name="submitForm" th:id="'throw_challenge_form'" method="GET" action="friends" style="min-width: 150;">
+					<input type="hidden" name="id" th:value="${userProfile.getId()}" />
+					<input class="btn btn-default text-center" type="submit" value="Friends" />
 				</form>
 				<form name="submitForm" th:id="'throw_challenge_form'" method="GET" action="challenge4User" style="min-width: 150;">
 				<!-- change currentUserId to profile user -->
-					<input type="hidden" name="id" th:value="1" />
+					<input type="hidden" name="id" th:value="${userProfile.getId()}" />
 					<input id="throw_challenge" class="btn btn-default text-center" type="submit" value="Throw challenge" />
 				</form>
 				

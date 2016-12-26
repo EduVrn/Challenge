@@ -14,13 +14,14 @@
 <link rel="stylesheet"
 	href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
 
-<script src="js/jquery.min.js"></script>
+<script src="../js/jquery.min.js"></script>
 
-<link rel="stylesheet" href="css/pageLoader.css" />
-<link rel="stylesheet" type="text/css" href="css/bootstrap-social.css" />
-<link rel="stylesheet" href="css/font-awesome.css" />
-<link rel="stylesheet" href="css/chalStyle.css" />
-<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="../css/pageLoader.css" />
+<link rel="stylesheet" type="text/css"
+	href="../css/bootstrap-social.css" />
+<link rel="stylesheet" href="../css/font-awesome.css" />
+<link rel="stylesheet" href="../css/chalStyle.css" />
+<link rel="stylesheet" href="../css/style.css" />
 
 </head>
 <body>
@@ -35,7 +36,7 @@
 			<div th:each="elSomething : ${listSomething}">
 
 
-				<div class="something col-lg-4 col-md-4 col-sm-6 col-xs-12">
+				<div class="challenge col-lg-4 col-md-4 col-sm-6 col-xs-12">
 					<div style="border-width: 5" class="panel panel-default">
 						<div class="box-content panel-body ">
 							<div class="chal-photo-main-page">
@@ -43,13 +44,16 @@
 									alt="" />
 							</div>
 							<div class="chal-body">
-								<form name="submitForm" th:id="'something_form'+${elSomething.Id}" method="GET" action="throwChallenge">
-									
-									<input type="hidden" name="id" th:value="${elSomething.getId()}" />
-									<input type="hidden" name="idParent" th:value="${idParent}" />
+								<form name="submitForm"
+									th:id="'something_form'+${elSomething.Id}" method="GET"
+									th:action="${handler}">
+
+									<input type="hidden" name="id"
+										th:value="${elSomething.getId()}" /> <input type="hidden"
+										name="idParent" th:value="${idParent}" />
 									<h2 class="chal-title">
-										<a 
-										th:onclick="'document.getElementById(\'something_form'+${elSomething.getId()}+'\').submit();'"
+										<a
+											th:onclick="'document.getElementById(\'something_form'+${elSomething.getId()}+'\').submit();'"
 											th:text="${elSomething.getName()}"></a>
 									</h2>
 								</form>
@@ -63,12 +67,19 @@
 	</div>
 
 
-	<!-- script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/responsiveLayout/plugins.js"></script>
+	<script>
+		
+
 		$(window).load(function() {
+			
+			
+			
 			var r = $(".somethingList");
 			isotopeInit = function() {
 				r.isotope({
-					itemSelector : ".something",
+					itemSelector : ".challenge",
 					animationEngine : "jquery",
 					layoutMode : 'masonry',
 					transitionDuration : '1.0s',
@@ -82,7 +93,7 @@
 			});
 			//isotopeInit();
 		});
-	</script-->
+	</script>
 
 </body>
 </html>
