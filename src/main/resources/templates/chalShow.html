@@ -44,11 +44,11 @@
                         <h3  th:text="${challenge.getDescription()}"></h3>
                     </div>
                 </div>
-                <h2>Creator</h2>
+                <h2 th:text="#{creatorLabelShow}">Creator</h2>
                 <div>
                     <span class="chal-meta" th:text="${challenge.getCreator().getName()}"></span>
                 </div>
-                <h2>Acceptors</h2>
+                <h2 th:text="#{acceptorsLabelShow}">Acceptors</h2>
                 <div th:each="acceptor : ${listOfAcceptors}" >
                     <div  class="challenge col-lg-4 col-md-4 col-sm-6 col-xs-12">
                         <div style="border-width: 5" class="panel panel-default">

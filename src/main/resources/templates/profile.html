@@ -1,212 +1,203 @@
 <!DOCTYPE html>
 
 <html xmlns:th="http://www.thymeleaf.org"
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 
-<head>
-<title>Profile</title>
-<link rel="stylesheet"
-	href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
-<link rel="stylesheet"
-	href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
-<link rel="stylesheet"
-	href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
+    <head>
+        <title th:text="#{profilePageTitle}"></title>
+        <link rel="stylesheet"
+              href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+        <link rel="stylesheet"
+              href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
+        <link rel="stylesheet"
+              href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
 
-<script src="js/jquery.min.js"></script>
+        <script src="js/jquery.min.js"></script>
 
-<link rel="stylesheet" href="css/pageLoader.css" />
-<link rel="stylesheet" type="text/css" href="css/bootstrap-social.css" />
-<link rel="stylesheet" href="css/font-awesome.css" />
-<link rel="stylesheet" href="css/chalStyle.css" />
-<link rel="stylesheet" href="css/style.css" />
+        <link rel="stylesheet" href="css/pageLoader.css" />
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-social.css" />
+        <link rel="stylesheet" href="css/font-awesome.css" />
+        <link rel="stylesheet" href="css/chalStyle.css" />
+        <link rel="stylesheet" href="css/style.css" />
 
-</head>
-<body>
+    </head>
+    <body>
 
-	<div th:replace="fragments/header::userInfo" />
-
-
-	<div class="container" style="margin-top: 100px;">
+        <div th:replace="fragments/header::userInfo" />
 
 
-		<h1 class="page-header">
-			<span th:text="${userProfile.getName()}" />
-		</h1>
-		<div class="row">
-			<!-- left side -->
-			<div class="col-md-4 col-sm-6 col-xs-12">
-				<div>
-					<!-- img th:src="${currentUserConnection.imageUrl}" class="img-rounded img-responsive" /-->
-					<img th:src="${userProfile.getImageRef()}" class="img-rounded img-responsive" />
-
-				</div>
-				<div class="text-center col-md-6 col-sm-6 col-xs-6">
-					<h1>
-						<span style="text-align: center; font-size: 25"
-							class="glyphicon glyphicon-thumbs-up"></span>1
-					</h1>
-				</div>
-				<div class="text-center col-md-6 col-sm-6 col-xs-6"
-					style="align-self: flex-end;">
-					<h1>
-						<span style="text-align: center; font-size: 25"
-							class="glyphicon glyphicon-thumbs-down"></span>2
-					</h1>
-				</div>
-				<form style="min-width: 150;" action="#" method="get">
-					<input class="btn btn-default text-center" type="submit"
-						value="Followers" />
-				</form>
-				<form name="submitForm" th:id="'throw_challenge_form'" method="GET" action="friends" style="min-width: 150;">
-					<input type="hidden" name="id" th:value="${userProfile.getId()}" />
-					<input class="btn btn-default text-center" type="submit" value="Friends" />
-				</form>
-				<form name="submitForm" th:id="'throw_challenge_form'" method="GET" action="challenge4User" style="min-width: 150;">
-				<!-- change currentUserId to profile user -->
-					<input type="hidden" name="id" th:value="${userProfile.getId()}" />
-					<input id="throw_challenge" class="btn btn-default text-center" type="submit" value="Throw challenge" />
-				</form>
-				
-				
-			</div>
-			<!-- right side -->
-			<div class="col-md-8 col-sm-6 col-xs-12">
-				<form class="navbar-right" name="newCallenge" th:id="newChallenge"
-					method="GET" action="challenge/new">
-					<input type="hidden" name="_csrf" th:value="${_csrf.token}" /> <input
-						class="btn btn-default text-center" type="submit" name="submit3"
-						value="CreateNewChallenge" />
-				</form>
-				<div class="text-center col-md-12">
-					<h2>Challenges</h2>
-					<div th:each="challenge : ${listOfDefined}">
-						<div class="challenge col-lg-6 col-md-4 col-sm-6 col-xs-12">
-							<div style="border-width: 5" class="panel panel-default">
-								<div class="box-content panel-body ">
-
-									<form name="submitForm"
-										th:id="'challenge/update'+${challenge.Id}" method="GET"
-										action="challenge/update">
-										<input type="hidden" name="id" th:value="${challenge.getId()}" />
-										<h2 class="chal-title">
-											<a
-												th:onclick="'document.getElementById(\'challenge/update'+${challenge.getId()}+'\').submit();'">
-												<span class="glyphicon glyphicon-wrench"
-												style="font-size: 40px;" />
-											</a>
-										</h2>
-									</form>
-									<div class="chal-photo-main-page">
-										<img class="img-rounded" th:src="${challenge.getImageRef()}"
-											alt="" />
-									</div>
-
-									<div class="chal-body">
-										<form name="submitForm"
-											th:id="'challenge_form'+${challenge.Id}" method="GET"
-											action="challenge/information">
-											<input type="hidden" name="id"
-												th:value="${challenge.getId()}" />
-											<h2 class="chal-title">
-												<a
-													th:onclick="'document.getElementById(\'challenge_form'+${challenge.getId()}+'\').submit();'"
-													th:text="${challenge.getName()}"></a>
-											</h2>
-										</form>
-										<span class="chal-meta"
-											th:text="${#dates.format(challenge.getDate(), 'yyyy/MM/dd HH:mm')}"></span>
-										<h4 class="cut-text desc"
-											th:text="${challenge.getDescription()}"></h4>
-									</div>
-									<form name="submitForm"
-										th:id="'accept_def_form'+${challenge.Id}" method="GET"
-										action="acceptDefinition" style="display: inline-block;">
-										<input type="hidden" name="id" th:value="${challenge.getId()}" />
-										<input
-											th:unless="${challenge.getStatus() == T(challenge.dbside.models.ChallengeDefinitionStatus).ACCEPTED}"
-											id="accept-def" type="submit" class="btn btn-success"
-											value="Accept" />
-									</form>
+        <div class="container" style="margin-top: 100px;">
 
 
-									<form name="submitForm"
-										th:id="'throw_challenge_form'+${challenge.Id}" method="GET"
-										action="user4Challenge" style="display: inline-block;">
-										<input type="hidden" name="id" th:value="${challenge.getId()}" />
-										<input id="throw" type="submit" class="btn btn-success"
-											value="Throw" />
-									</form>
+            <h1 class="page-header">
+                <span th:text="${userProfile.getName()}" />
+            </h1>
+            <div class="row">
+                <!-- left side -->
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <div>
+                        <!-- img th:src="${currentUserConnection.imageUrl}" class="img-rounded img-responsive" /-->
+                        <img th:src="${userProfile.getImageRef()}" class="img-rounded img-responsive" />
 
-									<!-- form name="submitForm" th:id="'throw_def_form'+${challenge.Id}"  method="GET" action="throwDefinition" style="display: inline-block;">
-                                            <input type="hidden" name="id" th:value="${challenge.getId()}"/>
-                                            <input id="throw-def" type="submit" class="btn btn-success" value="Throw" />                                            
-                                        </form-->
+                    </div>
+                    <div class="text-center col-md-6 col-sm-6 col-xs-6">
+                        <h1>
+                            <span style="text-align: center; font-size: 25"
+                                  class="glyphicon glyphicon-thumbs-up"></span>1
+                        </h1>
+                    </div>
+                    <div class="text-center col-md-6 col-sm-6 col-xs-6"
+                         style="align-self: flex-end;">
+                        <h1>
+                            <span style="text-align: center; font-size: 25"
+                                  class="glyphicon glyphicon-thumbs-down"></span>2
+                        </h1>
+                    </div>
+                    <form style="min-width: 150;" action="#" method="get">
+                        <input class="btn btn-default text-center" type="submit"
+                               th:value="#{profileFollowersButton}"  />
+                    </form>
+                    <form name="submitForm" th:id="'throw_challenge_form'" method="GET" action="friends" style="min-width: 150;">
+                        <input type="hidden" name="id" th:value="${userProfile.getId()}" />
+                        <input class="btn btn-default text-center" type="submit" th:value="#{profileFriendsButton}" />
+                    </form>
+                    <form name="submitForm" th:id="'throw_challenge_form'" method="GET" action="challenge4User" style="min-width: 150;">
+                        <!-- change currentUserId to profile user -->
+                        <input type="hidden" name="id" th:value="${userProfile.getId()}" />
+                        <input id="throw_challenge" class="btn btn-default text-center" type="submit" th:value="#{profileThrowChallengeButton}" />
+                    </form>
 
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div th:if="${challengeRequests.size() > 0}"
-					class="text-center col-md-12">
-					<h2>Unaccepted Challenges</h2>
-					<div th:each="challenge : ${challengeRequests}">
-						<div class="challenge col-lg-12 col-md-4 col-sm-6 col-xs-12">
-							<div style="border-width: 5" class="panel panel-default">
-								<div class="box-content panel-body ">
-									<div class="chal-photo-main-page"></div>
-									<div class="chal-body">
-										<h4>Имя</h4>
-										<span class="chal-meta" th:text="${challenge.getName()}"></span>
-									</div>
-									<form name="submitForm" th:id="'accept_form'+${challenge.Id}"
-										method="GET" action="accept" style="display: inline-block;">
-										<input type="hidden" name="id" th:value="${challenge.getId()}" />
-										<input type="submit" class="btn btn-success"
-											style="display: inline-block;" value="Accept" />
-									</form>
-									<form name="submitForm" th:id="'decline_form'+${challenge.Id}"
-										method="GET" action="decline" style="display: inline-block;">
-										<input type="hidden" name="id" th:value="${challenge.getId()}" />
-										<input type="submit" class="btn btn-danger"
-											style="display: inline-block;" value="Decline" />
-									</form>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="text-center col-md-12">
-					<h2>Accepted Challenges</h2>
-					<div th:each="challenge : ${listOfAccepted}">
-						<div class="challenge col-lg-4 col-md-4 col-sm-6 col-xs-12">
-							<div style="border-width: 5" class="panel panel-default">
-								<div class="box-content panel-body ">
-									<div class="chal-photo-main-page"></div>
-									<div class="chal-body">
-										<h4>Имя</h4>
-										<span class="chal-meta" th:text="${challenge.getName()}"></span>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
 
-			</div>
-		</div>
+                </div>
+                <!-- right side -->
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                    <form class="navbar-right" name="newCallenge" th:id="newChallenge"
+                          method="GET" action="challenge/new">
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> <input
+                            class="btn btn-default text-center" type="submit" name="submit3"
+                            th:value="#{createNewChallengeFromProfileButton}" />
+                    </form>
+                    <div class="text-center col-md-12">
+                        <h2 th:text="#{listOfCreatedChalsTitle}"></h2>
+                        <div th:each="challenge : ${listOfDefined}">
+                            <div class="challenge col-lg-6 col-md-4 col-sm-6 col-xs-12">
+                                <div style="border-width: 5" class="panel panel-default">
+                                    <div class="box-content panel-body ">
 
-	</div>
+                                        <form name="submitForm"
+                                              th:id="'challenge/update'+${challenge.Id}" method="GET"
+                                              action="challenge/update">
+                                            <input type="hidden" name="id" th:value="${challenge.getId()}" />
+                                            <h2 class="chal-title">
+                                                <a
+                                                    th:onclick="'document.getElementById(\'challenge/update'+${challenge.getId()}+'\').submit();'">
+                                                    <span class="glyphicon glyphicon-wrench"
+                                                          style="font-size: 40px;" />
+                                                </a>
+                                            </h2>
+                                        </form>
+                                        <div class="chal-photo-main-page">
+                                            <img class="img-rounded" th:src="${challenge.getImageRef()}"
+                                                 alt="" />
+                                        </div>
+
+                                        <div class="chal-body">
+                                            <form name="submitForm"
+                                                  th:id="'challenge_form'+${challenge.Id}" method="GET"
+                                                  action="challenge/information">
+                                                <input type="hidden" name="id"
+                                                       th:value="${challenge.getId()}" />
+                                                <h2 class="chal-title">
+                                                    <a
+                                                        th:onclick="'document.getElementById(\'challenge_form'+${challenge.getId()}+'\').submit();'"
+                                                        th:text="${challenge.getName()}"></a>
+                                                </h2>
+                                            </form>
+                                            <span class="chal-meta"
+                                                  th:text="${#dates.format(challenge.getDate(), 'yyyy/MM/dd HH:mm')}"></span>
+                                            <h4 class="cut-text desc"
+                                                th:text="${challenge.getDescription()}"></h4>
+                                        </div>
+                                        <form name="submitForm"
+                                              th:id="'accept_def_form'+${challenge.Id}" method="GET"
+                                              action="acceptDefinition" style="display: inline-block;">
+                                            <input type="hidden" name="id" th:value="${challenge.getId()}" />
+                                            <input
+                                                th:unless="${challenge.getStatus() == T(challenge.dbside.models.ChallengeDefinitionStatus).ACCEPTED}"
+                                                id="accept-def" type="submit" class="btn btn-success"
+                                                th:value="#{profileAcceptChalButton}"/>
+                                        </form>
+                                        <form name="submitForm"
+                                              th:id="'throw_challenge_form'+${challenge.Id}" method="GET"
+                                              action="user4Challenge" style="display: inline-block;">
+                                            <input type="hidden" name="id" th:value="${challenge.getId()}" />
+                                            <input id="throw" type="submit" class="btn btn-success"
+                                                   th:value="#{profileThrowChalButton}" />
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${challengeRequests.size() > 0}"
+                         class="text-center col-md-12">
+                        <h2 th:text="#{listOfUnacceptedChalsTitle}"></h2>
+                        <div th:each="challenge : ${challengeRequests}">
+                            <div class="challenge col-lg-12 col-md-4 col-sm-6 col-xs-12">
+                                <div style="border-width: 5" class="panel panel-default">
+                                    <div class="box-content panel-body ">
+                                        <div class="chal-photo-main-page"></div>
+                                        <div class="chal-body">
+                                            
+                                            <span class="chal-meta" th:text="${challenge.getName()}"></span>
+                                        </div>
+                                        <form name="submitForm" th:id="'accept_form'+${challenge.Id}"
+                                              method="GET" action="accept" style="display: inline-block;">
+                                            <input type="hidden" name="id" th:value="${challenge.getId()}" />
+                                            <input type="submit" class="btn btn-success"
+                                                   style="display: inline-block;" th:value="#{profileAcceptChalButton}" />
+                                        </form>
+                                        <form name="submitForm" th:id="'decline_form'+${challenge.Id}"
+                                              method="GET" action="decline" style="display: inline-block;">
+                                            <input type="hidden" name="id" th:value="${challenge.getId()}" />
+                                            <input type="submit" class="btn btn-danger"
+                                                   style="display: inline-block;" th:value="#{profileDeclineChalButton}" />
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center col-md-12">
+                        <h2 th:text="#{listOfAcceptedChalsTitle}"></h2>
+                        <div th:each="challenge : ${listOfAccepted}">
+                            <div class="challenge col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div style="border-width: 5" class="panel panel-default">
+                                    <div class="box-content panel-body ">
+                                        <div class="chal-photo-main-page"></div>
+                                        <div class="chal-body">
+                                            
+                                            <span class="chal-meta" th:text="${challenge.getName()}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
 
 
 
 
-	<script src="js/throwsChallenges/show.js"></script>
-	<script src="js/showNewChallenges.js"></script>
-
-	<script src="js/responsiveLayout/chalAnimating.js"></script>
-</body>
+        <script src="js/throwsChallenges/show.js"></script>
+        <script src="js/showNewChallenges.js"></script>
+        <script src="js/responsiveLayout/chalAnimating.js"></script>
+    </body>
 </html>
 

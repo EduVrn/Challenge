@@ -49,7 +49,6 @@ public class BaseEntity {
     public BaseEntity() {
         attributes = new HashMap<>();
         children = new HashSet<>();
-
     }
 
     //call only from children 
