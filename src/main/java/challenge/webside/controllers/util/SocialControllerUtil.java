@@ -207,6 +207,7 @@ public class SocialControllerUtil {
             user.declineChallenge(chalToAccept);
         serviceEntity.update(user);
         
+        model.addAttribute("userProfile", user);
         model.addAttribute("listOfDefined", user.getChallenges());
         model.addAttribute("listOfAccepted", user.getAcceptedChallenges());
         model.addAttribute("challengeRequests", user.getChallengeRequests());

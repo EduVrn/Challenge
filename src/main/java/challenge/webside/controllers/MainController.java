@@ -102,6 +102,9 @@ public class MainController {
     @RequestMapping(value = "/accept", method = GET, produces = "text/plain;charset=UTF-8")
     public String accept(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int chalId) {
         util.setModelForAcceptOrDeclineChallenge(request, currentUser, model, chalId, true);
+        
+        
+        
         return "profile";
     }
 
