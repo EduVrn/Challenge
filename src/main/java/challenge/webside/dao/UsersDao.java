@@ -29,7 +29,7 @@ public class UsersDao {
     @Autowired
     @Qualifier("storageServiceUser")
     private MediaService serviceEntity;
-
+    
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -112,7 +112,6 @@ public class UsersDao {
         user.addChallenge(chalDef3);
         user.addChallenge(chalDef4);
         serviceEntity.update(user);
-
         
         //
         
@@ -121,30 +120,33 @@ public class UsersDao {
         chalInstance1.setParent(chalDef1);
         chalInstance1.setStatus(ChallengeStatus.AWAITING);
         serviceEntity.save(chalInstance1);
-        ChallengeInstance chalUnstance2 = new ChallengeInstance();
-        chalUnstance2.setName("Instance of SignUpedUser #");
-        chalUnstance2.setParent(chalDef1);
-        chalUnstance2.setStatus(ChallengeStatus.AWAITING);
-        serviceEntity.save(chalUnstance2);
+        ChallengeInstance chalInstance2 = new ChallengeInstance();
+        chalInstance2.setName("Instance of SignUpedUser #");
+        chalInstance2.setParent(chalDef1);
+        chalInstance2.setStatus(ChallengeStatus.AWAITING);
+        serviceEntity.save(chalInstance2);
 
         Set set = new HashSet();
         set.add(chalInstance1);
-        set.add(chalUnstance2);
+        set.add(chalInstance2);
 
-        chalDef1.setChildren(set);
-        serviceEntity.update(chalDef1);
+        //chalDef1.setChildren(set);
+        //serviceEntity.update(chalDef1);
         //  chalInstance1.setParent(chalDef1);
         //chalUnstance2.setParent(chalDef1);
         //serviceEntity.update(chalInstance1);
         //serviceEntity.update(chalUnstance2);
         user.addAcceptedChallenge(chalInstance1);
-        user.addAcceptedChallenge(chalUnstance2);
+        user.addAcceptedChallenge(chalInstance2);
         serviceEntity.update(user);
-
+        
+        User user1 = new User();
+        user1.setName("AAA");
+        user1.setImageRef("AvaDefault.JPG");
+        serviceEntity.save(user1);
+        
         user.setFriends(friends);
         serviceEntity.update(user);
-        
-        
         profile.setUser(user);
         jdbcTemplate.update("INSERT into users(username,password,enabled) values(?,?,true)", userId, RandomStringUtils.randomAlphanumeric(8));
         jdbcTemplate.update("INSERT into authorities(username,authority) values(?,?)", userId, "USER");

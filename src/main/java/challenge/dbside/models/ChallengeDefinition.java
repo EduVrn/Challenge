@@ -66,9 +66,9 @@ public class ChallengeDefinition extends BaseEntity {
                 .get(ContextType.getInstance().getTypeAttribute("imageref").getId()).getValue();
     }
 
-    public void setImageRef(String description) {
+    public void setImageRef(String image) {
         this.getAttributes()
-                .get(ContextType.getInstance().getTypeAttribute("imageref").getId()).setValue(description);
+                .get(ContextType.getInstance().getTypeAttribute("imageref").getId()).setValue(image);
     }
 
     public Date getDate()  {

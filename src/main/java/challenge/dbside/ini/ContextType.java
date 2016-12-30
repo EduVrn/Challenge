@@ -25,8 +25,6 @@ public class ContextType {
     
     private Map<String, TypeOfEntity> availableEntities;
     private Map<String, TypeOfAttribute> availableAttributes;
-    
-    
 
     public TypeOfAttribute getTypeAttribute(String name) {
         return availableAttributes.get(name);

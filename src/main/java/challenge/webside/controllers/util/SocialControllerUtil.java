@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
 import challenge.dbside.services.ini.MediaService;
+import challenge.webside.authorization.UserActionsProvider;
 import java.util.Date;
 import java.util.Objects;
 
@@ -66,8 +67,7 @@ public class SocialControllerUtil {
             e.printStackTrace();
         }
     }
-
-     
+    
     public void setModel(HttpServletRequest request, Principal currentUser, Model model) {
         // SecurityContext ctx = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
         String userId = currentUser == null ? null : currentUser.getName();
@@ -97,9 +97,7 @@ public class SocialControllerUtil {
         model.addAttribute("currentUserDisplayName", displayName);
         //TODO:bike:-)
         model.addAttribute("foto", "AvaDefault.jpg");
-        
-        
-         if (profile != null)
+        if (profile != null)
             model.addAttribute("challengeRequests", ((User)serviceEntity.findById(profile.getUserEntityId(), User.class)).getChallengeRequests());
     }
 
@@ -186,21 +184,28 @@ public class SocialControllerUtil {
             return profile.getName();
         }
     }
+    
+    private User getSignedUpUser(HttpServletRequest request, Principal currentUser) {
+        return (User) serviceEntity.findById(getUserProfile(request.getSession(), 
+                currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
+    }
 
     public void setProfileShow(int userDBId, HttpServletRequest request, Principal currentUser, Model model) {
         setModel(request, currentUser, model);
         User userWhichProfileRequested = (User) serviceEntity.findById(userDBId, User.class);
-
+        
+        User signedUpUser = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
+        
         model.addAttribute("userProfile", userWhichProfileRequested);             
         model.addAttribute("listOfDefined", userWhichProfileRequested.getChallenges());
         model.addAttribute("listOfAccepted", userWhichProfileRequested.getAcceptedChallenges());
-        model.addAttribute("challengeRequests", userWhichProfileRequested.getChallengeRequests());
+        model.addAttribute("actions", UserActionsProvider.getActionsForProfile(signedUpUser, userWhichProfileRequested));
     }
     
     public void setModelForAcceptOrDeclineChallenge(HttpServletRequest request, Principal currentUser, Model model, int chalId, boolean accept) {
         setModel(request, currentUser, model); 
         ChallengeInstance chalToAccept = (ChallengeInstance)serviceEntity.findById(chalId, ChallengeInstance.class);
-        User user = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
+        User user = getSignedUpUser(request, currentUser);
         if (accept) 
             user.acceptChallenge(chalToAccept);
         else
@@ -211,6 +216,7 @@ public class SocialControllerUtil {
         model.addAttribute("listOfDefined", user.getChallenges());
         model.addAttribute("listOfAccepted", user.getAcceptedChallenges());
         model.addAttribute("challengeRequests", user.getChallengeRequests());
+        model.addAttribute("actions", UserActionsProvider.getActionsForProfile(user, user));
     }
     
     public void setModelForAcceptChallengeDefinition(HttpServletRequest request, Principal currentUser, Model model, int chalId) {
@@ -218,18 +224,21 @@ public class SocialControllerUtil {
         ChallengeDefinition chalToAccept = (ChallengeDefinition)serviceEntity.findById(chalId, ChallengeDefinition.class);
         User user = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
         
-        ChallengeInstance chalInstance = new ChallengeInstance();
-        chalInstance.setName(chalToAccept.getName());       
-        chalInstance.setStatus(ChallengeStatus.ACCEPTED);
-        serviceEntity.save(chalInstance);
-        chalToAccept.setStatus(ChallengeDefinitionStatus.ACCEPTED);
-        chalInstance.setAcceptor(user);
-        user.addAcceptedChallenge(chalInstance);
-        serviceEntity.update(user);
+        if (chalToAccept.getStatus() != ChallengeDefinitionStatus.ACCEPTED) {
+            ChallengeInstance chalInstance = new ChallengeInstance(chalToAccept);      
+            chalInstance.setStatus(ChallengeStatus.ACCEPTED);
+            serviceEntity.save(chalInstance);
+            chalToAccept.setStatus(ChallengeDefinitionStatus.ACCEPTED);
+            chalInstance.setAcceptor(user);
+            user.addAcceptedChallenge(chalInstance);
+            serviceEntity.update(user);
+        }
         
+        model.addAttribute("userProfile", user);        
         model.addAttribute("listOfDefined", user.getChallenges());
         model.addAttribute("listOfAccepted", user.getAcceptedChallenges());
         model.addAttribute("challengeRequests", user.getChallengeRequests());
+        model.addAttribute("actions", UserActionsProvider.getActionsForProfile(user, user));    
     }
     
     
@@ -245,6 +254,7 @@ public class SocialControllerUtil {
     	
     	model.addAttribute("listSomething", users);
     	model.addAttribute("idParent", chalId);
+        model.addAttribute("challengeRequests", getSignedUpUser(request, currentUser).getChallengeRequests());
     	model.addAttribute("handler", "throwChallengeFromChallengeList");
     }
     
@@ -278,6 +288,7 @@ public class SocialControllerUtil {
     	model.addAttribute("listSomething", user.getChallenges());
     	model.addAttribute("idParent", userId);
     	model.addAttribute("handler", "throwChallengeFromUserList");
+        model.addAttribute("challengeRequests", user.getChallengeRequests());
     }
     
     
@@ -290,11 +301,6 @@ public class SocialControllerUtil {
     	model.addAttribute("listSomething", user.getFriends());
     	model.addAttribute("idParent", userId);
     	model.addAttribute("handler", "profile");
-    	
-    }
-    
-    
-
-    
-    
+        model.addAttribute("challengeRequests", user.getChallengeRequests());    	
+    } 
 }

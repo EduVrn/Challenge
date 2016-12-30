@@ -366,3 +366,7 @@ textarea {
     background-color: white;
     margin-bottom: 7px;
 }
+
+li {
+    list-style-type: none;
+}
