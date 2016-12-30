@@ -15,6 +15,11 @@ public class ChallengeInstance extends BaseEntity {
     public ChallengeInstance() {
         super(ChallengeInstance.class.getSimpleName());
     }
+    
+    public ChallengeInstance(ChallengeDefinition chalDef) {
+        super(ChallengeInstance.class.getSimpleName());
+        setName(chalDef.getName());
+    }
 
     @OneToOne(cascade=CascadeType.ALL) 
     @JoinTable(name="relationship", 
@@ -22,7 +27,7 @@ public class ChallengeInstance extends BaseEntity {
             inverseJoinColumns={@JoinColumn(name ="entity_id1", referencedColumnName="entity_id")})
     private User acceptor;
 
-    public String getName() {
+    public String getName() {     
         return (String)this.getAttributes()
                 .get(ContextType.getInstance().getTypeAttribute("name").getId()).getValue();
     }

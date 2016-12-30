@@ -46,9 +46,6 @@ public class InitialLoader {
         TypeOfAttribute attrChalStatus = new TypeOfAttribute(6, "chalStatus", 1);
         TypeOfAttribute attrChalDefStatus = new TypeOfAttribute(7, "chalDefStatus", 1);
         
-
-        //
-        
         // MediaServiceTypeOfAttribute serviceAttr = (MediaServiceTypeOfAttribute) context.getBean("storageServiceTypeOfAttribute");
 
         serviceAttr.save(attrName);
@@ -58,7 +55,7 @@ public class InitialLoader {
         serviceAttr.save(attrImageRef);
         serviceAttr.save(attrChalStatus);
         serviceAttr.save(attrChalDefStatus);
-
+        
         // MediaServiceTypeOfEntity serviceEntity = (MediaServiceTypeOfEntity) context.getBean("storageServiceTypeOfEntity");
         TypeOfEntity entity = new TypeOfEntity("User");
         entity.add(attrName);
@@ -88,7 +85,7 @@ public class InitialLoader {
         contextType.add(attrImageRef);
         contextType.add(attrChalStatus);
         contextType.add(attrChalDefStatus);
-
+        
         contextType.add(entity);
         contextType.add(entityChallenge);
         contextType.add(entityChallengeInstance);
@@ -133,8 +130,6 @@ public class InitialLoader {
         user2.setName("Jonnie Fast-Foot");
         user2.setImageRef("AvaDefault.jpg");
         serviceEntityInit.save(user2);
-        
-        
         
         User user3 = new User();
         user3.setName("Annet Fast-Food");
