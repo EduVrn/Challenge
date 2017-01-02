@@ -55,6 +55,10 @@
                                   class="glyphicon glyphicon-thumbs-down"></span>2
                         </h1>
                     </div>
+                    <form  method="GET" th:action="@{../changelang}">
+                        <button name="lang" type="submit" th:value="en" class="btn btn-default"><img width="15" height="10" src="../images/flagUK.jpeg" /></button>
+                        <button  name="lang" type="submit" th:value="ru" class="btn btn-default"><img width="15" height="10" src="../images/flagRF.png" /></button>
+                    </form>
                     <form style="min-width: 150;" action="#" method="get">
                         <input class="btn btn-default text-center" type="submit"
                                th:value="#{profileFollowersButton}"  />
@@ -74,6 +78,7 @@
                 </div>
                 <!-- right side -->
                 <div class="col-md-8 col-sm-6 col-xs-12">
+
                     <form th:if="${actions.contains(T(challenge.webside.authorization.Action).CREATE_CHALLENGE)}" 
                           class="navbar-right" name="newCallenge" th:id="newChallenge"
                           method="GET" action="challenge/new">
@@ -110,8 +115,7 @@
                                                   action="challenge/update">
                                                 <input type="hidden" name="id" th:value="${challenge.getId()}" />
                                                 <h2 class="chal-title">
-                                                    <a
-                                                        th:onclick="'document.getElementById(\'challenge/update'+${challenge.getId()}+'\').submit();'">
+                                                    <a th:onclick="'document.getElementById(\'challenge/update'+${challenge.getId()}+'\').submit();'">
                                                         <span class="glyphicon glyphicon-wrench"
                                                               style="font-size: 40px;" />
                                                     </a>
@@ -172,7 +176,7 @@
                                     <div style="border-width: 5" class="panel panel-default">
                                         <div class="box-content panel-body ">
                                             <div class="chal-photo-main-page">
-                                                
+
                                             </div>
                                             <div class="chal-body">
                                                 <span class="chal-meta" th:text="${challenge.getName()}"></span>

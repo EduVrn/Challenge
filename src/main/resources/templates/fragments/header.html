@@ -23,21 +23,20 @@
                             <li> <a href="#" th:text="#{menuOvercoming}"/></li>
                         </ul> 
                         <ul > 
+                       
+
                             <li>
 
 
-                                <form style="margin-top: 10px " class="navbar-right" method="GET" th:action="@{../changelang}">
-                                    <button name="lang" type="submit" th:value="en" class="btn btn-default"><img width="30" height="20" src="../images/flagUK.jpeg" /></button>
-                                    <button  name="lang" type="submit" th:value="ru" class="btn btn-default"><img width="30" height="20" src="../images/flagRF.png" /></button>
-                                </form>
+                               
 
-                                <form style="margin-top: 10px" th:unless="${currentUserConnection == null}" class="navbar-right" method="POST" th:action="@{../logout}">
+                                <form style="margin-top: 13px" th:unless="${currentUserConnection == null}" class="navbar-right" method="POST" th:action="@{../logout}">
                                     <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
-                                    <button class="btn btn-default"><span class="glyphicon glyphicon-log-out"></span><a th:text="#{logoutButton}"/></button>
+                                    <button class="btn btn-default"><span class="glyphicon glyphicon-log-out"></span><a/></button>
                                 </form>
-                                <form style="margin-top: 10px" th:unless="${currentUserConnection == null}" class="navbar-right" name="profileForm" th:id="'profile'"  method="GET" action="../profile">
+                                <form style="margin-top: 13px" th:unless="${currentUserConnection == null}" class="navbar-right" name="profileForm" th:id="'profile'"  method="GET" action="../profile">
                                     <input type="hidden" name="id" th:value="${currentUserProfile.getUserEntityId()}"/>
-                                    <button class="btn btn-default" onclick="document.getElementById('profile').submit();"  ><span class="glyphicon glyphicon-user"></span><a th:text="#{profileButton}"/></button>
+                                    <button class="btn btn-default" onclick="document.getElementById('profile').submit();"  ><span class="glyphicon glyphicon-user"></span><a /></button>
                                 </form>
                                 <p th:unless="${currentUserConnection == null}" class="navbar-text navbar-right">
                                     <a th:text="#{signedInText}"/>
@@ -45,7 +44,6 @@
                                     <a th:if="${currentUserConnection.providerId == 'twitter'}"  class="ml btn btn-social-icon btn-sm btn-twitter">    <i class="fa fa-twitter"></i></a>
                                     <a th:if="${currentUserConnection.providerId == 'github'}"   class="ml btn btn-social-icon btn-sm btn-github">     <i class="fa fa-github"></i></a>
                                     <a th:if="${currentUserConnection.providerId == 'vk'}"   class="ml btn btn-social-icon btn-sm btn-vk"><i class="fa fa-vk"></i></a>
-
                                     <a th:href="${currentUserConnection.profileUrl}" class="navbar-link"><span th:text="${currentUserDisplayName}"/></a>
 
                                     <img th:src="${currentUserConnection.imageUrl}" width="32" height="32" />
@@ -53,7 +51,7 @@
 
 
 
-                                <div style="margin-top: 10px" th:unless="${currentUserConnection == null}" class="navbar-right">
+                                <div style="margin-top: 13px" th:unless="${currentUserConnection == null}" class="navbar-right">
                                     <button  id="notification">
                                         <span class="glyphicon glyphicon-comment"></span>
                                     </button>

@@ -370,3 +370,8 @@ textarea {
 li {
     list-style-type: none;
 }
+
+
+.input-group .form-control {
+    margin: 0px !important;
+}
