@@ -1,9 +1,6 @@
 package challenge.dbside.ini;
 
-import challenge.dbside.models.User;
-import challenge.dbside.models.ChallengeDefinition;
-import challenge.dbside.models.ChallengeInstance;
-import challenge.dbside.models.ChallengeStatus;
+import challenge.dbside.models.*;
 import challenge.dbside.models.ini.TypeOfAttribute;
 import challenge.dbside.models.ini.TypeOfEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +42,7 @@ public class InitialLoader {
         TypeOfAttribute attrImageRef = new TypeOfAttribute(5, "imageref", 1);
         TypeOfAttribute attrChalStatus = new TypeOfAttribute(6, "chalStatus", 1);
         TypeOfAttribute attrChalDefStatus = new TypeOfAttribute(7, "chalDefStatus", 1);
+        TypeOfAttribute attrMessage = new TypeOfAttribute(8, "message", 1);
         
         // MediaServiceTypeOfAttribute serviceAttr = (MediaServiceTypeOfAttribute) context.getBean("storageServiceTypeOfAttribute");
 
@@ -55,6 +53,7 @@ public class InitialLoader {
         serviceAttr.save(attrImageRef);
         serviceAttr.save(attrChalStatus);
         serviceAttr.save(attrChalDefStatus);
+        serviceAttr.save(attrMessage);
         
         // MediaServiceTypeOfEntity serviceEntity = (MediaServiceTypeOfEntity) context.getBean("storageServiceTypeOfEntity");
         TypeOfEntity entity = new TypeOfEntity("User");
@@ -75,6 +74,12 @@ public class InitialLoader {
         entityChallengeInstance.add(attrName);
         entityChallengeInstance.add(attrChalStatus);
         serviceEntity.save(entityChallengeInstance);
+        
+        TypeOfEntity entityComment = new TypeOfEntity("Comment");
+        entityComment.add(attrDate);
+        entityComment.add(attrMessage);
+        serviceEntity.save(entityComment);
+        
 
         ContextType contextType = ContextType.getInstance();
 
@@ -85,10 +90,12 @@ public class InitialLoader {
         contextType.add(attrImageRef);
         contextType.add(attrChalStatus);
         contextType.add(attrChalDefStatus);
+        contextType.add(attrMessage);
         
         contextType.add(entity);
         contextType.add(entityChallenge);
         contextType.add(entityChallengeInstance);
+        contextType.add(entityComment);
 
     }
 
@@ -101,6 +108,7 @@ public class InitialLoader {
         chalDef1.setDate(new Date());
 
         serviceEntityInit.save(chalDef1);
+        
         User user1 = new User();
         user1.setName("Evgeniy 1");
         user1.setImageRef("AvaDefault.jpg");

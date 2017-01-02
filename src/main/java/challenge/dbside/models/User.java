@@ -6,8 +6,6 @@ import javax.persistence.*;
 
 import challenge.dbside.ini.ContextType;
 
-import org.hibernate.annotations.JoinColumnOrFormula;
-import org.hibernate.annotations.JoinFormula;
 import org.hibernate.annotations.Where;
 
 @Entity
@@ -21,6 +19,7 @@ public class User extends BaseEntity {
         listOfChallenges = new ArrayList<>();
         listOfAcceptedChallenges = new ArrayList<>();
         friends = new ArrayList<>();
+        comments = new ArrayList<>();
     }
 
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -39,6 +38,23 @@ public class User extends BaseEntity {
     )
     @Where(clause = "type_of_entity = 1")
     private List<User> friends;
+    
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Where(clause = "type_of_entity = 4")
+    private List<Comment> comments;
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+    
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        comment.setAuthor(this);
+    }
 
     public void setFriends(List<User> users) {
         this.friends = users;

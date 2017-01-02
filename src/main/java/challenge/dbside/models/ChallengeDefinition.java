@@ -36,9 +36,19 @@ public class ChallengeDefinition extends BaseEntity {
     public List<User> getAllAcceptors() {
         List<User> acceptors = new ArrayList<>();
         this.getChildren().forEach((chalInstance) -> {
-            acceptors.add(((ChallengeInstance) chalInstance).getAcceptor());
+            if (chalInstance instanceof ChallengeInstance)
+                acceptors.add(((ChallengeInstance) chalInstance).getAcceptor());
         });
         return acceptors;
+    }
+    
+    public List<Comment> getComments() {
+        List<Comment> comments = new ArrayList<>();
+        this.getChildren().forEach((child) -> {
+            if (child instanceof Comment)
+                comments.add((Comment) child);
+        });
+        return comments;
     }
 
     public String getName() {

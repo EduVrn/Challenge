@@ -103,6 +103,11 @@ public class BaseEntity {
     public void setChildren(Set<BaseEntity> children) {
         this.children = children;
     }
+    
+    public void addChild(BaseEntity child) {
+        children.add(child);
+        child.setParent(this);
+    }
 
     public Integer getId() {
         return id;
