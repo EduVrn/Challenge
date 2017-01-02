@@ -18,7 +18,7 @@ $('.nav-tabs a').click(function(){
 
     //add 'active' css into clicked navigation
     $(this).parents('li').addClass('active');
-
+    
     //hide displaying tab content
     $(active_tab_selector).removeClass('active');
     $(active_tab_selector).addClass('hide');

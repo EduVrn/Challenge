@@ -4,6 +4,7 @@ import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.ChallengeDefinitionStatus;
 import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.ChallengeStatus;
+import challenge.dbside.models.Comment;
 import challenge.dbside.models.User;
 import challenge.webside.dao.UsersDao;
 import challenge.webside.model.UserConnection;
@@ -25,6 +26,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
 import challenge.dbside.services.ini.MediaService;
 import challenge.webside.authorization.UserActionsProvider;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
 
@@ -111,13 +113,19 @@ public class SocialControllerUtil {
         setModel(request, currentUser, model);
         model.addAttribute("challenge", (ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class));
         model.addAttribute("listOfAcceptors", ((ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class)).getAllAcceptors());
+        model.addAttribute("userProfile", getSignedUpUser(request, currentUser));
+        Comment comment = new Comment();
+        comment.setDate(new Date());
+        comment.setAuthor(getSignedUpUser(request, currentUser));
+        model.addAttribute("comment", comment);
+        model.addAttribute("comments", ((ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class)).getComments());
     }
-
+    
     public void setModelForNewOrUpdatedChalShow(ChallengeDefinition challenge, HttpServletRequest request, Principal currentUser, Model model) {
 
         setModel(request, currentUser, model);
         User curDBUser = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
-
+        
         if (challenge.getId() != null) {
             ChallengeDefinition chalToUpdate = (ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class);
             chalToUpdate.setDescription(challenge.getDescription());
@@ -129,13 +137,27 @@ public class SocialControllerUtil {
                 serviceEntity.update(chalToUpdate);
             }
         } else {
-            System.out.println(curDBUser.getName());
             serviceEntity.save(challenge);
             curDBUser.addChallenge(challenge);
             serviceEntity.update(curDBUser);
         }
         model.addAttribute("challenge", (ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class));
         model.addAttribute("listOfAcceptors", ((ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class)).getAllAcceptors());
+    }
+    
+    public void setModelForNewComment(int id, HttpServletRequest request, Principal currentUser, Model model, Comment comment) {
+        setModel(request, currentUser, model);
+        User curDBUser = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
+        ChallengeDefinition currentChallenge = (ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class);
+        
+        comment.setDate(new Date());
+        serviceEntity.save(comment);
+        
+        currentChallenge.addChild(comment);
+        serviceEntity.update(currentChallenge);
+        
+        curDBUser.addComment(comment);
+        serviceEntity.update(curDBUser);
     }
 
     public void setModelForNewChallenge(HttpServletRequest request, Principal currentUser, Model model) {

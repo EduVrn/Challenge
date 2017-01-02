@@ -1,6 +1,7 @@
 package challenge.webside.controllers;
 
 import challenge.dbside.models.ChallengeDefinition;
+import challenge.dbside.models.Comment;
 import challenge.dbside.services.ini.MediaService;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
@@ -26,10 +27,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 @Controller
@@ -102,10 +103,13 @@ public class MainController {
     @RequestMapping(value = "/accept", method = GET, produces = "text/plain;charset=UTF-8")
     public String accept(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int chalId) {
         util.setModelForAcceptOrDeclineChallenge(request, currentUser, model, chalId, true);
-        
-        
-        
         return "profile";
+    }
+    
+    @RequestMapping(value="/newcomment", method = POST, produces = "text/plain;charset=UTF-8")
+    public String newComment(@RequestParam("id") int id, HttpServletRequest request, Principal currentUser, Model model, @ModelAttribute Comment comment) {
+        util.setModelForNewComment(id, request, currentUser, model, comment);
+        return getPreviousPageByRequest(request).orElse("/");
     }
 
     @RequestMapping(value = "/decline", method = GET, produces = "text/plain;charset=UTF-8")

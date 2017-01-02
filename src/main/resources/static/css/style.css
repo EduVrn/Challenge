@@ -375,3 +375,11 @@ li {
 .input-group .form-control {
     margin: 0px !important;
 }
+
+.comments-list .media{
+    border-bottom: 1px solid #ccc;
+}
+
+a {
+    cursor: pointer;
+}
