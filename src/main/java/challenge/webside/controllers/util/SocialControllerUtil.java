@@ -28,6 +28,7 @@ import challenge.dbside.services.ini.MediaService;
 import challenge.webside.authorization.UserActionsProvider;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Objects;
 
 @Component
@@ -159,6 +160,21 @@ public class SocialControllerUtil {
         curDBUser.addComment(comment);
         serviceEntity.update(curDBUser);
     }
+    
+    public void setModelForNewReply(int id, HttpServletRequest request, Principal currentUser, Model model, Comment comment) {
+        setModel(request, currentUser, model);
+        User curDBUser = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
+        Comment parentComment = (Comment) serviceEntity.findById(id, Comment.class);
+        
+        comment.setDate(new Date());
+        serviceEntity.save(comment);
+        
+        parentComment.addChild(comment);
+        serviceEntity.update(parentComment);
+        
+        curDBUser.addComment(comment);
+        serviceEntity.update(curDBUser);
+    }
 
     public void setModelForNewChallenge(HttpServletRequest request, Principal currentUser, Model model) {
         setModel(request, currentUser, model);
@@ -222,6 +238,7 @@ public class SocialControllerUtil {
         model.addAttribute("listOfDefined", userWhichProfileRequested.getChallenges());
         model.addAttribute("listOfAccepted", userWhichProfileRequested.getAcceptedChallenges());
         model.addAttribute("actions", UserActionsProvider.getActionsForProfile(signedUpUser, userWhichProfileRequested));
+        model.addAttribute("friends", signedUpUser.getFriends());
     }
     
     public void setModelForAcceptOrDeclineChallenge(HttpServletRequest request, Principal currentUser, Model model, int chalId, boolean accept) {
@@ -289,11 +306,23 @@ public class SocialControllerUtil {
     	chalIns.setStatus(ChallengeStatus.AWAITING);
     	serviceEntity.save(chalIns);
     	    	
-    	chal.getChildren().add(chalIns);
+    	chal.addChild(chalIns);
     	serviceEntity.update(chal);
     	
     	user.addAcceptedChallenge(chalIns);
     	serviceEntity.update(user);    	
+    }
+    
+    public List<User> filterUsers(String filter, int userId) {
+        User user = (User)serviceEntity.findById(userId, User.class);
+        List<User> allFriends = user.getFriends();
+        List<User> filteredFriends = new ArrayList<>();
+        for (int i = 0; i < allFriends.size(); i++){
+            String name = ((User)allFriends.get(i)).getName();
+            if (name.toLowerCase().startsWith(filter.toLowerCase()))
+                filteredFriends.add((User)allFriends.get(i));
+        }
+        return filteredFriends;
     }
     
     
@@ -324,5 +353,5 @@ public class SocialControllerUtil {
     	model.addAttribute("idParent", userId);
     	model.addAttribute("handler", "profile");
         model.addAttribute("challengeRequests", user.getChallengeRequests());    	
-    } 
+    }
 }

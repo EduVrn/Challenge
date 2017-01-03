@@ -44,18 +44,18 @@ public class BaseEntity {
     @OneToMany(/*mappedBy="parent",*/fetch = FetchType.EAGER,
             cascade = {CascadeType.ALL}) //TODO: make LAZY
     @JoinColumn(name = "parent_id")
-    private Set<BaseEntity> children;
+    private List<BaseEntity> children;
 
     public BaseEntity() {
         attributes = new HashMap<>();
-        children = new HashSet<>();
+        children = new ArrayList<>();
     }
 
     //call only from children 
     static int i = 0;
 
     public BaseEntity(String entityName) {
-        children = new HashSet<>();
+        children = new ArrayList<>();
 
         TypeOfEntity type = ContextType.getInstance().getTypeEntity(entityName);
         entityType = type.getTypeEntityID();
@@ -70,7 +70,7 @@ public class BaseEntity {
     //TODO: Only 4 DEBUG!!!
     public BaseEntity(String name, String surname) {
         //this.setId(1);
-        children = new HashSet<BaseEntity>();
+        children = new ArrayList<>();
 
         attributes = new HashMap<Integer, Attribute>();
 
@@ -96,11 +96,11 @@ public class BaseEntity {
         this.parent = parent;
     }
 
-    public Set<BaseEntity> getChildren() {
+    public List<BaseEntity> getChildren() {
         return children;
     }
 
-    public void setChildren(Set<BaseEntity> children) {
+    public void setChildren(List<BaseEntity> children) {
         this.children = children;
     }
     

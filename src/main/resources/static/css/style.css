@@ -383,3 +383,17 @@ li {
 a {
     cursor: pointer;
 }
+
+.modal-backdrop {
+    z-index: -1;
+}
+
+.list-group-item-primary {
+    color: white;
+    background-color: gray;
+}
+
+label {
+    font-weight: normal;
+    color: black;
+}
