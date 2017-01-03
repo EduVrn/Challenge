@@ -1,7 +1,10 @@
 package challenge.webside.controllers;
 
+import challenge.webside.model.ajax.AjaxResponseBody;
+import challenge.webside.model.ajax.SearchCriteria;
 import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.Comment;
+import challenge.dbside.models.User;
 import challenge.dbside.services.ini.MediaService;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
@@ -18,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -25,12 +29,16 @@ import java.util.Optional;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 @Controller
@@ -75,10 +83,10 @@ public class MainController {
     }
 
     @RequestMapping(value = "changelang", produces = "text/plain;charset=UTF-8", method = GET)
-    public String changeLang(HttpServletRequest request, Principal currentUser, Model model,@RequestParam("lang") String lang) {
-      SessionLocaleResolver slr = new SessionLocaleResolver();
+    public String changeLang(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("lang") String lang) {
+        SessionLocaleResolver slr = new SessionLocaleResolver();
         slr.setDefaultLocale(Locale.forLanguageTag(lang));
-      
+
         return getPreviousPageByRequest(request).orElse("/");
     }
 
@@ -103,25 +111,31 @@ public class MainController {
     @RequestMapping(value = "/accept", method = GET, produces = "text/plain;charset=UTF-8")
     public String accept(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int chalId) {
         util.setModelForAcceptOrDeclineChallenge(request, currentUser, model, chalId, true);
-        return "profile";
+        return getPreviousPageByRequest(request).orElse("/");
     }
-    
-    @RequestMapping(value="/newcomment", method = POST, produces = "text/plain;charset=UTF-8")
+
+    @RequestMapping(value = "/newcomment", method = POST, produces = "text/plain;charset=UTF-8")
     public String newComment(@RequestParam("id") int id, HttpServletRequest request, Principal currentUser, Model model, @ModelAttribute Comment comment) {
         util.setModelForNewComment(id, request, currentUser, model, comment);
+        return getPreviousPageByRequest(request).orElse("/");
+    }
+
+    @RequestMapping(value = "/newreply", method = POST, produces = "text/plain;charset=UTF-8")
+    public String newReply(@RequestParam("id") int id, HttpServletRequest request, Principal currentUser, Model model, @ModelAttribute Comment comment) {
+        util.setModelForNewReply(id, request, currentUser, model, comment);
         return getPreviousPageByRequest(request).orElse("/");
     }
 
     @RequestMapping(value = "/decline", method = GET, produces = "text/plain;charset=UTF-8")
     public String decline(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int chalId) {
         util.setModelForAcceptOrDeclineChallenge(request, currentUser, model, chalId, false);
-        return "profile";
+        return getPreviousPageByRequest(request).orElse("/");
     }
 
     @RequestMapping(value = "/acceptDefinition", method = GET, produces = "text/plain;charset=UTF-8")
     public String acceptChallengeDefinition(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int chalId) {
         util.setModelForAcceptChallengeDefinition(request, currentUser, model, chalId);
-        return "profile";
+        return getPreviousPageByRequest(request).orElse("/");
     }
 
     @RequestMapping(value = "/user4Challenge", method = GET, produces = "text/plain;charset=UTF-8")
@@ -188,6 +202,42 @@ public class MainController {
         }
 
         return "index";
+    }   
+    
+    @RequestMapping(value = "/throwChallenge", method = GET)
+    public String challengeForFriend(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id-checked") List<Integer> selectedFriendsIds, @RequestParam("chal-id") int chalId) {
+        for (Integer id : selectedFriendsIds) {
+            util.throwChallenge2User(id, chalId);
+        }
+        return getPreviousPageByRequest(request).orElse("/");
     }
 
+    @RequestMapping(value = "/ajax", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody AjaxResponseBody searchFriendsAjax(@RequestBody SearchCriteria search) {
+
+        AjaxResponseBody result = new AjaxResponseBody();
+
+        if (search != null) {
+            List<User> users = util.filterUsers(search.getFilter(), search.getUserId());
+            
+            if (users.size() > 0) {
+                Map<Integer, String> usersNames = new HashMap<>();
+                for (User user : users) {
+                    
+                    usersNames.put(user.getId(), user.getName());
+                }
+                result.setCode("200");
+                result.setMsg("");
+                result.setResult(usersNames);
+            } else {
+                result.setCode("204");
+                result.setMsg("No user!");
+            }
+        } else {
+            result.setCode("400");
+            result.setMsg("Search criteria is empty!");
+        }
+        return result;
+    }
 }
