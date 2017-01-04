@@ -70,7 +70,7 @@ public class SocialControllerUtil {
             e.printStackTrace();
         }
     }
-    
+
     public void setModel(HttpServletRequest request, Principal currentUser, Model model) {
         // SecurityContext ctx = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
         String userId = currentUser == null ? null : currentUser.getName();
@@ -100,14 +100,15 @@ public class SocialControllerUtil {
         model.addAttribute("currentUserDisplayName", displayName);
         //TODO:bike:-)
         model.addAttribute("foto", "AvaDefault.jpg");
-        if (profile != null)
-            model.addAttribute("challengeRequests", ((User)serviceEntity.findById(profile.getUserEntityId(), User.class)).getChallengeRequests());
+        if (profile != null) {
+            model.addAttribute("challengeRequests", ((User) serviceEntity.findById(profile.getUserEntityId(), User.class)).getChallengeRequests());
+        }
     }
 
     public void setModelForMain(HttpServletRequest request, Principal currentUser, Model model) {
         setModel(request, currentUser, model);
         model.addAttribute("mainChallenge", serviceEntity.getAll(ChallengeDefinition.class).get(0));
-        model.addAttribute("Challenges", serviceEntity.getAll(ChallengeDefinition.class));     
+        model.addAttribute("Challenges", serviceEntity.getAll(ChallengeDefinition.class));
     }
 
     public void setModelForChallengeShow(int id, HttpServletRequest request, Principal currentUser, Model model) {
@@ -119,14 +120,20 @@ public class SocialControllerUtil {
         comment.setDate(new Date());
         comment.setAuthor(getSignedUpUser(request, currentUser));
         model.addAttribute("comment", comment);
+        int commentsCount = 0;
+        for (Comment comm : (((ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class)).getComments())) {
+            commentsCount++;
+            commentsCount += comm.getSubCommentsCount();
+        }
+        model.addAttribute("commentsCount", commentsCount);
         model.addAttribute("comments", ((ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class)).getComments());
     }
-    
+
     public void setModelForNewOrUpdatedChalShow(ChallengeDefinition challenge, HttpServletRequest request, Principal currentUser, Model model) {
 
         setModel(request, currentUser, model);
         User curDBUser = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
-        
+
         if (challenge.getId() != null) {
             ChallengeDefinition chalToUpdate = (ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class);
             chalToUpdate.setDescription(challenge.getDescription());
@@ -145,33 +152,33 @@ public class SocialControllerUtil {
         model.addAttribute("challenge", (ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class));
         model.addAttribute("listOfAcceptors", ((ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class)).getAllAcceptors());
     }
-    
+
     public void setModelForNewComment(int id, HttpServletRequest request, Principal currentUser, Model model, Comment comment) {
         setModel(request, currentUser, model);
         User curDBUser = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
         ChallengeDefinition currentChallenge = (ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class);
-        
+
         comment.setDate(new Date());
         serviceEntity.save(comment);
-        
+
         currentChallenge.addChild(comment);
         serviceEntity.update(currentChallenge);
-        
+
         curDBUser.addComment(comment);
         serviceEntity.update(curDBUser);
     }
-    
+
     public void setModelForNewReply(int id, HttpServletRequest request, Principal currentUser, Model model, Comment comment) {
         setModel(request, currentUser, model);
         User curDBUser = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
         Comment parentComment = (Comment) serviceEntity.findById(id, Comment.class);
-        
+
         comment.setDate(new Date());
         serviceEntity.save(comment);
-        
+
         parentComment.addChild(comment);
         serviceEntity.update(parentComment);
-        
+
         curDBUser.addComment(comment);
         serviceEntity.update(curDBUser);
     }
@@ -222,49 +229,50 @@ public class SocialControllerUtil {
             return profile.getName();
         }
     }
-    
+
     private User getSignedUpUser(HttpServletRequest request, Principal currentUser) {
-        return (User) serviceEntity.findById(getUserProfile(request.getSession(), 
+        return (User) serviceEntity.findById(getUserProfile(request.getSession(),
                 currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
     }
 
     public void setProfileShow(int userDBId, HttpServletRequest request, Principal currentUser, Model model) {
         setModel(request, currentUser, model);
         User userWhichProfileRequested = (User) serviceEntity.findById(userDBId, User.class);
-        
+
         User signedUpUser = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
-        
-        model.addAttribute("userProfile", userWhichProfileRequested);             
+
+        model.addAttribute("userProfile", userWhichProfileRequested);
         model.addAttribute("listOfDefined", userWhichProfileRequested.getChallenges());
         model.addAttribute("listOfAccepted", userWhichProfileRequested.getAcceptedChallenges());
         model.addAttribute("actions", UserActionsProvider.getActionsForProfile(signedUpUser, userWhichProfileRequested));
         model.addAttribute("friends", signedUpUser.getFriends());
     }
-    
+
     public void setModelForAcceptOrDeclineChallenge(HttpServletRequest request, Principal currentUser, Model model, int chalId, boolean accept) {
-        setModel(request, currentUser, model); 
-        ChallengeInstance chalToAccept = (ChallengeInstance)serviceEntity.findById(chalId, ChallengeInstance.class);
+        setModel(request, currentUser, model);
+        ChallengeInstance chalToAccept = (ChallengeInstance) serviceEntity.findById(chalId, ChallengeInstance.class);
         User user = getSignedUpUser(request, currentUser);
-        if (accept) 
+        if (accept) {
             user.acceptChallenge(chalToAccept);
-        else
+        } else {
             user.declineChallenge(chalToAccept);
+        }
         serviceEntity.update(user);
-        
+
         model.addAttribute("userProfile", user);
         model.addAttribute("listOfDefined", user.getChallenges());
         model.addAttribute("listOfAccepted", user.getAcceptedChallenges());
         model.addAttribute("challengeRequests", user.getChallengeRequests());
         model.addAttribute("actions", UserActionsProvider.getActionsForProfile(user, user));
     }
-    
+
     public void setModelForAcceptChallengeDefinition(HttpServletRequest request, Principal currentUser, Model model, int chalId) {
         setModel(request, currentUser, model);
-        ChallengeDefinition chalToAccept = (ChallengeDefinition)serviceEntity.findById(chalId, ChallengeDefinition.class);
+        ChallengeDefinition chalToAccept = (ChallengeDefinition) serviceEntity.findById(chalId, ChallengeDefinition.class);
         User user = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
-        
+
         if (chalToAccept.getStatus() != ChallengeDefinitionStatus.ACCEPTED) {
-            ChallengeInstance chalInstance = new ChallengeInstance(chalToAccept);      
+            ChallengeInstance chalInstance = new ChallengeInstance(chalToAccept);
             chalInstance.setStatus(ChallengeStatus.ACCEPTED);
             serviceEntity.save(chalInstance);
             chalToAccept.setStatus(ChallengeDefinitionStatus.ACCEPTED);
@@ -272,86 +280,83 @@ public class SocialControllerUtil {
             user.addAcceptedChallenge(chalInstance);
             serviceEntity.update(user);
         }
-        
-        model.addAttribute("userProfile", user);        
+
+        model.addAttribute("userProfile", user);
         model.addAttribute("listOfDefined", user.getChallenges());
         model.addAttribute("listOfAccepted", user.getAcceptedChallenges());
         model.addAttribute("challengeRequests", user.getChallengeRequests());
-        model.addAttribute("actions", UserActionsProvider.getActionsForProfile(user, user));    
+        model.addAttribute("actions", UserActionsProvider.getActionsForProfile(user, user));
     }
-    
-    
+
     /*
      * Select user from list 4 challenge
      * click 'throw' to challenge from your panel (may be make from all place?) 
      * 
      * */
     public void setModelForThrowChallenge2User(HttpServletRequest request, Principal currentUser, Model model, int chalId) {
-    	setModel(request, currentUser, model);
-    	//TODO: ignored all include users
-    	List<User> users = serviceEntity.getAll(User.class);
-    	
-    	model.addAttribute("listSomething", users);
-    	model.addAttribute("idParent", chalId);
+        setModel(request, currentUser, model);
+        //TODO: ignored all include users
+        List<User> users = serviceEntity.getAll(User.class);
+
+        model.addAttribute("listSomething", users);
+        model.addAttribute("idParent", chalId);
         model.addAttribute("challengeRequests", getSignedUpUser(request, currentUser).getChallengeRequests());
-    	model.addAttribute("handler", "throwChallengeFromChallengeList");
+        model.addAttribute("handler", "throwChallengeFromChallengeList");
     }
-    
-    public void throwChallenge2User(int userId, int challengeId) {    	
-    	ChallengeDefinition chal = (ChallengeDefinition)serviceEntity.findById(challengeId, ChallengeDefinition.class);
-    	User user = (User)serviceEntity.findById(userId, User.class);
-    	
-    	ChallengeInstance chalIns = new ChallengeInstance();
-    	chalIns.setName(chal.getName());
-    	chalIns.setStatus(ChallengeStatus.AWAITING);
-    	serviceEntity.save(chalIns);
-    	    	
-    	chal.addChild(chalIns);
-    	serviceEntity.update(chal);
-    	
-    	user.addAcceptedChallenge(chalIns);
-    	serviceEntity.update(user);    	
+
+    public void throwChallenge2User(int userId, int challengeId) {
+        ChallengeDefinition chal = (ChallengeDefinition) serviceEntity.findById(challengeId, ChallengeDefinition.class);
+        User user = (User) serviceEntity.findById(userId, User.class);
+
+        ChallengeInstance chalIns = new ChallengeInstance();
+        chalIns.setName(chal.getName());
+        chalIns.setStatus(ChallengeStatus.AWAITING);
+        serviceEntity.save(chalIns);
+
+        chal.addChild(chalIns);
+        serviceEntity.update(chal);
+
+        user.addAcceptedChallenge(chalIns);
+        serviceEntity.update(user);
     }
-    
+
     public List<User> filterUsers(String filter, int userId) {
-        User user = (User)serviceEntity.findById(userId, User.class);
+        User user = (User) serviceEntity.findById(userId, User.class);
         List<User> allFriends = user.getFriends();
         List<User> filteredFriends = new ArrayList<>();
-        for (int i = 0; i < allFriends.size(); i++){
-            String name = ((User)allFriends.get(i)).getName();
-            if (name.toLowerCase().startsWith(filter.toLowerCase()))
-                filteredFriends.add((User)allFriends.get(i));
+        for (int i = 0; i < allFriends.size(); i++) {
+            String name = ((User) allFriends.get(i)).getName();
+            if (name.toLowerCase().startsWith(filter.toLowerCase())) {
+                filteredFriends.add((User) allFriends.get(i));
+            }
         }
         return filteredFriends;
     }
-    
-    
+
     /*
      * Select challenge from list 4 user 
      * click 'throw user' from your profile
      * 
      */
     public void setModelForThrowUser2Challenge(HttpServletRequest request, Principal currentUser, Model model, int userId) {
-    	setModel(request, currentUser, model);
-    	//TODO: ignored all include users
-    	User user = (User)serviceEntity.findById(userId, User.class);
-    	
-    	model.addAttribute("listSomething", user.getChallenges());
-    	model.addAttribute("idParent", userId);
-    	model.addAttribute("handler", "throwChallengeFromUserList");
+        setModel(request, currentUser, model);
+        //TODO: ignored all include users
+        User user = (User) serviceEntity.findById(userId, User.class);
+
+        model.addAttribute("listSomething", user.getChallenges());
+        model.addAttribute("idParent", userId);
+        model.addAttribute("handler", "throwChallengeFromUserList");
         model.addAttribute("challengeRequests", user.getChallengeRequests());
     }
-    
-    
-    
+
     public void setModelForShowFriends(HttpServletRequest request, Principal currentUser, Model model, int userId) {
-    	setModel(request, currentUser, model);
-    	
-    	User user = (User)serviceEntity.findById(userId, User.class);
-    	
-    	model.addAttribute("listSomething", user.getFriends());
-    	model.addAttribute("idParent", userId);
-    	model.addAttribute("handler", "profile");
-        model.addAttribute("challengeRequests", user.getChallengeRequests());    	
+        setModel(request, currentUser, model);
+
+        User user = (User) serviceEntity.findById(userId, User.class);
+
+        model.addAttribute("listSomething", user.getFriends());
+        model.addAttribute("idParent", userId);
+        model.addAttribute("handler", "profile");
+        model.addAttribute("challengeRequests", user.getChallengeRequests());
     }
 }
