@@ -135,7 +135,7 @@ $('.media-body small a').click(function () {
     var children = parent.children();
     showingReplyForm = !showingReplyForm;
     if (showingReplyForm)
-        children[children.length - 1].style.display = "block";
+        children[children.length - 2].style.display = "block";
     else
-        children[children.length - 1].style.display = "none";
+        children[children.length - 2].style.display = "none";
 });

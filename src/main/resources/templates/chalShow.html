@@ -64,9 +64,9 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-8"  style="margin-bottom: 60px;">
+                    <div class="col-md-12"  style="margin-bottom: 60px;">
                         <div class="page-header">
-                            <h3 th:text="#{commentsCount} + ' (' + ${comments.size()} + ')'"></h3>
+                            <h3 th:text="#{commentsCount} + ' (' + ${commentsCount} + ')'"></h3>
                         </div> 
                         <form th:action="@{/newcomment}" th:object="${comment}" method="post" style="margin-bottom: 40px;">
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
@@ -76,34 +76,11 @@
                         </form>
 
                         <div class="comments-list">
-                            <div th:each="comment : ${comments}" class="media">
-                                <p class="pull-right"><small th:text="${comment.getDate()}"></small></p>
-                                <a class="media-left" href="#" style="float: left; margin-right: 10px;">
-                                    <img th:src="${comment.getAuthor().getImageRef()}" width="40" height="40"/>
-                                </a>
-                                <div class="media-body">
-                                    <form name="submitForm" th:id="'comment_form'+${comment.getId()}"  method="GET" action="/profile">
-                                        <input type="hidden" name="id" th:value="${comment.getAuthor().getId()}"/>
-                                        <h4 class="media-heading user_name">
-                                            <a  th:onclick="'document.getElementById(\'comment_form'+${comment.getId()}+'\').submit();'"
-                                                th:text="${comment.getAuthor().getName()}"></a>
-                                        </h4>
-                                    </form>
-                                    <p th:text="${comment.getMessage()}" style="color: black;"></p>
-                                    <small>
-                                        <a name="reply-link" th:text="#{commentReply}"></a>
-                                    </small>
-                                </div>
-                                <!--reply form-->
-                                <div class="last-div" th:id="'reply'+${comment.getId()}" style="display: none;">  
-                                    <form th:action="@{/newreply}" th:object="${comment}" method="post" style="margin-bottom: 40px;">
-                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                                        <input type="hidden" name="id" th:value="${comment.getId()}"/>
-                                        <input type="text" class="form-control" th:placeholder="#{commentPlaceholder}" th:field="*{message}" />
-                                        <input type="submit" class="btn btn-default" th:value="#{sendComment}" />
-                                    </form>
-                                </div>
-                            </div>
+                            <ul th:each="comment : ${comments}" class="media">
+                                <li>
+                                    <div th:replace="fragments/comment :: subcomment(comment =${comment}, depth=0)"  />
+                                </li> 
+                            </ul>
                         </div>
                     </div>
                 </div>  
