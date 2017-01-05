@@ -6,12 +6,14 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
-        <div th:fragment="subcomment (comment, depth)" >
-            <p class="pull-right"><small th:text="${#dates.format(comment.getDate(), 'dd/MM/yyyy HH:mm')}"></small></p>
+        <div th:fragment="subcomment (comment, depth)">
+            <p class="pull-right">
+                <small th:text="${#dates.format(comment.getDate(), 'dd/MM/yyyy HH:mm')}"></small>
+            </p>
             <a class="media-left" href="#" style="float: left; margin-right: 10px;">
                 <img th:src="${comment.getAuthor().getImageRef()}" width="40" height="40"/>
             </a>
-            <div class="media-body">
+            <div class="media-body" style="margin-bottom: 10px;">
                 <form name="submitForm" th:id="'comment_form'+${comment.getId()}"  method="GET" action="/profile">
                     <input type="hidden" name="id" th:value="${comment.getAuthor().getId()}"/>
                     <h4 class="media-heading user_name">

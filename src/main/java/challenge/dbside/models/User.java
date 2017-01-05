@@ -126,6 +126,7 @@ public class User extends BaseEntity {
         if (requests.contains(chal)) {
             listOfAcceptedChallenges.remove(chal);
             chal.setAcceptor(null);
+            chal.setParent(null);
         }
     }
 

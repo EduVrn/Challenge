@@ -42,14 +42,14 @@ $("input[name='throw']").click(function () {
 
 //checkbox state changed: enable/disable button
 $(document).on('change', ':checkbox', function () {
-    var checkboxes = $('#friends-form :checkbox').toArray();
-
+    var $parentForm = $(this).closest('form');
+    var checkboxes = $parentForm.find(':checkbox').toArray();
     $.each(checkboxes, function () {
         if (this.checked) {
-            $('#throw-challenge-btn').removeAttr('disabled');
+            $parentForm.find('input[type="submit"]').removeAttr('disabled');
             return false;
         }
-        $('#throw-challenge-btn').attr('disabled', 'disabled');
+        $parentForm.find('input[type="submit"]').attr('disabled', 'disabled');
     });
 
     if (this.checked) {
@@ -60,21 +60,33 @@ $(document).on('change', ':checkbox', function () {
 });
 
 $(document).ready(function ($) {
-    $("#filter").on('input', function (event) {
+    $("#filter-friends").on('input', function (event) {
         event.preventDefault();
-        searchViaAjax();
+        searchViaAjax(true);
+    });
+    $("#filter-challenges").on('input', function (event) {
+        event.preventDefault();
+        searchViaAjax(false);
     });
 });
 
-function searchViaAjax() {
+function searchViaAjax(friends) {
     var search = {};
-    search["filter"] = $("#filter").val();
-    search["userId"] = $("#user-id").val();
+    var action;
+    if (friends) {
+        search["filter"] = $("#filter-friends").val();
+        search["userId"] = $("#user-id").val();
+        action = "getFriends";
+    } else {
+        search["filter"] = $("#filter-challenges").val();
+        search["userId"] = $("#current-user-id").val();
+        action = "getChallenges";
+    }
 
     $.ajax({
         type: "POST",
         contentType: "application/json",
-        url: "ajax",
+        url: action,
         async: true,
         beforeSend: function (xhr) {
             xhr.setRequestHeader("Accept", "application/json");
@@ -86,12 +98,11 @@ function searchViaAjax() {
         timeout: 100000,
         success: function (data) {
             console.log("SUCCESS: ", data);
-            display(data);
+            display(data, friends);
             return false;
         },
         error: function (e) {
             console.log("ERROR: ", e);
-            display(e);
         },
         done: function (e) {
             console.log("DONE");
@@ -100,9 +111,15 @@ function searchViaAjax() {
 }
 
 //display ajax's response
-function display(data) {
-    var $friendsList = $('#friends-list');
-    $friendsList.empty();
+function display(data, friends) {
+
+    var $list;
+    if (friends) {
+        $list = $('#friends-list');
+    } else {
+        $list = $('#challenges-list');
+    }
+    $list.empty();
 
     var results = data["result"];
 
@@ -121,10 +138,17 @@ function display(data) {
         var $label = $('<label />', {
             "text": value
         });
+        if (!friends) {
+            $li.append($('<input />', {
+                "type": "hidden",
+                "name": "user-id",
+                "value": $("#friend-id").val()
+            }));
+        }
         $li.append($hidden);
         $li.append($checkbox);
         $li.append($label);
-        $friendsList.append($li);
+        $list.append($li);
     });
 }
 

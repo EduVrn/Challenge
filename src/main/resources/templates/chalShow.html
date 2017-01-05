@@ -68,7 +68,7 @@
                         <div class="page-header">
                             <h3 th:text="#{commentsCount} + ' (' + ${commentsCount} + ')'"></h3>
                         </div> 
-                        <form th:action="@{/newcomment}" th:object="${comment}" method="post" style="margin-bottom: 40px;">
+                        <form th:object="${comment}" th:action="@{/newcomment}" method="post" style="margin-bottom: 40px;">
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                             <input type="hidden" name="id" th:value="${challenge.getId()}"/>
                             <input type="text" class="form-control" th:placeholder="#{commentPlaceholder}" th:field="*{message}" />

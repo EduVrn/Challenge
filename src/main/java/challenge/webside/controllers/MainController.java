@@ -40,6 +40,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class MainController {
@@ -67,9 +68,10 @@ public class MainController {
     }
 
     @RequestMapping(value = "challenge/update", method = GET, produces = "text/plain;charset=UTF-8")
-    public String updateChal(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int id) {
+    public String updateChal(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int id) {      
         util.setModelForChallengeShow(id, request, currentUser, model);
-        return "chalNewOrUpdate";
+        return util.canUpdateChallenge(id, request, currentUser, model) ? 
+                "chalNewOrUpdate" : "chalShow";
     }
 
     @RequestMapping(value = "challenge/new", produces = "text/plain;charset=UTF-8")
@@ -91,9 +93,10 @@ public class MainController {
     }
 
     @RequestMapping(value = "challenge/information", method = POST, produces = "text/plain;charset=UTF-8")
-    public String saveOrUpdateChallenge(HttpServletRequest request, Principal currentUser, Model model, ChallengeDefinition challenge) {
+    public String saveOrUpdateChallenge(HttpServletRequest request, Principal currentUser, Model model, ChallengeDefinition challenge, RedirectAttributes redirectAttributes) {
         util.setModelForNewOrUpdatedChalShow(challenge, request, currentUser, model);
-        return "chalShow";
+        redirectAttributes.addAttribute("id", challenge.getId());
+        return "redirect:information";
     }
 
     @RequestMapping(value = "/profile", method = GET, produces = "text/plain;charset=UTF-8")
@@ -138,41 +141,6 @@ public class MainController {
         return getPreviousPageByRequest(request).orElse("/");
     }
 
-    @RequestMapping(value = "/user4Challenge", method = GET, produces = "text/plain;charset=UTF-8")
-    public String selectUserCandidate4Challenge(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int chalId) {
-        util.setModelForThrowChallenge2User(request, currentUser, model, chalId);
-
-        return "listSomething";
-    }
-
-    @RequestMapping(value = "/challenge4User", method = GET, produces = "text/plain;charset=UTF-8")
-    public String selectChallengeCandidate4User(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int userId) {
-        util.setModelForThrowUser2Challenge(request, currentUser, model, userId);
-        return "listSomething";
-    }
-
-    @RequestMapping(value = "/throwChallengeFromChallengeList", method = GET, produces = "text/plain;charset=UTF-8")
-    public String throwChallenge2UserFromChallengeList(HttpServletRequest request, Principal currentUser, Model model,
-            @RequestParam("idParent") int challengeId, @RequestParam("id") int userId) {
-
-        //TODO: need make any class with handler creation relation (friends, challenge2User, ...)
-        util.throwChallenge2User(userId, challengeId);
-        //TODO: get user id current seanse, this current id - is id user, which throw challenge
-        util.setProfileShow(userId, request, currentUser, model);
-        return "profile";
-    }
-
-    @RequestMapping(value = "/throwChallengeFromUserList", method = GET, produces = "text/plain;charset=UTF-8")
-    public String throwChallenge2UserFromUserList(HttpServletRequest request, Principal currentUser, Model model,
-            @RequestParam("idParent") int userId, @RequestParam("id") int challengeId) {
-
-        //TODO: need make any class with handler creation relation (friends, challenge2User, ...)
-        util.throwChallenge2User(userId, challengeId);
-        //TODO: get user id current seanse, this current id - is id user, which throw challenge
-        util.setProfileShow(userId, request, currentUser, model);
-        return "profile";
-    }
-
     @RequestMapping(value = "/friends", method = GET, produces = "text/plain;charset=UTF-8")
     public String selectUserFriends(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int userId) {
         util.setModelForShowFriends(request, currentUser, model, userId);
@@ -200,19 +168,27 @@ public class MainController {
                 c.updateStatus(status);
             }
         }
-
+        
         return "index";
     }   
     
-    @RequestMapping(value = "/throwChallenge", method = GET)
-    public String challengeForFriend(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id-checked") List<Integer> selectedFriendsIds, @RequestParam("chal-id") int chalId) {
+    @RequestMapping(value = "/friendsForChallenge", method = GET)
+    public String friendForChallenge(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id-checked") List<Integer> selectedFriendsIds, @RequestParam("chal-id") int chalId) {
         for (Integer id : selectedFriendsIds) {
-            util.throwChallenge2User(id, chalId);
+            util.throwChallenge(id, chalId);
+        }
+        return getPreviousPageByRequest(request).orElse("/");
+    }
+    
+    @RequestMapping(value = "/challengesForFriend", method = GET)
+    public String challengeForFriend(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id-checked") List<Integer> selectedChallengesIds, @RequestParam("user-id") int friendId) {
+        for (Integer id : selectedChallengesIds) {
+            util.throwChallenge(friendId, id);
         }
         return getPreviousPageByRequest(request).orElse("/");
     }
 
-    @RequestMapping(value = "/ajax", produces = "application/json")
+    @RequestMapping(value = "/getFriends", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody AjaxResponseBody searchFriendsAjax(@RequestBody SearchCriteria search) {
 
@@ -223,8 +199,7 @@ public class MainController {
             
             if (users.size() > 0) {
                 Map<Integer, String> usersNames = new HashMap<>();
-                for (User user : users) {
-                    
+                for (User user : users) {                    
                     usersNames.put(user.getId(), user.getName());
                 }
                 result.setCode("200");
@@ -232,11 +207,39 @@ public class MainController {
                 result.setResult(usersNames);
             } else {
                 result.setCode("204");
-                result.setMsg("No user!");
+                result.setMsg("No users");
             }
         } else {
             result.setCode("400");
-            result.setMsg("Search criteria is empty!");
+            result.setMsg("Search criteria is empty");
+        }
+        return result;
+    }
+    
+    @RequestMapping(value = "/getChallenges", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody AjaxResponseBody searchChallengesViaAjax(@RequestBody SearchCriteria search) {
+
+        AjaxResponseBody result = new AjaxResponseBody();
+
+        if (search != null) {
+            List<ChallengeDefinition> challenges = util.filterChallenges(search.getFilter(), search.getUserId());
+            
+            if (challenges.size() > 0) {
+                Map<Integer, String> chalNames = new HashMap<>();
+                for (ChallengeDefinition challenge : challenges) {                    
+                    chalNames.put(challenge.getId(), challenge.getName());
+                }
+                result.setCode("200");
+                result.setMsg("");
+                result.setResult(chalNames);
+            } else {
+                result.setCode("204");
+                result.setMsg("No challenges");
+            }
+        } else {
+            result.setCode("400");
+            result.setMsg("Search criteria is empty");
         }
         return result;
     }
