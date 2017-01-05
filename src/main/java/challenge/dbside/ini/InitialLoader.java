@@ -115,7 +115,7 @@ public class InitialLoader {
         serviceEntityInit.save(user1);
 
         ChallengeDefinition chalDef2 = new ChallengeDefinition();
-        chalDef2.setName("Hi, make your's task 4 Ivan.");
+        chalDef2.setName("Make your task 4 Ivan.");
         chalDef2.setDescription("After (may be)");
         chalDef2.setImageRef("secondExampleTask.png");
         chalDef2.setDate(new Date());
@@ -143,7 +143,7 @@ public class InitialLoader {
         user3.setName("Annet Fast-Food");
         user3.setImageRef("AvaDefault.jpg");
         serviceEntityInit.save(user3);
-        
+                
         
         
         
@@ -154,11 +154,11 @@ public class InitialLoader {
         chalInstance1.setParent(chalDef2);
         chalUnstance2.setParent(chalDef2);
         serviceEntityInit.update(chalDef2);
-
+        
         user1.addAcceptedChallenge(chalInstance1);
         user1.addAcceptedChallenge(chalUnstance2);
        serviceEntityInit.update(user1);
-
+        
         User user2 = new User();
         // serviceEntityInit.save(user2);
         user2.setName("user2");
@@ -168,19 +168,19 @@ public class InitialLoader {
         //   user2.addAcceptedChallenge(chal2);
         // user2.addChallenge(chal2);
 //        serviceEntityInit.save(user2);
-
+        
         User user3 = new User();
         user3.setName("user3");
         serviceEntityInit.save(user3);
-
+        
         User user4 = new User();
         user4.setName("name4");
         serviceEntityInit.save(user4);
-
+        
         user1.setName("User1");
        // serviceEntityInit.update(user1);
-
-
+        
+        
        /* Set userSet = new HashSet();
         userSet.add(user1);
         userSet.add(user4);
@@ -191,10 +191,10 @@ public class InitialLoader {
  /*    for (BaseEntity obj : chalDef2.getChildren()) {
             System.out.println(((ChallengeInstance) obj).getAcceptor().getName());
         }
-
+        
         user1.getAcceptedChallenges().forEach((c) -> {
             System.out.println(((ChallengeInstance) c).getName());
         });
          */
-    }
+    }       
 }
