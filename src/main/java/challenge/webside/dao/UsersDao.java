@@ -18,6 +18,8 @@ import java.sql.SQLException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
 import challenge.dbside.services.ini.MediaService;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -100,7 +102,14 @@ public class UsersDao {
         chalDef4.setDate(new Date());
         serviceEntity.save(chalDef4);
         
-        List<User> friends = serviceEntity.getAll(User.class);
+        List<User> friends;
+        try {
+        	friends = serviceEntity.getAll(User.class);
+        }
+        catch(Exception ex) {
+        	ex.printStackTrace();
+        	friends = new ArrayList<User>();
+        }        
         
         User user = new User();
         user.setName(profile.getName());
@@ -117,12 +126,15 @@ public class UsersDao {
         
         ChallengeInstance chalInstance1 = new ChallengeInstance();
         chalInstance1.setName("Instance of SignUpedUser #1");
-        chalInstance1.setParent(chalDef1);
+        
+        chalInstance1.setChallengeRoot(chalDef1);
         chalInstance1.setStatus(ChallengeStatus.AWAITING);
         serviceEntity.save(chalInstance1);
         ChallengeInstance chalInstance2 = new ChallengeInstance();
         chalInstance2.setName("Instance of SignUpedUser #");
-        chalInstance2.setParent(chalDef1);
+        
+        
+        chalInstance2.setChallengeRoot(chalDef1);        
         chalInstance2.setStatus(ChallengeStatus.AWAITING);
         serviceEntity.save(chalInstance2);
 
@@ -156,7 +168,7 @@ public class UsersDao {
                 profile.getFirstName(),
                 profile.getLastName(),
                 profile.getName(),
-                profile.getUsername(),
+                profile.getUsername(),                
                 profile.getUser().getId());
     }
 }
