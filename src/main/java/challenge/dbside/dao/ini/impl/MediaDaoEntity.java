@@ -1,7 +1,8 @@
 package challenge.dbside.dao.ini.impl;
 
-import challenge.dbside.models.BaseEntity;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.*;
@@ -9,7 +10,11 @@ import javax.persistence.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.PlatformTransactionManager;
 import challenge.dbside.dao.ini.MediaDao;
+import challenge.dbside.ini.ContextType;
+import challenge.dbside.models.BaseEntity;
 import challenge.dbside.models.ChallengeDefinition;
+import challenge.dbside.models.dbentity.Attribute;
+import challenge.dbside.models.dbentity.DBSource;
 
 @Repository
 public class MediaDaoEntity<E extends BaseEntity> implements MediaDao<E> {
@@ -32,33 +37,61 @@ public class MediaDaoEntity<E extends BaseEntity> implements MediaDao<E> {
     }
 
     @Override
-    public void save(BaseEntity entity) {   	
-    	entity.setId(getNextId());
-    	em.persist(entity);
+    public void save(BaseEntity entity) {
+    	Integer id = getNextId();
+    	entity.setId(id);
+		for (Attribute attr : entity.getDataSourse().getAttributes().values()) {
+			attr.setEntity_id(id);
+		}
+    	
+    	em.persist(entity.getDataSourse());
     }
 
     @Override
-    public List<E> getAll(Class<E> classType) { 
-        List<E> list = em.createQuery("from " + classType.getSimpleName(), classType).getResultList();
-        return list;
+    public List<E > getAll(Class<E> classType) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException { 
+        //List<E> list = em.createQuery("from " + classType.getSimpleName(), classType).getResultList();
+    	//ContextType.getInstance().getTypeEntity(classType.getSimpleName());
+    	//" + /*DBSource.class.getSimpleName()*/ + "
+    	Integer typeEntity = ContextType.getInstance().getTypeEntity(classType.getSimpleName()).getTypeEntityID(); 
+    	
+    	List<DBSource> list = em.createQuery("from "+ DBSource.class.getSimpleName() + " where type_of_entity = " 
+    			+ typeEntity, DBSource.class).getResultList();
+    	
+    	List<E> listG = new ArrayList();
+    	for(DBSource el : list) {
+    		E p = classType.getDeclaredConstructor(DBSource.class).newInstance(el);
+    		listG.add(p);
+    	}
+    	
+        return listG;
     }
 
     @Override
     public void delete(BaseEntity entity) {
-        em.remove(em.merge(entity));
+        em.remove(em.merge(entity.getDataSourse()));
     }
 
     @Override
     public void update(BaseEntity entity) {
-        em.merge(entity);
+        em.merge(entity.getDataSourse());
     }
 
     @Override
-    public E findById(Integer id, Class<E> classType) {
-        TypedQuery<BaseEntity> query = em.createQuery(
-                                    "SELECT c FROM BaseEntity c"
-                                    +" WHERE c.id = ?1", BaseEntity.class);
-        return classType.cast(query.setParameter(1, id).getSingleResult());
+    public E findById(Integer id, Class<E> classType) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+        TypedQuery<DBSource> query = em.createQuery(
+        							"SELECT c FROM " + DBSource.class.getSimpleName() + " c"
+                                    +" WHERE c.id = ?1 and type_of_entity = "
++ ContextType.getInstance().getTypeEntity(classType.getSimpleName()).getTypeEntityID()                                                                
+                                    , DBSource.class);
+        Object obj = query.setParameter(1, id).getSingleResult();
+        
+        E t = classType.cast(classType.getDeclaredConstructor(DBSource.class)
+        		.newInstance(obj));
+        
+        
+        return t;
+        //return null;
+        //return classType.cast(query.setParameter(1, id).getSingleResult());
     } 
 }
 

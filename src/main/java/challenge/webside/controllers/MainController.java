@@ -225,7 +225,8 @@ public class MainController {
                 Map<Integer, String> usersNames = new HashMap<>();
                 for (User user : users) {
                     
-                    usersNames.put(user.getId(), user.getName());
+                	//TODO: change it
+                    //usersNames.put(user.getId(), user.getName());
                 }
                 result.setCode("200");
                 result.setMsg("");
