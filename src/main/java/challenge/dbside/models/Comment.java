@@ -1,6 +1,8 @@
 package challenge.dbside.models;
 
 import challenge.dbside.ini.ContextType;
+import challenge.dbside.models.common.IdAttrGet;
+import challenge.dbside.models.dbentity.DBSource;
 import challenge.dbside.models.ini.TypeOfAttribute;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,70 +15,60 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 
-public class Comment extends BaseEntity {
+public class Comment extends BaseEntity { //TODO: add implements Commentable ???
 
     public Comment() {
         super(Comment.class.getSimpleName());
-        
     }
 
-    /*@OneToOne(cascade = CascadeType.ALL)
-    @JoinTable(name = "relationship",
-            joinColumns = {
-                @JoinColumn(name = "entity_id2", referencedColumnName = "entity_id")},
-            inverseJoinColumns = {
-                @JoinColumn(name = "entity_id1", referencedColumnName = "entity_id")})
-    private User author;*/
-
+    public Comment(DBSource dataSource) {
+    	super(dataSource);
+    }
+        
     public User getAuthor() {
-    	return null;
-        //return author;
+    	List<DBSource> list = (List<DBSource>)getDataSource().getRelations_l().get(IdAttrGet.refAutorComment());    	
+    	return	new User(list.get(0));
     }
 
     public void setAuthor(User author) {
-        //this.author = author;
+    	getDataSource().getRelations_l().remove(IdAttrGet.refAutorComment());
+    	getDataSource().getRelations_l().put(IdAttrGet.refAutorComment(), author.getDataSource());
     }
 
     public String getMessage() {
-        return (String) getDataSourse().getAttributes()
-                .get(ContextType.getInstance().getTypeAttribute("message").getId()).getValue();
+        return getDataSource().getAttributes().get(IdAttrGet.IdMessage()).getValue();
     }
 
     public void setMessage(String msg) {
-        getDataSourse().getAttributes()
-                .get(ContextType.getInstance().getTypeAttribute("message").getId()).setValue(msg);
+        getDataSource().getAttributes().get(IdAttrGet.IdMessage()).setValue(msg);
     }
 
     public Date getDate() {
-    	return (Date) getDataSourse().getAttributes()
-                .get(ContextType.getInstance().getTypeAttribute("date").getId()).getDateValue();
+    	return (Date) getDataSource().getAttributes().get(IdAttrGet.IdDate()).getDateValue();
     }
 
     public void setDate(Date date) {
-        getDataSourse().getAttributes()
-                .get(ContextType.getInstance().getTypeAttribute("date").getId()).setDateValue(date);
+        getDataSource().getAttributes().get(IdAttrGet.IdDate()).setDateValue(date);
     }
 
+    
+    
     public int getSubCommentsCount() {
         int result = 0;
-        /*for (BaseEntity2 child : getChildren()) {
-            if (child instanceof Comment) {
-                result++;
-                if (!((Comment) child).getChildren().isEmpty()) {
-                    result += ((Comment) child).getSubCommentsCount();
-                }
-            }
-        }*/
+        
+        for(DBSource commentDB : getDataSource().getChildren()) {
+        	result++;
+        	//TODO: optimize it, create getAllChildCount in DBSource ???
+        	result += new Comment(commentDB).getSubCommentsCount();
+        }
         return result;
     }
 
-    public List<Comment> getComments() {
+    public List<Comment> getComments() {    	
         List<Comment> comments = new ArrayList<>();
-        /*this.getChildren().forEach((child) -> {
-            if (child instanceof Comment) {
-                comments.add((Comment) child);
-            }
-        });*/
+        getDataSource().getChildren().forEach((commentDB) -> {
+        	comments.add(new Comment(commentDB));
+        });
         return comments;
     }
 }

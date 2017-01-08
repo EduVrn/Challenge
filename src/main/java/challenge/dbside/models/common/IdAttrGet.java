@@ -8,14 +8,29 @@ public class IdAttrGet {
 		return ContextType.getInstance().getTypeAttribute("name").getId();
 	}
 	
+	static public Integer IdDescr() {
+		return ContextType.getInstance().getTypeAttribute("description").getId();
+	}
+	
 	static public Integer IdChalStat() {
 		return ContextType.getInstance().getTypeAttribute("chalStatus").getId();
+	}
+	
+	static public Integer IdChalDefStat() {
+		return ContextType.getInstance().getTypeAttribute("chalDefStatus").getId();
 	}
 	
 	static public Integer IdImgRef() {
 		return ContextType.getInstance().getTypeAttribute("imageref").getId();
 	}
 	
+	static public Integer IdDate() {
+		return ContextType.getInstance().getTypeAttribute("date").getId();
+	}
+	
+	static public Integer IdMessage() {
+		return ContextType.getInstance().getTypeAttribute("message").getId();
+	}
 	
 	//Ref \/
 	
@@ -31,4 +46,16 @@ public class IdAttrGet {
 		return ContextType.getInstance().getTypeAttribute("createdChallenges").getId();
 	}
 	
+	static public Integer refChalIns() {
+		return ContextType.getInstance().getTypeAttribute("challengeInstances").getId();
+	}
+	
+	static public Integer refFriend() {
+		return ContextType.getInstance().getTypeAttribute("friends").getId();
+	}
+	
+	static public Integer refAutorComment() {
+		return ContextType.getInstance().getTypeAttribute("autorComment").getId();
+	}
+
 }

@@ -1,4 +1,4 @@
-package challenge.dbside.models;
+package challenge.dbside.models.status;
 
 public enum ChallengeDefinitionStatus {
     CREATED, ACCEPTED

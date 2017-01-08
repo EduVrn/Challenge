@@ -40,11 +40,11 @@ public class MediaDaoEntity<E extends BaseEntity> implements MediaDao<E> {
     public void save(BaseEntity entity) {
     	Integer id = getNextId();
     	entity.setId(id);
-		for (Attribute attr : entity.getDataSourse().getAttributes().values()) {
+		for (Attribute attr : entity.getDataSource().getAttributes().values()) {
 			attr.setEntity_id(id);
 		}
     	
-    	em.persist(entity.getDataSourse());
+    	em.persist(entity.getDataSource());
     }
 
     @Override
@@ -68,12 +68,21 @@ public class MediaDaoEntity<E extends BaseEntity> implements MediaDao<E> {
 
     @Override
     public void delete(BaseEntity entity) {
-        em.remove(em.merge(entity.getDataSourse()));
+    	String hqlDelete = "delete from DBSource where entity_id = :id";
+    	int deletedEntities = em.createQuery( hqlDelete )
+                .setParameter( "id", entity.getId() )
+                .executeUpdate();
+    	
+    	/*TypedQuery<DBSource> query = em.createQuery("delete from " + DBSource.class.getSimpleName() 
+    			+ " where entity_id=" + entity.getId() + "");
+    	query.executeUpdate();*/
+    	
+        //em.remove(em.merge(entity.getDataSource()));
     }
 
     @Override
     public void update(BaseEntity entity) {
-        em.merge(entity.getDataSourse());
+        em.merge(entity.getDataSource());
     }
 
     @Override
