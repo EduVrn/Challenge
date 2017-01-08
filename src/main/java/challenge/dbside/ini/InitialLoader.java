@@ -145,22 +145,6 @@ public class InitialLoader {
 
 	public void init() {
 
-		/*System.out.println("???????????????????????????");
-    	DBSource b1 = new DBSource("name1", "surname1");
-    	DBSource b2 = new DBSource("name2", "surname2");
-    	DBSource b3 = new DBSource("name3", "surname3");
-    	DBSource b4 = new DBSource("name4", "surname4");
-    	serviceEntityInit.save(b1);
-    	serviceEntityInit.save(b2);
-    	serviceEntityInit.save(b3);
-    	serviceEntityInit.save(b4);
-    	//b1.addChidlren(b2);
-    	b1.addChidlren(b3);
-    	b1.addRelation(1, b2);
-    	b1.addRelation(1, b4);
-    	serviceEntityInit.update(b1);
-    	System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");*/
-
 		ChallengeDefinition chalDef1 = new ChallengeDefinition();
 		chalDef1.setName("Make something");
 		chalDef1.setDescription("Hi, I'm first. Selected me!");
@@ -185,18 +169,13 @@ public class InitialLoader {
 		serviceEntityInit.save(chalDef2);
 		user1.addChallenge(chalDef1);
 		user1.addChallenge(chalDef2);
-		
-		//serviceEntityInit.update(chalDef1);
-		//serviceEntityInit.update(chalDef2);
-		
+
 		Comment com = new Comment();
 		com.setMessage("asg");
 		com.setDate(new Date());
 		serviceEntityInit.save(com);
 		
-		//user1.getDataSourse().addChidlren(com.getDataSourse());
-		//user1.getDataSourse().addChidlren(chalDef1.getDataSourse());
-		//user1.addChallenge(chalDef1);
+
 		serviceEntityInit.update(user1);
 		
 		
@@ -277,54 +256,6 @@ public class InitialLoader {
 			ex.printStackTrace();
 		}
 
-		/*  Set set = new HashSet();
-        set.add(chalInstance1);
-        set.add(chalUnstance2);
-        chalDef2.setChildren(set);
-        chalInstance1.setParent(chalDef2);
-        chalUnstance2.setParent(chalDef2);
-        serviceEntityInit.update(chalDef2);
-
-        user1.addAcceptedChallenge(chalInstance1);
-        user1.addAcceptedChallenge(chalUnstance2);
-       serviceEntityInit.update(user1);
-
-        User user2 = new User();
-        // serviceEntityInit.save(user2);
-        user2.setName("user2");
-//        user2.addAcceptedChallenge(chal1);
-        //      user2.addAcceptedChallenge(chal2);
-        user2.addFriend(user1);
-        //   user2.addAcceptedChallenge(chal2);
-        // user2.addChallenge(chal2);
-//        serviceEntityInit.save(user2);
-
-        User user3 = new User();
-        user3.setName("user3");
-        serviceEntityInit.save(user3);
-
-        User user4 = new User();
-        user4.setName("name4");
-        serviceEntityInit.save(user4);
-
-        user1.setName("User1");
-       // serviceEntityInit.update(user1);
-
-
-       /* Set userSet = new HashSet();
-        userSet.add(user1);
-        userSet.add(user4);
-        user2.setChildren(userSet);
-        user1.setParent(user2);
-        user4.setParent(user2); 
-        serviceEntityInit.update(user2);*/
-		/*    for (BaseEntity obj : chalDef2.getChildren()) {
-            System.out.println(((ChallengeInstance) obj).getAcceptor().getName());
-        }
-
-        user1.getAcceptedChallenges().forEach((c) -> {
-            System.out.println(((ChallengeInstance) c).getName());
-        });
-		 */
+		
 	}
 }

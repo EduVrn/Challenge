@@ -128,21 +128,6 @@ public class User extends BaseEntity implements Commentable {
 		List<ChallengeInstance> requests = getChallengeRequests();		
 		if (requests.contains(chal)) {		
 			getDataSource().getRelations_l().remove(IdAttrGet.refAcceptedChalIns());
-			
-			/*remove(getDataSource().getRelations_l(), 
-					IdAttrGet.refAcceptedChalIns(), chal.getDataSource());*/
-			
-//getDataSource().getRelations_l().put(IdAttrGet.refAcceptorChalIns(), acceptor.getDataSource());			
-			//TODO: this variant don't work, because bike :-) 
-			//getDataSource().getRelations_l().remove(IdAttrGet.refAcceptedChalIns(), chal.getDataSource());
-			/*((MultiHashMap)(getDataSource().getRelations_l())).remove(IdAttrGet.refAcceptedChalIns(), chal.getDataSource());
-			try {
-				MultiHashMap.class.getDeclaredMethod("remove", Object.class, Object.class)
-					.invoke(getDataSource().getRelations_l(), IdAttrGet.refAcceptedChalIns(), chal.getDataSource());
-			}
-			catch(Exception ex) {
-				ex.printStackTrace();
-			}*/
 		}
 	}
 

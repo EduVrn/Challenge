@@ -228,6 +228,7 @@ public class SocialControllerUtil {
         
        
         try {
+        		      //(ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class)
         	challenge = (ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class); 
         }
         catch(Exception ex) {
@@ -302,16 +303,26 @@ public class SocialControllerUtil {
         	ex.printStackTrace();
         	parentComment = new Comment();
         }
+        
+        
+        comment.setParent(parentComment);
         comment.setDate(new Date());
+        comment.setAuthor(curDBUser);
         serviceEntity.save(comment);
 
         //TODO: change it
         /*
         parentComment.addChild(comment);*/
-        serviceEntity.update(parentComment);
+        //parentComment.addComment(comment);
 
-        curDBUser.addComment(comment);
-        serviceEntity.update(curDBUser);
+        serviceEntity.update(parentComment);
+        
+
+        //Comment commentT = (Comment)serviceEntity.findById(parentComment.getId(), Comment.class);
+        
+        
+        //curDBUser.addComment(comment);
+        //serviceEntity.update(curDBUser);
     }
 
     public void setModelForNewChallenge(HttpServletRequest request, Principal currentUser, Model model) {
@@ -419,12 +430,9 @@ public class SocialControllerUtil {
         if (accept) {
             user.acceptChallenge(chalToAccept);
         } else {
-            //user.declineChallenge(chalToAccept);
-            
             serviceEntity.delete(chalToAccept);
         }
         serviceEntity.update(user);
-        //serviceEntity.update(chalToAccept);
 
         try {
         	User user1 = (User)serviceEntity.findById(user.getId(), User.class);

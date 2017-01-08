@@ -15,7 +15,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 
-public class Comment extends BaseEntity { //TODO: add implements Commentable ???
+public class Comment extends BaseEntity implements Commentable { //TODO: add implements Commentable ???
 
     public Comment() {
         super(Comment.class.getSimpleName());
@@ -50,8 +50,6 @@ public class Comment extends BaseEntity { //TODO: add implements Commentable ???
     public void setDate(Date date) {
         getDataSource().getAttributes().get(IdAttrGet.IdDate()).setDateValue(date);
     }
-
-    
     
     public int getSubCommentsCount() {
         int result = 0;
@@ -64,11 +62,17 @@ public class Comment extends BaseEntity { //TODO: add implements Commentable ???
         return result;
     }
 
-    public List<Comment> getComments() {    	
+    public void setParent(Comment comment) {
+    	//TODO: see it
+    	getDataSource().setParent(comment.getDataSource());
+    }
+    
+    
+    /*public List<Comment> getComments() {    	
         List<Comment> comments = new ArrayList<>();
         getDataSource().getChildren().forEach((commentDB) -> {
         	comments.add(new Comment(commentDB));
         });
         return comments;
-    }
+    }*/
 }
