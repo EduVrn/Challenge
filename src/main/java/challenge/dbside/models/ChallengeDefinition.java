@@ -74,7 +74,8 @@ public class ChallengeDefinition extends BaseEntity implements Commentable {
     public Date getDate()  {
         try {
             DateFormat df = new SimpleDateFormat("EEE MMM dd kk:mm:ss z yyyy", Locale.ENGLISH);
-            Date result = df.parse(getDataSource().getAttributes().get(IdAttrGet.IdDate()).getValue());
+            String ddt = getDataSource().getAttributes().get(IdAttrGet.IdDate()).getValue();
+            Date result = df.parse(ddt);
             return result;
         } catch (Exception ex) {
         	ex.printStackTrace();

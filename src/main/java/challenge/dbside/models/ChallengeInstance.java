@@ -5,6 +5,8 @@ import challenge.dbside.models.common.IdAttrGet;
 import challenge.dbside.models.dbentity.DBSource;
 import challenge.dbside.models.status.ChallengeStatus;
 
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -48,13 +50,14 @@ public class ChallengeInstance extends BaseEntity {
         getDataSource().getAttributes().get(IdAttrGet.IdName()).setValue(name);
     }
 
-    public User getAcceptor() {        
-    	return (User)getDataSource().getRelations_l().get(IdAttrGet.refAcceptorChalIns());
+    public User getAcceptor() {
+    	DBSource userDB = (DBSource)(((List<DBSource>)getDataSource().getRelations_r().get(IdAttrGet.refAcceptedChalIns())).get(0));
+    	return new User(userDB);
     }
 
     public void setAcceptor(User acceptor) {    	
-    	getDataSource().getRelations_l().remove(IdAttrGet.refAcceptorChalIns());
-    	getDataSource().getRelations_l().put(IdAttrGet.refAcceptorChalIns(), acceptor.getDataSource());
+    	getDataSource().getRelations_r().remove(IdAttrGet.refChalIns());
+    	getDataSource().getRelations_r().put(IdAttrGet.refChalIns(), acceptor.getDataSource());
     }
     
     public ChallengeStatus getStatus() {

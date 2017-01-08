@@ -126,13 +126,13 @@ public class UsersDao {
 		serviceEntity.save(user);
 
 		
-		/*user.setFriends(friendsCandidate);
+		user.setFriends(friendsCandidate);
 		user.addChallenge(chalDef1);
 		user.addChallenge(chalDef2);
 		user.addChallenge(chalDef3);
-		user.addChallenge(chalDef4);*/
+		user.addChallenge(chalDef4);
 		
-		//serviceEntity.update(user);
+		serviceEntity.update(user);
 
 		//
 
@@ -150,23 +150,12 @@ public class UsersDao {
 		chalInstance2.setStatus(ChallengeStatus.AWAITING);
 		serviceEntity.save(chalInstance2);
 
-		/*Set set = new HashSet();
-		set.add(chalInstance1);
-		set.add(chalInstance2);*/
 
-		//chalDef1.setChildren(set);
-		//serviceEntity.update(chalDef1);
-		//  chalInstance1.setParent(chalDef1);
-		//chalUnstance2.setParent(chalDef1);
-		//serviceEntity.update(chalInstance1);
-		//serviceEntity.update(chalUnstance2);
+
 		
 		user.addAcceptedChallenge(chalInstance1);
 		user.addAcceptedChallenge(chalInstance2);
 		serviceEntity.update(user);
-
-		/*serviceEntity.update(chalInstance1);
-		serviceEntity.update(chalInstance2);*/
 
 
 		User user1 = new User();
@@ -174,7 +163,7 @@ public class UsersDao {
 		user1.setImageRef("AvaDefault.JPG");
 		serviceEntity.save(user1);
 
-		//user.setFriends(friendsCandidate);
+		user.setFriends(friendsCandidate);
 
 		serviceEntity.update(user);
 
