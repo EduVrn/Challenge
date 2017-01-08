@@ -5,155 +5,157 @@ import java.util.*;
 import javax.persistence.*;
 
 import challenge.dbside.ini.ContextType;
+import challenge.dbside.models.common.IdAttrGet;
+import challenge.dbside.models.dbentity.Attribute;
+import challenge.dbside.models.dbentity.DBSource;
+import challenge.dbside.models.ini.TypeOfAttribute;
+import challenge.dbside.models.status.ChallengeDefinitionStatus;
+import challenge.dbside.models.status.ChallengeStatus;
 
+import org.apache.commons.collections.MultiHashMap;
+import org.apache.commons.collections.MultiMap;
 import org.hibernate.annotations.Where;
 
-@Entity
-@Table(name = "entities")
-//@DiscriminatorValue(value="User")
-public class User extends BaseEntity {
 
-    public User() {
-        super(User.class.getSimpleName());
+public class User extends BaseEntity implements Commentable {
 
-        listOfChallenges = new ArrayList<>();
-        listOfAcceptedChallenges = new ArrayList<>();
-        friends = new ArrayList<>();
-        comments = new ArrayList<>();
-    }
+	public User() {
+		super(User.class.getSimpleName());
+	}
 
-    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Where(clause = "type_of_entity = 2")
-    private List<ChallengeDefinition> listOfChallenges;
+	public User(DBSource dataSource) {
+		super(dataSource);
+	}
 
-    @OneToMany(mappedBy = "acceptor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Where(clause = "type_of_entity = 3")
-    private List<ChallengeInstance> listOfAcceptedChallenges;
+	public void setFriends(List<User> users) {
+		getDataSource().getRelations_l().remove(IdAttrGet.refFriend());		
+		users.forEach((user)->{
+			getDataSource().getRelations_l().put(IdAttrGet.refFriend(), user.getDataSource());
+		});
+	}
 
-    //TODO: EAGER fetch type
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "relationship",
-            joinColumns = @JoinColumn(name = "entity_id1", referencedColumnName = "entity_id"),
-            inverseJoinColumns = @JoinColumn(name = "entity_id2", referencedColumnName = "entity_id")
-    )
-    @Where(clause = "type_of_entity = 1")
-    private List<User> friends;
-    
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Where(clause = "type_of_entity = 4")
-    private List<Comment> comments;
+	public List<User> getFriends() {
+		List<User> friends = new ArrayList<User>(); 
+		List<DBSource> list = (List<DBSource>)getDataSource().getRelations_l().get(IdAttrGet.refFriend());
+		if(list != null) {
+			list.forEach((userDB)-> {
+				friends.add(new User(userDB));
+			});
+		}
+		return friends;
+	}
 
-    public List<Comment> getComments() {
-        return comments;
-    }
+	public void addFriend(User user) {
+		getDataSource().getRelations_l().put(IdAttrGet.refFriend(), user.getDataSource());
+	}
 
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
-    
-    public void addComment(Comment comment) {
-        comments.add(comment);
-        comment.setAuthor(this);
-    }
+	public String getName() {
+		return getDataSource().getAttributes().get(IdAttrGet.IdName()).getValue();
+	}
 
-    public void setFriends(List<User> users) {
-        this.friends = users;
-    }
+	public void setName(String name) {
+		getDataSource().getAttributes().get(IdAttrGet.IdName()).setValue(name);
+	}
 
-    public List<User> getFriends() {
-        return this.friends;
-    }
+	public void addChallenge(ChallengeDefinition chal) {
+		//chal.setCreator(this);
+		//chal.setStatus(ChallengeDefinitionStatus.CREATED);
+		getDataSource().getRelations_l().put(IdAttrGet.refCreatedChal(), chal.getDataSource());
+	}
 
-    public void addFriend(User user) {
-        friends.add(user);
-    }
+	public List<ChallengeDefinition> getChallenges() {		
+		List<ChallengeDefinition> createdChallenges = new ArrayList<>();
 
-    public String getName() {
-        return this.getAttributes()
-                .get(ContextType.getInstance().getTypeAttribute("name").getId()).getValue();
-    }
+		List<DBSource> list = (List<DBSource>)getDataSource().getRelations_l().get(IdAttrGet.refCreatedChal());
+		if(list != null) {
+			list.forEach((createdChalDB) ->{
+				createdChallenges.add(new ChallengeDefinition(createdChalDB));
+			});
+		}
+		return createdChallenges;		
+	}
 
-    public void setName(String name) {
-        this.getAttributes()
-                .get(ContextType.getInstance().getTypeAttribute("name").getId()).setValue(name);
-    }
+	public void addAcceptedChallenge(ChallengeInstance chal) {
+		//chal.setAcceptor(this);
+		getDataSource().getRelations_l().put(IdAttrGet.refAcceptedChalIns(), chal.getDataSource());
+	}
 
-    public void addChallenge(ChallengeDefinition chal) {
-        chal.setCreator(this);
-        chal.setStatus(ChallengeDefinitionStatus.CREATED);
-        listOfChallenges.add(chal);
-    }
 
-    public void addAcceptedChallenge(ChallengeInstance chal) {
-        chal.setAcceptor(this);
-        listOfAcceptedChallenges.add(chal);
-    }
+	public List<ChallengeInstance> getAcceptedChallenges() {
+		List<ChallengeInstance> accepted = new ArrayList<>();
 
-    public List<ChallengeDefinition> getChallenges() {
-        return listOfChallenges;
-    }
+		List<DBSource> list = (List<DBSource>)getDataSource().getRelations_l().get(IdAttrGet.refAcceptedChalIns());
+		if(list != null) {
+			list.forEach((chalInsDB) ->{
+				ChallengeInstance ch = new ChallengeInstance(chalInsDB);
+				if(ch.getStatus() == ChallengeStatus.ACCEPTED) {
+					accepted.add(ch);
+				}
+			});
+		}
+		return accepted;
+	}
 
-    public List<ChallengeInstance> getAcceptedChallenges() {
-        List<ChallengeInstance> accepted = new ArrayList<>();
-        listOfAcceptedChallenges.forEach(chal -> {
-            if (chal.getStatus() == ChallengeStatus.ACCEPTED) {
-                accepted.add(chal);
-            }
-        });
-        return accepted;
-    }
+	public List<ChallengeInstance> getChallengeRequests() {
+		List<ChallengeInstance> requests = new ArrayList<>();
 
-    public List<ChallengeInstance> getChallengeRequests() {
-        List<ChallengeInstance> requests = new ArrayList<>();
-        listOfAcceptedChallenges.forEach(chal -> {
-            if (chal.getStatus() == ChallengeStatus.AWAITING) {
-                requests.add(chal);
-            }
-        });
-        return requests;
-    }
+		List<DBSource> list = (List<DBSource>)getDataSource().getRelations_l().get(IdAttrGet.refAcceptedChalIns());
+		if(list != null) {
+			list.forEach((chalInsDB) ->{
+				ChallengeInstance ch = new ChallengeInstance(chalInsDB);
+				if(ch.getStatus() == ChallengeStatus.AWAITING) {
+					requests.add(ch);
+				}
+			});
+		}
+		return requests;
+	}
 
-    public void acceptChallenge(ChallengeInstance chal) {
-        List<ChallengeInstance> requests = getChallengeRequests();
-        if (requests.contains(chal)) {
-            chal.setStatus(ChallengeStatus.ACCEPTED);
-            chal.setAcceptor(this);
-        }
-    }
+	public void acceptChallenge(ChallengeInstance chal) {
+		List<ChallengeInstance> requests = getChallengeRequests();
+		
+		System.out.println(chal.getId());
+		for(ChallengeInstance c : requests) {
+			System.out.println(c.getId());
+		}
+		
+		if (requests.contains(chal)) {
+			chal.setStatus(ChallengeStatus.ACCEPTED);
+			chal.setAcceptor(this);
+		}
+	}
 
-    public void declineChallenge(ChallengeInstance chal) {
-        List<ChallengeInstance> requests = getChallengeRequests();
-        if (requests.contains(chal)) {
-            listOfAcceptedChallenges.remove(chal);
-            chal.setAcceptor(null);
-            chal.setParent(null);
-        }
-    }
+	public void declineChallenge(ChallengeInstance chal) {
+		List<ChallengeInstance> requests = getChallengeRequests();		
+		if (requests.contains(chal)) {		
+			getDataSource().getRelations_l().remove(IdAttrGet.refAcceptedChalIns());
+		}
+	}
 
-    @Override
-    public String toString() {
-        String entityInfo = super.toString();
-        StringBuilder info = new StringBuilder();
-        info.append(entityInfo);
-        info.append("\nFriends: \n");
-        friends.forEach((u) -> {
+	@Override
+	public String toString() {
+		String entityInfo = super.toString();
+		StringBuilder info = new StringBuilder();
+		info.append(entityInfo);
+		info.append("\nFriends: \n");
+
+		/*friends.forEach((u) -> {
+
             info.append("\nid: ").append(u.getId()).append(" name:").append(u.getName());
         });
-        info.append("\nChallenges: \n");
-        listOfChallenges.forEach((c) -> {
+        info.append("\nChallenges: \n");*/
+		/*listOfChallenges.forEach((c) -> {
             info.append("\nid: ").append(c.getId()).append(" name: ").append(c.getName());
-        });
-        return info.toString();
-    }
+        });*/
+		return info.toString();
+	}
 
-    public void setImageRef(String imageRef) {
-        this.
-                getAttributes().get(ContextType.getInstance().getTypeAttribute("imageref").getId()).setValue(imageRef);
-    }
+	public void setImageRef(String imageRef) {
+		getDataSource().getAttributes().get(IdAttrGet.IdImgRef()).setValue(imageRef);
+	}
 
-    public String getImageRef() {
-        return "../images/" + this.getAttributes()
-                .get(ContextType.getInstance().getTypeAttribute("imageref").getId()).getValue();
-    }
+	public String getImageRef() {
+		return "../images/" + getDataSource().getAttributes().get(IdAttrGet.IdImgRef()).getValue();
+	}
 
 }

@@ -1,4 +1,4 @@
-package challenge.dbside.models;
+package challenge.dbside.models.dbentity;
 
 import java.io.Serializable;
 import java.util.Date;

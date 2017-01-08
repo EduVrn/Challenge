@@ -42,5 +42,81 @@ create table authorities (
     constraint fk_authorities_users foreign key(username) references users(username));
     create unique index ix_auth_username on authorities (username,authority);
 
+    
+    
+    
+    
+    
+    
+    DROP TABLE public.entities;
+    
+    CREATE TABLE public.entities
+(
+  entity_id integer NOT NULL,
+  type_of_entity integer,
+  parent_id integer,
+  CONSTRAINT entities_pkey PRIMARY KEY (entity_id),
+  CONSTRAINT fk_2f7wt9plqgav1h2bu3vprtodb FOREIGN KEY (parent_id)
+      REFERENCES public.entities (entity_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE CASCADE
+      
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public.entities
+  OWNER TO postgres;
+
+  -- Table: public."values"
+
+ DROP TABLE public."values";
+
+CREATE TABLE public."values"
+(
+  attribute_id integer NOT NULL,
+  entity_id integer NOT NULL,
+  date_value timestamp without time zone,
+  int_value integer,
+  text_value character varying(255),
+  CONSTRAINT values_pkey PRIMARY KEY (attribute_id, entity_id),
+  CONSTRAINT fk_re5hfjwgt2xf596qgl4tvpdj8 FOREIGN KEY (entity_id)
+      REFERENCES public.entities (entity_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE CASCADE
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public."values"
+  OWNER TO postgres;
+
+    
+    
+-- Table: public.relationship2
+-- remove it outside
+
+-- DROP TABLE public.relationship2;
+DROP TABLE public.relationship2;
+    
+CREATE TABLE public.relationship2
+(
+  entity_id1 integer NOT NULL,
+  entity_id2 integer NOT NULL,
+  attribute_id integer NOT NULL,
+  CONSTRAINT relationship2_pkey PRIMARY KEY (entity_id1, entity_id2, attribute_id),
+  CONSTRAINT fk_1mujrn3bp408pujeeg4skmwaw FOREIGN KEY (entity_id1)
+      REFERENCES public.entities (entity_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_7ml7ux1mvkqa295fvh26epds1 FOREIGN KEY (entity_id2)
+      REFERENCES public.entities (entity_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public.relationship2
+  OWNER TO postgres;
+  
+  
+
 
 create sequence serial start 1;

@@ -1,7 +1,6 @@
 package challenge;
 
 import challenge.dbside.ini.InitialLoader;
-import challenge.dbside.models.BaseEntity;
 import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.User;
 import java.util.HashSet;
@@ -15,12 +14,19 @@ import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.ImportResource;
+
 import challenge.dbside.services.ini.MediaService;
 import java.util.Arrays;
 
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan
+/*@ImportResource({
+	//"/home/serg/eclipse/workspace_challenge/Challenge/src/main/resources/Some.hgm.xml"
+	"classpath:/BaseEntity.hbm.xml"
+})*/
 public class Application extends SpringBootServletInitializer {
 
     private static InitialLoader initiator;
@@ -40,8 +46,8 @@ public class Application extends SpringBootServletInitializer {
 
         //Init();
         // SpringApplication.run(Application.class, args);
-        ApplicationContext ctx = SpringApplication.run(Application.class, args);
-
+        ApplicationContext ctx = SpringApplication.run(Application.class, args);               
+        
         System.out.println("All created beans:");
 
         String[] beanNames = ctx.getBeanDefinitionNames();
