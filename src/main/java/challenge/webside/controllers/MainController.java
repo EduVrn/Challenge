@@ -6,6 +6,7 @@ import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.Comment;
 import challenge.dbside.models.User;
 import challenge.dbside.services.ini.MediaService;
+import challenge.webside.authorization.UserActionsProvider;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.util.MultiValueMap;
@@ -70,7 +71,8 @@ public class MainController {
     @RequestMapping(value = "challenge/update", method = GET, produces = "text/plain;charset=UTF-8")
     public String updateChal(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int id) {      
         util.setModelForChallengeShow(id, request, currentUser, model);
-        return util.canUpdateChallenge(id, request, currentUser, model) ? 
+        return UserActionsProvider.canUpdateChallenge(util.getSignedUpUser(request, currentUser),
+                (ChallengeDefinition)serviceEntity.findById(id, ChallengeDefinition.class)) ? 
                 "chalNewOrUpdate" : "chalShow";
     }
 

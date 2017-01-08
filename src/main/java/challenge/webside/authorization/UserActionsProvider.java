@@ -42,4 +42,7 @@ public class UserActionsProvider {
         return actions;
     }
     
+    public static boolean canUpdateChallenge(User user, ChallengeDefinition challenge) {
+        return getActionsForChallengeDefinition(user, challenge).contains(Action.EDIT_CHALLENGE);
+    }
 }

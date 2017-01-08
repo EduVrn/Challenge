@@ -25,12 +25,10 @@ import java.sql.SQLException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
 import challenge.dbside.services.ini.MediaService;
-import challenge.webside.authorization.Action;
 import challenge.webside.authorization.UserActionsProvider;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
-import java.util.Set;
 
 @Component
 public class SocialControllerUtil {
@@ -128,13 +126,6 @@ public class SocialControllerUtil {
         }
         model.addAttribute("commentsCount", commentsCount);
         model.addAttribute("comments", ((ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class)).getComments());
-    }
-
-    public boolean canUpdateChallenge(int chalId, HttpServletRequest request, Principal currentUser, Model model) {
-        ChallengeDefinition chalDef = (ChallengeDefinition) serviceEntity.findById(chalId, ChallengeDefinition.class);
-        User user = getSignedUpUser(request, currentUser);
-        Set<Action> actions = UserActionsProvider.getActionsForChallengeDefinition(user, chalDef);
-        return actions.contains(Action.EDIT_CHALLENGE);
     }
 
     public void setModelForNewOrUpdatedChalShow(ChallengeDefinition challenge, HttpServletRequest request, Principal currentUser, Model model) {
@@ -249,7 +240,7 @@ public class SocialControllerUtil {
         }
     }
 
-    private User getSignedUpUser(HttpServletRequest request, Principal currentUser) {
+    public User getSignedUpUser(HttpServletRequest request, Principal currentUser) {
         return (User) serviceEntity.findById(getUserProfile(request.getSession(),
                 currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
     }
