@@ -1,6 +1,7 @@
 package challenge.dbside.models.dbentity.mmaptype;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,6 +13,8 @@ import java.util.Set;
 
 import org.apache.commons.collections.DefaultMapEntry;
 import org.apache.commons.collections.MultiHashMap;
+//import org.apache.commons.collections.DefaultMapEntry;
+//import org.apache.commons.collections.MultiHashMap;
 import org.apache.commons.collections.MultiMap;
 import org.hibernate.EntityMode;
 import org.hibernate.HibernateException;
@@ -19,6 +22,11 @@ import org.hibernate.collection.internal.PersistentMap;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.persister.collection.CollectionPersister;
 import org.hibernate.type.Type;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
+
+import challenge.dbside.models.dbentity.DBSource;
 
 //@SuppressWarnings( "unchecked" )
 @SuppressWarnings("serial")
@@ -64,7 +72,7 @@ public class PersistentMultiMap extends PersistentMap implements MultiMap {
         }
 
         public void operate() {
-            ((MultiMap) map).remove(key, item);
+            ((ListMultimap) map).remove(key, item);
         }
 
     }
@@ -95,6 +103,7 @@ public class PersistentMultiMap extends PersistentMap implements MultiMap {
             if (key == null) {
                 throw new NoSuchElementException();
             } else {
+            	
                 DefaultMapEntry result = new DefaultMapEntry(key, current.next());
                 if (!current.hasNext()) {
                     move();
@@ -123,9 +132,8 @@ public class PersistentMultiMap extends PersistentMap implements MultiMap {
 
     @Override
     public Serializable getSnapshot(CollectionPersister persister) throws HibernateException {
-        //EntityMode entityMode = getSession().getEntityMode();
 
-        MultiHashMap clonedMap = new MultiHashMap(map.size());
+    	MultiHashMap clonedMap = new MultiHashMap(map.size());
         Iterator iter = map.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry e = (Map.Entry) iter.next();
@@ -176,10 +184,14 @@ public class PersistentMultiMap extends PersistentMap implements MultiMap {
             Map.Entry entry = (Entry) i.next();
             Collection oldState = (Collection) entry.getValue();
             Collection newState = (Collection) map.get(entry.getKey());
+            if(newState == null) {
+            	newState = (Collection)new ArrayList();
+            }
+            
             for (Iterator j = oldState.iterator(); j.hasNext();) {
                 Object element = j.next();
                 if (!(newState.contains(element))) {
-                    result.add(element);
+                    result.add(((DBSource)element).getId());
                 }
             }
         }

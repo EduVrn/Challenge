@@ -10,6 +10,7 @@ import org.apache.commons.collections.MultiHashMap;
 import org.apache.commons.collections.MultiMap;
 
 import challenge.dbside.ini.ContextType;
+import challenge.dbside.models.ini.TypeAttribute;
 import challenge.dbside.models.ini.TypeOfEntity;
 
 import java.util.ArrayList;
@@ -28,14 +29,16 @@ public class DBSource {
 	private DBSource parent;
 	private Set<DBSource> children;
 
-	private MultiMap relations;
+	private MultiMap relations_l;
+	private MultiMap relations_r;
 
 	public DBSource() {		
 		attributes = new HashMap();
 		children = new HashSet();
-		relations = new MultiHashMap();
+		relations_l = new MultiHashMap();
+		relations_r = new MultiHashMap();
 
-		relations.put(-1, this);
+		relations_l.put(-1, this);
 
 	}
 
@@ -47,21 +50,30 @@ public class DBSource {
 		entityType = type.getTypeEntityID();        
 
 		attributes = new HashMap();
+		relations_l = new MultiHashMap();
+		relations_r = new MultiHashMap();
+		
 		type.getAttributes().forEach((t) -> {
-			Attribute attr = new Attribute(t.getId());
-			attributes.put(t.getId(), attr);
-		});		
-
-		relations = new MultiHashMap();
-		relations.put(-1, this);        
+			if(t.getType_of_attribute() != TypeAttribute.REF_ONE_DIRECTIONAL.getValue() 
+					&& t.getType_of_attribute() != TypeAttribute.REF_TWO_DIRECTIONAL.getValue()) {
+				Attribute attr = new Attribute(t.getId());
+				attributes.put(t.getId(), attr);
+			}
+			else {
+				
+			}
+		});
+		
+		relations_l.put(-1, this);        
 	}
 
 	public DBSource(String name, String surname) {		
 		attributes = new HashMap();
 		children = new HashSet();
-		relations = new MultiHashMap();
-
-		relations.put(-1, this);
+		relations_l = new MultiHashMap();
+		relations_r = new MultiHashMap();
+		
+		relations_l.put(-1, this);
 		entityType = 1;
 
 
@@ -120,20 +132,30 @@ public class DBSource {
 
 
 
-
-
-	public MultiMap getRelations() {
-		return relations;
+	public MultiMap getRelations_l() {
+		return relations_l;
 	}
 
-	public void setRelations(MultiMap relations) {
-		this.relations = relations;
+	public void setRelations_l(MultiMap relations_l) {
+		this.relations_l = relations_l;
 	}
 
-	public void addRelation(Integer key, DBSource entity) {
-		this.relations.put(key, entity);
+	public MultiMap getRelations_r() {
+		return relations_r;
 	}
 
+	public void setRelations_r(MultiMap relations_r) {
+		this.relations_r = relations_r;
+	}
+
+	public void addRelation_l(Integer key, DBSource entity) {
+		relations_l.put(key, entity);
+	}
+
+	public void addRelation_r(Integer key, DBSource entity) {
+		relations_r.put(key, entity);
+	}
+	
 	public Integer getId() {
 		return id;
 	}
@@ -142,8 +164,6 @@ public class DBSource {
 		this.id = id;
 	}
 
-
-
 	public Map<Integer, Attribute> getAttributes() {
 		return attributes;
 	}
@@ -151,8 +171,5 @@ public class DBSource {
 	public void setAttributes(Map<Integer, Attribute> attributes) {
 		this.attributes = attributes;
 	}
-
-
-
 
 }

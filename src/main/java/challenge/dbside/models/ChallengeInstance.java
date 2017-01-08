@@ -3,6 +3,7 @@ package challenge.dbside.models;
 import challenge.dbside.ini.ContextType;
 import challenge.dbside.models.common.IdAttrGet;
 import challenge.dbside.models.dbentity.DBSource;
+import challenge.dbside.models.status.ChallengeStatus;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -28,37 +29,39 @@ public class ChallengeInstance extends BaseEntity {
         setName(chalDef.getName());
     }
     
+    
     public ChallengeDefinition getChallengeRoot() {
-    	return new ChallengeDefinition(this.getDataSourse().getParent());
+    	return new ChallengeDefinition((DBSource)getDataSource().getRelations_r().get(IdAttrGet.refAcceptorChalIns()));
     }
     
     public void setChallengeRoot(ChallengeDefinition rootChallenge) {
-    	getDataSourse().setParent(rootChallenge.getDataSourse().getParent());
+    	getDataSource().getRelations_r().remove(IdAttrGet.refAcceptorChalIns());
+    	getDataSource().getRelations_r().put(IdAttrGet.refAcceptorChalIns(), rootChallenge.getDataSource());
     }
     
     
     public String getName() {     
-        return (String)getDataSourse().getAttributes().get(IdAttrGet.IdName()).getValue();
+        return (String)getDataSource().getAttributes().get(IdAttrGet.IdName()).getValue();
     }
 
     public void setName(String name) {
-        getDataSourse().getAttributes().get(IdAttrGet.IdName()).setValue(name);
+        getDataSource().getAttributes().get(IdAttrGet.IdName()).setValue(name);
     }
 
     public User getAcceptor() {        
-    	return (User)getDataSourse().getRelations().get(IdAttrGet.refAcceptorChalIns());
+    	return (User)getDataSource().getRelations_l().get(IdAttrGet.refAcceptorChalIns());
     }
 
     public void setAcceptor(User acceptor) {    	
-    	getDataSourse().getRelations().remove(IdAttrGet.refAcceptorChalIns());
-    	getDataSourse().getRelations().put(IdAttrGet.refAcceptorChalIns(), acceptor.getDataSourse());
+    	getDataSource().getRelations_l().remove(IdAttrGet.refAcceptorChalIns());
+    	getDataSource().getRelations_l().put(IdAttrGet.refAcceptorChalIns(), acceptor.getDataSource());
     }
     
     public ChallengeStatus getStatus() {
-        return ChallengeStatus.valueOf(getDataSourse().getAttributes().get(IdAttrGet.IdChalStat()).getValue());
+        return ChallengeStatus.valueOf(getDataSource().getAttributes().get(IdAttrGet.IdChalStat()).getValue());
     }
     
     public void setStatus(ChallengeStatus status) {
-        getDataSourse().getAttributes().get(IdAttrGet.IdChalStat()).setValue(status.name());
+        getDataSource().getAttributes().get(IdAttrGet.IdChalStat()).setValue(status.name());
     }
 }

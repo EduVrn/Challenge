@@ -1,14 +1,17 @@
 package challenge.dbside.models;
 
-import challenge.dbside.models.dbentity.Attribute;
+import java.util.Collection;
+import java.util.Map;
+
+import org.apache.commons.collections.MultiMap;
+
 import challenge.dbside.models.dbentity.DBSource;
 
 public class BaseEntity {
 
 	private DBSource dataSource;
 	
-	public BaseEntity() {
-		
+	public BaseEntity() {	
 	}
 	
 	public Integer getId() {
@@ -17,18 +20,24 @@ public class BaseEntity {
 	
 	public void setId(Integer id) {
 		dataSource.setId(id);
-		
-
-
 	}
 	
-	/*public BaseEntity(DBSource dataSource) {
-		this.dataSource = dataSource;
-	}*/
-	
-	public DBSource getDataSourse() {
+	public DBSource getDataSource() {
     	return dataSource;
     }
+	
+	/*
+	public Object remove(MultiMap mmap, Object key, Object item) {
+		Collection valuesForKey = (Collection) mmap.get(key);
+		if (valuesForKey == null) {
+            return null;
+        }
+		valuesForKey.remove(item);
+		if (valuesForKey.isEmpty()){
+            ((Map)mmap).remove(key);
+        }
+		return item;
+	}*/
 	
 	public BaseEntity(String nameClass) {
 		dataSource = new DBSource(nameClass);
@@ -36,6 +45,9 @@ public class BaseEntity {
 	
 	public BaseEntity(DBSource dt) {
 		dataSource = dt;
-		
 	}
+	 
+	public boolean equals(Object obj) {
+        return (this.getId() == ((BaseEntity)obj).getId());
+    }
 }

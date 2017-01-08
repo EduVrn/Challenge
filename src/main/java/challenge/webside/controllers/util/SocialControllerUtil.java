@@ -1,11 +1,11 @@
 package challenge.webside.controllers.util;
 
 import challenge.dbside.models.ChallengeDefinition;
-import challenge.dbside.models.ChallengeDefinitionStatus;
 import challenge.dbside.models.ChallengeInstance;
-import challenge.dbside.models.ChallengeStatus;
 import challenge.dbside.models.Comment;
 import challenge.dbside.models.User;
+import challenge.dbside.models.status.ChallengeDefinitionStatus;
+import challenge.dbside.models.status.ChallengeStatus;
 import challenge.webside.dao.UsersDao;
 import challenge.webside.model.UserConnection;
 import challenge.webside.model.UserProfile;
@@ -235,7 +235,9 @@ public class SocialControllerUtil {
         	challenge = new ChallengeDefinition();
         }        
         model.addAttribute("challenge", challenge);
-        model.addAttribute("listOfAcceptors", challenge.getAllAcceptors());
+        
+        List<User> listOfAcceptors = challenge.getAllAcceptors();
+        model.addAttribute("listOfAcceptors", listOfAcceptors);
     }
 
     public void setModelForNewComment(int id, HttpServletRequest request, Principal currentUser, Model model, Comment comment) {
@@ -260,14 +262,26 @@ public class SocialControllerUtil {
         }
         
         comment.setDate(new Date());
+        comment.setAuthor(curDBUser);
         serviceEntity.save(comment);
 
-        //TODO: change it 
-        //currentChallenge.addChild(comment);
+        currentChallenge.addComment(comment);
+        //currentChallenge.setCreator(curDBUser);
         serviceEntity.update(currentChallenge);
-
-        curDBUser.addComment(comment);
-        serviceEntity.update(curDBUser);
+        
+        try {
+        	Comment c = (Comment)serviceEntity.findById(comment.getId(), Comment.class);
+        	User ut = c.getAuthor();
+        	String str = ut.getImageRef();
+        	System.out.println("dd");
+        }
+        catch(Exception ex) {
+        	ex.printStackTrace();
+        }
+        
+        //TODO: what wase it? i'm undestand it ???
+        //curDBUser.addComment(comment);
+        //serviceEntity.update(curDBUser);
     }
 
     public void setModelForNewReply(int id, HttpServletRequest request, Principal currentUser, Model model, Comment comment) {
@@ -405,10 +419,28 @@ public class SocialControllerUtil {
         if (accept) {
             user.acceptChallenge(chalToAccept);
         } else {
-            user.declineChallenge(chalToAccept);
+            //user.declineChallenge(chalToAccept);
+            
+            serviceEntity.delete(chalToAccept);
         }
         serviceEntity.update(user);
+        //serviceEntity.update(chalToAccept);
 
+        try {
+        	User user1 = (User)serviceEntity.findById(user.getId(), User.class);
+        	List<ChallengeInstance> list = user1.getAcceptedChallenges();
+        	
+        	System.out.println(list.size());
+        }
+        catch(Exception ex) {
+        	ex.printStackTrace();
+        }
+        
+        
+        
+        List<ChallengeInstance> list = user.getAcceptedChallenges();
+        
+        
         model.addAttribute("userProfile", user);
         model.addAttribute("listOfDefined", user.getChallenges());
         model.addAttribute("listOfAccepted", user.getAcceptedChallenges());
