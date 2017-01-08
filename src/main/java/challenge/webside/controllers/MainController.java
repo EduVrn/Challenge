@@ -71,8 +71,15 @@ public class MainController {
     @RequestMapping(value = "challenge/update", method = GET, produces = "text/plain;charset=UTF-8")
     public String updateChal(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int id) {      
         util.setModelForChallengeShow(id, request, currentUser, model);
-        return UserActionsProvider.canUpdateChallenge(util.getSignedUpUser(request, currentUser),
-                (ChallengeDefinition)serviceEntity.findById(id, ChallengeDefinition.class)) ? 
+        ChallengeDefinition challenge;
+        try {
+        	challenge = (ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class);
+        } 
+        catch (Exception ex) {
+        	ex.printStackTrace();
+        	challenge = new ChallengeDefinition();
+        }
+        return UserActionsProvider.canUpdateChallenge(util.getSignedUpUser(request, currentUser), challenge) ? 
                 "chalNewOrUpdate" : "chalShow";
     }
 
@@ -201,7 +208,7 @@ public class MainController {
             
             if (users.size() > 0) {
                 Map<Integer, String> usersNames = new HashMap<>();
-                for (User user : users) {                    
+                for (User user : users) {                  
                     usersNames.put(user.getId(), user.getName());
                 }
                 result.setCode("200");

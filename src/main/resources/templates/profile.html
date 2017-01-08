@@ -149,7 +149,7 @@
                                                   action="acceptDefinition" style="display: inline-block;">
                                                 <input type="hidden" name="id" th:value="${challenge.getId()}" />
                                                 <input
-                                                    th:unless="${challenge.getStatus() == T(challenge.dbside.models.ChallengeDefinitionStatus).ACCEPTED}"
+                                                    th:unless="${challenge.getStatus() == T(challenge.dbside.models.status.ChallengeDefinitionStatus).ACCEPTED}"
                                                     id="accept-def" type="submit" class="btn btn-success"
                                                     th:value="#{profileAcceptChalButton}"/>
                                             </form>
