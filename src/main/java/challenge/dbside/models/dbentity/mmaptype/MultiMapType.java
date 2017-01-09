@@ -4,8 +4,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.collections.MultiHashMap;
-import org.apache.commons.collections.MultiMap;
+
+import org.apache.commons.collections4.MultiMap;
+import org.apache.commons.collections4.map.MultiValueMap;
+
+//import org.apache.commons.collections.MultiHashMap;
+//import org.apache.commons.collections.MultiMap;
 import org.hibernate.HibernateException;
 import org.hibernate.collection.internal.PersistentMap;
 import org.hibernate.collection.spi.PersistentCollection;
@@ -35,7 +39,7 @@ public class MultiMapType implements UserCollectionType {
 	}
 
 	public Object instantiate() {
-		return new MultiHashMap();
+		return new MultiValueMap();
 	}
 
 	public PersistentCollection instantiate(SessionImplementor session, CollectionPersister persister) throws HibernateException {
@@ -71,7 +75,7 @@ public class MultiMapType implements UserCollectionType {
 	}
 
 	public Object instantiate(int anticipatedSize) {
-		return new MultiHashMap();
+		return new MultiValueMap();
 	}
 
 

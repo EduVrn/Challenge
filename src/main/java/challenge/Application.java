@@ -42,10 +42,7 @@ public class Application extends SpringBootServletInitializer {
     }
 
     public static void main(String[] args) {
-        //ApplicationContext context = new ClassPathXmlApplicationContext("META-INF/beans.xml");
 
-        //Init();
-        // SpringApplication.run(Application.class, args);
         ApplicationContext ctx = SpringApplication.run(Application.class, args);               
         
         System.out.println("All created beans:");

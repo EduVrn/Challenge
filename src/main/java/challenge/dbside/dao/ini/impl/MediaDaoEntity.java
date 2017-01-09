@@ -12,7 +12,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import challenge.dbside.dao.ini.MediaDao;
 import challenge.dbside.ini.ContextType;
 import challenge.dbside.models.BaseEntity;
-import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.dbentity.Attribute;
 import challenge.dbside.models.dbentity.DBSource;
 
