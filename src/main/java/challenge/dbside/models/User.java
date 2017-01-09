@@ -2,19 +2,12 @@ package challenge.dbside.models;
 
 import java.util.*;
 
-import javax.persistence.*;
 
-import challenge.dbside.ini.ContextType;
 import challenge.dbside.models.common.IdAttrGet;
-import challenge.dbside.models.dbentity.Attribute;
 import challenge.dbside.models.dbentity.DBSource;
-import challenge.dbside.models.ini.TypeOfAttribute;
-import challenge.dbside.models.status.ChallengeDefinitionStatus;
+
 import challenge.dbside.models.status.ChallengeStatus;
 
-import org.apache.commons.collections.MultiHashMap;
-import org.apache.commons.collections.MultiMap;
-import org.hibernate.annotations.Where;
 
 
 public class User extends BaseEntity implements Commentable {

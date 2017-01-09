@@ -1,29 +1,21 @@
 package challenge.dbside.models;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
 
-import challenge.dbside.ini.ContextType;
 import challenge.dbside.models.common.IdAttrGet;
-import challenge.dbside.models.dbentity.Attribute;
 import challenge.dbside.models.dbentity.DBSource;
 import challenge.dbside.models.status.ChallengeDefinitionStatus;
-
 import java.text.DateFormat;
-import java.text.ParseException;
+
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
+
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToOne;
+
+
 
 public class ChallengeDefinition extends BaseEntity implements Commentable {
     

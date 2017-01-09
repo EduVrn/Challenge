@@ -2,19 +2,22 @@ package challenge.dbside.models.dbentity;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.collections.MultiHashMap;
-import org.apache.commons.collections.MultiMap;
+
+
+
+//import org.apache.commons.collections.MultiHashMap;
+//import org.apache.commons.collections.MultiMap;
+
+
+import org.apache.commons.collections4.MultiMap;
+import org.apache.commons.collections4.map.MultiValueMap;
 
 import challenge.dbside.ini.ContextType;
 import challenge.dbside.models.ini.TypeAttribute;
 import challenge.dbside.models.ini.TypeOfEntity;
-
-import java.util.ArrayList;
-
 
 
 public class DBSource {
@@ -35,8 +38,8 @@ public class DBSource {
 	public DBSource() {		
 		attributes = new HashMap();
 		children = new HashSet();
-		relations_l = new MultiHashMap();
-		relations_r = new MultiHashMap();
+		relations_l = new MultiValueMap();
+		relations_r = new MultiValueMap();
 
 		relations_l.put(-1, this);
 		relations_r.put(-3, this);
@@ -51,8 +54,8 @@ public class DBSource {
 		entityType = type.getTypeEntityID();        
 
 		attributes = new HashMap();
-		relations_l = new MultiHashMap();
-		relations_r = new MultiHashMap();
+		relations_l = new MultiValueMap();
+		relations_r = new MultiValueMap();
 		
 		relations_l.put(-1, this);
 		relations_r.put(-3, this);
@@ -72,8 +75,8 @@ public class DBSource {
 	public DBSource(String name, String surname) {		
 		attributes = new HashMap();
 		children = new HashSet();
-		relations_l = new MultiHashMap();
-		relations_r = new MultiHashMap();
+		relations_l = new MultiValueMap();
+		relations_r = new MultiValueMap();
 		
 		relations_l.put(-1, this);
 		relations_r.put(-3, this);

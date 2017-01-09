@@ -11,11 +11,22 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 
-import org.apache.commons.collections.DefaultMapEntry;
+
+
+
+/*import org.apache.commons.collections.DefaultMapEntry;
 import org.apache.commons.collections.MultiHashMap;
-//import org.apache.commons.collections.DefaultMapEntry;
-//import org.apache.commons.collections.MultiHashMap;
-import org.apache.commons.collections.MultiMap;
+
+import org.apache.commons.collections.MultiMap;*/
+
+
+import org.apache.commons.collections4.keyvalue.DefaultMapEntry;
+import org.apache.commons.collections4.MapIterator;
+import org.apache.commons.collections4.MultiMap;
+import org.apache.commons.collections4.map.MultiValueMap;
+
+
+
 import org.hibernate.EntityMode;
 import org.hibernate.HibernateException;
 import org.hibernate.collection.internal.PersistentMap;
@@ -133,7 +144,7 @@ public class PersistentMultiMap extends PersistentMap implements MultiMap {
     @Override
     public Serializable getSnapshot(CollectionPersister persister) throws HibernateException {
 
-    	MultiHashMap clonedMap = new MultiHashMap(map.size());
+    	MultiValueMap clonedMap = new MultiValueMap();
         Iterator iter = map.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry e = (Map.Entry) iter.next();
@@ -222,5 +233,17 @@ public class PersistentMultiMap extends PersistentMap implements MultiMap {
         }
         return false;
     }
+
+	@Override
+	public MapIterator mapIterator() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean removeMapping(Object arg0, Object arg1) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 }

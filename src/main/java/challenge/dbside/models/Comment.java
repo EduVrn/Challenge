@@ -1,18 +1,10 @@
 package challenge.dbside.models;
 
-import challenge.dbside.ini.ContextType;
 import challenge.dbside.models.common.IdAttrGet;
 import challenge.dbside.models.dbentity.DBSource;
-import challenge.dbside.models.ini.TypeOfAttribute;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+
 
 
 public class Comment extends BaseEntity implements Commentable { //TODO: add implements Commentable ???
