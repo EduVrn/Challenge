@@ -59,6 +59,8 @@ dependencies {
     //compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '8.5.8'
 
     testCompile("org.springframework.boot:spring-boot-starter-test")
+    // https://mvnrepository.com/artifact/org.thymeleaf/thymeleaf
+    compile group: 'org.thymeleaf', name: 'thymeleaf', version: '2.1.2.RELEASE'
 }
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'challenge.Application'

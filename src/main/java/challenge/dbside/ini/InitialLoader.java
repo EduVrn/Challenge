@@ -35,7 +35,7 @@ public class InitialLoader {
 
     private void createContext() {
 
-       TypeOfAttribute attrName = new TypeOfAttribute(1, "name", 1);
+        TypeOfAttribute attrName = new TypeOfAttribute(1, "name", 1);
         TypeOfAttribute attrSurname = new TypeOfAttribute(2, "surname", 1);
         TypeOfAttribute attrDate = new TypeOfAttribute(3, "date", 2);
         TypeOfAttribute attrDescription = new TypeOfAttribute(4, "description", 1);
@@ -43,8 +43,6 @@ public class InitialLoader {
         TypeOfAttribute attrChalStatus = new TypeOfAttribute(6, "chalStatus", 1);
         TypeOfAttribute attrChalDefStatus = new TypeOfAttribute(7, "chalDefStatus", 1);
         TypeOfAttribute attrMessage = new TypeOfAttribute(8, "message", 1);
-        
-        // MediaServiceTypeOfAttribute serviceAttr = (MediaServiceTypeOfAttribute) context.getBean("storageServiceTypeOfAttribute");
 
         serviceAttr.save(attrName);
         serviceAttr.save(attrSurname);
@@ -54,8 +52,7 @@ public class InitialLoader {
         serviceAttr.save(attrChalStatus);
         serviceAttr.save(attrChalDefStatus);
         serviceAttr.save(attrMessage);
-        
-        // MediaServiceTypeOfEntity serviceEntity = (MediaServiceTypeOfEntity) context.getBean("storageServiceTypeOfEntity");
+
         TypeOfEntity entity = new TypeOfEntity("User");
         entity.add(attrName);
         entity.add(attrSurname);
@@ -74,24 +71,23 @@ public class InitialLoader {
         entityChallengeInstance.add(attrName);
         entityChallengeInstance.add(attrChalStatus);
         serviceEntity.save(entityChallengeInstance);
-        
+
         TypeOfEntity entityComment = new TypeOfEntity("Comment");
         entityComment.add(attrDate);
         entityComment.add(attrMessage);
         serviceEntity.save(entityComment);
-        
 
         ContextType contextType = ContextType.getInstance();
 
         contextType.add(attrName);
         contextType.add(attrSurname);
         contextType.add(attrDate);
-        contextType.add(attrDescription);//!!!!
+        contextType.add(attrDescription);
         contextType.add(attrImageRef);
         contextType.add(attrChalStatus);
         contextType.add(attrChalDefStatus);
         contextType.add(attrMessage);
-        
+
         contextType.add(entity);
         contextType.add(entityChallenge);
         contextType.add(entityChallengeInstance);
@@ -104,11 +100,11 @@ public class InitialLoader {
         chalDef1.setName("Make something");
         chalDef1.setDescription("Hi, I'm first. Selected me!");
         chalDef1.setImageRef("firstExampleChallenge.jpg");
-        
+
         chalDef1.setDate(new Date());
 
         serviceEntityInit.save(chalDef1);
-        
+
         User user1 = new User();
         user1.setName("Evgeniy 1");
         user1.setImageRef("AvaDefault.jpg");
@@ -123,7 +119,7 @@ public class InitialLoader {
         user1.addChallenge(chalDef1);
         user1.addChallenge(chalDef2);
         serviceEntityInit.update(user1);
-        
+
         ChallengeInstance chalInstance1 = new ChallengeInstance();
         chalInstance1.setName("I can made it");
         chalInstance1.setStatus(ChallengeStatus.AWAITING);
@@ -132,69 +128,15 @@ public class InitialLoader {
         chalUnstance2.setName("Ou ");
         chalUnstance2.setStatus(ChallengeStatus.AWAITING);
         serviceEntityInit.save(chalUnstance2);
-        
-        
+
         User user2 = new User();
         user2.setName("Jonnie Fast-Foot");
         user2.setImageRef("AvaDefault.jpg");
         serviceEntityInit.save(user2);
-        
+
         User user3 = new User();
         user3.setName("Annet Fast-Food");
         user3.setImageRef("AvaDefault.jpg");
         serviceEntityInit.save(user3);
-                
-        
-        
-        
-        /*  Set set = new HashSet();
-        set.add(chalInstance1);
-        set.add(chalUnstance2);
-        chalDef2.setChildren(set);
-        chalInstance1.setParent(chalDef2);
-        chalUnstance2.setParent(chalDef2);
-        serviceEntityInit.update(chalDef2);
-        
-        user1.addAcceptedChallenge(chalInstance1);
-        user1.addAcceptedChallenge(chalUnstance2);
-       serviceEntityInit.update(user1);
-        
-        User user2 = new User();
-        // serviceEntityInit.save(user2);
-        user2.setName("user2");
-//        user2.addAcceptedChallenge(chal1);
-        //      user2.addAcceptedChallenge(chal2);
-        user2.addFriend(user1);
-        //   user2.addAcceptedChallenge(chal2);
-        // user2.addChallenge(chal2);
-//        serviceEntityInit.save(user2);
-        
-        User user3 = new User();
-        user3.setName("user3");
-        serviceEntityInit.save(user3);
-        
-        User user4 = new User();
-        user4.setName("name4");
-        serviceEntityInit.save(user4);
-        
-        user1.setName("User1");
-       // serviceEntityInit.update(user1);
-        
-        
-       /* Set userSet = new HashSet();
-        userSet.add(user1);
-        userSet.add(user4);
-        user2.setChildren(userSet);
-        user1.setParent(user2);
-        user4.setParent(user2); 
-        serviceEntityInit.update(user2);*/
- /*    for (BaseEntity obj : chalDef2.getChildren()) {
-            System.out.println(((ChallengeInstance) obj).getAcceptor().getName());
-        }
-        
-        user1.getAcceptedChallenges().forEach((c) -> {
-            System.out.println(((ChallengeInstance) c).getName());
-        });
-         */
-    }       
+    }
 }

@@ -31,6 +31,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -56,6 +57,9 @@ public class MainController {
     @Qualifier("storageServiceUser")
     private MediaService serviceEntity;
 
+    @Autowired
+    private UserActionsProvider actionsProvider;
+
     @RequestMapping("/")
     public String home(HttpServletRequest request, Principal currentUser, Model model) {
         util.setModelForMain(request, currentUser, model);
@@ -69,11 +73,20 @@ public class MainController {
     }
 
     @RequestMapping(value = "challenge/update", method = GET, produces = "text/plain;charset=UTF-8")
-    public String updateChal(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int id) {      
+    public String updateChal(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int id) {
         util.setModelForChallengeShow(id, request, currentUser, model);
-        return UserActionsProvider.canUpdateChallenge(util.getSignedUpUser(request, currentUser),
-                (ChallengeDefinition)serviceEntity.findById(id, ChallengeDefinition.class)) ? 
-                "chalNewOrUpdate" : "chalShow";
+        User user = util.getSignedUpUser(request, currentUser);
+        ChallengeDefinition challengeToUpdate = (ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class);
+        try {
+            actionsProvider.canUpdateChallenge(user, challengeToUpdate);
+            return "chalNewOrUpdate";
+        } catch (AccessDeniedException ex) {
+            model.addAttribute("timestamp", new Date());
+            model.addAttribute("status", 403);
+            model.addAttribute("error", "Access is denied");
+            model.addAttribute("message", ex.getMessage());
+            return "error";
+        }
     }
 
     @RequestMapping(value = "challenge/new", produces = "text/plain;charset=UTF-8")
@@ -170,10 +183,10 @@ public class MainController {
                 c.updateStatus(status);
             }
         }
-        
+
         return "index";
-    }   
-    
+    }
+
     @RequestMapping(value = "/friendsForChallenge", method = GET)
     public String friendForChallenge(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id-checked") List<Integer> selectedFriendsIds, @RequestParam("chal-id") int chalId) {
         for (Integer id : selectedFriendsIds) {
@@ -181,7 +194,7 @@ public class MainController {
         }
         return getPreviousPageByRequest(request).orElse("/");
     }
-    
+
     @RequestMapping(value = "/challengesForFriend", method = GET)
     public String challengeForFriend(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id-checked") List<Integer> selectedChallengesIds, @RequestParam("user-id") int friendId) {
         for (Integer id : selectedChallengesIds) {
@@ -198,10 +211,10 @@ public class MainController {
 
         if (search != null) {
             List<User> users = util.filterUsers(search.getFilter(), search.getUserId());
-            
+
             if (users.size() > 0) {
                 Map<Integer, String> usersNames = new HashMap<>();
-                for (User user : users) {                    
+                for (User user : users) {
                     usersNames.put(user.getId(), user.getName());
                 }
                 result.setCode("200");
@@ -217,7 +230,7 @@ public class MainController {
         }
         return result;
     }
-    
+
     @RequestMapping(value = "/getChallenges", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody AjaxResponseBody searchChallengesViaAjax(@RequestBody SearchCriteria search) {
@@ -226,10 +239,10 @@ public class MainController {
 
         if (search != null) {
             List<ChallengeDefinition> challenges = util.filterChallenges(search.getFilter(), search.getUserId());
-            
+
             if (challenges.size() > 0) {
                 Map<Integer, String> chalNames = new HashMap<>();
-                for (ChallengeDefinition challenge : challenges) {                    
+                for (ChallengeDefinition challenge : challenges) {
                     chalNames.put(challenge.getId(), challenge.getName());
                 }
                 result.setCode("200");

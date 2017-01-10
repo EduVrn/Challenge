@@ -5,9 +5,7 @@ import javax.persistence.Table;
 
 import challenge.dbside.ini.ContextType;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,17 +34,19 @@ public class ChallengeDefinition extends BaseEntity {
     public List<User> getAllAcceptors() {
         List<User> acceptors = new ArrayList<>();
         this.getChildren().forEach((chalInstance) -> {
-            if (chalInstance instanceof ChallengeInstance)
+            if (chalInstance instanceof ChallengeInstance) {
                 acceptors.add(((ChallengeInstance) chalInstance).getAcceptor());
+            }
         });
         return acceptors;
     }
-    
+
     public List<Comment> getComments() {
         List<Comment> comments = new ArrayList<>();
         this.getChildren().forEach((child) -> {
-            if (child instanceof Comment)
+            if (child instanceof Comment) {
                 comments.add((Comment) child);
+            }
         });
         return comments;
     }
@@ -81,7 +81,7 @@ public class ChallengeDefinition extends BaseEntity {
                 .get(ContextType.getInstance().getTypeAttribute("imageref").getId()).setValue(image);
     }
 
-    public Date getDate()  {
+    public Date getDate() {
         try {
             DateFormat df = new SimpleDateFormat("EEE MMM dd kk:mm:ss z yyyy", Locale.ENGLISH);
             Date result = df.parse(this.getAttributes()
@@ -105,12 +105,12 @@ public class ChallengeDefinition extends BaseEntity {
     public void setCreator(User creator) {
         this.creator = creator;
     }
-    
+
     public ChallengeDefinitionStatus getStatus() {
         return ChallengeDefinitionStatus.valueOf(this.getAttributes()
                 .get(ContextType.getInstance().getTypeAttribute("chalDefStatus").getId()).getValue());
     }
-    
+
     public void setStatus(ChallengeDefinitionStatus status) {
         this.getAttributes()
                 .get(ContextType.getInstance().getTypeAttribute("chalDefStatus").getId()).setValue(status.name());

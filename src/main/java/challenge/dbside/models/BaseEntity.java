@@ -69,20 +69,17 @@ public class BaseEntity {
 
     //TODO: Only 4 DEBUG!!!
     public BaseEntity(String name, String surname) {
-        //this.setId(1);
         children = new ArrayList<>();
 
         attributes = new HashMap<Integer, Attribute>();
 
         Attribute attr = new Attribute();
         attr.setValue(name);
-        //attr.setEntity_id(1);
         attr.setAttribute_id(1);
         this.attributes.put(1, attr);
 
         attr = new Attribute();
         attr.setValue(surname);
-        //attr.setEntity_id(1);
         attr.setAttribute_id(2);
 
         this.attributes.put(2, attr);
@@ -103,7 +100,7 @@ public class BaseEntity {
     public void setChildren(List<BaseEntity> children) {
         this.children = children;
     }
-    
+
     public void addChild(BaseEntity child) {
         children.add(child);
         child.setParent(this);
@@ -149,7 +146,7 @@ public class BaseEntity {
 
     @Override	//TODO: see it
     public int hashCode() {
-        int result = id!=null ? id.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
 
         result = 31 * result + entityType.hashCode();
 

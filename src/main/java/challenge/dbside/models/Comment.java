@@ -1,7 +1,6 @@
 package challenge.dbside.models;
 
 import challenge.dbside.ini.ContextType;
-import challenge.dbside.models.ini.TypeOfAttribute;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

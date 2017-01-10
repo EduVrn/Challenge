@@ -25,6 +25,7 @@ import java.sql.SQLException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
 import challenge.dbside.services.ini.MediaService;
+import challenge.webside.authorization.thymeleaf.AuthorizationDialect;
 import challenge.webside.authorization.UserActionsProvider;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,6 +46,12 @@ public class SocialControllerUtil {
     @Autowired
     @Qualifier("storageServiceUser")
     private MediaService serviceEntity;
+
+    @Autowired
+    private AuthorizationDialect dialect;
+
+    @Autowired
+    private UserActionsProvider actionsProvider;
 
     public void dumpDbInfo() {
         try {
@@ -149,7 +156,7 @@ public class SocialControllerUtil {
         }
         model.addAttribute("challenge", (ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class));
         model.addAttribute("listOfAcceptors", ((ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class)).getAllAcceptors());
-        
+
         Comment comment = new Comment();
         comment.setDate(new Date());
         comment.setAuthor(getSignedUpUser(request, currentUser));
@@ -250,12 +257,11 @@ public class SocialControllerUtil {
         User userWhichProfileRequested = (User) serviceEntity.findById(userDBId, User.class);
 
         User signedUpUser = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
-
         model.addAttribute("userProfile", userWhichProfileRequested);
         model.addAttribute("listOfDefined", userWhichProfileRequested.getChallenges());
         model.addAttribute("currentDBUser", getSignedUpUser(request, currentUser));
         model.addAttribute("listOfAccepted", userWhichProfileRequested.getAcceptedChallenges());
-        model.addAttribute("actions", UserActionsProvider.getActionsForProfile(signedUpUser, userWhichProfileRequested));
+        dialect.setActions(actionsProvider.getActionsForProfile(signedUpUser, userWhichProfileRequested));
         model.addAttribute("friends", signedUpUser.getFriends());
     }
 
@@ -275,7 +281,7 @@ public class SocialControllerUtil {
         model.addAttribute("listOfDefined", user.getChallenges());
         model.addAttribute("listOfAccepted", user.getAcceptedChallenges());
         model.addAttribute("challengeRequests", user.getChallengeRequests());
-        model.addAttribute("actions", UserActionsProvider.getActionsForProfile(user, user));
+        dialect.setActions(actionsProvider.getActionsForProfile(user, user));
     }
 
     public void setModelForAcceptChallengeDefinition(HttpServletRequest request, Principal currentUser, Model model, int chalId) {
@@ -297,7 +303,7 @@ public class SocialControllerUtil {
         model.addAttribute("listOfDefined", user.getChallenges());
         model.addAttribute("listOfAccepted", user.getAcceptedChallenges());
         model.addAttribute("challengeRequests", user.getChallengeRequests());
-        model.addAttribute("actions", UserActionsProvider.getActionsForProfile(user, user));
+        dialect.setActions(actionsProvider.getActionsForProfile(user, user));
     }
 
     public void throwChallenge(int userId, int challengeId) {

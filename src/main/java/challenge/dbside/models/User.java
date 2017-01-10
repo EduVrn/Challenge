@@ -38,7 +38,7 @@ public class User extends BaseEntity {
     )
     @Where(clause = "type_of_entity = 1")
     private List<User> friends;
-    
+
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Where(clause = "type_of_entity = 4")
     private List<Comment> comments;
@@ -50,7 +50,7 @@ public class User extends BaseEntity {
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
-    
+
     public void addComment(Comment comment) {
         comments.add(comment);
         comment.setAuthor(this);
