@@ -16,7 +16,6 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.dao.EmptyResultDataAccessException;
 import challenge.dbside.services.ini.MediaService;
 import java.util.Date;
 import java.util.HashSet;
@@ -29,7 +28,7 @@ public class UsersDao {
     @Autowired
     @Qualifier("storageServiceUser")
     private MediaService serviceEntity;
-    
+
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -74,20 +73,20 @@ public class UsersDao {
     }
 
     public void createUser(String userId, UserProfile profile) {
-    	
+
         ChallengeDefinition chalDef1 = new ChallengeDefinition();
         chalDef1.setName("Challenge Of SignUpedUser");
         chalDef1.setDescription("Description");
         chalDef1.setImageRef("race.jpg");
         chalDef1.setDate(new Date());
         serviceEntity.save(chalDef1);
-         ChallengeDefinition chalDef2 = new ChallengeDefinition();
+        ChallengeDefinition chalDef2 = new ChallengeDefinition();
         chalDef2.setName("Challenge Of SignUpedUser");
         chalDef2.setDescription("Description");
         chalDef2.setImageRef("race.jpg");
         chalDef2.setDate(new Date());
         serviceEntity.save(chalDef2);
-                 ChallengeDefinition chalDef3 = new ChallengeDefinition();
+        ChallengeDefinition chalDef3 = new ChallengeDefinition();
         chalDef3.setName("Challenge Of SignUpedUser");
         chalDef3.setDescription("Description");
         chalDef3.setImageRef("race.jpg");
@@ -99,9 +98,9 @@ public class UsersDao {
         chalDef4.setImageRef("race.jpg");
         chalDef4.setDate(new Date());
         serviceEntity.save(chalDef4);
-        
+
         List<User> friends = serviceEntity.getAll(User.class);
-        
+
         User user = new User();
         user.setName(profile.getName());
         user.setImageRef("AvaDefault.JPG");
@@ -112,9 +111,7 @@ public class UsersDao {
         user.addChallenge(chalDef3);
         user.addChallenge(chalDef4);
         serviceEntity.update(user);
-        
-        //
-        
+
         ChallengeInstance chalInstance1 = new ChallengeInstance();
         chalInstance1.setName("Instance of SignUpedUser #1");
         chalInstance1.setParent(chalDef1);
@@ -139,12 +136,12 @@ public class UsersDao {
         user.addAcceptedChallenge(chalInstance1);
         user.addAcceptedChallenge(chalInstance2);
         serviceEntity.update(user);
-        
+
         User user1 = new User();
         user1.setName("AAA");
         user1.setImageRef("AvaDefault.JPG");
         serviceEntity.save(user1);
-        
+
         user.setFriends(friends);
         serviceEntity.update(user);
         profile.setUser(user);

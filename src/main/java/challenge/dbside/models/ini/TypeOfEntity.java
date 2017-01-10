@@ -26,12 +26,12 @@ public class TypeOfEntity {
     public TypeOfEntity() {
         listAttributes = new ArrayList<TypeOfAttribute>();
     }
-    
+
     public TypeOfEntity(String nameTypeEntity) {
         this.nameTypeEntity = nameTypeEntity;
         listAttributes = new ArrayList<TypeOfAttribute>();
     }
-    
+
     public void add(TypeOfAttribute type) {
         listAttributes.add(type);
     }
@@ -61,12 +61,7 @@ public class TypeOfEntity {
     }
 
     public String toString() {
-        String type = "TypeEntityID:" + typeEntityID + "  nameTypeEntity: " + nameTypeEntity;
-        /*for(TypeOfAttribute t : listTypeOffAttribute) {
- 			type += t;
- 		}*/
-
-        return type;
+        return "TypeEntityID:" + typeEntityID + "  nameTypeEntity: " + nameTypeEntity;
     }
 
 }

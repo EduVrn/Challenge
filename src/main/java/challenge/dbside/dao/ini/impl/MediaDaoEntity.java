@@ -9,7 +9,6 @@ import javax.persistence.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.PlatformTransactionManager;
 import challenge.dbside.dao.ini.MediaDao;
-import challenge.dbside.models.ChallengeDefinition;
 
 @Repository
 public class MediaDaoEntity<E extends BaseEntity> implements MediaDao<E> {
@@ -22,23 +21,21 @@ public class MediaDaoEntity<E extends BaseEntity> implements MediaDao<E> {
     public void setTransactionManager(PlatformTransactionManager transactionManager) {
         //this.transactionManager = transactionManager;
     }
-    
+
     public Integer getNextId() {
-    	Query q = em.createNativeQuery("select nextval('serial')");
-    	BigInteger bi = (BigInteger) q.getResultList().get(0);
-    	System.out.println("id: " + bi.toString());
-    	
-    	return bi.intValue();
+        Query q = em.createNativeQuery("select nextval('serial')");
+        BigInteger bi = (BigInteger) q.getResultList().get(0);
+        return bi.intValue();
     }
 
     @Override
-    public void save(BaseEntity entity) {   	
-    	entity.setId(getNextId());
-    	em.persist(entity);
+    public void save(BaseEntity entity) {
+        entity.setId(getNextId());
+        em.persist(entity);
     }
 
     @Override
-    public List<E> getAll(Class<E> classType) { 
+    public List<E> getAll(Class<E> classType) {
         List<E> list = em.createQuery("from " + classType.getSimpleName(), classType).getResultList();
         return list;
     }
@@ -56,10 +53,8 @@ public class MediaDaoEntity<E extends BaseEntity> implements MediaDao<E> {
     @Override
     public E findById(Integer id, Class<E> classType) {
         TypedQuery<BaseEntity> query = em.createQuery(
-                                    "SELECT c FROM BaseEntity c"
-                                    +" WHERE c.id = ?1", BaseEntity.class);
+                "SELECT c FROM BaseEntity c"
+                + " WHERE c.id = ?1", BaseEntity.class);
         return classType.cast(query.setParameter(1, id).getSingleResult());
-    } 
+    }
 }
-
-

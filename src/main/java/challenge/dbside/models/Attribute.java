@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.*;
-import static javax.persistence.TemporalType.TIMESTAMP;
 
 @Entity(name = "values")
 @IdClass(AttributePK.class)

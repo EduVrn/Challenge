@@ -37,9 +37,7 @@
                 <!-- left side -->
                 <div class="col-md-4 col-sm-6 col-xs-12">
                     <div>
-                        <!-- img th:src="${currentUserConnection.imageUrl}" class="img-rounded img-responsive" /-->
                         <img th:src="${userProfile.getImageRef()}" class="img-rounded img-responsive" />
-
                     </div>
                     <div class="text-center col-md-6 col-sm-6 col-xs-6">
                         <h1>
@@ -66,20 +64,16 @@
                         <input type="hidden" id="user-id" name="id" th:value="${userProfile.getId()}" />
                         <input class="btn btn-default text-center" type="submit" th:value="#{profileFriendsButton}" />
                     </form>
-                        <!-- change currentUserId to profile user -->
-                        <input type="hidden" name="id" th:value="${userProfile.getId()}" />
-                        <input th:if="${actions.contains(T(challenge.webside.authorization.Action).THROW_CHALLENGE_FOR_USER)}"
-                                                   name="throw" type="submit" data-target="#modal-challenges" 
-                                                   data-toggle="modal" class="btn btn-default text-center" />
-                        <!--<input id="throw_challenge" class="btn btn-default text-center" type="submit" th:value="#{profileThrowChallengeButton}" />-->
-
-
-
+                    <!-- change currentUserId to profile user -->
+                    <input type="hidden" name="id" th:value="${userProfile.getId()}" />
+                    <input auth:can="THROW_CHALLENGE_FOR_USER"
+                           name="throw" type="submit" data-target="#modal-challenges" 
+                           data-toggle="modal" class="btn btn-default text-center" />
                 </div>
                 <!-- right side -->
                 <div class="col-md-8 col-sm-6 col-xs-12">
 
-                    <form th:if="${actions.contains(T(challenge.webside.authorization.Action).CREATE_CHALLENGE)}" 
+                    <form auth:can="CREATE_CHALLENGE" 
                           class="navbar-right" name="newCallenge" th:id="newChallenge"
                           method="GET" action="challenge/new">
                         <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> 
@@ -92,7 +86,7 @@
                         <li class="active">
                             <a data-toggle="tab" href="#accepted-chals" th:text="#{listOfAcceptedChalsTitle}"></a>
                         </li>
-                        <li th:if="${actions.contains(T(challenge.webside.authorization.Action).WATCH_UNACCEPTED_CHALLENGES)}">
+                        <li auth:can="WATCH_UNACCEPTED_CHALLENGES">
                             <a data-toggle="tab" href="#unaccepted-chals" th:text="#{listOfUnacceptedChalsTitle}"></a>
                             <span th:if="${challengeRequests.size() > 0}" 
                                   class="badge badge-notify" th:text="${challengeRequests.size()}"
@@ -110,7 +104,7 @@
                                 <div class="challenge col-lg-6 col-md-4 col-sm-6 col-xs-12">
                                     <div style="border-width: 5" class="panel panel-default">
                                         <div class="box-content panel-body ">
-                                            <form th:if="${actions.contains(T(challenge.webside.authorization.Action).EDIT_CHALLENGE)}"
+                                            <form auth:can="EDIT_CHALLENGE"
                                                   name="submitForm"
                                                   th:id="'challenge/update'+${challenge.Id}" method="GET"
                                                   action="challenge/update">
@@ -154,7 +148,7 @@
                                                     th:value="#{profileAcceptChalButton}"/>
                                             </form>
                                             <input type="hidden" name="id" th:value="${challenge.getId()}" />
-                                            <input th:if="${actions.contains(T(challenge.webside.authorization.Action).THROW_CHALLENGE_DEF)}"
+                                            <input auth:can="THROW_CHALLENGE_DEF"
                                                    name="throw" type="submit" data-target="#modal-friends" 
                                                    data-toggle="modal" class="btn btn-success"
                                                    th:value="#{profileThrowChalButton}" />
@@ -222,7 +216,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- modal for friends-->
         <div id="modal-friends" class="modal fade" role="dialog">
             <div class="modal-dialog">
