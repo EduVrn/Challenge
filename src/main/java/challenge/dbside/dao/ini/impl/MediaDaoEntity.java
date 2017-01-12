@@ -24,14 +24,13 @@ public class MediaDaoEntity<E extends BaseEntity> implements MediaDao<E> {
     private PlatformTransactionManager transactionManager;
 
     public void setTransactionManager(PlatformTransactionManager transactionManager) {
-        //this.transactionManager = transactionManager;
+        //TODO: persistence
+    	//this.transactionManager = transactionManager;
     }
     
     public Integer getNextId() {
     	Query q = em.createNativeQuery("select nextval('serial')");
     	BigInteger bi = (BigInteger) q.getResultList().get(0);
-    	System.out.println("id: " + bi.toString());
-    	
     	return bi.intValue();
     }
 
@@ -48,12 +47,9 @@ public class MediaDaoEntity<E extends BaseEntity> implements MediaDao<E> {
 
     @Override
     public List<E > getAll(Class<E> classType) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException { 
-        //List<E> list = em.createQuery("from " + classType.getSimpleName(), classType).getResultList();
-    	//ContextType.getInstance().getTypeEntity(classType.getSimpleName());
-    	//" + /*DBSource.class.getSimpleName()*/ + "
-    	Integer typeEntity = ContextType.getInstance().getTypeEntity(classType.getSimpleName()).getTypeEntityID(); 
-    	
-    	List<DBSource> list = em.createQuery("from "+ DBSource.class.getSimpleName() + " where type_of_entity = " 
+    	Integer typeEntity = ContextType.getInstance().getTypeEntity(classType.getSimpleName()).getTypeEntityID();     	
+    	List<DBSource> list = em.createQuery("from "+ DBSource.class.getSimpleName() 
+    			+ " where type_of_entity = " 
     			+ typeEntity, DBSource.class).getResultList();
     	
     	List<E> listG = new ArrayList();
@@ -71,12 +67,6 @@ public class MediaDaoEntity<E extends BaseEntity> implements MediaDao<E> {
     	int deletedEntities = em.createQuery( hqlDelete )
                 .setParameter( "id", entity.getId() )
                 .executeUpdate();
-    	
-    	/*TypedQuery<DBSource> query = em.createQuery("delete from " + DBSource.class.getSimpleName() 
-    			+ " where entity_id=" + entity.getId() + "");
-    	query.executeUpdate();*/
-    	
-        //em.remove(em.merge(entity.getDataSource()));
     }
 
     @Override

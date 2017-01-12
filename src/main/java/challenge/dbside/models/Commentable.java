@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import challenge.dbside.models.dbentity.DBSource;
+import challenge.dbside.models.ini.TypeEntity;
+
 
 public interface Commentable {
 
@@ -13,8 +15,10 @@ public interface Commentable {
 
 	default public List<Comment> getComments() {
 		List<Comment> comments = new ArrayList<>();
-		((Set<DBSource>)getDataSource().getChildren()).forEach((commentDB)-> {
-			comments.add(new Comment(commentDB));
+		((Set<DBSource>)getDataSource().getChildren()).forEach((comCandidateDB)-> {
+			if(comCandidateDB.getEntityType() == TypeEntity.COMMENT.getValue()) {
+				comments.add(new Comment(comCandidateDB));
+			}
 		});
 		return comments;
 	}

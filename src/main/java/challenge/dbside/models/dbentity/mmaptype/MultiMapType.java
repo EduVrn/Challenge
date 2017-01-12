@@ -47,11 +47,7 @@ public class MultiMapType implements UserCollectionType {
 	}
 
 	public PersistentCollection wrap(SessionImplementor session, Object collection) {
-		if(collection instanceof MultiMap) {
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!1");
-		}
 		PersistentCollection pc = new PersistentMultiMap(session, (MultiMap) collection); 
-		
 		return pc;
 	}
 

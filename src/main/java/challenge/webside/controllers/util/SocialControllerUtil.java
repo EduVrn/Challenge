@@ -100,14 +100,8 @@ public class SocialControllerUtil {
 		//TODO:bike:-)
 		model.addAttribute("foto", "AvaDefault.jpg");
 		if (profile != null) {
-			List challengeList;
-			try {
-				challengeList = ((User) serviceEntity.findById(profile.getUserEntityId(), User.class)).getChallengeRequests();
-			}
-			catch(Exception ex) {
-				ex.printStackTrace();
-				challengeList = new ArrayList<ChallengeInstance>();
-			}
+			List challengeList = ((User) serviceEntity.findById(profile.getUserEntityId(), User.class)).getChallengeRequests();
+			
 			model.addAttribute("challengeRequests", challengeList);
 		}
 	}
@@ -115,25 +109,8 @@ public class SocialControllerUtil {
 	public void setModelForMain(HttpServletRequest request, Principal currentUser, Model model) {
 		setModel(request, currentUser, model);
 
-		//TODO: exception handler
-		ChallengeDefinition mainChallenge;  
-		try {
-			mainChallenge = (ChallengeDefinition)serviceEntity.getAll(ChallengeDefinition.class).get(0);
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			mainChallenge = new ChallengeDefinition();
-		}
-
-		List<ChallengeDefinition> challenges;
-		try {
-			challenges = serviceEntity.getAll(ChallengeDefinition.class);
-		}
-		catch(Exception ex) {        	
-			ex.printStackTrace();
-			challenges = new ArrayList<ChallengeDefinition>();
-		}
-
+		ChallengeDefinition mainChallenge = (ChallengeDefinition)serviceEntity.getAll(ChallengeDefinition.class).get(0);
+		List<ChallengeDefinition> challenges = serviceEntity.getAll(ChallengeDefinition.class);
 		model.addAttribute("mainChallenge", mainChallenge);
 		model.addAttribute("Challenges", challenges);
 	}
@@ -141,45 +118,20 @@ public class SocialControllerUtil {
 	public void setModelForChallengeShow(int id, HttpServletRequest request, Principal currentUser, Model model) {
 		setModel(request, currentUser, model);
 
-		ChallengeDefinition challenge;
-		try {
-			challenge = (ChallengeDefinition)serviceEntity.findById(id, ChallengeDefinition.class);
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-			challenge = new ChallengeDefinition();
-		}
-
+		ChallengeDefinition challenge = (ChallengeDefinition)serviceEntity.findById(id, ChallengeDefinition.class);
+		List<User> listOfAcceptors = ((ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class)).getAllAcceptors();
 
 		model.addAttribute("challenge", challenge);
-
-		List<User> listOfAcceptors;
-		try {
-			listOfAcceptors = ((ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class)).getAllAcceptors();
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-			listOfAcceptors = new ArrayList<User>();
-		}
-		//
 		model.addAttribute("listOfAcceptors", listOfAcceptors);
 		model.addAttribute("userProfile", getSignedUpUser(request, currentUser));
+
 		Comment comment = new Comment();
 		comment.setDate(new Date());
 		comment.setAuthor(getSignedUpUser(request, currentUser));
 		model.addAttribute("comment", comment);
 		int commentsCount = 0;
 
-
-		List<Comment> listComment;
-		try {	
-			listComment = (((ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class)).getComments());
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-			listComment = new ArrayList<Comment>();
-		}
-
+		List<Comment> listComment = (((ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class)).getComments());
 		for (Comment comm : listComment) {
 			commentsCount++;
 			commentsCount += comm.getSubCommentsCount();
@@ -190,26 +142,11 @@ public class SocialControllerUtil {
 
 	public void setModelForNewOrUpdatedChalShow(ChallengeDefinition challenge, HttpServletRequest request, Principal currentUser, Model model) {
 		setModel(request, currentUser, model);
-		User curDBUser;
-		try {
-			curDBUser = ((User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class));
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-			//TODO: change it 
-			curDBUser = new User();
-		}
+		User curDBUser = ((User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class));
 
 		if (challenge.getId() != null) {
 
-			ChallengeDefinition chalToUpdate; 
-			try {
-				chalToUpdate = (ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class);
-			}
-			catch(Exception ex) {
-				ex.printStackTrace();
-				chalToUpdate = new ChallengeDefinition();
-			}
+			ChallengeDefinition chalToUpdate = (ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class);
 			chalToUpdate.setDescription(challenge.getDescription());
 			chalToUpdate.setName(challenge.getName());
 			chalToUpdate.setDate(challenge.getDate());
@@ -221,27 +158,14 @@ public class SocialControllerUtil {
 		} else {
 			challenge.setStatus(ChallengeDefinitionStatus.CREATED);
 			challenge.setCreator(curDBUser);
-			//challenge.setDate(new Date());
 			serviceEntity.save(challenge);
-			
-			
-			//curDBUser.addChallenge(challenge);
-			//serviceEntity.update(curDBUser);
 		}
 
-		try {
-			//(ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class)
-			challenge = (ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class); 
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-			challenge = new ChallengeDefinition();
-		}        
+		challenge = (ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class); 
 		model.addAttribute("challenge", challenge);
 
 		List<User> listOfAcceptors = challenge.getAllAcceptors();
 		model.addAttribute("listOfAcceptors", listOfAcceptors);
-
 
 		Comment comment = new Comment();
 		comment.setDate(new Date());
@@ -249,15 +173,7 @@ public class SocialControllerUtil {
 		model.addAttribute("comment", comment);
 		int commentsCount = 0;
 
-		List<Comment> comments;
-		try {
-			comments = ((ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class)).getComments();
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-			comments = new ArrayList<Comment>();
-		}
-
+		List<Comment> comments = ((ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class)).getComments();
 		for(Comment comm : comments) {
 			commentsCount++;
 			commentsCount += comm.getSubCommentsCount();
@@ -268,84 +184,29 @@ public class SocialControllerUtil {
 	}
 
 	public void setModelForNewComment(int id, HttpServletRequest request, Principal currentUser, Model model, Comment comment) {
-		//setModel(request, currentUser, model);
-		User curDBUser;
-		try {
-			curDBUser = (User) serviceEntity.
-					findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId()
-							, User.class);
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-			curDBUser = new User();
-		}
+		User curDBUser = (User) serviceEntity.
+				findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId()
+						, User.class);
 
-		ChallengeDefinition currentChallenge;
-
-		try {
-			currentChallenge = (ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class);
-		} 
-		catch(Exception ex) {
-			ex.printStackTrace();
-			currentChallenge = new ChallengeDefinition();
-		}
-
+		ChallengeDefinition currentChallenge = (ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class);
 		comment.setDate(new Date());
 		comment.setAuthor(curDBUser);
 		serviceEntity.save(comment);
 
 		currentChallenge.addComment(comment);
 		serviceEntity.update(currentChallenge);
-
-		try {
-			Comment c = (Comment)serviceEntity.findById(comment.getId(), Comment.class);
-			User ut = c.getAuthor();
-			String str = ut.getImageRef();
-			System.out.println("dd");
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-		}
 	}
 
 	public void setModelForNewReply(int id, HttpServletRequest request, Principal currentUser, Model model, Comment comment) {
 		setModel(request, currentUser, model);
-		User curDBUser;
-		try {
-			curDBUser = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-			curDBUser = new User();
-		}
-		Comment parentComment;
-		try {
-			parentComment = (Comment) serviceEntity.findById(id, Comment.class);
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-			parentComment = new Comment();
-		}
+		User curDBUser = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
+		
+		Comment parentComment = (Comment) serviceEntity.findById(id, Comment.class);
 
-
-		comment.setParent(parentComment);
+		comment.setParentComment(parentComment);
 		comment.setDate(new Date());
 		comment.setAuthor(curDBUser);
 		serviceEntity.save(comment);
-
-		//TODO: change it
-		/*
-        parentComment.addChild(comment);*/
-		//parentComment.addComment(comment);
-
-		serviceEntity.update(parentComment);
-
-
-		//Comment commentT = (Comment)serviceEntity.findById(parentComment.getId(), Comment.class);
-
-
-		//curDBUser.addComment(comment);
-		//serviceEntity.update(curDBUser);
 	}
 
 	public void setModelForNewChallenge(HttpServletRequest request, Principal currentUser, Model model) {
@@ -397,39 +258,16 @@ public class SocialControllerUtil {
 
 
 	public User getSignedUpUser(HttpServletRequest request, Principal currentUser) {
-		User user;
-
-		try {
-			user = (User) serviceEntity.findById(getUserProfile(request.getSession(),
+		User user = (User) serviceEntity.findById(getUserProfile(request.getSession(),
 					currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-			user = new User();
-		}    	
 		return user;
 
 	}
 
 	public void setProfileShow(int userDBId, HttpServletRequest request, Principal currentUser, Model model) {
 		setModel(request, currentUser, model);
-		User userWhichProfileRequested; 
-		try {
-			userWhichProfileRequested = (User) serviceEntity.findById(userDBId, User.class);
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-			userWhichProfileRequested = new User();
-		}
-
-		User signedUpUser;
-		try {
-			signedUpUser = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-			signedUpUser = new User();
-		}
+		User userWhichProfileRequested = (User) serviceEntity.findById(userDBId, User.class);
+		User signedUpUser = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
 
 		model.addAttribute("userProfile", userWhichProfileRequested);
 		model.addAttribute("listOfDefined", userWhichProfileRequested.getChallenges());
@@ -441,16 +279,7 @@ public class SocialControllerUtil {
 
 	public void setModelForAcceptOrDeclineChallenge(HttpServletRequest request, Principal currentUser, Model model, int chalId, boolean accept) {
 		setModel(request, currentUser, model);
-		ChallengeInstance chalToAccept;
-
-		try {
-			chalToAccept = (ChallengeInstance) serviceEntity.findById(chalId, ChallengeInstance.class);
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-			chalToAccept = new ChallengeInstance();
-		}
-
+		ChallengeInstance chalToAccept = (ChallengeInstance) serviceEntity.findById(chalId, ChallengeInstance.class);
 
 		User user = getSignedUpUser(request, currentUser);
 		if (accept) {
@@ -459,21 +288,6 @@ public class SocialControllerUtil {
 			serviceEntity.delete(chalToAccept);
 		}
 		serviceEntity.update(user);
-
-		try {
-			User user1 = (User)serviceEntity.findById(user.getId(), User.class);
-			List<ChallengeInstance> list = user1.getAcceptedChallenges();
-
-			System.out.println(list.size());
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-		}
-
-
-
-		List<ChallengeInstance> list = user.getAcceptedChallenges();
-
 
 		model.addAttribute("userProfile", user);
 		model.addAttribute("listOfDefined", user.getChallenges());
@@ -484,23 +298,8 @@ public class SocialControllerUtil {
 
 	public void setModelForAcceptChallengeDefinition(HttpServletRequest request, Principal currentUser, Model model, int chalId) {
 		setModel(request, currentUser, model);
-		ChallengeDefinition chalToAccept;
-		try {
-			chalToAccept = (ChallengeDefinition) serviceEntity.findById(chalId, ChallengeDefinition.class);
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-			chalToAccept = new ChallengeDefinition();
-		}
-		User user;	
-		try {
-			user = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-			user = new User();
-		}
-
+		ChallengeDefinition chalToAccept = (ChallengeDefinition) serviceEntity.findById(chalId, ChallengeDefinition.class);
+		User user = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
 		if (chalToAccept.getStatus() != ChallengeDefinitionStatus.ACCEPTED) {
 			ChallengeInstance chalInstance = new ChallengeInstance(chalToAccept);
 			chalInstance.setStatus(ChallengeStatus.ACCEPTED);
@@ -520,28 +319,13 @@ public class SocialControllerUtil {
 
 
 	public void throwChallenge(int userId, int challengeId) {
-		ChallengeDefinition chal;
-		try {
-			chal = (ChallengeDefinition) serviceEntity.findById(challengeId, ChallengeDefinition.class);
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-			chal = new ChallengeDefinition();
-		}
-		User user;
-		try {
-			user = (User) serviceEntity.findById(userId, User.class);
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-			user = new User();
-		}
-
+		ChallengeDefinition chal = (ChallengeDefinition) serviceEntity.findById(challengeId, ChallengeDefinition.class);
+		User user = (User) serviceEntity.findById(userId, User.class);
+		
 		ChallengeInstance chalIns = new ChallengeInstance();
 		chalIns.setName(chal.getName());
 		chalIns.setStatus(ChallengeStatus.AWAITING);
 		serviceEntity.save(chalIns);
-
 
 		chal.addChallengeInstance(chalIns);        
 		serviceEntity.update(chal);
@@ -551,15 +335,8 @@ public class SocialControllerUtil {
 	}
 
 	public List<User> filterUsers(String filter, int userId) {
-		User user;
-		try {
-			user = (User) serviceEntity.findById(userId, User.class);
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-			user = new User();
-		}
-
+		User user = (User) serviceEntity.findById(userId, User.class);
+		
 		List<User> allFriends = user.getFriends();
 		List<User> filteredFriends = new ArrayList<>();
 		for (int i = 0; i < allFriends.size(); i++) {
@@ -573,14 +350,8 @@ public class SocialControllerUtil {
 
 
 	public List<ChallengeDefinition> filterChallenges(String filter, int userId) {
-		User user;
-		try {
-			user = (User) serviceEntity.findById(userId, User.class);
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-			user = new User();
-		}
+		User user = (User) serviceEntity.findById(userId, User.class);
+		
 		List<ChallengeDefinition> challenges = user.getChallenges();
 		List<ChallengeDefinition> filteredChallenges = new ArrayList<>();
 		for (int i = 0; i < challenges.size(); i++) {
@@ -590,21 +361,13 @@ public class SocialControllerUtil {
 			}
 		}
 		return filteredChallenges;
-
 	}
 
 	public void setModelForShowFriends(HttpServletRequest request, Principal currentUser, Model model, int userId) {
 		setModel(request, currentUser, model);
-
-		User user;
-		try {
-			user = (User) serviceEntity.findById(userId, User.class);
-		}  
-		catch(Exception ex) {
-			ex.printStackTrace();
-			user = new User();
-		}
-
+		
+		User user = (User) serviceEntity.findById(userId, User.class);
+		
 		model.addAttribute("listSomething", user.getFriends());
 		model.addAttribute("idParent", userId);
 		model.addAttribute("handler", "profile");

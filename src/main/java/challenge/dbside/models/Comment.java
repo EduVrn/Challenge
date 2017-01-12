@@ -18,13 +18,12 @@ public class Comment extends BaseEntity implements Commentable { //TODO: add imp
     }
         
     public User getAuthor() {
-    	List<DBSource> list = (List<DBSource>)getDataSource().getRelations_l().get(IdAttrGet.refAutorComment());    	
+    	List<DBSource> list = (List<DBSource>)getDataSource().getRel().get(IdAttrGet.refAutorCom());    	
     	return	new User(list.get(0));
     }
 
     public void setAuthor(User author) {
-    	getDataSource().getRelations_l().remove(IdAttrGet.refAutorComment());
-    	getDataSource().getRelations_l().put(IdAttrGet.refAutorComment(), author.getDataSource());
+    	getDataSource().getRel().put(IdAttrGet.refAutorCom(), author.getDataSource());
     }
 
     public String getMessage() {
@@ -54,17 +53,8 @@ public class Comment extends BaseEntity implements Commentable { //TODO: add imp
         return result;
     }
 
-    public void setParent(Comment comment) {
-    	//TODO: see it
+    public void setParentComment(Comment comment) {
     	getDataSource().setParent(comment.getDataSource());
     }
     
-    
-    /*public List<Comment> getComments() {    	
-        List<Comment> comments = new ArrayList<>();
-        getDataSource().getChildren().forEach((commentDB) -> {
-        	comments.add(new Comment(commentDB));
-        });
-        return comments;
-    }*/
 }

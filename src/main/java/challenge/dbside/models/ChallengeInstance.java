@@ -24,14 +24,12 @@ public class ChallengeInstance extends BaseEntity {
         setName(chalDef.getName());
     }
     
-    
     public ChallengeDefinition getChallengeRoot() {
-    	return new ChallengeDefinition((DBSource)getDataSource().getRelations_r().get(IdAttrGet.refAcceptorChalIns()));
+    	return new ChallengeDefinition(getDataSource().getParent());
     }
     
     public void setChallengeRoot(ChallengeDefinition rootChallenge) {
-    	getDataSource().getRelations_r().remove(IdAttrGet.refAcceptorChalIns());
-    	getDataSource().getRelations_r().put(IdAttrGet.refAcceptorChalIns(), rootChallenge.getDataSource());
+    	getDataSource().setParent(rootChallenge.getDataSource());
     }
     
     
@@ -44,13 +42,14 @@ public class ChallengeInstance extends BaseEntity {
     }
 
     public User getAcceptor() {
-    	DBSource userDB = (DBSource)(((List<DBSource>)getDataSource().getRelations_r().get(IdAttrGet.refAcceptedChalIns())).get(0));
+    	List list = (List<DBSource>)getDataSource().getBackRel().get(IdAttrGet.refAcChalIns());
+    	
+    	DBSource userDB = (DBSource) (list.get(0));
     	return new User(userDB);
     }
 
     public void setAcceptor(User acceptor) {    	
-    	getDataSource().getRelations_r().remove(IdAttrGet.refChalIns());
-    	getDataSource().getRelations_r().put(IdAttrGet.refChalIns(), acceptor.getDataSource());
+    	getDataSource().getBackRel().put(IdAttrGet.refAcChalIns(), acceptor.getDataSource());
     }
     
     public ChallengeStatus getStatus() {

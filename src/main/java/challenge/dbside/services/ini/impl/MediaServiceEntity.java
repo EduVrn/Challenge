@@ -38,12 +38,31 @@ public class MediaServiceEntity<E extends BaseEntity> implements MediaService<E>
     }
 
     @Override
-    public List<E> getAll(Class<E> classType) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-        return dao.getAll(classType);
+    public List<E> getAll(Class<E> classType) {
+    	List<E> list = null;
+        
+        try {
+        	list = dao.getAll(classType);
+        }
+        catch(Exception e) {
+        	//InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException 
+        	e.printStackTrace();
+        	throw new RuntimeException(e);
+        }    	
+    	return list;
     }
 
     @Override
-    public E findById(Integer id, Class<E> classType) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-    	return classType.cast(dao.findById(id, classType));
+    public E findById(Integer id, Class<E> classType) {
+    	E el = null;    	    	
+    	try {
+    		el = classType.cast(dao.findById(id, classType));
+    	}
+    	catch(Exception e) {
+    		//InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
+    		e.printStackTrace();
+    		throw new RuntimeException(e);
+    	}    	
+    	return el;
     }
 }

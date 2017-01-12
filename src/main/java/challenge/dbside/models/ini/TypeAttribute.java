@@ -6,8 +6,7 @@ public enum TypeAttribute {
 	STRING(1),
 	INT(2),
 	DATE(3),
-	REF_ONE_DIRECTIONAL(4),
-	REF_TWO_DIRECTIONAL(5);
+	REF(4);
 	
 	private final int value;
 
