@@ -46,11 +46,10 @@ create table authorities (
     
     
     
+-- Table: public."entities"
+DROP TABLE public.entities;
     
-    
-    DROP TABLE public.entities;
-    
-    CREATE TABLE public.entities
+CREATE TABLE public.entities
 (
   entity_id integer NOT NULL,
   type_of_entity integer,
@@ -67,9 +66,9 @@ WITH (
 ALTER TABLE public.entities
   OWNER TO postgres;
 
-  -- Table: public."values"
+-- Table: public."values"
 
- DROP TABLE public."values";
+DROP TABLE public."values";
 
 CREATE TABLE public."values"
 (
@@ -91,29 +90,29 @@ ALTER TABLE public."values"
 
     
     
--- Table: public.relationship2
+-- Table: public.relationship
 -- remove it outside
 
--- DROP TABLE public.relationship2;
-DROP TABLE public.relationship2;
+-- DROP TABLE public.relationship;
+DROP TABLE public.relationship;
     
-CREATE TABLE public.relationship2
+CREATE TABLE public.relationship
 (
-  entity_id1 integer NOT NULL,
-  entity_id2 integer NOT NULL,
+  entity_id integer NOT NULL,
+  entity_val integer NOT NULL,
   attribute_id integer NOT NULL,
-  CONSTRAINT relationship2_pkey PRIMARY KEY (entity_id1, entity_id2, attribute_id),
-  CONSTRAINT fk_1mujrn3bp408pujeeg4skmwaw FOREIGN KEY (entity_id1)
+  CONSTRAINT relationship_pkey PRIMARY KEY (entity_id, entity_val, attribute_id),
+  CONSTRAINT fk_1mujrn3bp408pujeeg4skmwaw FOREIGN KEY (entity_id)
       REFERENCES public.entities (entity_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT fk_7ml7ux1mvkqa295fvh26epds1 FOREIGN KEY (entity_id2)
+  CONSTRAINT fk_7ml7ux1mvkqa295fvh26epds1 FOREIGN KEY (entity_val)
       REFERENCES public.entities (entity_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 )
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE public.relationship2
+ALTER TABLE public.relationship
   OWNER TO postgres;
   
   

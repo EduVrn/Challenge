@@ -86,3 +86,6 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.5'
 }
 
+
+sourceSets.main.output.resourcesDir = sourceSets.main.output.classesDir
+

@@ -32,17 +32,17 @@ public class DBSource {
 	private DBSource parent;
 	private Set<DBSource> children;
 
-	private MultiMap relations_l;
-	private MultiMap relations_r;
+	private MultiMap rel;
+	private MultiMap backRel;
 
 	public DBSource() {		
 		attributes = new HashMap();
 		children = new HashSet();
-		relations_l = new MultiValueMap();
-		relations_r = new MultiValueMap();
+		rel = new MultiValueMap();
+		backRel = new MultiValueMap();
 
-		relations_l.put(-1, this);
-		relations_r.put(-3, this);
+		rel.put(-1, this);
+		backRel.put(-3, this);
 
 	}
 
@@ -54,15 +54,15 @@ public class DBSource {
 		entityType = type.getTypeEntityID();        
 
 		attributes = new HashMap();
-		relations_l = new MultiValueMap();
-		relations_r = new MultiValueMap();
+		rel = new MultiValueMap();
+		backRel = new MultiValueMap();
 		
-		relations_l.put(-1, this);
-		relations_r.put(-3, this);
+		rel.put(-1, this);
+		backRel.put(-3, this);
 		
 		type.getAttributes().forEach((t) -> {
-			if(t.getType_of_attribute() != TypeAttribute.REF_ONE_DIRECTIONAL.getValue() 
-					&& t.getType_of_attribute() != TypeAttribute.REF_TWO_DIRECTIONAL.getValue()) {
+			if(t.getType_of_attribute() != TypeAttribute.REF.getValue() 
+					&& t.getType_of_attribute() != TypeAttribute.REF.getValue()) {
 				Attribute attr = new Attribute(t.getId());
 				attributes.put(t.getId(), attr);
 			}
@@ -75,11 +75,11 @@ public class DBSource {
 	public DBSource(String name, String surname) {		
 		attributes = new HashMap();
 		children = new HashSet();
-		relations_l = new MultiValueMap();
-		relations_r = new MultiValueMap();
+		rel = new MultiValueMap();
+		backRel = new MultiValueMap();
 		
-		relations_l.put(-1, this);
-		relations_r.put(-3, this);
+		rel.put(-1, this);
+		backRel.put(-3, this);
 		entityType = 1;
 
 
@@ -135,33 +135,31 @@ public class DBSource {
 	public void setParent(DBSource parent) {
 		this.parent = parent;
 	}
-
-
-
-	public MultiMap getRelations_l() {
-		return relations_l;
-	}
-
-	public void setRelations_l(MultiMap relations_l) {
-		this.relations_l = relations_l;
-	}
-
-	public MultiMap getRelations_r() {
-		return relations_r;
-	}
-
-	public void setRelations_r(MultiMap relations_r) {
-		this.relations_r = relations_r;
-	}
-
-	public void addRelation_l(Integer key, DBSource entity) {
-		relations_l.put(key, entity);
-	}
-
-	public void addRelation_r(Integer key, DBSource entity) {
-		relations_r.put(key, entity);
+	
+	public void addRel(Integer key, DBSource entity) {
+		rel.put(key, entity);		
 	}
 	
+	public void addBackRel(Integer key, DBSource entity) {
+		backRel.put(key, entity);
+	}
+	
+	public MultiMap getRel() {
+		return rel;
+	}
+
+	public void setRel(MultiMap rel) {
+		this.rel = rel;
+	}
+
+	public MultiMap getBackRel() {
+		return backRel;
+	}
+
+	public void setBackRel(MultiMap backRel) {
+		this.backRel = backRel;
+	}
+
 	public Integer getId() {
 		return id;
 	}

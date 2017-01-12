@@ -22,19 +22,6 @@ public class BaseEntity {
     	return dataSource;
     }
 	
-	/*
-	public Object remove(MultiMap mmap, Object key, Object item) {
-		Collection valuesForKey = (Collection) mmap.get(key);
-		if (valuesForKey == null) {
-            return null;
-        }
-		valuesForKey.remove(item);
-		if (valuesForKey.isEmpty()){
-            ((Map)mmap).remove(key);
-        }
-		return item;
-	}*/
-	
 	public BaseEntity(String nameClass) {
 		dataSource = new DBSource(nameClass);
 	}

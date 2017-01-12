@@ -25,16 +25,16 @@
 			<one-to-many class="challenge.dbside.models.dbentity.DBSource" />
 		</set>
 				
-		<map name="relations_l" table="relationship2" cascade="none" collection-type="challenge.dbside.models.dbentity.mmaptype.MultiMapType" lazy="false">
-			<key column="entity_id1" />
+		<map name="rel" table="relationship" cascade="none" collection-type="challenge.dbside.models.dbentity.mmaptype.MultiMapType" lazy="false">
+			<key column="entity_id" />
 			<map-key column="attribute_id" type="java.lang.Integer" />
-			<many-to-many column="entity_id2" class="challenge.dbside.models.dbentity.DBSource" />
+			<many-to-many column="entity_val" class="challenge.dbside.models.dbentity.DBSource" />
 		</map>
 
-		<map name="relations_r" table="relationship2" cascade="none" collection-type="challenge.dbside.models.dbentity.mmaptype.MultiMapType" lazy="false">
-			<key column="entity_id2" />
+		<map name="backRel" table="relationship" cascade="none" collection-type="challenge.dbside.models.dbentity.mmaptype.MultiMapType" lazy="false">
+			<key column="entity_val" />
 			<map-key column="attribute_id" type="java.lang.Integer" />
-			<many-to-many column="entity_id1" class="challenge.dbside.models.dbentity.DBSource" />
+			<many-to-many column="entity_id" class="challenge.dbside.models.dbentity.DBSource" />
 		</map>
 	</class>
 

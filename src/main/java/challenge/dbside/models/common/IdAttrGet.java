@@ -34,28 +34,16 @@ public class IdAttrGet {
 	
 	//Ref \/
 	
-	static public Integer refAcceptedChalIns() {
+	static public Integer refAcChalIns() {
 		return ContextType.getInstance().getTypeAttribute("acceptedChalIns").getId();
-	}
-	
-	static public Integer refAcceptorChalIns() {
-		return ContextType.getInstance().getTypeAttribute("acceptorChalInstance").getId();
-	}
-	
-	static public Integer refCreatedChal() {
-		return ContextType.getInstance().getTypeAttribute("createdChallenges").getId();
-	}
-	
-	static public Integer refChalIns() {
-		return ContextType.getInstance().getTypeAttribute("challengeInstances").getId();
 	}
 	
 	static public Integer refFriend() {
 		return ContextType.getInstance().getTypeAttribute("friends").getId();
 	}
 	
-	static public Integer refAutorComment() {
+	static public Integer refAutorCom() {
 		return ContextType.getInstance().getTypeAttribute("autorComment").getId();
 	}
-
+	
 }

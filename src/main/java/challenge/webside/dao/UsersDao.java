@@ -111,14 +111,8 @@ public class UsersDao {
 		serviceEntity.save(chalDef4);
 
 
-		List<User> friendsCandidate;
-		try {
-			friendsCandidate = serviceEntity.getAll(User.class);
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-			friendsCandidate = new ArrayList<User>();
-		}
+		List<User> friendsCandidate = serviceEntity.getAll(User.class);
+
 		
 		User user = new User();
 		user.setName(profile.getName());
@@ -141,11 +135,12 @@ public class UsersDao {
 
 		chalInstance1.setChallengeRoot(chalDef1);
 		chalInstance1.setStatus(ChallengeStatus.AWAITING);
+		chalInstance1.setAcceptor(user);
 		serviceEntity.save(chalInstance1);
 		ChallengeInstance chalInstance2 = new ChallengeInstance();
 		chalInstance2.setName("Instance of SignUpedUser #");
 
-
+		chalInstance2.setAcceptor(user);
 		chalInstance2.setChallengeRoot(chalDef1);        
 		chalInstance2.setStatus(ChallengeStatus.AWAITING);
 		serviceEntity.save(chalInstance2);
@@ -166,7 +161,10 @@ public class UsersDao {
 		user.setFriends(friendsCandidate);
 
 		serviceEntity.update(user);
-
+		for(User addedUser : friendsCandidate) {
+			addedUser.addFriend(user);
+			serviceEntity.update(addedUser);
+		}
 
 		
 		profile.setUser(user);

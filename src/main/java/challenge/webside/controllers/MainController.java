@@ -71,14 +71,7 @@ public class MainController {
     @RequestMapping(value = "challenge/update", method = GET, produces = "text/plain;charset=UTF-8")
     public String updateChal(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int id) {      
         util.setModelForChallengeShow(id, request, currentUser, model);
-        ChallengeDefinition challenge;
-        try {
-        	challenge = (ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class);
-        } 
-        catch (Exception ex) {
-        	ex.printStackTrace();
-        	challenge = new ChallengeDefinition();
-        }
+        ChallengeDefinition challenge = (ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class);        
         return UserActionsProvider.canUpdateChallenge(util.getSignedUpUser(request, currentUser), challenge) ? 
                 "chalNewOrUpdate" : "chalShow";
     }
