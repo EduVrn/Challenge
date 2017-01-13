@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">  
+    <head>
+        <title>Loader</title>
+        <meta charset="UTF-8"/>
+    </head>
+    <body>
+        <div th:fragment="loader" class="loader">
+            <script>
+                jQuery(window).load(function () {
+                    $(".loader").delay(300).fadeOut("slow");
+                });</script>
+            <div class="loader-centered">
+                <div class="square first"></div>
+                <div class="square1 second"></div>
+                <div class="square2 third"></div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -37,7 +37,7 @@
             </div>
             <ul>
                 <li th:each="child : ${comment.getComments()}">
-                    <div th:replace="fragments/comment :: subcomment(comment =${child}, depth=${depth+1})"  />
+                    <div th:replace="fragments/modelElementsViews/comment :: subcomment(comment =${child}, depth=${depth+1})"  />
                 </li>
             </ul>
         </div>
