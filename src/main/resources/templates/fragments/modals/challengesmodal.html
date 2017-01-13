@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>FriendsModal</title>
+        <meta charset="UTF-8"/>
+    </head>
+    <body>
+        <!--modal for challenges-->
+        <div th:fragment="challengesmodal" id="modal-challenges" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- modal content-->
+                <input type="hidden" id="friend-id" th:value="${userProfile.getId()}" />                                        
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title" th:text="#{listOfCreatedChalsTitle}"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="search-form">
+                            <input type="hidden" id="csrf-token" name="_csrf" th:value="${_csrf.token}" />
+                            <input type="hidden" id="current-user-id" th:value="${currentDBUser.getId()}" />
+                            <input type="text" id="filter-challenges" th:placeholder="#{challengesFilter}" style="width: 100%;"/>
+                        </form>
+                        <form method="GET" action="challengesForFriend" id="challenges-form">
+                            <div class="well" style="max-height: 300px; overflow: auto;">
+                                <ul id="challenges-list" class="list-group checked-list-box">
+                                    <li class="list-group-item" 
+                                        th:each="challenge : ${currentDBUser.getChallenges()}">
+                                        <input type="hidden" name="user-id" th:value="${userProfile.getId()}" />
+                                        <input type="hidden" th:value="${challenge.getId()}" name="id"/>
+                                        <input type="checkbox" name="check"/>
+                                        <label  th:text="${challenge.getName()}"></label>
+                                    </li>
+                                </ul>
+                            </div>
+                            <input type="submit" class="btn btn-success" 
+                                   th:value="#{profileThrowChalButton}" disabled="disabled"/>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" data-dismiss="modal" 
+                               th:value="#{closeButton}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

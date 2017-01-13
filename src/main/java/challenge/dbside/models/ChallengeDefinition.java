@@ -1,118 +1,102 @@
 package challenge.dbside.models;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-import challenge.dbside.ini.ContextType;
+import challenge.dbside.models.common.IdAttrGet;
+import challenge.dbside.models.dbentity.DBSource;
+import challenge.dbside.models.ini.TypeEntity;
+import challenge.dbside.models.status.ChallengeDefinitionStatus;
 import java.text.DateFormat;
+
 import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Date;
+
 import java.util.List;
 import java.util.Locale;
-import javax.persistence.CascadeType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToOne;
+import java.util.Set;
 
-@Entity
-@Table(name = "entities")
-//@DiscriminatorValue(value="Chal")
-public class ChallengeDefinition extends BaseEntity {
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinTable(name = "relationship",
-            joinColumns = @JoinColumn(name = "entity_id2", referencedColumnName = "entity_id"),
-            inverseJoinColumns = @JoinColumn(name = "entity_id1", referencedColumnName = "entity_id")
-    )
-    private User creator;
+public class ChallengeDefinition extends BaseEntity implements Commentable {
 
-    public ChallengeDefinition() {
-        super(ChallengeDefinition.class.getSimpleName());
-    }
+	public ChallengeDefinition() {
+		super(ChallengeDefinition.class.getSimpleName());        
+	}
 
-    public List<User> getAllAcceptors() {
-        List<User> acceptors = new ArrayList<>();
-        this.getChildren().forEach((chalInstance) -> {
-            if (chalInstance instanceof ChallengeInstance) {
-                acceptors.add(((ChallengeInstance) chalInstance).getAcceptor());
-            }
-        });
-        return acceptors;
-    }
+	public ChallengeDefinition(DBSource dataSource) {
+		super(dataSource);
+	}
 
-    public List<Comment> getComments() {
-        List<Comment> comments = new ArrayList<>();
-        this.getChildren().forEach((child) -> {
-            if (child instanceof Comment) {
-                comments.add((Comment) child);
-            }
-        });
-        return comments;
-    }
+	public List<User> getAllAcceptors() {
+		List<User> acceptors = new ArrayList<>();     
 
-    public String getName() {
-        return this.getAttributes()
-                .get(ContextType.getInstance().getTypeAttribute("name").getId()).getValue();
-    }
+		Set<DBSource> set = (Set<DBSource>)getDataSource().getChildren();
+		set.forEach((chalInsDB)-> {
+			if(chalInsDB.getEntityType() == TypeEntity.CHALLENGE_INSTANCE.getValue()) {
+				acceptors.add(new ChallengeInstance(chalInsDB).getAcceptor());
+			}
+		});
+		return acceptors;   
+	}
 
-    public void setName(String name) {
-        this.getAttributes()
-                .get(ContextType.getInstance().getTypeAttribute("name").getId()).setValue(name);
-    }
+	public String getName() {
+		return getDataSource().getAttributes().get(IdAttrGet.IdName()).getValue();
+	}
 
-    public String getDescription() {
-        return this.getAttributes()
-                .get(ContextType.getInstance().getTypeAttribute("description").getId()).getValue();
-    }
+	public void setName(String name) {
+		getDataSource().getAttributes().get(IdAttrGet.IdName()).setValue(name);
+	}
 
-    public void setDescription(String description) {
-        this.getAttributes()
-                .get(ContextType.getInstance().getTypeAttribute("description").getId()).setValue(description);
-    }
+	public String getDescription() {
+		return getDataSource().getAttributes().get(IdAttrGet.IdDescr()).getValue();
+	}
 
-    public String getImageRef() {
-        return "../images/" + this.getAttributes()
-                .get(ContextType.getInstance().getTypeAttribute("imageref").getId()).getValue();
-    }
+	public void setDescription(String description) {
+		getDataSource().getAttributes().get(IdAttrGet.IdDescr()).setValue(description);
+	}
 
-    public void setImageRef(String image) {
-        this.getAttributes()
-                .get(ContextType.getInstance().getTypeAttribute("imageref").getId()).setValue(image);
-    }
+	public String getImageRef() {
+		return "../images/" + getDataSource().getAttributes().get(IdAttrGet.IdImgRef()).getValue();
+	}
 
-    public Date getDate() {
-        try {
-            DateFormat df = new SimpleDateFormat("EEE MMM dd kk:mm:ss z yyyy", Locale.ENGLISH);
-            Date result = df.parse(this.getAttributes()
-                    .get(ContextType.getInstance().getTypeAttribute("date").getId()).getValue());
-            return result;
-        } catch (Exception ex) {
-            return (new Date());
-        }
+	public void setImageRef(String image) {
+		getDataSource().getAttributes().get(IdAttrGet.IdImgRef()).setValue(image);
+	}
 
-    }
+	public Date getDate()  {
+		try {
+			DateFormat df = new SimpleDateFormat("EEE MMM dd kk:mm:ss z yyyy", Locale.ENGLISH);
+			String ddt = getDataSource().getAttributes().get(IdAttrGet.IdDate()).getValue();
+			Date result = df.parse(ddt);
+			return result;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return (new Date(0));
+			//new Date() == current date,
+			//return (new Date());
+		}
+	}
 
-    public void setDate(Date date) {
-        this.getAttributes()
-                .get(ContextType.getInstance().getTypeAttribute("date").getId()).setValue(date.toString());
-    }
+	public void setDate(Date date) {
+		getDataSource().getAttributes().get(IdAttrGet.IdDate()).setValue(date.toString());
+	}
 
-    public User getCreator() {
-        return creator;
-    }
+	public User getCreator() {
+		return new User(getDataSource().getParent());
+	}
 
-    public void setCreator(User creator) {
-        this.creator = creator;
-    }
+	public void setCreator(User creator) {    	
+		getDataSource().setParent(creator.getDataSource());
+	}
 
-    public ChallengeDefinitionStatus getStatus() {
-        return ChallengeDefinitionStatus.valueOf(this.getAttributes()
-                .get(ContextType.getInstance().getTypeAttribute("chalDefStatus").getId()).getValue());
-    }
+	public ChallengeDefinitionStatus getStatus() {    	
+		return ChallengeDefinitionStatus.valueOf((getDataSource().getAttributes().get(IdAttrGet.IdChalDefStat())).getValue());
+	}
 
-    public void setStatus(ChallengeDefinitionStatus status) {
-        this.getAttributes()
-                .get(ContextType.getInstance().getTypeAttribute("chalDefStatus").getId()).setValue(status.name());
-    }
+	public void setStatus(ChallengeDefinitionStatus status) {
+		getDataSource().getAttributes().get(IdAttrGet.IdChalDefStat()).setValue(status.name());
+	}
+
+	public void addChallengeInstance(ChallengeInstance chalIns) {    	
+		getDataSource().getChildren().add(chalIns.getDataSource());
+	}    
 }

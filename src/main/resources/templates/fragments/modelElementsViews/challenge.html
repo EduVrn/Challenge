@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8"/>
+    </head>
+    <body>
+        <div th:fragment="challenge(challenge)" style="border-width: 5" class="panel panel-default">
+            <div class="box-content panel-body ">
+                <div th:replace="fragments/modelElementsViews/challengeImageAndBody :: challengePanel(${challenge})" th:remove="tag"  /> 
+            </div>
+        </div>
+    </body>
+</html>

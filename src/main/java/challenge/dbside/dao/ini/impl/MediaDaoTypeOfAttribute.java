@@ -9,10 +9,9 @@ import challenge.dbside.dao.ini.MediaDao;
 
 @Repository
 public class MediaDaoTypeOfAttribute implements MediaDao<TypeOfAttribute> {
-
     @PersistenceContext
     private EntityManager em;
-
+    
     @Override
     public void save(TypeOfAttribute type) {
         em.persist(type);

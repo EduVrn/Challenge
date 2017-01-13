@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+	<class name="challenge.dbside.models.dbentity.DBSource" table="entities"
+		catalog="">
+		<id name="id" type="java.lang.Integer" column="entity_id">
+			<!-- generator class="increment" / -->
+		</id>
+		<property name="entityType" column="type_of_entity" type="java.lang.Integer" />
+
+		<map name="attributes" table="values" cascade="all" lazy="false">
+			<key column="entity_id" />
+			<map-key column="attribute_id" type="java.lang.Integer" />
+			<one-to-many class="challenge.dbside.models.dbentity.Attribute" />
+		</map>
+
+
+		<property name="parentId" type="int" update="false" insert="false" column="parent_id" length="10" />
+		<many-to-one name="parent" class="challenge.dbside.models.dbentity.DBSource" column="parent_id" not-null="false" lazy="false" />
+			
+		<set name="children" table="entities" lazy="false" cascade="all-delete-orphan" inverse="false">
+			<key column="parent_id" />
+			<one-to-many class="challenge.dbside.models.dbentity.DBSource" />
+		</set>
+				
+		<map name="rel" table="relationship" cascade="none" collection-type="challenge.dbside.models.dbentity.mmaptype.MultiMapType" lazy="false">
+			<key column="entity_id" />
+			<map-key column="attribute_id" type="java.lang.Integer" />
+			<many-to-many column="entity_val" class="challenge.dbside.models.dbentity.DBSource" />
+		</map>
+
+		<map name="backRel" table="relationship" cascade="none" collection-type="challenge.dbside.models.dbentity.mmaptype.MultiMapType" lazy="false">
+			<key column="entity_val" />
+			<map-key column="attribute_id" type="java.lang.Integer" />
+			<many-to-many column="entity_id" class="challenge.dbside.models.dbentity.DBSource" />
+		</map>
+	</class>
+
+</hibernate-mapping>

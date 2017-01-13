@@ -9,7 +9,7 @@ import java.util.List;
 public class TypeOfEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "type_of_entity_id")
     private int typeEntityID;
 
@@ -26,12 +26,13 @@ public class TypeOfEntity {
     public TypeOfEntity() {
         listAttributes = new ArrayList<TypeOfAttribute>();
     }
-
-    public TypeOfEntity(String nameTypeEntity) {
+    
+    public TypeOfEntity(String nameTypeEntity, int type_of_id) {
         this.nameTypeEntity = nameTypeEntity;
         listAttributes = new ArrayList<TypeOfAttribute>();
+        this.typeEntityID = type_of_id;
     }
-
+    
     public void add(TypeOfAttribute type) {
         listAttributes.add(type);
     }
@@ -61,7 +62,12 @@ public class TypeOfEntity {
     }
 
     public String toString() {
-        return "TypeEntityID:" + typeEntityID + "  nameTypeEntity: " + nameTypeEntity;
+        String type = "TypeEntityID:" + typeEntityID + "  nameTypeEntity: " + nameTypeEntity;
+        /*for(TypeOfAttribute t : listTypeOffAttribute) {
+ 			type += t;
+ 		}*/
+
+        return type;
     }
 
 }

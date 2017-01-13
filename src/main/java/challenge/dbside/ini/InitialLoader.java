@@ -1,12 +1,21 @@
 package challenge.dbside.ini;
 
 import challenge.dbside.models.*;
+import challenge.dbside.models.dbentity.DBSource;
+import challenge.dbside.models.ini.TypeAttribute;
+import challenge.dbside.models.ini.TypeEntity;
 import challenge.dbside.models.ini.TypeOfAttribute;
 import challenge.dbside.models.ini.TypeOfEntity;
+import challenge.dbside.models.status.ChallengeDefinitionStatus;
+import challenge.dbside.models.status.ChallengeStatus;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import challenge.dbside.services.ini.MediaService;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -34,15 +43,18 @@ public class InitialLoader {
     }
 
     private void createContext() {
+        TypeOfAttribute attrName = new TypeOfAttribute(1, "name", TypeAttribute.STRING.getValue());
+        TypeOfAttribute attrSurname = new TypeOfAttribute(2, "surname", TypeAttribute.STRING.getValue());
+        TypeOfAttribute attrDate = new TypeOfAttribute(3, "date", TypeAttribute.STRING.getValue());
+        TypeOfAttribute attrDescription = new TypeOfAttribute(4, "description", TypeAttribute.STRING.getValue());
+        TypeOfAttribute attrImageRef = new TypeOfAttribute(5, "imageref", TypeAttribute.STRING.getValue());
+        TypeOfAttribute attrChalStatus = new TypeOfAttribute(6, "chalStatus", TypeAttribute.STRING.getValue());
+        TypeOfAttribute attrChalDefStatus = new TypeOfAttribute(7, "chalDefStatus", TypeAttribute.STRING.getValue());
+        TypeOfAttribute attrMessage = new TypeOfAttribute(8, "message", TypeAttribute.STRING.getValue());
 
-        TypeOfAttribute attrName = new TypeOfAttribute(1, "name", 1);
-        TypeOfAttribute attrSurname = new TypeOfAttribute(2, "surname", 1);
-        TypeOfAttribute attrDate = new TypeOfAttribute(3, "date", 2);
-        TypeOfAttribute attrDescription = new TypeOfAttribute(4, "description", 1);
-        TypeOfAttribute attrImageRef = new TypeOfAttribute(5, "imageref", 1);
-        TypeOfAttribute attrChalStatus = new TypeOfAttribute(6, "chalStatus", 1);
-        TypeOfAttribute attrChalDefStatus = new TypeOfAttribute(7, "chalDefStatus", 1);
-        TypeOfAttribute attrMessage = new TypeOfAttribute(8, "message", 1);
+        TypeOfAttribute refAttrFriends = new TypeOfAttribute(31, "friends", TypeAttribute.REF.getValue());
+        TypeOfAttribute refAttrAcceptedChalIns = new TypeOfAttribute(32, "acceptedChalIns", TypeAttribute.REF.getValue());
+        TypeOfAttribute refAttrAutorComment = new TypeOfAttribute(33, "autorComment", TypeAttribute.REF.getValue());
 
         serviceAttr.save(attrName);
         serviceAttr.save(attrSurname);
@@ -53,13 +65,21 @@ public class InitialLoader {
         serviceAttr.save(attrChalDefStatus);
         serviceAttr.save(attrMessage);
 
-        TypeOfEntity entity = new TypeOfEntity("User");
-        entity.add(attrName);
-        entity.add(attrSurname);
-        entity.add(attrImageRef);
-        serviceEntity.save(entity);
+        serviceAttr.save(refAttrFriends);
+        serviceAttr.save(refAttrAcceptedChalIns);
+        serviceAttr.save(refAttrAutorComment);
 
-        TypeOfEntity entityChallenge = new TypeOfEntity("ChallengeDefinition");
+        TypeOfEntity entityUser = new TypeOfEntity("User", TypeEntity.USER.getValue());
+        entityUser.add(attrName);
+        entityUser.add(attrSurname);
+        entityUser.add(attrImageRef);
+
+        entityUser.add(refAttrFriends);
+        entityUser.add(refAttrAcceptedChalIns);
+        entityUser.add(refAttrAutorComment);
+        serviceEntity.save(entityUser);
+
+        TypeOfEntity entityChallenge = new TypeOfEntity("ChallengeDefinition", TypeEntity.CHALLENGE_DEFINITION.getValue());
         entityChallenge.add(attrName);
         entityChallenge.add(attrDate);
         entityChallenge.add(attrDescription);
@@ -67,18 +87,23 @@ public class InitialLoader {
         entityChallenge.add(attrChalDefStatus);
         serviceEntity.save(entityChallenge);
 
-        TypeOfEntity entityChallengeInstance = new TypeOfEntity("ChallengeInstance");
+        TypeOfEntity entityChallengeInstance = new TypeOfEntity("ChallengeInstance", TypeEntity.CHALLENGE_INSTANCE.getValue());
         entityChallengeInstance.add(attrName);
         entityChallengeInstance.add(attrChalStatus);
+        entityChallengeInstance.add(attrDate);
+        entityChallengeInstance.add(attrDescription);
+        entityChallengeInstance.add(attrImageRef);
+        entityChallengeInstance.add(refAttrAcceptedChalIns);
         serviceEntity.save(entityChallengeInstance);
 
-        TypeOfEntity entityComment = new TypeOfEntity("Comment");
+        TypeOfEntity entityComment = new TypeOfEntity("Comment", TypeEntity.COMMENT.getValue());
         entityComment.add(attrDate);
         entityComment.add(attrMessage);
+
+        entityUser.add(refAttrAutorComment);
         serviceEntity.save(entityComment);
 
         ContextType contextType = ContextType.getInstance();
-
         contextType.add(attrName);
         contextType.add(attrSurname);
         contextType.add(attrDate);
@@ -88,21 +113,24 @@ public class InitialLoader {
         contextType.add(attrChalDefStatus);
         contextType.add(attrMessage);
 
-        contextType.add(entity);
+        contextType.add(refAttrFriends);
+        contextType.add(refAttrAcceptedChalIns);
+        contextType.add(refAttrAutorComment);
+
+        contextType.add(entityUser);
         contextType.add(entityChallenge);
         contextType.add(entityChallengeInstance);
         contextType.add(entityComment);
-
     }
 
     public void init() {
+
         ChallengeDefinition chalDef1 = new ChallengeDefinition();
         chalDef1.setName("Make something");
         chalDef1.setDescription("Hi, I'm first. Selected me!");
         chalDef1.setImageRef("firstExampleChallenge.jpg");
-
+        chalDef1.setStatus(ChallengeDefinitionStatus.CREATED);
         chalDef1.setDate(new Date());
-
         serviceEntityInit.save(chalDef1);
 
         User user1 = new User();
@@ -111,23 +139,37 @@ public class InitialLoader {
         serviceEntityInit.save(user1);
 
         ChallengeDefinition chalDef2 = new ChallengeDefinition();
-        chalDef2.setName("Make your task 4 Ivan.");
+        chalDef2.setName("Hi, make your's task 4 Ivan.");
         chalDef2.setDescription("After (may be)");
         chalDef2.setImageRef("secondExampleTask.png");
         chalDef2.setDate(new Date());
+        chalDef2.setStatus(ChallengeDefinitionStatus.CREATED);
         serviceEntityInit.save(chalDef2);
         user1.addChallenge(chalDef1);
         user1.addChallenge(chalDef2);
         serviceEntityInit.update(user1);
 
+        Comment com = new Comment();
+        com.setMessage("asg");
+        com.setDate(new Date());
+        serviceEntityInit.save(com);
+
         ChallengeInstance chalInstance1 = new ChallengeInstance();
         chalInstance1.setName("I can made it");
         chalInstance1.setStatus(ChallengeStatus.AWAITING);
+        chalInstance1.setAcceptor(user1);
+        chalInstance1.setDescription("After (may be)");
+        chalInstance1.setImageRef("secondExampleTask.png");
+        chalInstance1.setDate(new Date());
         serviceEntityInit.save(chalInstance1);
-        ChallengeInstance chalUnstance2 = new ChallengeInstance();
-        chalUnstance2.setName("Ou ");
-        chalUnstance2.setStatus(ChallengeStatus.AWAITING);
-        serviceEntityInit.save(chalUnstance2);
+        ChallengeInstance chalInstance2 = new ChallengeInstance();
+        chalInstance2.setName("Ou ");
+        chalInstance2.setStatus(ChallengeStatus.AWAITING);
+        chalInstance2.setAcceptor(user1);
+        chalInstance2.setDescription("After (may be)");
+        chalInstance2.setImageRef("secondExampleTask.png");
+        chalInstance2.setDate(new Date());
+        serviceEntityInit.save(chalInstance2);
 
         User user2 = new User();
         user2.setName("Jonnie Fast-Foot");

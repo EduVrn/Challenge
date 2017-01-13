@@ -9,10 +9,8 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        <link rel="stylesheet" type="text/css" href="css/bootstrap-social.css" />
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
+        <link th:replace="fragments/commonDependencies :: commonDependencies" th:remove="tag"/>
+
     </head>
 
     <body>
@@ -35,7 +33,6 @@
                     (<span th:text="${error}"/>)
                 </div>
                 <div><span style="font-weight: bold">Message: </span><span th:text="${message}"/></div>
-
                 <div th:unless="${exception == null}"><span style="font-weight: bold">Exception: </span><span th:text="${exception}"/></div>
                 <div th:unless="${exception == null}"><span style="font-weight: bold">Trace:     </span><span th:text="${trace}"/></div>
             </p>

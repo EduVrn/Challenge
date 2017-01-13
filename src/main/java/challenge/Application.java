@@ -10,6 +10,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Arrays;
+
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan
@@ -18,8 +20,8 @@ public class Application extends SpringBootServletInitializer {
     private static InitialLoader initiator;
 
     @Autowired
-    public void setInitialLoader(InitialLoader initiator) {
-        Application.initiator = initiator;
+    public void setSomeThing(InitialLoader someThing) {
+        Application.initiator = someThing;
     }
 
     @Override
@@ -28,13 +30,9 @@ public class Application extends SpringBootServletInitializer {
     }
 
     public static void main(String[] args) {
-        //ApplicationContext context = new ClassPathXmlApplicationContext("META-INF/beans.xml");
-
-        //Init();
-        // SpringApplication.run(Application.class, args);
         ApplicationContext ctx = SpringApplication.run(Application.class, args);
-
         initiator.initial();
     }
 
 }
+
