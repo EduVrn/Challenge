@@ -64,13 +64,10 @@ dependencies {
     //  compile("org.hsqldb:hsqldb:2.3.2")
     // https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-core
     //compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '8.5.8'
-	
-	
-    //compile group: 'commons-collections', name: 'commons-collections', version: '3.0'
-	
-	
+    
     // https://mvnrepository.com/artifact/org.apache.commons/commons-collections4
     compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.0'
+
     testCompile("org.springframework.boot:spring-boot-starter-test")
 }
 

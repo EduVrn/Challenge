@@ -56,7 +56,7 @@ public class MainController {
     @Autowired
     @Qualifier("storageServiceUser")
     private MediaService serviceEntity;
-
+    
     @Autowired
     private UserActionsProvider actionsProvider;
 
