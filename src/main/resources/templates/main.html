@@ -8,56 +8,38 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
 
-        <script src="js/jquery.min.js"></script>
+        <link th:replace="fragments/commonDependencies :: commonDependencies" th:remove="tag"/>
+
         <link rel="stylesheet" href="css/pageLoader.css"/>
-        <link rel="stylesheet" type="text/css" href="css/bootstrap-social.css" />
-        <link rel="stylesheet" href="css/font-awesome.css"/>
-        <link rel="stylesheet" href="css/chalStyle.css"/>
         <link rel="stylesheet" href="../css/style.css" />
-
+        <script src="js/jquery.min.js"></script>
         <style type="text/css">
             <!--
             .ml { width: 110px; color: white; text-decoration: none }
             .ml:hover, a:focus { color: white; text-decoration: none }
             -->
         </style>
-
     </head>
 
     <body>        
-        <script>
-<!-- PageLoader script -->
-            jQuery(window).load(function () {
-                $(".loader").delay(300).fadeOut("slow");
-            });</script>
 
         <div th:replace="fragments/header::userInfo"/>
+        <div th:replace="fragments/util/loader::loader"/>
 
-        <div class="loader">
-            <div class="loader-centered">
-                <div class="square first"></div>
-                <div class="square1 second"></div>
-                <div class="square2 third"></div>
-            </div>
-        </div>
         <div class="container bootstrap snippets">
         </div>
         <div class="content-wrapper">
             <div class="inner-container container" >
                 <div style="height:80%;" class="chalList masonry-true">
                     <div style=" margin-top: 100px; " class="row">
-                        <div  class="challenge col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                        <div class="main-challenge">
                             <div style="border-width: 5;" class="panel panel-danger">
                                 <div class="box-content panel-body">
-                                    <div class="chal-photo col-md-8 col-sm-12 col-xs-12 "> 
-                                         
+                                    <div class="main-challenge-photo"> 
                                         <img class="img-rounded" th:src="${mainChallenge.getImageRef()}"  alt=""></img> 
                                     </div>
-                                    <div class="chal-body col-md-4 col-sm-12 col-xs-12">
+                                    <div class="main-challenge-body">
                                         <form name="submitForm" id="challenge_form" method="GET" action="challenge/information">
                                             <input type="hidden" name="id" th:value="${mainChallenge.getId()}"/>
                                             <h2 class="chal-title" ><a onclick="document.getElementById('challenge_form').submit();"  th:text="${mainChallenge.getName()}"></a></h2>
@@ -68,37 +50,18 @@
                                 </div> 
                             </div> 
                         </div>
-
                     </div>
-                    <div th:each="challenge : ${Challenges}" >
-                        <div  class="challenge col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                            <div style="border-width: 5" class="panel panel-default">
-                                <div class="box-content panel-body ">
-                                    <div class="chal-photo-main-page"> 
-                                        <img class="img-rounded" th:src="${challenge.getImageRef()}" alt=""/> 
-                                    </div>
-                                    <div class="chal-body">
-                                        <form name="submitForm" th:id="'challenge_form'+${challenge.Id}"  method="GET" action="challenge/information">
-                                            <input type="hidden" name="id" th:value="${challenge.getId()}"/>
-                                            <h2 class="chal-title"><a  th:onclick="'document.getElementById(\'challenge_form'+${challenge.getId()}+'\').submit();'" th:text="${challenge.getName()}"></a></h2>
-                                        </form>
-                                        <span class="chal-meta" th:text="${#dates.format(challenge.date, 'yyyy/MM/dd HH:mm')}"></span>
-                                        <h4 class="desc" th:text="${challenge.getDescription()}"></h4>
-                                    </div>
-                                </div>
-                            </div> 
-                        </div>
+                    <div th:each="challenge : ${Challenges}" class="list-challenge" >
+                        <div th:replace="fragments/modelElementsViews/challenge::challenge(challenge=${challenge})"/>
                     </div>
                 </div>
             </div>
         </div> 
 
-        <script src="js/bootstrap.min.js"></script>
+        <script th:replace="fragments/commonDependencies :: commonJS" th:remove="tag"/>
+        <script src="js/csslayoutextenders/mainPageLayout.js"></script>
         <script src="js/responsiveLayout/plugins.js"></script>
         <script src="js/responsiveLayout/chalAnimating.js"></script>
-        <script src="js/uloginCallback.js"></script>
-        <script src="js/main.js"></script>
-        <script src="//ulogin.ru/js/ulogin.js"></script>
     </body>
 </html>
 

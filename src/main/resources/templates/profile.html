@@ -1,59 +1,25 @@
 <!DOCTYPE html>
-
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:c="http://java.sun.com/jsp/jstl/core">
-
-
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <title th:text="#{profilePageTitle}"></title>
-        <link rel="stylesheet"
-              href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
-        <link rel="stylesheet"
-              href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
-        <link rel="stylesheet"
-              href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
-
-        <script src="js/jquery.min.js"></script>
-
-        <link rel="stylesheet" href="css/pageLoader.css" />
-        <link rel="stylesheet" type="text/css" href="css/bootstrap-social.css" />
-        <link rel="stylesheet" href="css/font-awesome.css" />
-        <link rel="stylesheet" href="css/chalStyle.css" />
+        <script src="js/jquery.min.js"></script>  
+        <link th:replace="fragments/commonDependencies :: commonDependencies" th:remove="tag"/>
         <link rel="stylesheet" href="css/style.css" />
-
+        <link rel="stylesheet" href="css/pageLoader.css" />
     </head>
     <body>
-
         <div th:replace="fragments/header::userInfo" />
-
         <div class="container" style="margin-top: 100px;">
-
-
             <h1 class="page-header">
                 <span th:text="${userProfile.getName()}" />
             </h1>
             <div class="row">
                 <!-- left side -->
-                <div class="col-md-4 col-sm-6 col-xs-12">
+                <div class="avatar">
                     <div>
-                        <!-- img th:src="${currentUserConnection.imageUrl}" class="img-rounded img-responsive" /-->
                         <img th:src="${userProfile.getImageRef()}" class="img-rounded img-responsive" />
-
                     </div>
-                    <div class="text-center col-md-6 col-sm-6 col-xs-6">
-                        <h1>
-                            <span style="text-align: center; font-size: 25"
-                                  class="glyphicon glyphicon-thumbs-up"></span>1
-                        </h1>
-                    </div>
-                    <div class="text-center col-md-6 col-sm-6 col-xs-6"
-                         style="align-self: flex-end;">
-                        <h1>
-                            <span style="text-align: center; font-size: 25"
-                                  class="glyphicon glyphicon-thumbs-down"></span>2
-                        </h1>
-                    </div>
+                    <div th:replace="fragments/util/rate::rate" />
                     <form  method="GET" th:action="@{../changelang}">
                         <button name="lang" type="submit" th:value="en" class="btn btn-default"><img width="15" height="10" src="../images/flagUK.jpeg" /></button>
                         <button  name="lang" type="submit" th:value="ru" class="btn btn-default"><img width="15" height="10" src="../images/flagRF.png" /></button>
@@ -66,26 +32,21 @@
                         <input type="hidden" id="user-id" name="id" th:value="${userProfile.getId()}" />
                         <input class="btn btn-default text-center" type="submit" th:value="#{profileFriendsButton}" />
                     </form>
-                        <!-- change currentUserId to profile user -->
-                        <input type="hidden" name="id" th:value="${userProfile.getId()}" />
-                        <input th:if="${actions.contains(T(challenge.webside.authorization.Action).THROW_CHALLENGE_FOR_USER)}"
-                                                   name="throw" type="submit" data-target="#modal-challenges" 
-                                                   data-toggle="modal" class="btn btn-default text-center" />
-                        <!--<input id="throw_challenge" class="btn btn-default text-center" type="submit" th:value="#{profileThrowChallengeButton}" />-->
-
-
-
+                    <!-- change currentUserId to profile user -->
+                    <input type="hidden" name="id" th:value="${userProfile.getId()}" />
+                    <input th:if="${actions.contains(T(challenge.webside.authorization.Action).THROW_CHALLENGE_FOR_USER)}"
+                           name="throw" type="submit" data-target="#modal-challenges" 
+                           data-toggle="modal" class="btn btn-default text-center" />
+                    <!--<input id="throw_challenge" class="btn btn-default text-center" type="submit" th:value="#{profileThrowChallengeButton}" />-->
                 </div>
                 <!-- right side -->
                 <div class="col-md-8 col-sm-6 col-xs-12">
-
                     <form th:if="${actions.contains(T(challenge.webside.authorization.Action).CREATE_CHALLENGE)}" 
                           class="navbar-right" name="newCallenge" th:id="newChallenge"
                           method="GET" action="challenge/new">
                         <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> 
-                        <input
-                            class="btn btn-default text-center" type="submit" name="submit3"
-                            th:value="#{createNewChallengeFromProfileButton}" />
+                        <input class="btn btn-default text-center" type="submit" name="submit3"
+                               th:value="#{createNewChallengeFromProfileButton}" />
                     </form>
                     <!--tabs-->
                     <ul class="nav nav-tabs">
@@ -106,60 +67,36 @@
                     <section id="created-chals" class="col-md-12 tab-content hide">
                         <div class="text-center col-md-12">
                             <h2 th:text="#{listOfCreatedChalsTitle}"></h2>
-                            <div th:each="challenge : ${listOfDefined}">
-                                <div class="challenge col-lg-6 col-md-4 col-sm-6 col-xs-12">
-                                    <div style="border-width: 5" class="panel panel-default">
-                                        <div class="box-content panel-body ">
-                                            <form th:if="${actions.contains(T(challenge.webside.authorization.Action).EDIT_CHALLENGE)}"
-                                                  name="submitForm"
-                                                  th:id="'challenge/update'+${challenge.Id}" method="GET"
-                                                  action="challenge/update">
-                                                <input type="hidden" name="id" th:value="${challenge.getId()}" />
-                                                <h2 class="chal-title">
-                                                    <a th:onclick="'document.getElementById(\'challenge/update'+${challenge.getId()}+'\').submit();'">
-                                                        <span class="glyphicon glyphicon-wrench"
-                                                              style="font-size: 40px;" />
-                                                    </a>
-                                                </h2>
-                                            </form>
-                                            <div class="chal-photo-main-page">
-                                                <img class="img-rounded" th:src="${challenge.getImageRef()}"
-                                                     alt="" />
-                                            </div>
-
-                                            <div class="chal-body">
-                                                <form name="submitForm"
-                                                      th:id="'challenge_form'+${challenge.Id}" method="GET"
-                                                      action="challenge/information">
-                                                    <input type="hidden" name="id"
-                                                           th:value="${challenge.getId()}" />
-                                                    <h2 class="chal-title">
-                                                        <a
-                                                            th:onclick="'document.getElementById(\'challenge_form'+${challenge.getId()}+'\').submit();'"
-                                                            th:text="${challenge.getName()}"></a>
-                                                    </h2>
-                                                </form>
-                                                <span class="chal-meta"
-                                                      th:text="${#dates.format(challenge.getDate(), 'yyyy/MM/dd HH:mm')}"></span>
-                                                <h4 class="cut-text desc"
-                                                    th:text="${challenge.getDescription()}"></h4>
-                                            </div>
-                                            <form name="submitForm"
-                                                  th:id="'accept_def_form'+${challenge.Id}" method="GET"
-                                                  action="acceptDefinition" style="display: inline-block;">
-                                                <input type="hidden" name="id" th:value="${challenge.getId()}" />
-                                                <input
-                                                    th:unless="${challenge.getStatus() == T(challenge.dbside.models.status.ChallengeDefinitionStatus).ACCEPTED}"
-                                                    id="accept-def" type="submit" class="btn btn-success"
-                                                    th:value="#{profileAcceptChalButton}"/>
-                                            </form>
+                            <div th:each="challenge : ${listOfDefined}" class="challenge col-lg-6 col-md-4 col-sm-6 col-xs-12">
+                                <div style="border-width: 5" class="panel panel-default">
+                                    <div class="box-content panel-body ">
+                                        <form th:if="${actions.contains(T(challenge.webside.authorization.Action).EDIT_CHALLENGE)}"
+                                              name="submitForm"
+                                              th:id="'challenge/update'+${challenge.Id}" method="GET"
+                                              action="challenge/update">
                                             <input type="hidden" name="id" th:value="${challenge.getId()}" />
-                                            <input th:if="${actions.contains(T(challenge.webside.authorization.Action).THROW_CHALLENGE_DEF)}"
-                                                   name="throw" type="submit" data-target="#modal-friends" 
-                                                   data-toggle="modal" class="btn btn-success"
-                                                   th:value="#{profileThrowChalButton}" />
+                                            <h2 class="chal-title">
+                                                <a th:onclick="'document.getElementById(\'challenge/update'+${challenge.getId()}+'\').submit();'">
+                                                    <span class="glyphicon glyphicon-wrench" style="font-size: 40px;" />
+                                                </a>
+                                            </h2>
+                                        </form>
+                                        <div th:replace="fragments/modelElementsViews/challengeImageAndBody :: challengePanel(${challenge})" th:remove="tag"  /> 
 
-                                        </div>
+                                        <form name="submitForm"
+                                              th:id="'accept_def_form'+${challenge.Id}" method="GET"
+                                              action="acceptDefinition" style="display: inline-block;">
+                                            <input type="hidden" name="id" th:value="${challenge.getId()}" />
+                                            <input
+                                                th:unless="${challenge.getStatus() == T(challenge.dbside.models.status.ChallengeDefinitionStatus).ACCEPTED}"
+                                                id="accept-def" type="submit" class="btn btn-success"
+                                                th:value="#{profileAcceptChalButton}"/>
+                                        </form>
+                                        <input type="hidden" name="id" th:value="${challenge.getId()}" />
+                                        <input th:if="${actions.contains(T(challenge.webside.authorization.Action).THROW_CHALLENGE_DEF)}"
+                                               name="throw" type="submit" data-target="#modal-friends" 
+                                               data-toggle="modal" class="btn btn-success"
+                                               th:value="#{profileThrowChalButton}" />
                                     </div>
                                 </div>
                             </div>
@@ -170,29 +107,23 @@
                     <section id="unaccepted-chals" class="col-md-12 tab-content hide">
                         <div class="text-center col-md-12">
                             <h2 th:text="#{listOfUnacceptedChalsTitle}"></h2>
-                            <div th:each="challenge : ${challengeRequests}">
-                                <div class="challenge col-lg-6 col-md-4 col-sm-6 col-xs-12">
-                                    <div style="border-width: 5" class="panel panel-default">
-                                        <div class="box-content panel-body ">
-                                            <div class="chal-photo-main-page">
-
-                                            </div>
-                                            <div class="chal-body">
-                                                <span class="chal-meta" th:text="${challenge.getName()}"></span>
-                                            </div>
-                                            <form name="submitForm" th:id="'accept_form'+${challenge.Id}"
-                                                  method="GET" action="accept" style="display: inline-block;">
-                                                <input type="hidden" name="id" th:value="${challenge.getId()}" />
-                                                <input type="submit" class="btn btn-success"
-                                                       style="display: inline-block;" th:value="#{profileAcceptChalButton}" />
-                                            </form>
-                                            <form name="submitForm" th:id="'decline_form'+${challenge.Id}"
-                                                  method="GET" action="decline" style="display: inline-block;">
-                                                <input type="hidden" name="id" th:value="${challenge.getId()}" />
-                                                <input type="submit" class="btn btn-danger"
-                                                       style="display: inline-block;" th:value="#{profileDeclineChalButton}" />
-                                            </form>
-                                        </div>
+                            <div th:each="challenge : ${challengeRequests}" class="challenge col-lg-6 col-md-4 col-sm-6 col-xs-12">
+                                <div style="border-width: 5" class="panel panel-default">
+                                    <div class="box-content panel-body ">
+                                        <div th:replace="fragments/modelElementsViews/challengeImageAndBody :: challengePanel(${challenge})" th:remove="tag"  />            
+                                        <!--submit acceptance button-->
+                                        <form name="submitForm" th:id="'accept_form'+${challenge.Id}"
+                                              method="GET" action="accept" style="display: inline-block;">
+                                            <input type="hidden" name="id" th:value="${challenge.getId()}" />
+                                            <input type="submit" class="btn btn-success"
+                                                   style="display: inline-block;" th:value="#{profileAcceptChalButton}" />
+                                        </form>
+                                        <!--decline acceptance button-->
+                                        <form name="submitForm" th:id="'decline_form'+${challenge.Id}"
+                                              method="GET" action="decline" style="display: inline-block;">
+                                            <input type="hidden" name="id" th:value="${challenge.getId()}" />
+                                            <input type="submit" class="btn btn-danger" style="display: inline-block;" th:value="#{profileDeclineChalButton}" />
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -203,16 +134,10 @@
                     <section id="accepted-chals" class="col-md-12 tab-content active">
                         <div class="text-center col-md-12">
                             <h2 th:text="#{listOfAcceptedChalsTitle}"></h2>
-                            <div th:each="challenge : ${listOfAccepted}">
-                                <div class="challenge col-lg-6 col-md-4 col-sm-6 col-xs-12">
-                                    <div style="border-width: 5" class="panel panel-default">
-                                        <div class="box-content panel-body ">
-                                            <div class="chal-photo-main-page">
-                                            </div>
-                                            <div class="chal-body">
-                                                <span class="chal-meta" th:text="${challenge.getName()}"></span>
-                                            </div>
-                                        </div>
+                            <div th:each="challenge : ${listOfAccepted}" class="challenge col-lg-6 col-md-4 col-sm-6 col-xs-12">
+                                <div style="border-width: 5" class="panel panel-default">
+                                    <div class="box-content panel-body ">
+                                        <div th:replace="fragments/modelElementsViews/challengeImageAndBody :: challengePanel(${challenge})" th:remove="tag"  /> 
                                     </div>
                                 </div>
                             </div>
@@ -222,87 +147,16 @@
                 </div>
             </div>
         </div>
-        
-        <!-- modal for friends-->
-        <div id="modal-friends" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-                <!-- modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title" th:text="#{profileFriendsButton}"></h4>
-                    </div>
-                    <div class="modal-body">
-                        <form id="search-form">
-                            <input type="hidden" id="csrf-token" name="_csrf" th:value="${_csrf.token}" />
-                            <input type="text" id="filter-friends" th:placeholder="#{friendsFilter}" style="width: 100%;"/>
-                        </form>
-                        <form method="GET" action="friendsForChallenge" id="friends-form">
-                            <div class="well" style="max-height: 300px; overflow: auto;">
-                                <ul id="friends-list" class="list-group checked-list-box">
-                                    <li class="list-group-item" 
-                                        th:each="friend : ${friends}">
-                                        <input type="hidden" th:value="${friend.getId()}" name="id"/>
-                                        <input type="checkbox" name="check"/>
-                                        <label  th:text="${friend.getName()}"></label>
-                                    </li>
-                                </ul>
-                            </div>
-                            <input type="submit" class="btn btn-success" 
-                                   th:value="#{profileThrowChalButton}" disabled="disabled"/>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <input type="button" class="btn btn-default" data-dismiss="modal" 
-                               th:value="#{closeButton}"/>
-                    </div>
-                </div>
-            </div>
-        </div>
 
+        <!--modal for friends-->
+        <div th:replace="fragments/modals/friendsmodal::friendsmodal" />
         <!--modal for challenges-->
-        <div id="modal-challenges" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-                <!-- modal content-->
-                <input type="hidden" id="friend-id" th:value="${userProfile.getId()}" />                                        
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title" th:text="#{listOfCreatedChalsTitle}"></h4>
-                    </div>
-                    <div class="modal-body">
-                        <form id="search-form">
-                            <input type="hidden" id="csrf-token" name="_csrf" th:value="${_csrf.token}" />
-                            <input type="hidden" id="current-user-id" th:value="${currentDBUser.getId()}" />
-                            <input type="text" id="filter-challenges" th:placeholder="#{challengesFilter}" style="width: 100%;"/>
-                        </form>
-                        <form method="GET" action="challengesForFriend" id="challenges-form">
-                            <div class="well" style="max-height: 300px; overflow: auto;">
-                                <ul id="challenges-list" class="list-group checked-list-box">
-                                    <li class="list-group-item" 
-                                        th:each="challenge : ${currentDBUser.getChallenges()}">
-                                        <input type="hidden" name="user-id" th:value="${userProfile.getId()}" />
-                                        <input type="hidden" th:value="${challenge.getId()}" name="id"/>
-                                        <input type="checkbox" name="check"/>
-                                        <label  th:text="${challenge.getName()}"></label>
-                                    </li>
-                                </ul>
-                            </div>
-                            <input type="submit" class="btn btn-success" 
-                                   th:value="#{profileThrowChalButton}" disabled="disabled"/>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <input type="button" class="btn btn-default" data-dismiss="modal" 
-                               th:value="#{closeButton}"/>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div th:replace="fragments/modals/challengesmodal::challengesmodal" />
 
-        <script src="js/bootstrap.min.js"></script>
+        <script th:replace="fragments/commonDependencies :: commonJS" th:remove="tag"/>
+        <script src="js/csslayoutextenders/profileLayout.js"></script>
         <script src="js/throwsChallenges/show.js"></script>
-        <script src="js/main.js"></script>
+        <script src="js/responsiveLayout/plugins.js"></script>
         <script src="js/responsiveLayout/chalAnimating.js"></script>
     </body>
 </html>

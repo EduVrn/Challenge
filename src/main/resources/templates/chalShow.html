@@ -7,15 +7,10 @@
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
+        <link th:replace="fragments/commonDependencies :: commonDependencies" th:remove="tag"/>
 
         <link rel="stylesheet" href="../css/pageLoader.css"/>
         <script src="../js/jquery.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="../css/bootstrap-social.css" />
-        <link rel="stylesheet" href="../css/font-awesome.css"/>
-        <link rel="stylesheet" href="../css/chalStyle.css"/>
         <link rel="stylesheet" href="../css/style.css"/>
         <style type="text/css">
             <!--
@@ -74,12 +69,9 @@
                             <input type="text" class="form-control" th:placeholder="#{commentPlaceholder}" th:field="*{message}" />
                             <input type="submit" class="btn btn-default" th:value="#{sendComment}" />
                         </form>
-
                         <div class="comments-list">
                             <ul th:each="comment : ${comments}" class="media">
-                                <li>
-                                    <div th:replace="fragments/comment :: subcomment(comment =${comment}, depth=0)"  />
-                                </li> 
+                                <li th:replace="fragments/modelElementsViews/comment :: subcomment(comment =${comment}, depth=0)"/>                                 
                             </ul>
                         </div>
                     </div>
