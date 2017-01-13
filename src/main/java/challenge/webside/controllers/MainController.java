@@ -31,6 +31,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -55,6 +56,9 @@ public class MainController {
     @Autowired
     @Qualifier("storageServiceUser")
     private MediaService serviceEntity;
+    
+    @Autowired
+    private UserActionsProvider actionsProvider;
 
     @RequestMapping("/")
     public String home(HttpServletRequest request, Principal currentUser, Model model) {
@@ -71,9 +75,18 @@ public class MainController {
     @RequestMapping(value = "challenge/update", method = GET, produces = "text/plain;charset=UTF-8")
     public String updateChal(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int id) {      
         util.setModelForChallengeShow(id, request, currentUser, model);
-        ChallengeDefinition challenge = (ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class);        
-        return UserActionsProvider.canUpdateChallenge(util.getSignedUpUser(request, currentUser), challenge) ? 
-                "chalNewOrUpdate" : "chalShow";
+        User user = util.getSignedUpUser(request, currentUser);
+        ChallengeDefinition challengeToUpdate = (ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class);
+        try {
+            actionsProvider.canUpdateChallenge(user, challengeToUpdate);
+            return "chalNewOrUpdate";
+        } catch (AccessDeniedException ex) {
+            model.addAttribute("timestamp", new Date());
+            model.addAttribute("status", 403);
+            model.addAttribute("error", "Access is denied");
+            model.addAttribute("message", ex.getMessage());
+            return "error";
+        }
     }
 
     @RequestMapping(value = "challenge/new", produces = "text/plain;charset=UTF-8")
