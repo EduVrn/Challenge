@@ -93,7 +93,6 @@ public class InitialLoader {
         entityChallengeInstance.add(attrDate);
         entityChallengeInstance.add(attrDescription);
         entityChallengeInstance.add(attrImageRef);
-
         entityChallengeInstance.add(refAttrAcceptedChalIns);
         serviceEntity.save(entityChallengeInstance);
 
@@ -159,12 +158,18 @@ public class InitialLoader {
         chalInstance1.setName("I can made it");
         chalInstance1.setStatus(ChallengeStatus.AWAITING);
         chalInstance1.setAcceptor(user1);
+        chalInstance1.setDescription("After (may be)");
+        chalInstance1.setImageRef("secondExampleTask.png");
+        chalInstance1.setDate(new Date());
         serviceEntityInit.save(chalInstance1);
-        ChallengeInstance chalUnstance2 = new ChallengeInstance();
-        chalUnstance2.setName("Ou ");
-        chalUnstance2.setStatus(ChallengeStatus.AWAITING);
-        chalInstance1.setAcceptor(user1);
-        serviceEntityInit.save(chalUnstance2);
+        ChallengeInstance chalInstance2 = new ChallengeInstance();
+        chalInstance2.setName("Ou ");
+        chalInstance2.setStatus(ChallengeStatus.AWAITING);
+        chalInstance2.setAcceptor(user1);
+        chalInstance2.setDescription("After (may be)");
+        chalInstance2.setImageRef("secondExampleTask.png");
+        chalInstance2.setDate(new Date());
+        serviceEntityInit.save(chalInstance2);
 
         User user2 = new User();
         user2.setName("Jonnie Fast-Foot");
