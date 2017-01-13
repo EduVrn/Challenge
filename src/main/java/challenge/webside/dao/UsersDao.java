@@ -29,154 +29,150 @@ import java.util.Set;
 @Repository
 public class UsersDao {
 
-	@Autowired
-	@Qualifier("storageServiceUser")
-	private MediaService serviceEntity;
+    @Autowired
+    @Qualifier("storageServiceUser")
+    private MediaService serviceEntity;
 
-	private JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
-	@Autowired
-	public UsersDao(DataSource dataSource) {
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
+    @Autowired
+    public UsersDao(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    }
 
-	public UserProfile getUserProfile(final String userId) {
-		return jdbcTemplate.queryForObject("select * from UserProfile where userId = ?",
-				new RowMapper<UserProfile>() {
-			public UserProfile mapRow(ResultSet rs, int rowNum) throws SQLException {
-				return new UserProfile(
-						userId,
-						rs.getString("name"),
-						rs.getString("firstName"),
-						rs.getString("lastName"),
-						rs.getString("email"),
-						rs.getString("username"),
-						rs.getInt("userEntityId"));
-			}
-		}, userId);
-	}
+    public UserProfile getUserProfile(final String userId) {
+        return jdbcTemplate.queryForObject("select * from UserProfile where userId = ?",
+                new RowMapper<UserProfile>() {
+            public UserProfile mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new UserProfile(
+                        userId,
+                        rs.getString("name"),
+                        rs.getString("firstName"),
+                        rs.getString("lastName"),
+                        rs.getString("email"),
+                        rs.getString("username"),
+                        rs.getInt("userEntityId"));
+            }
+        }, userId);
+    }
 
-	public UserConnection getUserConnection(final String userId) {
-		return jdbcTemplate.queryForObject("select * from UserConnection where userId = ?",
-				new RowMapper<UserConnection>() {
-			public UserConnection mapRow(ResultSet rs, int rowNum) throws SQLException {
-				return new UserConnection(
-						userId,
-						rs.getString("providerId"),
-						rs.getString("providerUserId"),
-						rs.getInt("rank"),
-						rs.getString("displayName"),
-						rs.getString("profileUrl"),
-						rs.getString("imageUrl"),
-						rs.getString("accessToken"),
-						rs.getString("secret"),
-						rs.getString("refreshToken"),
-						rs.getLong("expireTime"));
-			}
-		}, userId);
-	}
+    public UserConnection getUserConnection(final String userId) {
+        return jdbcTemplate.queryForObject("select * from UserConnection where userId = ?",
+                new RowMapper<UserConnection>() {
+            public UserConnection mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new UserConnection(
+                        userId,
+                        rs.getString("providerId"),
+                        rs.getString("providerUserId"),
+                        rs.getInt("rank"),
+                        rs.getString("displayName"),
+                        rs.getString("profileUrl"),
+                        rs.getString("imageUrl"),
+                        rs.getString("accessToken"),
+                        rs.getString("secret"),
+                        rs.getString("refreshToken"),
+                        rs.getLong("expireTime"));
+            }
+        }, userId);
+    }
 
-	public void createUser(String userId, UserProfile profile) {
+    public void createUser(String userId, UserProfile profile) {
 
-		ChallengeDefinition chalDef1 = new ChallengeDefinition();
-		chalDef1.setName("Challenge Of SignUpedUser");
-		chalDef1.setDescription("Description");
-		chalDef1.setImageRef("race.jpg");
-		chalDef1.setDate(new Date());
-		chalDef1.setStatus(ChallengeDefinitionStatus.CREATED);
-		serviceEntity.save(chalDef1);
-		
-		ChallengeDefinition chalDef2 = new ChallengeDefinition();
-		chalDef2.setName("Challenge Of SignUpedUser");
-		chalDef2.setDescription("Description");
-		chalDef2.setImageRef("race.jpg");
-		chalDef2.setDate(new Date());
-		chalDef2.setStatus(ChallengeDefinitionStatus.CREATED);
-		serviceEntity.save(chalDef2);
+        ChallengeDefinition chalDef1 = new ChallengeDefinition();
+        chalDef1.setName("Challenge Of SignUpedUser");
+        chalDef1.setDescription("Description");
+        chalDef1.setImageRef("race.jpg");
+        chalDef1.setDate(new Date());
+        chalDef1.setStatus(ChallengeDefinitionStatus.CREATED);
+        serviceEntity.save(chalDef1);
 
-		ChallengeDefinition chalDef3 = new ChallengeDefinition();
-		chalDef3.setName("Challenge Of SignUpedUser");
-		chalDef3.setDescription("Description");
-		chalDef3.setImageRef("race.jpg");
-		chalDef3.setDate(new Date());
-		chalDef3.setStatus(ChallengeDefinitionStatus.CREATED);
-		serviceEntity.save(chalDef3);
-		
-		ChallengeDefinition chalDef4 = new ChallengeDefinition();
-		chalDef4.setName("Challenge Of SignUpedUser");
-		chalDef4.setDescription("Description");
-		chalDef4.setImageRef("race.jpg");
-		chalDef4.setDate(new Date());
-		chalDef4.setStatus(ChallengeDefinitionStatus.CREATED);
-		serviceEntity.save(chalDef4);
+        ChallengeDefinition chalDef2 = new ChallengeDefinition();
+        chalDef2.setName("Challenge Of SignUpedUser");
+        chalDef2.setDescription("Description");
+        chalDef2.setImageRef("race.jpg");
+        chalDef2.setDate(new Date());
+        chalDef2.setStatus(ChallengeDefinitionStatus.CREATED);
+        serviceEntity.save(chalDef2);
 
+        ChallengeDefinition chalDef3 = new ChallengeDefinition();
+        chalDef3.setName("Challenge Of SignUpedUser");
+        chalDef3.setDescription("Description");
+        chalDef3.setImageRef("race.jpg");
+        chalDef3.setDate(new Date());
+        chalDef3.setStatus(ChallengeDefinitionStatus.CREATED);
+        serviceEntity.save(chalDef3);
 
-		List<User> friendsCandidate = serviceEntity.getAll(User.class);
+        ChallengeDefinition chalDef4 = new ChallengeDefinition();
+        chalDef4.setName("Challenge Of SignUpedUser");
+        chalDef4.setDescription("Description");
+        chalDef4.setImageRef("race.jpg");
+        chalDef4.setDate(new Date());
+        chalDef4.setStatus(ChallengeDefinitionStatus.CREATED);
+        serviceEntity.save(chalDef4);
 
-		
-		User user = new User();
-		user.setName(profile.getName());
-		user.setImageRef("AvaDefault.JPG");
-		serviceEntity.save(user);
+        List<User> friendsCandidate = serviceEntity.getAll(User.class);
 
-		
-		user.setFriends(friendsCandidate);
-		user.addChallenge(chalDef1);
-		user.addChallenge(chalDef2);
-		user.addChallenge(chalDef3);
-		user.addChallenge(chalDef4);
-		
-		serviceEntity.update(user);
+        User user = new User();
+        user.setName(profile.getName());
+        user.setImageRef("AvaDefault.JPG");
+        serviceEntity.save(user);
 
-		//
+        user.setFriends(friendsCandidate);
+        user.addChallenge(chalDef1);
+        user.addChallenge(chalDef2);
+        user.addChallenge(chalDef3);
+        user.addChallenge(chalDef4);
 
-		ChallengeInstance chalInstance1 = new ChallengeInstance();
-		chalInstance1.setName("Instance of SignUpedUser #1");
+        serviceEntity.update(user);
 
-		chalInstance1.setChallengeRoot(chalDef1);
-		chalInstance1.setStatus(ChallengeStatus.AWAITING);
-		chalInstance1.setAcceptor(user);
-		serviceEntity.save(chalInstance1);
-		ChallengeInstance chalInstance2 = new ChallengeInstance();
-		chalInstance2.setName("Instance of SignUpedUser #");
+        //
+        ChallengeInstance chalInstance1 = new ChallengeInstance();
+        chalInstance1.setName("Instance of SignUpedUser #1");
 
-		chalInstance2.setAcceptor(user);
-		chalInstance2.setChallengeRoot(chalDef1);        
-		chalInstance2.setStatus(ChallengeStatus.AWAITING);
-		serviceEntity.save(chalInstance2);
+        chalInstance1.setChallengeRoot(chalDef1);
+        chalInstance1.setStatus(ChallengeStatus.AWAITING);
+        chalInstance1.setAcceptor(user);
+        chalInstance1.setDescription("Description");
+        chalInstance1.setImageRef("race.jpg");
+        chalInstance1.setDate(new Date());
+        serviceEntity.save(chalInstance1);
+        ChallengeInstance chalInstance2 = new ChallengeInstance();
+        chalInstance2.setName("Instance of SignUpedUser #");
+        chalInstance2.setDescription("Description");
+        chalInstance2.setImageRef("race.jpg");
+        chalInstance2.setDate(new Date());
+        chalInstance2.setAcceptor(user);
+        chalInstance2.setChallengeRoot(chalDef1);
+        chalInstance2.setStatus(ChallengeStatus.AWAITING);
+        serviceEntity.save(chalInstance2);
 
+        user.addAcceptedChallenge(chalInstance1);
+        user.addAcceptedChallenge(chalInstance2);
+        serviceEntity.update(user);
 
+        User user1 = new User();
+        user1.setName("AAA");
+        user1.setImageRef("AvaDefault.JPG");
+        serviceEntity.save(user1);
 
-		
-		user.addAcceptedChallenge(chalInstance1);
-		user.addAcceptedChallenge(chalInstance2);
-		serviceEntity.update(user);
+        user.setFriends(friendsCandidate);
 
+        serviceEntity.update(user);
+        for (User addedUser : friendsCandidate) {
+            addedUser.addFriend(user);
+            serviceEntity.update(addedUser);
+        }
 
-		User user1 = new User();
-		user1.setName("AAA");
-		user1.setImageRef("AvaDefault.JPG");
-		serviceEntity.save(user1);
-
-		user.setFriends(friendsCandidate);
-
-		serviceEntity.update(user);
-		for(User addedUser : friendsCandidate) {
-			addedUser.addFriend(user);
-			serviceEntity.update(addedUser);
-		}
-
-		
-		profile.setUser(user);
-		jdbcTemplate.update("INSERT into users(username,password,enabled) values(?,?,true)", userId, RandomStringUtils.randomAlphanumeric(8));
-		jdbcTemplate.update("INSERT into authorities(username,authority) values(?,?)", userId, "USER");
-		jdbcTemplate.update("INSERT into userprofile(userId, email, firstName, lastName, name, username, userEntityId) values(?,?,?,?,?,?,?)",
-				userId,
-				profile.getEmail(),
-				profile.getFirstName(),
-				profile.getLastName(),
-				profile.getName(),
-				profile.getUsername(),                
-				profile.getUser().getId());
-	}
+        profile.setUser(user);
+        jdbcTemplate.update("INSERT into users(username,password,enabled) values(?,?,true)", userId, RandomStringUtils.randomAlphanumeric(8));
+        jdbcTemplate.update("INSERT into authorities(username,authority) values(?,?)", userId, "USER");
+        jdbcTemplate.update("INSERT into userprofile(userId, email, firstName, lastName, name, username, userEntityId) values(?,?,?,?,?,?,?)",
+                userId,
+                profile.getEmail(),
+                profile.getFirstName(),
+                profile.getLastName(),
+                profile.getName(),
+                profile.getUsername(),
+                profile.getUser().getId());
+    }
 }
