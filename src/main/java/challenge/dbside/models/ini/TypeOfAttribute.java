@@ -20,15 +20,17 @@ public class TypeOfAttribute {
     @ManyToMany(mappedBy = "listAttributes")
     private List<TypeOfEntity> typeEntities;
 
+
     public TypeOfAttribute() {
 
     }
-
+    
     public TypeOfAttribute(Integer id, String name, Integer type) {
         this.id = id;
         this.name = name;
         this.type_of_attribute = type;
     }
+    
 
     public TypeOfAttribute(String name) {
         this.name = name;

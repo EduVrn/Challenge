@@ -9,10 +9,9 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        <link rel="stylesheet" type="text/css" href="css/bootstrap-social.css" />
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
+        <link th:replace="fragments/commonDependencies :: commonDependencies" th:remove="tag"/>
+
+
         <link rel="stylesheet" href="../css/style.css" />
         <style type="text/css">
             <!--
@@ -47,9 +46,7 @@
                     <td><a th:href="@{/auth/github}" class="ml btn btn-block btn-social btn-sm btn-github"><i class="fa fa-github"></i>Git</a></td>
                 </tr>
             </table>
-
             <div th:include="fragments/exception :: errorInfo"/>
-
-        </div><!-- /.container -->
+        </div>
     </body>
 </html>

@@ -1,6 +1,8 @@
 package challenge.dbside.services.ini.impl;
 
 import challenge.dbside.dao.ini.impl.MediaDaoEntity;
+
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import challenge.dbside.models.*;
+import challenge.dbside.models.dbentity.DBSource;
 import challenge.dbside.services.ini.MediaService;
 
 @Service("storageServiceUser")
@@ -36,11 +39,30 @@ public class MediaServiceEntity<E extends BaseEntity> implements MediaService<E>
 
     @Override
     public List<E> getAll(Class<E> classType) {
-        return dao.getAll(classType);
+    	List<E> list = null;
+        
+        try {
+        	list = dao.getAll(classType);
+        }
+        catch(Exception e) {
+        	//InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException 
+        	e.printStackTrace();
+        	throw new RuntimeException(e);
+        }    	
+    	return list;
     }
 
     @Override
     public E findById(Integer id, Class<E> classType) {
-        return classType.cast(dao.findById(id, classType));
+    	E el = null;    	    	
+    	try {
+    		el = classType.cast(dao.findById(id, classType));
+    	}
+    	catch(Exception e) {
+    		//InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
+    		e.printStackTrace();
+    		throw new RuntimeException(e);
+    	}    	
+    	return el;
     }
 }

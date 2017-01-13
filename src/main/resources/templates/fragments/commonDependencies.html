@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+
+        <title th:replace="${title}">Challenge</title>
+
+
+        <th:block th:fragment="commonDependencies" th:remove="tag" >  
+            <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+            <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
+            <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
+
+            <link rel="stylesheet" type="text/css" href="../css/bootstrap-social.css" />
+            <link rel="stylesheet" href="../css/font-awesome.css"/>
+            <link rel="stylesheet" href="../css/chalStyle.css"/>
+        </th:block>
+
+        <th:block th:fragment="commonJS" th:remove="tag" >  
+            <script src="../js/main.js"></script>
+            <script type="text/javascript" src="../js/bootstrap.js"></script>
+        </th:block>
+
+    </head>
+    <body>
+
+    </body>
+</html>

@@ -12,7 +12,7 @@ public class MediaDaoTypeOfEntity implements MediaDao<TypeOfEntity> {
 
     @PersistenceContext
     private EntityManager em;
-
+    
     @Override
     public void save(TypeOfEntity typeOfEntity) {
         em.persist(typeOfEntity);
@@ -38,5 +38,5 @@ public class MediaDaoTypeOfEntity implements MediaDao<TypeOfEntity> {
     public TypeOfEntity findById(Integer id, Class<TypeOfEntity> classType) {
         return em.find(classType, id);
     }
-
+    
 }

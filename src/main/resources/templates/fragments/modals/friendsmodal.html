@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8"/>
+    </head>
+    <body>
+        <!-- modal for friends-->
+        <div  th:fragment="friendsmodal" id="modal-friends" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title" th:text="#{profileFriendsButton}"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="search-form">
+                            <input type="hidden" id="csrf-token" name="_csrf" th:value="${_csrf.token}" />
+                            <input type="text" id="filter-friends" th:placeholder="#{friendsFilter}" style="width: 100%;"/>
+                        </form>
+                        <form method="GET" action="friendsForChallenge" id="friends-form">
+                            <div class="well" style="max-height: 300px; overflow: auto;">
+                                <ul id="friends-list" class="list-group checked-list-box">
+                                    <li class="list-group-item" th:each="friend : ${friends}">
+                                        <input type="hidden" th:value="${friend.getId()}" name="id"/>
+                                        <input type="checkbox" name="check"/>
+                                        <label  th:text="${friend.getName()}"/>
+                                    </li>
+                                </ul>
+                            </div>
+                            <input type="submit" class="btn btn-success" th:value="#{profileThrowChalButton}" disabled="disabled"/>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" data-dismiss="modal" 
+                               th:value="#{closeButton}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
