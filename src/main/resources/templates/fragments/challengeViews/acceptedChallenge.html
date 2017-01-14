@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8"/>
+    </head>
+    <body>
+        <div  th:fragment="acceptedChallenge(challenge)" style="border-width: 5" class="panel panel-default">
+            <div class="box-content panel-body ">
+                <div th:replace="fragments/modelElementsViews/challengeImageAndBody :: challengePanel(${challenge})" th:remove="tag"  />            
+                <!--submit acceptance button-->
+                <form name="submitForm" th:id="'accept_form'+${challenge.Id}"
+                      method="GET" action="accept" style="display: inline-block;">
+                    <input type="hidden" name="id" th:value="${challenge.getId()}" />
+                    <input type="submit" class="btn btn-success"
+                           style="display: inline-block;" th:value="#{profileAcceptChalButton}" />
+                </form>
+                <!--decline acceptance button-->
+                <form name="submitForm" th:id="'decline_form'+${challenge.Id}"
+                      method="GET" action="decline" style="display: inline-block;">
+                    <input type="hidden" name="id" th:value="${challenge.getId()}" />
+                    <input type="submit" class="btn btn-danger" style="display: inline-block;" th:value="#{profileDeclineChalButton}" />
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
