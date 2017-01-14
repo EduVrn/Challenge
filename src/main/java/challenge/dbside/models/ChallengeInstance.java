@@ -2,15 +2,24 @@ package challenge.dbside.models;
 
 import challenge.dbside.models.common.IdAttrGet;
 import challenge.dbside.models.dbentity.DBSource;
+import challenge.dbside.models.ini.TypeEntity;
 import challenge.dbside.models.status.ChallengeStatus;
+import challenge.webside.imagesstorage.ImageStoreService;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.codec.binary.Base64;
 
 public class ChallengeInstance extends BaseEntity {
+    
+    private ImageStoreService storage;
 
     public ChallengeInstance() {
         super(ChallengeInstance.class.getSimpleName());
@@ -92,5 +101,29 @@ public class ChallengeInstance extends BaseEntity {
 
     public void setDate(Date date) {
         getDataSource().getAttributes().get(IdAttrGet.IdDate()).setValue(date.toString());
+    }
+    
+    public void setStorage(ImageStoreService storage) {
+        this.storage = storage;
+    }
+
+    public List<String> getImages() {
+        List<String> images = new ArrayList<>();
+        Set<DBSource> set = (Set<DBSource>) getDataSource().getChildren();
+        set.forEach((childDB) -> {
+            if (childDB.getEntityType() == TypeEntity.IMAGE.getValue()) {
+                try {
+                    String s = Base64.encodeBase64String(storage.restoreImage(new Image(childDB)));
+                    images.add("data:image/jpg;base64," + s);
+                } catch (Exception ex) {
+                    Logger.getLogger(ChallengeInstance.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        return images;
+    }
+
+    public void addImage(Image image) {
+        getDataSource().getChildren().add(image.getDataSource());
     }
 }

@@ -163,3 +163,23 @@ $('.media-body small a').click(function () {
     else
         children[children.length - 2].style.display = "none";
 });
+
+$('input[type="file"]').on('change', loadFile);
+
+function loadFile() {
+    var file = document.querySelector('input[type="file"]').files[0];
+    var reader = new FileReader();
+
+    reader.onloadend = function () {
+        var $image = $('<input />', {
+            "type": "hidden",
+            "value": reader.result,
+            "name": "image"
+        });
+        $('#input-file').after($image);
+    };
+
+    if (file) {
+        reader.readAsDataURL(file);
+    }
+}
