@@ -37,7 +37,7 @@
                             <div style="border-width: 5;" class="panel panel-danger">
                                 <div class="box-content panel-body">
                                     <div class="main-challenge-photo"> 
-                                        <img class="img-rounded" th:src="${mainChallenge.getImages().get(0)}"  alt=""></img> 
+                                        <img class="img-rounded" th:src="${mainChallenge.getMainImage()}"  alt=""></img> 
                                     </div>
                                     <div class="main-challenge-body">
                                         <form name="submitForm" id="challenge_form" method="GET" action="challenge/information">

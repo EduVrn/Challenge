@@ -14,7 +14,8 @@ import challenge.dbside.services.ini.MediaService;
 import challenge.webside.imagesstorage.ImageStoreService;
 import java.io.File;
 import java.util.Date;
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.springframework.stereotype.Component;
 
@@ -75,7 +76,6 @@ public class InitialLoader {
         TypeOfEntity entityUser = new TypeOfEntity("User", TypeEntity.USER.getValue());
         entityUser.add(attrName);
         entityUser.add(attrSurname);
-        entityUser.add(attrImageRef);
 
         entityUser.add(refAttrFriends);
         entityUser.add(refAttrAcceptedChalIns);
@@ -86,7 +86,6 @@ public class InitialLoader {
         entityChallenge.add(attrName);
         entityChallenge.add(attrDate);
         entityChallenge.add(attrDescription);
-        entityChallenge.add(attrImageRef);
         entityChallenge.add(attrChalDefStatus);
         serviceEntity.save(entityChallenge);
 
@@ -95,7 +94,6 @@ public class InitialLoader {
         entityChallengeInstance.add(attrChalStatus);
         entityChallengeInstance.add(attrDate);
         entityChallengeInstance.add(attrDescription);
-        entityChallengeInstance.add(attrImageRef);
         entityChallengeInstance.add(refAttrAcceptedChalIns);
         serviceEntity.save(entityChallengeInstance);
 
@@ -138,7 +136,6 @@ public class InitialLoader {
         chalDef1.setDescription("Hi, I'm first. Selected me!");
         Image image = new Image();
         serviceEntityInit.save(image);
-        chalDef1.setImageRef("firstExampleChallenge.jpg");
         chalDef1.setStatus(ChallengeDefinitionStatus.CREATED);
         chalDef1.setDate(new Date());
         serviceEntityInit.save(chalDef1);
@@ -147,20 +144,29 @@ public class InitialLoader {
         try {
             imagesStorage.saveImage(new File("src/main/resources/static/images/firstExampleChallenge.jpg"), image);
             serviceEntityInit.update(image);
-        } catch (Exception e) {
+        } catch (Exception ex) {
+            Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         User user1 = new User();
         user1.setName("Evgeniy 1");
-        user1.setImageRef("AvaDefault.jpg");
+        Image profilePic = new Image();
+        serviceEntityInit.save(profilePic);
+        try {
+            imagesStorage.saveImage(new File("src/main/resources/static/images/AvaDefault.jpg"), profilePic);
+            serviceEntityInit.update(profilePic);
+        } catch (Exception ex) {
+            Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
+        }
         serviceEntityInit.save(user1);
+        user1.addImage(profilePic);
+        serviceEntityInit.update(user1);
 
         ChallengeDefinition chalDef2 = new ChallengeDefinition();
         chalDef2.setName("Hi, make your's task 4 Ivan.");
         chalDef2.setDescription("After (may be)");
         Image image2 = new Image();
         serviceEntityInit.save(image2);
-        chalDef2.setImageRef("secondExampleTask.png");
         chalDef2.setDate(new Date());
         chalDef2.setStatus(ChallengeDefinitionStatus.CREATED);
         serviceEntityInit.save(chalDef2);
@@ -169,17 +175,13 @@ public class InitialLoader {
         try {
             imagesStorage.saveImage(new File("src/main/resources/static/images/secondExampleTask.png"), image2);
             serviceEntityInit.update(image2);
-        } catch (Exception e) {
+        } catch (Exception ex) {
+            Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         user1.addChallenge(chalDef1);
         user1.addChallenge(chalDef2);
         serviceEntityInit.update(user1);
-
-        Comment com = new Comment();
-        com.setMessage("asg");
-        com.setDate(new Date());
-        serviceEntityInit.save(com);
 
         ChallengeInstance chalInstance1 = new ChallengeInstance();
         chalInstance1.setName("I can made it");
@@ -188,17 +190,17 @@ public class InitialLoader {
         chalInstance1.setDescription("After (may be)");
         Image imageForChalInstance1 = new Image();
         serviceEntityInit.save(imageForChalInstance1);
-        chalInstance1.setImageRef("secondExampleTask.png");
+        try {
+            imagesStorage.saveImage(new File("src/main/resources/static/images/secondExampleTask.png"), imageForChalInstance1);
+            serviceEntityInit.update(imageForChalInstance1);
+        } catch (Exception ex) {
+            Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
+        }
         chalInstance1.setDate(new Date());
         serviceEntityInit.save(chalInstance1);
         chalInstance1.addImage(imageForChalInstance1);
         serviceEntityInit.update(chalInstance1);
-        try {
-            imagesStorage.saveImage(new File("src/main/resources/static/images/secondExampleTask.png"), imageForChalInstance1);
-            serviceEntityInit.update(imageForChalInstance1);
-        } catch (Exception e) {
-        }
-        
+
         ChallengeInstance chalInstance2 = new ChallengeInstance();
         chalInstance2.setName("Ou ");
         chalInstance2.setStatus(ChallengeStatus.AWAITING);
@@ -206,32 +208,43 @@ public class InitialLoader {
         chalInstance2.setDescription("After (may be)");
         Image imageForChalInstance2 = new Image();
         serviceEntityInit.save(imageForChalInstance2);
-        chalInstance2.setImageRef("secondExampleTask.png");
+        try {
+            imagesStorage.saveImage(new File("src/main/resources/static/images/secondExampleTask.png"), imageForChalInstance2);
+            serviceEntityInit.update(imageForChalInstance2);
+        } catch (Exception ex) {
+            Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
+        }
         chalInstance2.setDate(new Date());
         serviceEntityInit.save(chalInstance2);
         chalInstance2.addImage(imageForChalInstance2);
         serviceEntityInit.update(chalInstance2);
-        try {
-            imagesStorage.saveImage(new File("src/main/resources/static/images/secondExampleTask.png"), imageForChalInstance2);
-            serviceEntityInit.update(imageForChalInstance2);
-        } catch (Exception e) {
-        }
-        
-        ChallengeInstance chalInst1 = (ChallengeInstance) serviceEntityInit.findById(chalInstance1.getId(), ChallengeInstance.class);
-        ChallengeInstance chalInst2 = (ChallengeInstance) serviceEntityInit.findById(chalInstance2.getId(), ChallengeInstance.class);
-        
-        User userTest = (User)serviceEntityInit.findById(user1.getId(), User.class);
-        List<ChallengeInstance> challenges = userTest.getChallengeRequests();
-        List<ChallengeInstance> acceptedChallenges = userTest.getAcceptedChallenges();
 
         User user2 = new User();
         user2.setName("Jonnie Fast-Foot");
-        user2.setImageRef("AvaDefault.jpg");
+        Image profilePic2 = new Image();
+        serviceEntityInit.save(profilePic2);
+        try {
+            imagesStorage.saveImage(new File("src/main/resources/static/images/AvaDefault.jpg"), profilePic2);
+            serviceEntityInit.update(profilePic2);
+        } catch (Exception ex) {
+            Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
+        }
         serviceEntityInit.save(user2);
+        user2.addImage(profilePic2);
+        serviceEntityInit.update(user2);
 
         User user3 = new User();
         user3.setName("Annet Fast-Food");
-        user3.setImageRef("AvaDefault.jpg");
+        Image profilePic3 = new Image();
+        serviceEntityInit.save(profilePic3);
+        try {
+            imagesStorage.saveImage(new File("src/main/resources/static/images/AvaDefault.jpg"), profilePic3);
+            serviceEntityInit.update(profilePic3);
+        } catch (Exception ex) {
+            Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
+        }
         serviceEntityInit.save(user3);
+        user3.addImage(profilePic3);
+        serviceEntityInit.update(user3);
     }
 }

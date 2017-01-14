@@ -47,10 +47,13 @@
                                 <h4><textarea maxlength="254" class="form-control"  cols="40" rows="5" th:placeholder="#{descriptionPlaceholder}"  th:field="*{description}" /></h4>
                             </div>
                             <label th:text="#{imageLabel}" class="col-md-2 control-label" />
-<!--                            <div class="chal-photo col-md-10"> 
-                                <input class="form-control" type="text" th:placeholder="#{imagePlaceholder}" th:field="*{imageRef}" />
-                            </div>-->
-                            <input type="file" name="pic" accept="image/*" id="input-file"/>
+                            <!--                            <div class="chal-photo col-md-10"> 
+                                                            <input class="form-control" type="text" th:placeholder="#{imagePlaceholder}" th:field="*{imageRef}" />
+                                                        </div>-->
+                            <div class="chal-photo col-md-10"> 
+                                <input type="button" th:value="#{uploadImageButton}" id="upload-file-btn" style="cursor:pointer; color: black;" />
+                                <input type="file" name="pic" accept="image/*" id="input-file" style="display: none;"/>
+                            </div>
                             <div class="chal-photo col-md-12"> 
                                 <span/>
                             </div>
@@ -68,6 +71,10 @@
                                     $(function () {
                                         $('#datetimepicker1').datetimepicker({format: 'DD/MM/YYYY HH:mm'})
                                                 .data("DateTimePicker").setMinDate(new Date());
+                                    });
+
+                                    $("#upload-file-btn").click(function () {
+                                        $("#input-file").trigger('click');
                                     });
                                 </script>
                             </div> 
