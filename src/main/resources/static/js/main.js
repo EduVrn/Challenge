@@ -167,6 +167,10 @@ $('.media-body small a').click(function () {
 $('input[type="file"]').on('change', loadFile);
 
 function loadFile() {
+    var $p = $('<p />');
+    $p.html($('#input-file').val().split('\\').pop());
+    $p.css('display', 'inline-block');
+    $('#input-file').after($p);
     var file = document.querySelector('input[type="file"]').files[0];
     var reader = new FileReader();
 

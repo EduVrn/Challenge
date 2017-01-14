@@ -17,7 +17,7 @@
                 <!-- left side -->
                 <div class="avatar">
                     <div>
-                        <img th:src="${userProfile.getImageRef()}" class="img-rounded img-responsive" />
+                        <img th:src="${userProfile.getMainImage()}" class="img-rounded img-responsive" />
                     </div>
                     <div th:replace="fragments/util/rate::rate" />
                     <form  method="GET" th:action="@{../changelang}">

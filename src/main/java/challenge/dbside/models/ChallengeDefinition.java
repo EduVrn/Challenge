@@ -21,8 +21,6 @@ import org.apache.commons.codec.binary.Base64;
 
 public class ChallengeDefinition extends BaseEntity implements Commentable {
 
-    private ImageStoreService storage;
-
     public ChallengeDefinition() {
         super(ChallengeDefinition.class.getSimpleName());
     }
@@ -57,14 +55,6 @@ public class ChallengeDefinition extends BaseEntity implements Commentable {
 
     public void setDescription(String description) {
         getDataSource().getAttributes().get(IdAttrGet.IdDescr()).setValue(description);
-    }
-
-    public String getImageRef() {
-        return "../images/" + getDataSource().getAttributes().get(IdAttrGet.IdImgRef()).getValue();
-    }
-
-    public void setImageRef(String image) {
-        getDataSource().getAttributes().get(IdAttrGet.IdImgRef()).setValue(image);
     }
 
     public Date getDate() {
@@ -105,17 +95,13 @@ public class ChallengeDefinition extends BaseEntity implements Commentable {
         getDataSource().getChildren().add(chalIns.getDataSource());
     }
 
-    public void setStorage(ImageStoreService storage) {
-        this.storage = storage;
-    }
-
     public List<String> getImages() {
         List<String> images = new ArrayList<>();
         Set<DBSource> set = (Set<DBSource>) getDataSource().getChildren();
         set.forEach((childDB) -> {
             if (childDB.getEntityType() == TypeEntity.IMAGE.getValue()) {
                 try {
-                    String s = Base64.encodeBase64String(storage.restoreImage(new Image(childDB)));
+                    String s = Base64.encodeBase64String(ImageStoreService.restoreImage(new Image(childDB)));
                     images.add("data:image/jpg;base64," + s);
                 } catch (Exception ex) {
                     Logger.getLogger(ChallengeDefinition.class.getName()).log(Level.SEVERE, null, ex);
@@ -123,6 +109,14 @@ public class ChallengeDefinition extends BaseEntity implements Commentable {
             }
         });
         return images;
+    }
+
+    public String getMainImage() {
+        List<String> allImages = getImages();
+        if (allImages.size() > 0) {
+            return allImages.get(0);
+        }
+        return new String();
     }
 
     public void addImage(Image image) {

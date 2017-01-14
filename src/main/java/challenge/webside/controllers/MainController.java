@@ -133,14 +133,15 @@ public class MainController {
     }
 
     @RequestMapping(value = "/newcomment", method = POST, produces = "text/plain;charset=UTF-8")
-    public String newComment(@RequestParam("id") int id, HttpServletRequest request, Principal currentUser, Model model, @ModelAttribute Comment comment) {
-        util.setModelForNewComment(id, request, currentUser, model, comment);
-        return getPreviousPageByRequest(request).orElse("/");
+    public String newComment(@RequestParam("id") int id, HttpServletRequest request, Principal currentUser, Model model, @ModelAttribute Comment comment, RedirectAttributes redirectAttributes) {
+        util.addNewComment(id, request, currentUser, model, comment);
+        redirectAttributes.addAttribute("id", id);
+        return "redirect:challenge/information";
     }
 
     @RequestMapping(value = "/newreply", method = POST, produces = "text/plain;charset=UTF-8")
     public String newReply(@RequestParam("id") int id, HttpServletRequest request, Principal currentUser, Model model, @ModelAttribute Comment comment) {
-        util.setModelForNewReply(id, request, currentUser, model, comment);
+        util.addNewReply(id, request, currentUser, model, comment);
         return getPreviousPageByRequest(request).orElse("/");
     }
 

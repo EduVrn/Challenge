@@ -5,6 +5,7 @@ import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.Comment;
 import challenge.dbside.models.Image;
 import challenge.dbside.models.User;
+import challenge.dbside.models.dbentity.DBSource;
 import challenge.dbside.models.status.ChallengeDefinitionStatus;
 import challenge.dbside.models.status.ChallengeStatus;
 import challenge.webside.dao.UsersDao;
@@ -32,6 +33,8 @@ import challenge.webside.imagesstorage.ImageStoreService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.codec.binary.Base64;
 
 @Component
@@ -55,9 +58,6 @@ public class SocialControllerUtil {
 
     @Autowired
     private UserActionsProvider actionsProvider;
-    
-    @Autowired
-    private ImageStoreService imagesStorage;
 
     public void dumpDbInfo() {
         try {
@@ -114,7 +114,6 @@ public class SocialControllerUtil {
         model.addAttribute("foto", "AvaDefault.jpg");
         if (profile != null) {
             List<ChallengeInstance> challengeList = ((User) serviceEntity.findById(profile.getUserEntityId(), User.class)).getChallengeRequests();
-            challengeList.forEach((challenge) -> challenge.setStorage(imagesStorage));
             model.addAttribute("challengeRequests", challengeList);
         }
     }
@@ -124,8 +123,6 @@ public class SocialControllerUtil {
 
         ChallengeDefinition mainChallenge = (ChallengeDefinition) serviceEntity.getAll(ChallengeDefinition.class).get(0);
         List<ChallengeDefinition> challenges = serviceEntity.getAll(ChallengeDefinition.class);
-        challenges.forEach((challenge) -> challenge.setStorage(imagesStorage));
-        mainChallenge.setStorage(imagesStorage);
         model.addAttribute("mainChallenge", mainChallenge);
         model.addAttribute("challenges", challenges);
     }
@@ -135,25 +132,11 @@ public class SocialControllerUtil {
 
         ChallengeDefinition challenge = (ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class);
         List<User> listOfAcceptors = ((ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class)).getAllAcceptors();
-
-        challenge.setStorage(imagesStorage);
+        
         model.addAttribute("challenge", challenge);
         model.addAttribute("listOfAcceptors", listOfAcceptors);
         model.addAttribute("userProfile", getSignedUpUser(request, currentUser));
-
-        Comment comment = new Comment();
-        comment.setDate(new Date());
-        comment.setAuthor(getSignedUpUser(request, currentUser));
-        model.addAttribute("comment", comment);
-        int commentsCount = 0;
-
-        List<Comment> listComment = (((ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class)).getComments());
-        for (Comment comm : listComment) {
-            commentsCount++;
-            commentsCount += comm.getSubCommentsCount();
-        }
-        model.addAttribute("commentsCount", commentsCount);
-        model.addAttribute("comments", listComment);
+        setModelForComments(id, request, currentUser, model);
     }
 
     public void setModelForNewOrUpdatedChalShow(ChallengeDefinition challenge, HttpServletRequest request, Principal currentUser, Model model, String image) {
@@ -161,12 +144,10 @@ public class SocialControllerUtil {
         User curDBUser = ((User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class));
 
         if (challenge.getId() != null) {
-
             ChallengeDefinition chalToUpdate = (ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class);
             chalToUpdate.setDescription(challenge.getDescription());
             chalToUpdate.setName(challenge.getName());
             chalToUpdate.setDate(challenge.getDate());
-            chalToUpdate.setImageRef(challenge.getImageRef());
             //TODO:check if creator
             if (Objects.equals(chalToUpdate.getCreator().getId(), curDBUser.getId())) {
                 serviceEntity.update(chalToUpdate);
@@ -175,63 +156,49 @@ public class SocialControllerUtil {
             challenge.setStatus(ChallengeDefinitionStatus.CREATED);
             challenge.setCreator(curDBUser);
             serviceEntity.save(challenge);
+            String base64Image = image.split(",")[1];
+            byte[] array = Base64.decodeBase64(base64Image);
+            Image imageEntity = new Image();
+            serviceEntity.save(imageEntity);
+            challenge.addImage(imageEntity);
+            serviceEntity.update(challenge);
+            try {
+                ImageStoreService.saveImage(array, imageEntity);
+                serviceEntity.update(imageEntity);
+            } catch (Exception ex) {
+                Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         challenge = (ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class);
-        
-        String base64Image = image.split(",")[1];
-        byte[] array = Base64.decodeBase64(base64Image);
-        Image imageEntity = new Image();
-        serviceEntity.save(imageEntity);
-
-        challenge.addImage(imageEntity);
-        serviceEntity.update(challenge);
-
-        try {
-            imagesStorage.saveImage(array, imageEntity);
-            serviceEntity.update(imageEntity);
-        } catch (Exception e) {
-
-        }
-        
-        //if (challenge.getImages().size() > 0) {
-            //try {
-                //byte[] a = imagesStorage.restoreImage(challenge.getImages().get(0));
-                //String s = Base64.encodeBase64URLSafeString(a);
-                //model.addAttribute("image", Base64.encodeBase64URLSafeString(a));
-           // } catch (Exception e) {
-            //    model.addAttribute("image", null);
-            //}
-        //} else {
-            //model.addAttribute("image", null);
-        //}
-        
         model.addAttribute("challenge", challenge);
 
         List<User> listOfAcceptors = challenge.getAllAcceptors();
         model.addAttribute("listOfAcceptors", listOfAcceptors);
+        setModelForComments(challenge.getId(), request, currentUser, model);
+    }
 
+    private void setModelForComments(int chalId, HttpServletRequest request, Principal currentUser, Model model) {
         Comment comment = new Comment();
         comment.setDate(new Date());
         comment.setAuthor(getSignedUpUser(request, currentUser));
         model.addAttribute("comment", comment);
         int commentsCount = 0;
 
-        List<Comment> comments = ((ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class)).getComments();
+        List<Comment> comments = (((ChallengeDefinition) serviceEntity.findById(chalId, ChallengeDefinition.class)).getComments());
         for (Comment comm : comments) {
             commentsCount++;
             commentsCount += comm.getSubCommentsCount();
         }
-
         model.addAttribute("commentsCount", commentsCount);
         model.addAttribute("comments", comments);
     }
 
-    public void setModelForNewComment(int id, HttpServletRequest request, Principal currentUser, Model model, Comment comment) {
+    public void addNewComment(int chalId, HttpServletRequest request, Principal currentUser, Model model, Comment comment) {
         User curDBUser = (User) serviceEntity.
                 findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
 
-        ChallengeDefinition currentChallenge = (ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class);
+        ChallengeDefinition currentChallenge = (ChallengeDefinition) serviceEntity.findById(chalId, ChallengeDefinition.class);
         comment.setDate(new Date());
         comment.setAuthor(curDBUser);
         serviceEntity.save(comment);
@@ -240,7 +207,7 @@ public class SocialControllerUtil {
         serviceEntity.update(currentChallenge);
     }
 
-    public void setModelForNewReply(int id, HttpServletRequest request, Principal currentUser, Model model, Comment comment) {
+    public void addNewReply(int id, HttpServletRequest request, Principal currentUser, Model model, Comment comment) {
         setModel(request, currentUser, model);
         User curDBUser = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
 
@@ -290,7 +257,6 @@ public class SocialControllerUtil {
     }
 
     protected String getDisplayName(UserConnection connection, UserProfile profile) {
-
         // The name is set differently in different providers so we better look in both places...
         if (connection.getDisplayName() != null) {
             return connection.getDisplayName();
@@ -303,7 +269,6 @@ public class SocialControllerUtil {
         User user = (User) serviceEntity.findById(getUserProfile(request.getSession(),
                 currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
         return user;
-
     }
 
     public void setProfileShow(int userDBId, HttpServletRequest request, Principal currentUser, Model model) {
@@ -311,14 +276,10 @@ public class SocialControllerUtil {
         User userWhichProfileRequested = (User) serviceEntity.findById(userDBId, User.class);
         User signedUpUser = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
 
-        List<ChallengeDefinition> definedChallenges = userWhichProfileRequested.getChallenges();
-        definedChallenges.forEach((challenge) -> challenge.setStorage(imagesStorage));
         model.addAttribute("userProfile", userWhichProfileRequested);
-        model.addAttribute("listOfDefined", definedChallenges);
+        model.addAttribute("listOfDefined", userWhichProfileRequested.getChallenges());
         model.addAttribute("currentDBUser", getSignedUpUser(request, currentUser));
-        List<ChallengeInstance> accepted = userWhichProfileRequested.getAcceptedChallenges();
-        accepted.forEach((challenge) -> challenge.setStorage(imagesStorage));
-        model.addAttribute("listOfAccepted", accepted);
+        model.addAttribute("listOfAccepted", userWhichProfileRequested.getAcceptedChallenges());
         dialect.setActions(actionsProvider.getActionsForProfile(signedUpUser, userWhichProfileRequested));
         model.addAttribute("friends", signedUpUser.getFriends());
     }
@@ -331,14 +292,12 @@ public class SocialControllerUtil {
         if (accept) {
             user.acceptChallenge(chalToAccept);
         } else {
+            for (DBSource childDB : chalToAccept.getDataSource().getChildren()) {
+                serviceEntity.delete(new Image(childDB));
+            }
             serviceEntity.delete(chalToAccept);
         }
         serviceEntity.update(user);
-
-        model.addAttribute("userProfile", user);
-        model.addAttribute("listOfDefined", user.getChallenges());
-        model.addAttribute("listOfAccepted", user.getAcceptedChallenges());
-        model.addAttribute("challengeRequests", user.getChallengeRequests());
         dialect.setActions(actionsProvider.getActionsForProfile(user, user));
     }
 
@@ -355,10 +314,6 @@ public class SocialControllerUtil {
             user.addAcceptedChallenge(chalInstance);
             serviceEntity.update(user);
         }
-
-        model.addAttribute("userProfile", user);
-        model.addAttribute("listOfDefined", user.getChallenges());
-        model.addAttribute("listOfAccepted", user.getAcceptedChallenges());
         dialect.setActions(actionsProvider.getActionsForProfile(user, user));
     }
 
@@ -410,7 +365,6 @@ public class SocialControllerUtil {
         setModel(request, currentUser, model);
 
         User user = (User) serviceEntity.findById(userId, User.class);
-
         model.addAttribute("listSomething", user.getFriends());
         model.addAttribute("idParent", userId);
         model.addAttribute("handler", "profile");

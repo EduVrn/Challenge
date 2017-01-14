@@ -1,5 +1,6 @@
 package challenge.webside.dao;
 
+import challenge.dbside.ini.InitialLoader;
 import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.Image;
@@ -24,14 +25,16 @@ import java.io.File;
 
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Repository
 public class UsersDao {
 
     @Autowired
     @Qualifier("storageServiceUser")
-    private MediaService serviceEntity;    
-        
+    private MediaService serviceEntity;
+
     @Autowired
     private ImageStoreService imagesStorage;
 
@@ -85,7 +88,6 @@ public class UsersDao {
         chalDef1.setDescription("Description");
         Image image1 = new Image();
         serviceEntity.save(image1);
-        chalDef1.setImageRef("race.jpg");
         chalDef1.setDate(new Date());
         chalDef1.setStatus(ChallengeDefinitionStatus.CREATED);
         serviceEntity.save(chalDef1);
@@ -94,14 +96,15 @@ public class UsersDao {
         try {
             imagesStorage.saveImage(new File("src/main/resources/static/images/race.jpg"), image1);
             serviceEntity.update(image1);
-        } catch (Exception e) {}
+        } catch (Exception ex) {
+            Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         ChallengeDefinition chalDef2 = new ChallengeDefinition();
         chalDef2.setName("Challenge Of SignUpedUser");
         chalDef2.setDescription("Description");
         Image image2 = new Image();
-        serviceEntity.save(image2);        
-        chalDef2.setImageRef("race.jpg");
+        serviceEntity.save(image2);
         chalDef2.setDate(new Date());
         chalDef2.setStatus(ChallengeDefinitionStatus.CREATED);
         serviceEntity.save(chalDef2);
@@ -110,14 +113,15 @@ public class UsersDao {
         try {
             imagesStorage.saveImage(new File("src/main/resources/static/images/race.jpg"), image2);
             serviceEntity.update(image2);
-        } catch (Exception e) {}
+        } catch (Exception ex) {
+            Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         ChallengeDefinition chalDef3 = new ChallengeDefinition();
         chalDef3.setName("Challenge Of SignUpedUser");
         chalDef3.setDescription("Description");
         Image image3 = new Image();
         serviceEntity.save(image3);
-        chalDef3.setImageRef("race.jpg");
         chalDef3.setDate(new Date());
         chalDef3.setStatus(ChallengeDefinitionStatus.CREATED);
         serviceEntity.save(chalDef3);
@@ -126,14 +130,15 @@ public class UsersDao {
         try {
             imagesStorage.saveImage(new File("src/main/resources/static/images/race.jpg"), image3);
             serviceEntity.update(image3);
-        } catch (Exception e) {}
+        } catch (Exception ex) {
+            Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         ChallengeDefinition chalDef4 = new ChallengeDefinition();
         chalDef4.setName("Challenge Of SignUpedUser");
         chalDef4.setDescription("Description");
         Image image4 = new Image();
         serviceEntity.save(image4);
-        chalDef4.setImageRef("race.jpg");
         chalDef4.setDate(new Date());
         chalDef4.setStatus(ChallengeDefinitionStatus.CREATED);
         serviceEntity.save(chalDef4);
@@ -142,14 +147,25 @@ public class UsersDao {
         try {
             imagesStorage.saveImage(new File("src/main/resources/static/images/race.jpg"), image4);
             serviceEntity.update(image4);
-        } catch (Exception e) {}
+        } catch (Exception ex) {
+            Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         List<User> friendsCandidate = serviceEntity.getAll(User.class);
 
         User user = new User();
         user.setName(profile.getName());
-        user.setImageRef("AvaDefault.JPG");
+        Image profilePic = new Image();
+        serviceEntity.save(profilePic);
+        try {
+            imagesStorage.saveImage(new File("src/main/resources/static/images/AvaDefault.jpg"), profilePic);
+            serviceEntity.update(profilePic);
+        } catch (Exception ex) {
+            Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
+        }
         serviceEntity.save(user);
+        user.addImage(profilePic);
+        serviceEntity.update(user);
 
         user.setFriends(friendsCandidate);
         user.addChallenge(chalDef1);
@@ -169,23 +185,28 @@ public class UsersDao {
         chalInstance1.setDescription("Description");
         Image imageForChalInstance1 = new Image();
         serviceEntity.save(imageForChalInstance1);
-        chalInstance1.setImageRef("race.jpg");
-        chalInstance1.setDate(new Date());
-        serviceEntity.save(chalInstance1);
-        chalInstance1.addImage(imageForChalInstance1);
-        serviceEntity.update(chalInstance1);
         try {
             imagesStorage.saveImage(new File("src/main/resources/static/images/race.jpg"), imageForChalInstance1);
             serviceEntity.update(imageForChalInstance1);
-        } catch (Exception e) {            
+        } catch (Exception ex) {
+            Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+        chalInstance1.setDate(new Date());
+        serviceEntity.save(chalInstance1);
+        chalInstance1.addImage(imageForChalInstance1);
+        serviceEntity.update(chalInstance1);        
+
         ChallengeInstance chalInstance2 = new ChallengeInstance();
         chalInstance2.setName("Instance of SignUpedUser #");
         chalInstance2.setDescription("Description");
         Image imageForChalInstance2 = new Image();
         serviceEntity.save(imageForChalInstance2);
-        chalInstance2.setImageRef("race.jpg");
+        try {
+            imagesStorage.saveImage(new File("src/main/resources/static/images/race.jpg"), imageForChalInstance2);
+            serviceEntity.update(imageForChalInstance2);
+        } catch (Exception ex) {
+            Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
         chalInstance2.setDate(new Date());
         chalInstance2.setAcceptor(user);
         chalInstance2.setChallengeRoot(chalDef1);
@@ -193,23 +214,11 @@ public class UsersDao {
         serviceEntity.save(chalInstance2);
         chalInstance2.addImage(imageForChalInstance2);
         serviceEntity.update(chalInstance2);
-        try {
-            imagesStorage.saveImage(new File("src/main/resources/static/images/race.jpg"), imageForChalInstance2);
-            serviceEntity.update(imageForChalInstance2);
-        } catch (Exception e) {            
-        }
+        
 
         user.addAcceptedChallenge(chalInstance1);
         user.addAcceptedChallenge(chalInstance2);
         serviceEntity.update(user);
-        
-        User userTest = (User) serviceEntity.findById(user.getId(), User.class);
-        List<ChallengeInstance> challenges = userTest.getChallengeRequests();
-
-        User user1 = new User();
-        user1.setName("AAA");
-        user1.setImageRef("AvaDefault.JPG");
-        serviceEntity.save(user1);
 
         user.setFriends(friendsCandidate);
 

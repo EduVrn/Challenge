@@ -17,10 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.codec.binary.Base64;
 
-public class ChallengeInstance extends BaseEntity {
+public class ChallengeInstance extends BaseEntity implements Commentable {
     
-    private ImageStoreService storage;
-
     public ChallengeInstance() {
         super(ChallengeInstance.class.getSimpleName());
     }
@@ -77,14 +75,6 @@ public class ChallengeInstance extends BaseEntity {
         getDataSource().getAttributes().get(IdAttrGet.IdDescr()).setValue(description);
     }
 
-    public String getImageRef() {
-        return "../images/" + getDataSource().getAttributes().get(IdAttrGet.IdImgRef()).getValue();
-    }
-
-    public void setImageRef(String image) {
-        getDataSource().getAttributes().get(IdAttrGet.IdImgRef()).setValue(image);
-    }
-
     public Date getDate() {
         try {
             DateFormat df = new SimpleDateFormat("EEE MMM dd kk:mm:ss z yyyy", Locale.ENGLISH);
@@ -103,17 +93,13 @@ public class ChallengeInstance extends BaseEntity {
         getDataSource().getAttributes().get(IdAttrGet.IdDate()).setValue(date.toString());
     }
     
-    public void setStorage(ImageStoreService storage) {
-        this.storage = storage;
-    }
-
     public List<String> getImages() {
         List<String> images = new ArrayList<>();
         Set<DBSource> set = (Set<DBSource>) getDataSource().getChildren();
         set.forEach((childDB) -> {
             if (childDB.getEntityType() == TypeEntity.IMAGE.getValue()) {
                 try {
-                    String s = Base64.encodeBase64String(storage.restoreImage(new Image(childDB)));
+                    String s = Base64.encodeBase64String(ImageStoreService.restoreImage(new Image(childDB)));
                     images.add("data:image/jpg;base64," + s);
                 } catch (Exception ex) {
                     Logger.getLogger(ChallengeInstance.class.getName()).log(Level.SEVERE, null, ex);
@@ -123,7 +109,15 @@ public class ChallengeInstance extends BaseEntity {
         return images;
     }
 
+    public String getMainImage() {
+        List<String> allImages = getImages();
+        if (allImages.size() > 0) {
+            return allImages.get(0);
+        }
+        return new String();
+    }
+
     public void addImage(Image image) {
-        getDataSource().getChildren().add(image.getDataSource());
+        getDataSource().addChild(image.getDataSource());
     }
 }

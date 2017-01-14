@@ -6,6 +6,10 @@ import challenge.dbside.models.common.IdAttrGet;
 import challenge.dbside.models.dbentity.DBSource;
 import challenge.dbside.models.ini.TypeEntity;
 import challenge.dbside.models.status.ChallengeStatus;
+import challenge.webside.imagesstorage.ImageStoreService;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.codec.binary.Base64;
 
 public class User extends BaseEntity implements Commentable {
 
@@ -120,24 +124,34 @@ public class User extends BaseEntity implements Commentable {
         String entityInfo = super.toString();
         StringBuilder info = new StringBuilder();
         info.append(entityInfo);
-        info.append("\nFriends: \n");
-
-        /*friends.forEach((u) -> {
-
-            info.append("\nid: ").append(u.getId()).append(" name:").append(u.getName());
-        });
-        info.append("\nChallenges: \n");*/
- /*listOfChallenges.forEach((c) -> {
-            info.append("\nid: ").append(c.getId()).append(" name: ").append(c.getName());
-        });*/
         return info.toString();
     }
 
-    public void setImageRef(String imageRef) {
-        getDataSource().getAttributes().get(IdAttrGet.IdImgRef()).setValue(imageRef);
+    public List<String> getImages() {
+        List<String> images = new ArrayList<>();
+        Set<DBSource> set = (Set<DBSource>) getDataSource().getChildren();
+        set.forEach((childDB) -> {
+            if (childDB.getEntityType() == TypeEntity.IMAGE.getValue()) {
+                try {
+                    String s = Base64.encodeBase64String(ImageStoreService.restoreImage(new Image(childDB)));
+                    images.add("data:image/jpg;base64," + s);
+                } catch (Exception ex) {
+                    Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        return images;
     }
 
-    public String getImageRef() {
-        return "../images/" + getDataSource().getAttributes().get(IdAttrGet.IdImgRef()).getValue();
+    public String getMainImage() {
+        List<String> allImages = getImages();
+        if (allImages.size() > 0) {
+            return allImages.get(0);
+        }
+        return new String();
+    }
+
+    public void addImage(Image image) {
+        getDataSource().addChild(image.getDataSource());
     }
 }

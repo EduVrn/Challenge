@@ -21,14 +21,25 @@ import org.springframework.stereotype.Component;
 @Component
 public class ImageStoreService {
 
-    private Repository repository;
+    private static Repository repository;
+    private static Session session;
 
     public ImageStoreService() {
         repository = new TransientRepository();
     }
 
-    public void saveImage(byte[] image, Image imageEntity) throws Exception {
-        Session session = repository.login(new SimpleCredentials("admin", "admin".toCharArray()));
+    static {
+        repository = new TransientRepository();
+    }
+
+    public static void login() throws Exception {
+        session = repository.login(new SimpleCredentials("admin", "admin".toCharArray()));
+    }
+
+    public static void saveImage(byte[] image, Image imageEntity) throws Exception {
+        if (session == null || !session.isLive()) {
+            session = repository.login(new SimpleCredentials("admin", "admin".toCharArray()));
+        }
         InputStream stream = new ByteArrayInputStream(image);
 
         //save the image
@@ -42,18 +53,17 @@ public class ImageStoreService {
 
         content.setProperty("jcr:mimeType", "image/jpg");
         session.save();
-        session.logout();
     }
 
     //from file
-    public void saveImage(File imageFile, Image imageEntity) throws Exception {
-        Session session = repository.login(new SimpleCredentials("admin", "admin".toCharArray()));
-
+    public static void saveImage(File imageFile, Image imageEntity) throws Exception {
+        if (session == null || !session.isLive()) {
+            session = repository.login(new SimpleCredentials("admin", "admin".toCharArray()));
+        }
         InputStream stream = new BufferedInputStream(new FileInputStream(imageFile));
 
         //save the image
         Node folder = session.getRootNode();
-        //use image id instead of image url
         Node file = folder.addNode("image" + imageEntity.getId(), "nt:file");
         imageEntity.setImageRef("image" + imageEntity.getId());
         Node content = file.addNode("jcr:content", "nt:resource");
@@ -65,26 +75,22 @@ public class ImageStoreService {
         session.logout();
     }
 
-    public byte[] restoreImage(Image image) throws Exception {
-        Session session = repository.login(new SimpleCredentials("admin", "admin".toCharArray()));
+    public static byte[] restoreImage(Image image) throws Exception {
+        if (session == null || !session.isLive()) {
+            session = repository.login(new SimpleCredentials("admin", "admin".toCharArray()));
+        }
         Node folder = session.getRootNode();
         Node file = folder.getNode(image.getImageRef());
         Node content = file.getNode("jcr:content");
         String path = content.getPath();
         Binary bin = session.getNode(path).getProperty("jcr:data").getBinary();
         InputStream stream = bin.getStream();
-        session.logout();
         return IOUtils.toByteArray(stream);
     }
-
-    public void print() {
-        try {
-//            byte[] image = restoreImage();
-//            OutputStream out = new FileOutputStream("restoredImage.jpg");
-//            out.write(image);
-//            out.close();
-        } catch (Exception e) {
-
+    
+    public static void logout() {
+        if (session != null) {
+            session.logout();
         }
     }
 }
