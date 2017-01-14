@@ -69,6 +69,13 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.0'
 
     testCompile("org.springframework.boot:spring-boot-starter-test")
+    
+    // https://mvnrepository.com/artifact/org.apache.jackrabbit/jackrabbit-core
+    compile group: 'org.apache.jackrabbit', name: 'jackrabbit-core', version: '2.13.7'
+    // https://mvnrepository.com/artifact/javax.jcr/jcr
+    compile group: 'javax.jcr', name: 'jcr', version: '2.0'
+    // https://mvnrepository.com/artifact/commons-codec/commons-codec
+    compile group: 'commons-codec', name: 'commons-codec', version: '1.10'
 }
 
 mainClassName = 'challenge.Application'
