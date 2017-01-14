@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8"/>
+    </head>
+    <body>
+        <div th:fragment="createdChallenge(challenge)" style="border-width: 5" class="panel panel-default">
+            <div class="box-content panel-body ">
+                <form auth:can="EDIT_CHALLENGE" name="submitForm" th:id="'challenge/update'+${challenge.Id}" method="GET"
+                      action="challenge/update">
+                    <input type="hidden" name="id" th:value="${challenge.getId()}" />
+                    <h2 class="chal-title">
+                        <a th:onclick="'document.getElementById(\'challenge/update'+${challenge.getId()}+'\').submit();'">
+                            <span class="glyphicon glyphicon-wrench" style="font-size: 40px;" />
+                        </a>
+                    </h2>
+                </form>
+                <div th:replace="fragments/modelElementsViews/challengeImageAndBody :: challengePanel(${challenge})" th:remove="tag"  /> 
+                <form name="submitForm" th:id="'accept_def_form'+${challenge.Id}" method="GET"
+                      action="acceptDefinition" style="display: inline-block;">
+                    <input type="hidden" name="id" th:value="${challenge.getId()}" />
+                    <input
+                        th:unless="${challenge.getStatus() == T(challenge.dbside.models.status.ChallengeDefinitionStatus).ACCEPTED}"
+                        id="accept-def" type="submit" class="btn btn-success"
+                        th:value="#{profileAcceptChalButton}"/>
+                </form>
+                <input type="hidden" name="id" th:value="${challenge.getId()}" />
+                <input auth:can="THROW_CHALLENGE_DEF" name="throw" type="submit" data-target="#modal-friends" 
+                       data-toggle="modal" class="btn btn-success"
+                       th:value="#{profileThrowChalButton}" />
+            </div>
+        </div>
+    </body>
+</html>

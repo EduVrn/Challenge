@@ -22,14 +22,8 @@
                             <li> <a href="#" th:text="#{menuExtreme}"/></li>
                             <li> <a href="#" th:text="#{menuOvercoming}"/></li>
                         </ul> 
-                        <ul > 
-                       
-
+                        <ul> 
                             <li>
-
-
-                               
-
                                 <form style="margin-top: 13px" th:unless="${currentUserConnection == null}" class="navbar-right" method="POST" th:action="@{../logout}">
                                     <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
                                     <button class="btn btn-default"><span class="glyphicon glyphicon-log-out"></span><a/></button>
@@ -48,9 +42,6 @@
 
                                     <img th:src="${currentUserConnection.imageUrl}" width="32" height="32" />
                                 </p>
-
-
-
                                 <div style="margin-top: 13px" th:unless="${currentUserConnection == null}" class="navbar-right">
                                     <button  id="notification">
                                         <span class="glyphicon glyphicon-comment"></span>
@@ -72,10 +63,9 @@
                                         </div> 
                                     </div>
                                 </div>
-
                             </li>
-
                         </ul>  
+
                     </div>              
 
 

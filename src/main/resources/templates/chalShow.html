@@ -8,19 +8,10 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link th:replace="fragments/commonDependencies :: commonDependencies" th:remove="tag"/>
-
         <link rel="stylesheet" href="../css/pageLoader.css"/>
         <script src="../js/jquery.min.js"></script>
         <link rel="stylesheet" href="../css/style.css"/>
-        <style type="text/css">
-            <!--
-            .ml { width: 110px; color: white; text-decoration: none }
-            .ml:hover, a:focus { color: white; text-decoration: none }
-            -->
-        </style>
-
     </head>
-
     <body>
         <div th:replace="fragments/header :: userInfo"/>
         <div class="content-wrapper">
@@ -32,12 +23,7 @@
                 </div> 
                 <div class="row">
                     <div class="chal-photo col-md-6">
-                        <img  
-                             class="img-responsive img-rounded" 
-                             th:src="${challenge.getMainImage()}"/>
-<!--                        <img th:if="${challenge.getImages().size() == 0}" 
-                             class="img-responsive img-rounded" 
-                             th:src="${challenge.getImageRef()}"/>-->
+                        <img class="img-responsive img-rounded" th:src="${challenge.getMainImage()}"/>
                     </div> 
                     <div class="box-content">
                         <h3 th:text="${#dates.format(challenge.getDate(), 'dd/MM/yyyy HH:mm')}"></h3>
@@ -50,17 +36,14 @@
                 </div>
                 <h2 th:text="#{acceptorsLabelShow}" />
                 <div th:each="acceptor : ${listOfAcceptors}" >
-                    <div  class="challenge col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                        <div style="border-width: 5" class="panel panel-default">
-                            <div class="box-content panel-body ">                                  
-                                <div class="chal-body">
-                                    <div >
-                                        <img th:src="${currentUserConnection.imageUrl}" class="img-rounded img-responsive" />
-                                    </div>
-                                    <span class="chal-meta" th:text="${acceptor.getName()}"></span>
-                                </div>
+                    <div  class="challenge col-lg-1 col-md-1 col-sm-2 col-xs-2">
+                        <div class="chal-body">
+                            <div >
+                                <img th:src="${currentUserConnection.imageUrl}" class="img-rounded img-responsive" />
                             </div>
-                        </div> 
+                            <span class="chal-meta" th:text="${acceptor.getName()}"></span>
+                        </div>
+
                     </div>
                 </div>
                 <div class="row">
