@@ -32,18 +32,23 @@
                 </div> 
                 <div class="row">
                     <div class="chal-photo col-md-6">
-                        <img class="img-responsive img-rounded" th:src="${challenge.getImageRef()}"/>
+                        <img  
+                             class="img-responsive img-rounded" 
+                             th:src="${challenge.getImages().get(0)}"/>
+<!--                        <img th:if="${challenge.getImages().size() == 0}" 
+                             class="img-responsive img-rounded" 
+                             th:src="${challenge.getImageRef()}"/>-->
                     </div> 
                     <div class="box-content">
                         <h3 th:text="${#dates.format(challenge.getDate(), 'dd/MM/yyyy HH:mm')}"></h3>
                         <h3  th:text="${challenge.getDescription()}"></h3>
                     </div>
                 </div>
-                <h2 th:text="#{creatorLabelShow}">Creator</h2>
+                <h2 th:text="#{creatorLabelShow}" />
                 <div>
                     <span class="chal-meta" th:text="${challenge.getCreator().getName()}"></span>
                 </div>
-                <h2 th:text="#{acceptorsLabelShow}">Acceptors</h2>
+                <h2 th:text="#{acceptorsLabelShow}" />
                 <div th:each="acceptor : ${listOfAcceptors}" >
                     <div  class="challenge col-lg-4 col-md-4 col-sm-6 col-xs-12">
                         <div style="border-width: 5" class="panel panel-default">

@@ -26,34 +26,35 @@
         <div class="content-wrapper">
             <div class="inner-container container">
                 <form  action="information" th:object="${challenge}" method="post">
-                    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                    <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrf-token"/>
                     <div style="margin-top: 100px; " class="row">
                         <div class="section-header col-md-12">
                         </div> 
                     </div> 
                     <div class="row">
                         <div th:switch="*{id}"> 
-                            <h1 th:text="#{addingTitle}" th:case="null">Adding challenge</h1>
-                            <h1 th:text="#{updatingTitle}" th:case="*">Updating challenge</h1> 
+                            <h1 th:text="#{addingTitle}" th:case="null" />
+                            <h1 th:text="#{updatingTitle}" th:case="*" /> 
                         </div>
                         <div class="col-md-12">
                             <input type="hidden" th:field="*{id}" />
-                            <label th:text="#{titleLabel}" class="col-md-2 control-label">Title</label>
-                            <div class="col-md-10">
-                                <input maxlength="" class="form-control" type="text" placeholder="Challenge title..."  th:field="*{name}" />
+                            <label th:text="#{titleLabel}" class="col-md-2 control-label" />
+                            <div class="chal-photo col-md-10">
+                                <input maxlength="" class="form-control" type="text" th:placeholder="#{titlePlaceholder}"  th:field="*{name}" />
                             </div>
-                            <label th:text="#{descriptionLabel}" class="col-md-2 control-label">Description</label>
-                            <div class="col-md-10">
-                                <h4><textarea maxlength="254" class="form-control"  cols="40" rows="5" placeholder="Challenge description..."  th:field="*{description}" /></h4>
+                            <label th:text="#{descriptionLabel}" class="col-md-2 control-label" />
+                            <div class="chal-photo col-md-10">
+                                <h4><textarea maxlength="254" class="form-control"  cols="40" rows="5" th:placeholder="#{descriptionPlaceholder}"  th:field="*{description}" /></h4>
                             </div>
-                            <label th:text="#{imageLabel}" class="col-md-2 control-label">ImageHref</label>
-                            <div class="col-md-10"> 
-                                <input class="form-control" type="text" placeholder="Your image url" th:field="*{imageRef}" />
-                            </div>
-                            <div class="col-md-12"> 
+                            <label th:text="#{imageLabel}" class="col-md-2 control-label" />
+<!--                            <div class="chal-photo col-md-10"> 
+                                <input class="form-control" type="text" th:placeholder="#{imagePlaceholder}" th:field="*{imageRef}" />
+                            </div>-->
+                            <input type="file" name="pic" accept="image/*" id="input-file"/>
+                            <div class="chal-photo col-md-12"> 
                                 <span/>
                             </div>
-                            <label th:text="#{endDateLabel}" class="col-md-2 control-label">EndDate</label>
+                            <label th:text="#{endDateLabel}" class="col-md-2 control-label" />
                             <div class="chal-photo col-md-10">  
                                 <div class="form-group">
                                     <div class="input-group date" id="datetimepicker1">

@@ -108,8 +108,8 @@ public class MainController {
     }
 
     @RequestMapping(value = "challenge/information", method = POST, produces = "text/plain;charset=UTF-8")
-    public String saveOrUpdateChallenge(HttpServletRequest request, Principal currentUser, Model model, ChallengeDefinition challenge, RedirectAttributes redirectAttributes) {
-        util.setModelForNewOrUpdatedChalShow(challenge, request, currentUser, model);
+    public String saveOrUpdateChallenge(HttpServletRequest request, Principal currentUser, Model model, ChallengeDefinition challenge, RedirectAttributes redirectAttributes, @RequestParam("image") String img) {
+        util.setModelForNewOrUpdatedChalShow(challenge, request, currentUser, model, img);
         redirectAttributes.addAttribute("id", challenge.getId());
         return "redirect:information";
     }
