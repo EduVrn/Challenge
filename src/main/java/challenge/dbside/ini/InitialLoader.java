@@ -34,9 +34,6 @@ public class InitialLoader {
     @Qualifier("storageServiceUser")
     private MediaService serviceEntityInit;
 
-    @Autowired
-    private ImageStoreService imagesStorage;
-
     public void initial() {
         //try load from base
 
@@ -55,7 +52,7 @@ public class InitialLoader {
         TypeOfAttribute attrChalStatus = new TypeOfAttribute(6, "chalStatus", TypeAttribute.STRING.getValue());
         TypeOfAttribute attrChalDefStatus = new TypeOfAttribute(7, "chalDefStatus", TypeAttribute.STRING.getValue());
         TypeOfAttribute attrMessage = new TypeOfAttribute(8, "message", TypeAttribute.STRING.getValue());
-
+        
         TypeOfAttribute refAttrFriends = new TypeOfAttribute(31, "friends", TypeAttribute.REF.getValue());
         TypeOfAttribute refAttrAcceptedChalIns = new TypeOfAttribute(32, "acceptedChalIns", TypeAttribute.REF.getValue());
         TypeOfAttribute refAttrAutorComment = new TypeOfAttribute(33, "autorComment", TypeAttribute.REF.getValue());
@@ -68,7 +65,7 @@ public class InitialLoader {
         serviceAttr.save(attrChalStatus);
         serviceAttr.save(attrChalDefStatus);
         serviceAttr.save(attrMessage);
-
+        
         serviceAttr.save(refAttrFriends);
         serviceAttr.save(refAttrAcceptedChalIns);
         serviceAttr.save(refAttrAutorComment);
@@ -142,7 +139,7 @@ public class InitialLoader {
         chalDef1.addImage(image);
         serviceEntityInit.update(chalDef1);
         try {
-            imagesStorage.saveImage(new File("src/main/resources/static/images/firstExampleChallenge.jpg"), image);
+            ImageStoreService.saveImage(new File("src/main/resources/static/images/firstExampleChallenge.jpg"), image);
             serviceEntityInit.update(image);
         } catch (Exception ex) {
             Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
@@ -153,7 +150,7 @@ public class InitialLoader {
         Image profilePic = new Image();
         serviceEntityInit.save(profilePic);
         try {
-            imagesStorage.saveImage(new File("src/main/resources/static/images/AvaDefault.jpg"), profilePic);
+            ImageStoreService.saveImage(new File("src/main/resources/static/images/AvaDefault.jpg"), profilePic);
             serviceEntityInit.update(profilePic);
         } catch (Exception ex) {
             Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
@@ -173,7 +170,7 @@ public class InitialLoader {
         chalDef2.addImage(image2);
         serviceEntityInit.update(chalDef2);
         try {
-            imagesStorage.saveImage(new File("src/main/resources/static/images/secondExampleTask.png"), image2);
+            ImageStoreService.saveImage(new File("src/main/resources/static/images/secondExampleTask.png"), image2);
             serviceEntityInit.update(image2);
         } catch (Exception ex) {
             Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
@@ -191,7 +188,7 @@ public class InitialLoader {
         Image imageForChalInstance1 = new Image();
         serviceEntityInit.save(imageForChalInstance1);
         try {
-            imagesStorage.saveImage(new File("src/main/resources/static/images/secondExampleTask.png"), imageForChalInstance1);
+            ImageStoreService.saveImage(new File("src/main/resources/static/images/secondExampleTask.png"), imageForChalInstance1);
             serviceEntityInit.update(imageForChalInstance1);
         } catch (Exception ex) {
             Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
@@ -209,7 +206,7 @@ public class InitialLoader {
         Image imageForChalInstance2 = new Image();
         serviceEntityInit.save(imageForChalInstance2);
         try {
-            imagesStorage.saveImage(new File("src/main/resources/static/images/secondExampleTask.png"), imageForChalInstance2);
+            ImageStoreService.saveImage(new File("src/main/resources/static/images/secondExampleTask.png"), imageForChalInstance2);
             serviceEntityInit.update(imageForChalInstance2);
         } catch (Exception ex) {
             Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
@@ -224,7 +221,7 @@ public class InitialLoader {
         Image profilePic2 = new Image();
         serviceEntityInit.save(profilePic2);
         try {
-            imagesStorage.saveImage(new File("src/main/resources/static/images/AvaDefault.jpg"), profilePic2);
+            ImageStoreService.saveImage(new File("src/main/resources/static/images/AvaDefault.jpg"), profilePic2);
             serviceEntityInit.update(profilePic2);
         } catch (Exception ex) {
             Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
@@ -238,7 +235,7 @@ public class InitialLoader {
         Image profilePic3 = new Image();
         serviceEntityInit.save(profilePic3);
         try {
-            imagesStorage.saveImage(new File("src/main/resources/static/images/AvaDefault.jpg"), profilePic3);
+            ImageStoreService.saveImage(new File("src/main/resources/static/images/AvaDefault.jpg"), profilePic3);
             serviceEntityInit.update(profilePic3);
         } catch (Exception ex) {
             Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);

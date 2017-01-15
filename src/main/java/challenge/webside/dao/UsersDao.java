@@ -35,9 +35,6 @@ public class UsersDao {
     @Qualifier("storageServiceUser")
     private MediaService serviceEntity;
 
-    @Autowired
-    private ImageStoreService imagesStorage;
-
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -94,7 +91,7 @@ public class UsersDao {
         chalDef1.addImage(image1);
         serviceEntity.update(chalDef1);
         try {
-            imagesStorage.saveImage(new File("src/main/resources/static/images/race.jpg"), image1);
+            ImageStoreService.saveImage(new File("src/main/resources/static/images/race.jpg"), image1);
             serviceEntity.update(image1);
         } catch (Exception ex) {
             Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
@@ -111,7 +108,7 @@ public class UsersDao {
         chalDef2.addImage(image2);
         serviceEntity.update(chalDef2);
         try {
-            imagesStorage.saveImage(new File("src/main/resources/static/images/race.jpg"), image2);
+            ImageStoreService.saveImage(new File("src/main/resources/static/images/race.jpg"), image2);
             serviceEntity.update(image2);
         } catch (Exception ex) {
             Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
@@ -128,7 +125,7 @@ public class UsersDao {
         chalDef3.addImage(image3);
         serviceEntity.update(chalDef3);
         try {
-            imagesStorage.saveImage(new File("src/main/resources/static/images/race.jpg"), image3);
+            ImageStoreService.saveImage(new File("src/main/resources/static/images/race.jpg"), image3);
             serviceEntity.update(image3);
         } catch (Exception ex) {
             Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
@@ -145,7 +142,7 @@ public class UsersDao {
         chalDef4.addImage(image4);
         serviceEntity.update(chalDef4);
         try {
-            imagesStorage.saveImage(new File("src/main/resources/static/images/race.jpg"), image4);
+            ImageStoreService.saveImage(new File("src/main/resources/static/images/race.jpg"), image4);
             serviceEntity.update(image4);
         } catch (Exception ex) {
             Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
@@ -158,7 +155,7 @@ public class UsersDao {
         Image profilePic = new Image();
         serviceEntity.save(profilePic);
         try {
-            imagesStorage.saveImage(new File("src/main/resources/static/images/AvaDefault.jpg"), profilePic);
+            ImageStoreService.saveImage(new File("src/main/resources/static/images/AvaDefault.jpg"), profilePic);
             serviceEntity.update(profilePic);
         } catch (Exception ex) {
             Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
@@ -186,7 +183,7 @@ public class UsersDao {
         Image imageForChalInstance1 = new Image();
         serviceEntity.save(imageForChalInstance1);
         try {
-            imagesStorage.saveImage(new File("src/main/resources/static/images/race.jpg"), imageForChalInstance1);
+            ImageStoreService.saveImage(new File("src/main/resources/static/images/race.jpg"), imageForChalInstance1);
             serviceEntity.update(imageForChalInstance1);
         } catch (Exception ex) {
             Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
@@ -194,7 +191,7 @@ public class UsersDao {
         chalInstance1.setDate(new Date());
         serviceEntity.save(chalInstance1);
         chalInstance1.addImage(imageForChalInstance1);
-        serviceEntity.update(chalInstance1);        
+        serviceEntity.update(chalInstance1);
 
         ChallengeInstance chalInstance2 = new ChallengeInstance();
         chalInstance2.setName("Instance of SignUpedUser #");
@@ -202,7 +199,7 @@ public class UsersDao {
         Image imageForChalInstance2 = new Image();
         serviceEntity.save(imageForChalInstance2);
         try {
-            imagesStorage.saveImage(new File("src/main/resources/static/images/race.jpg"), imageForChalInstance2);
+            ImageStoreService.saveImage(new File("src/main/resources/static/images/race.jpg"), imageForChalInstance2);
             serviceEntity.update(imageForChalInstance2);
         } catch (Exception ex) {
             Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
@@ -214,7 +211,6 @@ public class UsersDao {
         serviceEntity.save(chalInstance2);
         chalInstance2.addImage(imageForChalInstance2);
         serviceEntity.update(chalInstance2);
-        
 
         user.addAcceptedChallenge(chalInstance1);
         user.addAcceptedChallenge(chalInstance2);

@@ -44,7 +44,6 @@ public class ImageStoreService {
 
         //save the image
         Node folder = session.getRootNode();
-        //use image id instead of image url
         Node file = folder.addNode("image" + imageEntity.getId(), "nt:file");
         imageEntity.setImageRef("image" + imageEntity.getId());
         Node content = file.addNode("jcr:content", "nt:resource");
