@@ -175,12 +175,7 @@ function loadFile() {
     var reader = new FileReader();
 
     reader.onloadend = function () {
-        var $image = $('<input />', {
-            "type": "hidden",
-            "value": reader.result,
-            "name": "image"
-        });
-        $('#input-file').after($image);
+        $('input[name="image"]').val(reader.result);
     };
 
     if (file) {

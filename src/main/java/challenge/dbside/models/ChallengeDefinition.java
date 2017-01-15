@@ -32,8 +32,8 @@ public class ChallengeDefinition extends BaseEntity implements Commentable {
     public List<User> getAllAcceptors() {
         List<User> acceptors = new ArrayList<>();
 
-        Set<DBSource> set = (Set<DBSource>) getDataSource().getChildren();
-        set.forEach((chalInsDB) -> {
+        Set<DBSource> children = (Set<DBSource>) getDataSource().getChildren();
+        children.forEach((chalInsDB) -> {
             if (chalInsDB.getEntityType() == TypeEntity.CHALLENGE_INSTANCE.getValue()) {
                 acceptors.add(new ChallengeInstance(chalInsDB).getAcceptor());
             }
@@ -117,6 +117,18 @@ public class ChallengeDefinition extends BaseEntity implements Commentable {
             return allImages.get(0);
         }
         return new String();
+    }
+    
+    public Image getMainImageEntity() {
+        Set<DBSource> children = (Set<DBSource>) getDataSource().getChildren();
+        for (DBSource childDB : children) {
+            if (childDB.getEntityType() == TypeEntity.IMAGE.getValue()) {
+                Image image = new Image();
+                image.setImageRef(new Image(childDB).getImageRef());
+                return image;
+            }
+        }
+        return new Image();
     }
 
     public void addImage(Image image) {

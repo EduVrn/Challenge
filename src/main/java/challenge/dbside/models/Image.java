@@ -20,5 +20,5 @@ public class Image extends BaseEntity {
     public String getImageRef() {
         return getDataSource().getAttributes().get(IdAttrGet.IdImgRef()).getValue();
     }
-
+    
 }
