@@ -5,8 +5,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-//import org.apache.commons.collections.MultiHashMap;
-//import org.apache.commons.collections.MultiMap;
 import org.apache.commons.collections4.MultiMap;
 import org.apache.commons.collections4.map.MultiValueMap;
 
@@ -31,7 +29,7 @@ public class DBSource {
 
     public DBSource() {
         attributes = new HashMap();
-        children = new HashSet();
+        children = new HashSet<>();
         rel = new MultiValueMap();
         backRel = new MultiValueMap();
 
@@ -42,7 +40,7 @@ public class DBSource {
 
     public DBSource(String entityName) {
 
-        children = new HashSet();
+        children = new HashSet<>();
 
         TypeOfEntity type = ContextType.getInstance().getTypeEntity(entityName);
         entityType = type.getTypeEntityID();
@@ -66,8 +64,8 @@ public class DBSource {
     }
 
     public DBSource(String name, String surname) {
-        attributes = new HashMap();
-        children = new HashSet();
+        attributes = new HashMap<>();
+        children = new HashSet<>();
         rel = new MultiValueMap();
         backRel = new MultiValueMap();
 

@@ -22,12 +22,12 @@ public interface Commentable {
         return comments;
     }
 
-    default public void setComments(List<Comment> comments) {
-        Set<DBSource> setChildren = new HashSet();
+    default public void setComments(Set<Comment> comments) {
+        Set<DBSource> children = new HashSet<>();
         comments.forEach((comment) -> {
-            setChildren.add(comment.getDataSource());
+            children.add(comment.getDataSource());
         });
-        getDataSource().setChildren(setChildren);
+        getDataSource().setChildren(children);
     }
 
     default public void addComment(Comment comment) {

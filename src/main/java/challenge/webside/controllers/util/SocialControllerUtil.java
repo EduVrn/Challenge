@@ -132,7 +132,7 @@ public class SocialControllerUtil {
 
         ChallengeDefinition challenge = (ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class);
         List<User> listOfAcceptors = ((ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class)).getAllAcceptors();
-        
+
         model.addAttribute("challenge", challenge);
         model.addAttribute("listOfAcceptors", listOfAcceptors);
         model.addAttribute("userProfile", getSignedUpUser(request, currentUser));
@@ -156,6 +156,12 @@ public class SocialControllerUtil {
             challenge.setStatus(ChallengeDefinitionStatus.CREATED);
             challenge.setCreator(curDBUser);
             serviceEntity.save(challenge);
+        }
+
+        challenge = (ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class);
+
+        //need to update or create image
+        if (!image.isEmpty()) {
             String base64Image = image.split(",")[1];
             byte[] array = Base64.decodeBase64(base64Image);
             Image imageEntity = new Image();
@@ -170,11 +176,8 @@ public class SocialControllerUtil {
             }
         }
 
-        challenge = (ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class);
         model.addAttribute("challenge", challenge);
-
-        List<User> listOfAcceptors = challenge.getAllAcceptors();
-        model.addAttribute("listOfAcceptors", listOfAcceptors);
+        model.addAttribute("listOfAcceptors", challenge.getAllAcceptors());
         setModelForComments(challenge.getId(), request, currentUser, model);
     }
 
@@ -309,6 +312,10 @@ public class SocialControllerUtil {
             ChallengeInstance chalInstance = new ChallengeInstance(chalToAccept);
             chalInstance.setStatus(ChallengeStatus.ACCEPTED);
             serviceEntity.save(chalInstance);
+            Image image = chalToAccept.getMainImageEntity();
+            serviceEntity.save(image);
+            chalInstance.addImage(image);
+            serviceEntity.update(chalInstance);
             chalToAccept.setStatus(ChallengeDefinitionStatus.ACCEPTED);
             chalInstance.setAcceptor(user);
             user.addAcceptedChallenge(chalInstance);
