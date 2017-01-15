@@ -5,7 +5,6 @@ import java.util.Date;
 
 import javax.persistence.*;
 
-
 @Entity(name = "values")
 @IdClass(AttributePK.class)
 public class Attribute implements Serializable {
@@ -67,7 +66,7 @@ public class Attribute implements Serializable {
     public void setDateValue(Date value) {
         this.date_value = value;
     }
-
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) {
