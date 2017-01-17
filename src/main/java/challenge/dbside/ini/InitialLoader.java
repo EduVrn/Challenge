@@ -13,7 +13,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import challenge.dbside.services.ini.MediaService;
 import challenge.webside.imagesstorage.ImageStoreService;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -125,8 +128,108 @@ public class InitialLoader {
         contextType.add(entityComment);
         contextType.add(entityImage);
     }
+    
+    public static String[] generateRandomWords(int numberOfWords) {
+        String[] randomStrings = new String[numberOfWords];
+        Random random = new Random();
+        for (int i = 0; i < numberOfWords; i++) {
+            char[] word = new char[random.nextInt(8) + 3]; // words of length 3 through 10. (1 and 2 letter words are boring.)
+            for (int j = 0; j < word.length; j++) {
+                word[j] = (char) ('a' + random.nextInt(26));
+            }
+            randomStrings[i] = new String(word);
+        }
+        return randomStrings;
+    }
 
     public void init() {
+        List<String> images = new ArrayList<>();
+        images.add("src/main/resources/static/images/firstExampleChallenge.jpg");
+        images.add("src/main/resources/static/images/secondExampleTask.png");
+        images.add("src/main/resources/static/images/wheely.jpg");
+        images.add("src/main/resources/static/images/speed.jpg");
+        images.add("src/main/resources/static/images/break.png");
+        images.add("src/main/resources/static/images/AvaDefault.jpg");
+        for (int i = 0; i < 5; i++) {
+            User userToCreate = new User();
+            userToCreate.setName(generateRandomWords(1)[0] + "-user");
+            serviceEntityInit.save(userToCreate);
+            Image picForUser = new Image();
+            serviceEntityInit.save(picForUser);
+            try {
+                ImageStoreService.saveImage(new File(images.get(new Random().nextInt(images.size()))), picForUser);
+                serviceEntityInit.update(picForUser);
+            } catch (Exception ex) {
+                Logger.getLogger(InitialLoader.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+            userToCreate.addImage(picForUser);
+            serviceEntityInit.update(userToCreate);
+            for (int k = 0; k < 2; k++) {
+                ChallengeDefinition chalToCreate = new ChallengeDefinition();
+                chalToCreate.setName(generateRandomWords(1)[0] + "-challenge");
+                chalToCreate.setStatus(ChallengeDefinitionStatus.CREATED);
+                StringBuilder descript = new StringBuilder();
+                for (String word : generateRandomWords(new Random().nextInt(20) + 2)) {
+                    descript.append(word).append(" ");
+                }
+                descript.append(".");
+                chalToCreate.setDescription(descript.toString());
+                chalToCreate.setDate(new Date());
+                chalToCreate.setCreator(userToCreate);
+                serviceEntityInit.save(chalToCreate);
+                Image pic = new Image();
+                serviceEntityInit.save(pic);
+                try {
+                    ImageStoreService.saveImage(new File(images.get(new Random().nextInt(images.size()))), pic);
+                    serviceEntityInit.update(pic);
+
+                } catch (Exception ex) {
+                    Logger.getLogger(InitialLoader.class
+                            .getName()).log(Level.SEVERE, null, ex);
+                }
+                chalToCreate.addImage(pic);
+                serviceEntityInit.update(chalToCreate);
+                userToCreate.addChallenge(chalToCreate);
+
+                for (Object user : serviceEntityInit.getAll(User.class)) {
+                    User userToSave = (User) user;
+                    userToCreate.addFriend(userToSave);
+                };
+                serviceEntityInit.update(userToCreate);
+
+                for (int m = 0; m < 2; m++) {
+                    ChallengeInstance chalInstance = new ChallengeInstance();
+                    chalInstance.setName(generateRandomWords(1)[0] + "-instance");
+                    chalInstance.setStatus(ChallengeStatus.AWAITING);
+
+                    chalInstance.setDescription("After (may be)");
+                    chalInstance.setDate(new Date());
+                    serviceEntityInit.save(chalInstance);
+                    Image picForInstance = new Image();
+                    serviceEntityInit.save(picForInstance);
+                    try {
+                        ImageStoreService.saveImage(new File(images.get(new Random().nextInt(images.size()))), picForInstance);
+                        serviceEntityInit.update(picForInstance);
+
+                    } catch (Exception ex) {
+                        Logger.getLogger(InitialLoader.class
+                                .getName()).log(Level.SEVERE, null, ex);
+                    }
+                    chalInstance.addImage(picForInstance);
+                    serviceEntityInit.update(chalInstance);
+                    chalToCreate.addChallengeInstance(chalInstance);
+                    serviceEntityInit.update(chalToCreate);
+                    User user = (User) serviceEntityInit.getAll(User.class).get(new Random().nextInt(serviceEntityInit.getAll(User.class).size()));
+                    chalInstance.setAcceptor(user);
+                    serviceEntityInit.update(chalInstance);
+
+                }
+            }
+        }
+    }
+
+    public void fasterInit() {
 
         ChallengeDefinition chalDef1 = new ChallengeDefinition();
         chalDef1.setName("Make something");
