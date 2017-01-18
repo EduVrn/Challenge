@@ -1,0 +1,1 @@
+java -jar liquibase --url=jdbc:postgresql://localhost:5432/challenge --driver=org.postgresql.Driver --classpath=../../../../lib/postgresql-9.1-901.jdbc4.jar/ --changeLogFile=../../../../resources/liquibaseversions/v1.0/changelog-master.xml --username=postgres --password=password update

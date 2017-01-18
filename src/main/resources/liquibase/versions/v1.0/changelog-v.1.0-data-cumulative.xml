@@ -4,7 +4,7 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="entities_data" author="vnechiporenko" context="initdata">
+    <changeSet id="entities_data" author="vnechiporenko" context="initdata" failOnError="false">
         <comment>
             Data for Table "entities"
         </comment>
@@ -26,7 +26,7 @@
         </sql>
     </changeSet>
 
-    <changeSet id="entity_attributes_data" author="vnechiporenko" context="initdata">
+    <changeSet id="entity_attributes_data" author="vnechiporenko" context="initdata" failOnError="false">
         <comment>
             Data for Table "entity_attributes"
         </comment>
@@ -51,7 +51,7 @@
         </sql>
     </changeSet>
 
-    <changeSet id="relationship_data" author="vnechiporenko" context="initdata">
+    <changeSet id="relationship_data" author="vnechiporenko" context="initdata" failOnError="false">
         <comment>
             Data for Table "relationship"
         </comment>
@@ -89,7 +89,7 @@
         </sql>
     </changeSet>
 
-    <changeSet id="types_attributes_data" author="vnechiporenko" context="initdata">
+    <changeSet id="types_attributes_data" author="vnechiporenko" context="initdata" failOnError="false">
         <comment>
             Data for Table "types_attributes"
         </comment>
@@ -108,7 +108,7 @@
         </sql>
     </changeSet>
 
-    <changeSet id="types_of_entities_data" author="vnechiporenko" context="initdata">
+    <changeSet id="types_of_entities_data" author="vnechiporenko" context="initdata" failOnError="false">
         <comment>
             Data for Table "types_of_entities"
         </comment>
@@ -121,7 +121,7 @@
         </sql>
     </changeSet>
 
-    <changeSet id="values_data" author="vnechiporenko" context="initdata">
+    <changeSet id="values_data" author="vnechiporenko" context="initdata" failOnError="false">
         <comment>
             Data for Table "values"
         </comment>

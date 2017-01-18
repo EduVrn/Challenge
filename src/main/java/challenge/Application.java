@@ -1,7 +1,5 @@
 package challenge;
 
-import challenge.dbside.ini.InitialLoader;
-import challenge.webside.imagesstorage.ImageStoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -11,9 +9,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import challenge.dbside.ini.InitialLoader;
+import challenge.webside.imagesstorage.ImageStoreService;
 
 @Configuration
 @EnableAutoConfiguration
@@ -39,7 +39,7 @@ public class Application extends SpringBootServletInitializer {
         } catch (Exception ex) {
             Logger.getLogger(Application.class.getName()).log(Level.SEVERE, null, ex);
         }
-        initiator.initial();
+        initiator.initial("schemedata,initdata");
     }
 
 }
