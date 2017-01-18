@@ -4,6 +4,160 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <include file="resources/liquibase/versions/v1.0/dump.sql"/>
+    <changeSet id="entities_data" author="vnechiporenko" context="initdata">
+        <comment>
+            Data for Table "entities"
+        </comment>
+        <sql>
+            INSERT INTO entities VALUES (136, 1, NULL);
+            INSERT INTO entities VALUES (135, 5, 136);
+            INSERT INTO entities VALUES (138, 2, 136);
+            INSERT INTO entities VALUES (134, 2, 136);
+            INSERT INTO entities VALUES (137, 5, 138);
+            INSERT INTO entities VALUES (133, 5, 134);
+            INSERT INTO entities VALUES (140, 3, NULL);
+            INSERT INTO entities VALUES (139, 5, 140);
+            INSERT INTO entities VALUES (142, 3, NULL);
+            INSERT INTO entities VALUES (141, 5, 142);
+            INSERT INTO entities VALUES (144, 1, NULL);
+            INSERT INTO entities VALUES (143, 5, 144);
+            INSERT INTO entities VALUES (146, 1, NULL);
+            INSERT INTO entities VALUES (145, 5, 146);
+        </sql>
+    </changeSet>
+
+    <changeSet id="entity_attributes_data" author="vnechiporenko" context="initdata">
+        <comment>
+            Data for Table "entity_attributes"
+        </comment>
+        <sql>
+            INSERT INTO entity_attributes VALUES (1, 1);
+            INSERT INTO entity_attributes VALUES (1, 2);
+            INSERT INTO entity_attributes VALUES (1, 31);
+            INSERT INTO entity_attributes VALUES (1, 32);
+            INSERT INTO entity_attributes VALUES (1, 33);
+            INSERT INTO entity_attributes VALUES (2, 1);
+            INSERT INTO entity_attributes VALUES (2, 3);
+            INSERT INTO entity_attributes VALUES (2, 4);
+            INSERT INTO entity_attributes VALUES (2, 7);
+            INSERT INTO entity_attributes VALUES (3, 1);
+            INSERT INTO entity_attributes VALUES (3, 6);
+            INSERT INTO entity_attributes VALUES (3, 3);
+            INSERT INTO entity_attributes VALUES (3, 4);
+            INSERT INTO entity_attributes VALUES (3, 32);
+            INSERT INTO entity_attributes VALUES (4, 3);
+            INSERT INTO entity_attributes VALUES (4, 8);
+            INSERT INTO entity_attributes VALUES (5, 5);
+        </sql>
+    </changeSet>
+
+    <changeSet id="relationship_data" author="vnechiporenko" context="initdata">
+        <comment>
+            Data for Table "relationship"
+        </comment>
+        <sql>
+            INSERT INTO relationship VALUES (133, 133, -1);
+            INSERT INTO relationship VALUES (133, 133, -3);
+            INSERT INTO relationship VALUES (134, 134, -1);
+            INSERT INTO relationship VALUES (134, 134, -3);
+            INSERT INTO relationship VALUES (135, 135, -1);
+            INSERT INTO relationship VALUES (135, 135, -3);
+            INSERT INTO relationship VALUES (136, 136, -1);
+            INSERT INTO relationship VALUES (136, 136, -3);
+            INSERT INTO relationship VALUES (137, 137, -1);
+            INSERT INTO relationship VALUES (137, 137, -3);
+            INSERT INTO relationship VALUES (138, 138, -1);
+            INSERT INTO relationship VALUES (138, 138, -3);
+            INSERT INTO relationship VALUES (139, 139, -1);
+            INSERT INTO relationship VALUES (139, 139, -3);
+            INSERT INTO relationship VALUES (140, 140, -1);
+            INSERT INTO relationship VALUES (136, 140, 32);
+            INSERT INTO relationship VALUES (140, 140, -3);
+            INSERT INTO relationship VALUES (141, 141, -1);
+            INSERT INTO relationship VALUES (141, 141, -3);
+            INSERT INTO relationship VALUES (142, 142, -1);
+            INSERT INTO relationship VALUES (136, 142, 32);
+            INSERT INTO relationship VALUES (142, 142, -3);
+            INSERT INTO relationship VALUES (143, 143, -1);
+            INSERT INTO relationship VALUES (143, 143, -3);
+            INSERT INTO relationship VALUES (144, 144, -1);
+            INSERT INTO relationship VALUES (144, 144, -3);
+            INSERT INTO relationship VALUES (145, 145, -1);
+            INSERT INTO relationship VALUES (145, 145, -3);
+            INSERT INTO relationship VALUES (146, 146, -1);
+            INSERT INTO relationship VALUES (146, 146, -3);
+        </sql>
+    </changeSet>
+
+    <changeSet id="types_attributes_data" author="vnechiporenko" context="initdata">
+        <comment>
+            Data for Table "types_attributes"
+        </comment>
+        <sql>
+            INSERT INTO types_attributes VALUES (1, 'name', 1);
+            INSERT INTO types_attributes VALUES (2, 'surname', 1);
+            INSERT INTO types_attributes VALUES (3, 'date', 1);
+            INSERT INTO types_attributes VALUES (4, 'description', 1);
+            INSERT INTO types_attributes VALUES (5, 'imageref', 1);
+            INSERT INTO types_attributes VALUES (6, 'chalStatus', 1);
+            INSERT INTO types_attributes VALUES (7, 'chalDefStatus', 1);
+            INSERT INTO types_attributes VALUES (8, 'message', 1);
+            INSERT INTO types_attributes VALUES (31, 'friends', 4);
+            INSERT INTO types_attributes VALUES (32, 'acceptedChalIns', 4);
+            INSERT INTO types_attributes VALUES (33, 'autorComment', 4);
+        </sql>
+    </changeSet>
+
+    <changeSet id="types_of_entities_data" author="vnechiporenko" context="initdata">
+        <comment>
+            Data for Table "types_of_entities"
+        </comment>
+        <sql>
+            INSERT INTO types_of_entities VALUES (1, 'User');
+            INSERT INTO types_of_entities VALUES (2, 'ChallengeDefinition');
+            INSERT INTO types_of_entities VALUES (3, 'ChallengeInstance');
+            INSERT INTO types_of_entities VALUES (4, 'Comment');
+            INSERT INTO types_of_entities VALUES (5, 'Image');
+        </sql>
+    </changeSet>
+
+    <changeSet id="values_data" author="vnechiporenko" context="initdata">
+        <comment>
+            Data for Table "values"
+        </comment>
+        <sql>
+            INSERT INTO "values" VALUES (1, 134, NULL, NULL, 'Make something');
+            INSERT INTO "values" VALUES (3, 134, NULL, NULL, 'Tue Jan 17 14:40:25 MSK 2017');
+            INSERT INTO "values" VALUES (4, 134, NULL, NULL, 'Hi, I''m first. Selected me!');
+            INSERT INTO "values" VALUES (7, 134, NULL, NULL, 'CREATED');
+            INSERT INTO "values" VALUES (5, 133, NULL, NULL, 'image133');
+            INSERT INTO "values" VALUES (5, 135, NULL, NULL, 'image135');
+            INSERT INTO "values" VALUES (1, 136, NULL, NULL, 'Evgeniy 1');
+            INSERT INTO "values" VALUES (2, 136, NULL, NULL, NULL);
+            INSERT INTO "values" VALUES (1, 138, NULL, NULL, 'Hi, make your''s task 4 Ivan.');
+            INSERT INTO "values" VALUES (3, 138, NULL, NULL, 'Tue Jan 17 14:40:27 MSK 2017');
+            INSERT INTO "values" VALUES (4, 138, NULL, NULL, 'After (may be)');
+            INSERT INTO "values" VALUES (7, 138, NULL, NULL, 'CREATED');
+            INSERT INTO "values" VALUES (5, 137, NULL, NULL, 'image137');
+            INSERT INTO "values" VALUES (5, 139, NULL, NULL, 'image139');
+            INSERT INTO "values" VALUES (1, 140, NULL, NULL, 'I can made it');
+            INSERT INTO "values" VALUES (3, 140, NULL, NULL, 'Tue Jan 17 14:40:30 MSK 2017');
+            INSERT INTO "values" VALUES (4, 140, NULL, NULL, 'After (may be)');
+            INSERT INTO "values" VALUES (6, 140, NULL, NULL, 'AWAITING');
+            INSERT INTO "values" VALUES (5, 141, NULL, NULL, 'image141');
+            INSERT INTO "values" VALUES (1, 142, NULL, NULL, 'Ou ');
+            INSERT INTO "values" VALUES (3, 142, NULL, NULL, 'Tue Jan 17 14:40:31 MSK 2017');
+            INSERT INTO "values" VALUES (4, 142, NULL, NULL, 'After (may be)');
+            INSERT INTO "values" VALUES (6, 142, NULL, NULL, 'AWAITING');
+            INSERT INTO "values" VALUES (5, 143, NULL, NULL, 'image143');
+            INSERT INTO "values" VALUES (1, 144, NULL, NULL, 'Jonnie Fast-Foot');
+            INSERT INTO "values" VALUES (2, 144, NULL, NULL, NULL);
+            INSERT INTO "values" VALUES (5, 145, NULL, NULL, 'image145');
+            INSERT INTO "values" VALUES (1, 146, NULL, NULL, 'Annet Fast-Food');
+            INSERT INTO "values" VALUES (2, 146, NULL, NULL, NULL);
+        </sql>
+    </changeSet>
+
+
 
 </databaseChangeLog>
