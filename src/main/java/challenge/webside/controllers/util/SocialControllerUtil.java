@@ -36,6 +36,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 
 @Component
 public class SocialControllerUtil {
@@ -132,10 +133,11 @@ public class SocialControllerUtil {
 
         ChallengeDefinition challenge = (ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class);
         List<User> listOfAcceptors = ((ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class)).getAllAcceptors();
-
+        User user = getSignedUpUser(request, currentUser);
+        dialect.setActions(actionsProvider.getActionsForChallengeDefinition(user, challenge));
         model.addAttribute("challenge", challenge);
         model.addAttribute("listOfAcceptors", listOfAcceptors);
-        model.addAttribute("userProfile", getSignedUpUser(request, currentUser));
+        model.addAttribute("userProfile", user);
         setModelForComments(id, request, currentUser, model);
     }
 
@@ -152,6 +154,11 @@ public class SocialControllerUtil {
             if (Objects.equals(chalToUpdate.getCreator().getId(), curDBUser.getId())) {
                 serviceEntity.update(chalToUpdate);
             }
+            if (!image.isEmpty()) {
+                Image oldImage = chalToUpdate.getMainImageEntity();
+                oldImage.setIsMain(Boolean.FALSE);
+                serviceEntity.update(oldImage);
+            }
         } else {
             challenge.setStatus(ChallengeDefinitionStatus.CREATED);
             challenge.setCreator(curDBUser);
@@ -161,10 +168,11 @@ public class SocialControllerUtil {
         challenge = (ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class);
 
         //need to update or create image
-        if (!image.isEmpty()) {
+        if (!image.isEmpty() && !StringUtils.isNumeric(image)) {
             String base64Image = image.split(",")[1];
             byte[] array = Base64.decodeBase64(base64Image);
             Image imageEntity = new Image();
+            imageEntity.setIsMain(Boolean.TRUE);
             serviceEntity.save(imageEntity);
             challenge.addImage(imageEntity);
             serviceEntity.update(challenge);
@@ -174,11 +182,63 @@ public class SocialControllerUtil {
             } catch (Exception ex) {
                 Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } else if (StringUtils.isNumeric(image)) {
+            Image newMainImage = (Image) serviceEntity.findById(Integer.valueOf(image), Image.class);
+            newMainImage.setIsMain(Boolean.TRUE);
+            serviceEntity.update(newMainImage);
         }
-
         model.addAttribute("challenge", challenge);
         model.addAttribute("listOfAcceptors", challenge.getAllAcceptors());
         setModelForComments(challenge.getId(), request, currentUser, model);
+    }
+
+    public void setModelForEditProfile(int userId, HttpServletRequest request, Principal currentUser, Model model) {
+        setModel(request, currentUser, model);
+
+        User user = (User) serviceEntity.findById(userId, User.class);
+        model.addAttribute("userProfile", user);
+
+    }
+
+    public void setModelForUpdatedProfile(User user, HttpServletRequest request, Principal currentUser, Model model, String image) {
+        setModel(request, currentUser, model);
+        User userToUpdate = (User) serviceEntity.findById(user.getId(), User.class);
+        userToUpdate.setName(user.getName());
+        //TODO:check if creator
+        serviceEntity.update(userToUpdate);
+
+        user = (User) serviceEntity.findById(user.getId(), User.class);
+
+        if (!image.isEmpty() && !StringUtils.isNumeric(image)) {
+            String base64Image = image.split(",")[1];
+            byte[] array = Base64.decodeBase64(base64Image);
+            Image imageEntity = new Image();
+            imageEntity.setIsMain(Boolean.TRUE);
+            serviceEntity.save(imageEntity);
+
+            Image oldImage = user.getMainImageEntity();
+            oldImage.setIsMain(Boolean.FALSE);
+            serviceEntity.update(oldImage);
+
+            try {
+                ImageStoreService.saveImage(array, imageEntity);
+                serviceEntity.update(imageEntity);
+            } catch (Exception ex) {
+                Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            user.addImage(imageEntity);
+            serviceEntity.update(user);
+        } else if (StringUtils.isNumeric(image)) {
+            Image oldImage = user.getMainImageEntity();
+            oldImage.setIsMain(Boolean.FALSE);
+            serviceEntity.update(oldImage);
+
+            Image newMainImage = (Image) serviceEntity.findById(Integer.valueOf(image), Image.class);
+            newMainImage.setIsMain(Boolean.TRUE);
+            serviceEntity.update(newMainImage);
+        }
+
+        setProfileShow(user.getId(), request, currentUser, model);
     }
 
     private void setModelForComments(int chalId, HttpServletRequest request, Principal currentUser, Model model) {

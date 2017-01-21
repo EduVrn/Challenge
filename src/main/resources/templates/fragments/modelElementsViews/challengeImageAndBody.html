@@ -8,7 +8,7 @@
     <body>
         <th:block th:fragment="challengePanel(challenge)" >
             <div class="chal-photo-main-page"> 
-                <img class="img-rounded" th:src="${challenge.getMainImage()}" alt=""/> 
+                <img class="img-rounded" th:src="${challenge.getMainImageEntity().getBase64()}" alt=""/> 
             </div>
             <div class="chal-body">
                 <form name="submitForm" th:id="'challenge_form'+${challenge.Id}"  method="GET" action="challenge/information">

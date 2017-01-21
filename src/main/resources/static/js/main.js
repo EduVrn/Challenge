@@ -154,7 +154,7 @@ function display(data, friends) {
 
 //display reply form for a comment
 var showingReplyForm = false;
-$('.media-body small a').click(function () {
+$('.media-body small a').on('click', function () {
     var parent = $(this).parent().parent().parent();
     var children = parent.children();
     showingReplyForm = !showingReplyForm;
@@ -164,21 +164,23 @@ $('.media-body small a').click(function () {
         children[children.length - 2].style.display = "none";
 });
 
-$('input[type="file"]').on('change', loadFile);
-
-function loadFile() {
+$(document).on('change', 'input[type="file"]', function() {
     var $p = $('<p />');
     $p.html($('#input-file').val().split('\\').pop());
+    $p.addClass('image-name');
     $p.css('display', 'inline-block');
+    $('p.image-name').remove();    
     $('#input-file').after($p);
     var file = document.querySelector('input[type="file"]').files[0];
     var reader = new FileReader();
 
     reader.onloadend = function () {
-        $('input[name="image"]').val(reader.result);
+        var result = reader.result;
+        $('input[name="image"]').val(result);
+        $('#new-image').attr('src', result);
     };
 
     if (file) {
         reader.readAsDataURL(file);
     }
-}
+});

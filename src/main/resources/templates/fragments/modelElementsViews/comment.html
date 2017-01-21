@@ -11,7 +11,7 @@
                 <small th:text="${#dates.format(comment.getDate(), 'dd/MM/yyyy HH:mm')}"></small>
             </p>
             <a class="media-left" href="#" style="float: left; margin-right: 10px;">
-                <img th:src="${comment.getAuthor().getMainImage()}" width="40" height="40"/>
+                <img th:src="${comment.getAuthor().getMainImageEntity().getBase64()}" width="40" height="40"/>
             </a>
             <div class="media-body" style="margin-bottom: 10px;">
                 <form name="submitForm" th:id="'comment_form'+${comment.getId()}"  method="GET" action="/profile">

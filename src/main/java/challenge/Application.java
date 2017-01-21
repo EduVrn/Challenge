@@ -39,8 +39,7 @@ public class Application extends SpringBootServletInitializer {
         } catch (Exception ex) {
             Logger.getLogger(Application.class.getName()).log(Level.SEVERE, null, ex);
         }
-        initiator.initial("schemedata,initdata");
+        initiator.initial();
     }
 
 }
-

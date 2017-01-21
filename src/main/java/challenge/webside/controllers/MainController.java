@@ -56,7 +56,7 @@ public class MainController {
     @Autowired
     @Qualifier("storageServiceUser")
     private MediaService serviceEntity;
-    
+
     @Autowired
     private UserActionsProvider actionsProvider;
 
@@ -95,6 +95,23 @@ public class MainController {
         return "chalNewOrUpdate";
     }
 
+    @RequestMapping(value = "profile/edit", produces = "text/plain;charset=UTF-8")
+    public String editProfile(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int userId) {
+        util.setModelForEditProfile(userId, request, currentUser, model);
+        User user = util.getSignedUpUser(request, currentUser);
+        User profileOwner = (User) serviceEntity.findById(userId, User.class);
+        try {
+            actionsProvider.canEditProfile(user, profileOwner);
+            return "editProfile";
+        } catch (AccessDeniedException ex) {
+            model.addAttribute("timestamp", new Date());
+            model.addAttribute("status", 403);
+            model.addAttribute("error", "Access is denied");
+            model.addAttribute("message", ex.getMessage());
+            return "error";
+        }
+    }
+
     protected Optional<String> getPreviousPageByRequest(HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader("Referer")).map(requestUrl -> "redirect:" + requestUrl);
     }
@@ -118,6 +135,13 @@ public class MainController {
     public String showProfile(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int userId) {
         util.setProfileShow(userId, request, currentUser, model);
         return "profile";
+    }
+
+    @RequestMapping(value = "profile", method = POST, produces = "text/plain;charset=UTF-8")
+    public String updateProfile(HttpServletRequest request, Principal currentUser, Model model, User user, RedirectAttributes redirectAttributes, @RequestParam("image") String img) {
+        util.setModelForUpdatedProfile(user, request, currentUser, model, img);
+        redirectAttributes.addAttribute("id", user.getId());
+        return "redirect:profile";
     }
 
     @RequestMapping("/login")
@@ -206,7 +230,8 @@ public class MainController {
 
     @RequestMapping(value = "/getFriends", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody AjaxResponseBody searchFriendsAjax(@RequestBody SearchCriteria search) {
+    public @ResponseBody
+    AjaxResponseBody searchFriendsAjax(@RequestBody SearchCriteria search) {
 
         AjaxResponseBody result = new AjaxResponseBody();
 
@@ -234,7 +259,8 @@ public class MainController {
 
     @RequestMapping(value = "/getChallenges", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody AjaxResponseBody searchChallengesViaAjax(@RequestBody SearchCriteria search) {
+    public @ResponseBody
+    AjaxResponseBody searchChallengesViaAjax(@RequestBody SearchCriteria search) {
 
         AjaxResponseBody result = new AjaxResponseBody();
 

@@ -18,7 +18,7 @@
                     <div style="border-width: 5" class="panel panel-default">
                         <div class="box-content panel-body ">
                             <div class="chal-photo-main-page">
-                                <img class="img-rounded" th:src="${elSomething.getMainImage()}" alt=""/>
+                                <img class="img-rounded" th:src="${elSomething.getMainImageEntity().getBase64()}" alt=""/>
                             </div>
                             <div class="chal-body">
                                 <form name="submitForm"
