@@ -18,12 +18,18 @@
             <div class="inner-container container">
                 <div style="margin-top: 100px; " class="row">
                     <div class="section-header col-md-12">
-                        <h2 th:text="${challenge.getName()}"></h2>
+                        <h2 th:text="${challenge.getName()}" style='display: inline-block;'/>   
+                        <form auth:can="EDIT_CHALLENGE" method="GET" action="update" style='display: inline-block; margin-left: 20px;'>
+                            <input type="hidden" th:value="${challenge.getId()}" name="id"/>
+                            <a onclick='this.parentNode.submit();'>
+                                <span class="glyphicon glyphicon-wrench" style="font-size: 30px;" />
+                            </a>
+                        </form>
                     </div> 
                 </div> 
                 <div class="row">
                     <div class="chal-photo col-md-6">
-                        <img class="img-responsive img-rounded" th:src="${challenge.getMainImage()}"/>
+                        <img class="img-responsive img-rounded" th:src="${challenge.getMainImageEntity().getBase64()}"/>
                     </div> 
                     <div class="box-content">
                         <h3 th:text="${#dates.format(challenge.getDate(), 'dd/MM/yyyy HH:mm')}"></h3>

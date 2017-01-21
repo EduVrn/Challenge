@@ -20,6 +20,7 @@ public class UserActionsProvider {
             actions.add(Action.DELETE_CHALLENGE);
             actions.add(Action.THROW_CHALLENGE_DEF);
             actions.add(Action.WATCH_UNACCEPTED_CHALLENGES);
+            actions.add(Action.EDIT_PROFILE);
         } else {
             actions.add(Action.THROW_CHALLENGE_FOR_USER);
         }
@@ -47,6 +48,12 @@ public class UserActionsProvider {
 
     public void canUpdateChallenge(User user, ChallengeDefinition challenge) {
         if (!getActionsForChallengeDefinition(user, challenge).contains(Action.EDIT_CHALLENGE)) {
+            throw new AccessDeniedException("You don't have permission to access this page");
+        }
+    }
+
+    public void canEditProfile(User user, User profileOwner) {
+        if (!getActionsForProfile(user, profileOwner).contains(Action.EDIT_PROFILE)) {
             throw new AccessDeniedException("You don't have permission to access this page");
         }
     }

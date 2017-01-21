@@ -77,6 +77,7 @@ CREATE TABLE public."values"
   date_value timestamp without time zone,
   int_value integer,
   text_value character varying(255),
+  boolean_value boolean,
   CONSTRAINT values_pkey PRIMARY KEY (attribute_id, entity_id),
   CONSTRAINT fk_re5hfjwgt2xf596qgl4tvpdj8 FOREIGN KEY (entity_id)
       REFERENCES public.entities (entity_id) MATCH SIMPLE

@@ -84,6 +84,7 @@ public class UsersDao {
         chalDef1.setName("Challenge Of SignUpedUser");
         chalDef1.setDescription("Description");
         Image image1 = new Image();
+        image1.setIsMain(Boolean.TRUE);
         serviceEntity.save(image1);
         chalDef1.setDate(new Date());
         chalDef1.setStatus(ChallengeDefinitionStatus.CREATED);
@@ -101,6 +102,7 @@ public class UsersDao {
         chalDef2.setName("Challenge Of SignUpedUser");
         chalDef2.setDescription("Description");
         Image image2 = new Image();
+        image2.setIsMain(Boolean.TRUE);
         serviceEntity.save(image2);
         chalDef2.setDate(new Date());
         chalDef2.setStatus(ChallengeDefinitionStatus.CREATED);
@@ -118,6 +120,7 @@ public class UsersDao {
         chalDef3.setName("Challenge Of SignUpedUser");
         chalDef3.setDescription("Description");
         Image image3 = new Image();
+        image3.setIsMain(Boolean.TRUE);
         serviceEntity.save(image3);
         chalDef3.setDate(new Date());
         chalDef3.setStatus(ChallengeDefinitionStatus.CREATED);
@@ -135,6 +138,7 @@ public class UsersDao {
         chalDef4.setName("Challenge Of SignUpedUser");
         chalDef4.setDescription("Description");
         Image image4 = new Image();
+        image4.setIsMain(Boolean.TRUE);
         serviceEntity.save(image4);
         chalDef4.setDate(new Date());
         chalDef4.setStatus(ChallengeDefinitionStatus.CREATED);
@@ -153,6 +157,7 @@ public class UsersDao {
         User user = new User();
         user.setName(profile.getName());
         Image profilePic = new Image();
+        profilePic.setIsMain(Boolean.TRUE);
         serviceEntity.save(profilePic);
         try {
             ImageStoreService.saveImage(new File("src/main/resources/static/images/AvaDefault.jpg"), profilePic);
@@ -181,6 +186,7 @@ public class UsersDao {
         chalInstance1.setAcceptor(user);
         chalInstance1.setDescription("Description");
         Image imageForChalInstance1 = new Image();
+        imageForChalInstance1.setIsMain(Boolean.TRUE);
         serviceEntity.save(imageForChalInstance1);
         try {
             ImageStoreService.saveImage(new File("src/main/resources/static/images/race.jpg"), imageForChalInstance1);
@@ -197,6 +203,7 @@ public class UsersDao {
         chalInstance2.setName("Instance of SignUpedUser #");
         chalInstance2.setDescription("Description");
         Image imageForChalInstance2 = new Image();
+        imageForChalInstance2.setIsMain(Boolean.TRUE);
         serviceEntity.save(imageForChalInstance2);
         try {
             ImageStoreService.saveImage(new File("src/main/resources/static/images/race.jpg"), imageForChalInstance2);

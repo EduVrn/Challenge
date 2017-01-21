@@ -397,3 +397,7 @@ label {
     font-weight: normal;
     color: black;
 }
+
+.dynamicTile {
+    padding: 5px;
+}

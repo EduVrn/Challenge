@@ -50,6 +50,9 @@ public class Attribute implements Serializable {
 
     @Column(name = "int_value", updatable = true, insertable = true)
     private Integer int_value;
+    
+    @Column(name = "boolean_value", updatable = true, insertable = true)
+    private Boolean boolean_value;
 
     public String getValue() {
         return value;
@@ -65,6 +68,14 @@ public class Attribute implements Serializable {
 
     public void setDateValue(Date value) {
         this.date_value = value;
+    }
+    
+    public Boolean getBooleanValue() {
+        return boolean_value;
+    }
+    
+    public void setBooleanValue(Boolean value) {
+        this.boolean_value = value;
     }
     
     @Override

@@ -31,6 +31,10 @@ public class IdAttrGet {
     static public Integer IdMessage() {
         return ContextType.getInstance().getTypeAttribute("message").getId();
     }
+    
+    static public Integer IdIsMain() {
+        return ContextType.getInstance().getTypeAttribute("isMain").getId();
+    }
 
     //Ref \/
     static public Integer refAcChalIns() {

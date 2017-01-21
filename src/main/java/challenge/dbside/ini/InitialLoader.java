@@ -1,20 +1,14 @@
 package challenge.dbside.ini;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 import java.util.Random;
 
 import challenge.dbside.models.ChallengeDefinition;
@@ -29,20 +23,10 @@ import challenge.dbside.models.status.ChallengeDefinitionStatus;
 import challenge.dbside.models.status.ChallengeStatus;
 import challenge.dbside.services.ini.MediaService;
 import challenge.webside.imagesstorage.ImageStoreService;
-import liquibase.Liquibase;
-import liquibase.database.DatabaseConnection;
-import liquibase.database.core.PostgresDatabase;
-import liquibase.database.jvm.JdbcConnection;
-import liquibase.exception.LiquibaseException;
-import liquibase.resource.FileSystemResourceAccessor;
+import java.util.logging.Level;
 
 @Component
 public class InitialLoader {
-
-    private static final Logger LOG = LoggerFactory.getLogger(PostgresDatabase.class);
-
-    private static final String CHANGELOG_FILE = "src/main/resources/liquibase/changelog-master.xml";
-    private JdbcProperties jdbcProperties;
 
     @Autowired
     @Qualifier("storageServiceTypeOfAttribute")
@@ -56,69 +40,12 @@ public class InitialLoader {
     @Qualifier("storageServiceUser")
     private MediaService serviceEntityInit;
 
-    public InitialLoader() {
-        jdbcProperties = loadProperties();
-    }
-
-    private JdbcProperties loadProperties() {
-        Properties properties = new Properties();
-        JdbcProperties result = null;
-        InputStream istream = Thread.currentThread().getContextClassLoader()
-                .getResourceAsStream("application.properties");
-        try {
-            properties.load(istream);
-
-            result = new JdbcProperties();
-
-            String driverClassName = properties
-                    .getProperty("spring.datasource.driverClassName");
-            result.setDriverClassName(driverClassName);
-
-            String url = properties.getProperty("spring.datasource.url");
-            result.setUrl(url);
-
-            String username = properties.getProperty("spring.datasource.username");
-            result.setUserName(username);
-
-            String password = properties.getProperty("spring.datasource.password");
-            result.setPassword(password);
-
-            istream.close();
-        } catch (IOException ex) {
-            throw new IllegalStateException("Can't load jdbc properties");
-        }
-
-        return result;
-    }
-
-    public void initial(String contexts) {
-        createContext(contexts);
+    public void initial() {
+        createContext();
         init();
     }
 
-    private void createContext(String contexts) {
-        try {
-            Class.forName(jdbcProperties.getDriverClassName()).newInstance();
-            DatabaseConnection connection = new JdbcConnection(DriverManager.getConnection(jdbcProperties.getUrl()));
-
-            PostgresDatabase postgresDatabase = new PostgresDatabase();
-            postgresDatabase.setConnection(connection);
-            Liquibase liquibase = new Liquibase(CHANGELOG_FILE, new FileSystemResourceAccessor(), connection);
-            liquibase.update(contexts);
-            connection.close();
-            postgresDatabase.getConnection().close();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (LiquibaseException e) {
-            e.printStackTrace();
-        }
-
+    private void createContext() {
 
         TypeOfAttribute attrName = new TypeOfAttribute(1, "name", TypeAttribute.STRING.getValue());
         TypeOfAttribute attrSurname = new TypeOfAttribute(2, "surname", TypeAttribute.STRING.getValue());
@@ -128,23 +55,25 @@ public class InitialLoader {
         TypeOfAttribute attrChalStatus = new TypeOfAttribute(6, "chalStatus", TypeAttribute.STRING.getValue());
         TypeOfAttribute attrChalDefStatus = new TypeOfAttribute(7, "chalDefStatus", TypeAttribute.STRING.getValue());
         TypeOfAttribute attrMessage = new TypeOfAttribute(8, "message", TypeAttribute.STRING.getValue());
+        TypeOfAttribute attrIsMain = new TypeOfAttribute(9, "isMain", TypeAttribute.BOOLEAN.getValue());
 
         TypeOfAttribute refAttrFriends = new TypeOfAttribute(31, "friends", TypeAttribute.REF.getValue());
         TypeOfAttribute refAttrAcceptedChalIns = new TypeOfAttribute(32, "acceptedChalIns", TypeAttribute.REF.getValue());
         TypeOfAttribute refAttrAutorComment = new TypeOfAttribute(33, "autorComment", TypeAttribute.REF.getValue());
 
-        //serviceAttr.save(attrName);
-        //serviceAttr.save(attrSurname);
-        //serviceAttr.save(attrDate);
-        //serviceAttr.save(attrDescription);
-        //serviceAttr.save(attrImageRef);
-        //serviceAttr.save(attrChalStatus);
-        //serviceAttr.save(attrChalDefStatus);
-        //serviceAttr.save(attrMessage);
-
-        //serviceAttr.save(refAttrFriends);
-        //serviceAttr.save(refAttrAcceptedChalIns);
-        //serviceAttr.save(refAttrAutorComment);
+        serviceAttr.save(attrName);
+        serviceAttr.save(attrSurname);
+        serviceAttr.save(attrDate);
+        serviceAttr.save(attrDescription);
+        serviceAttr.save(attrImageRef);
+        serviceAttr.save(attrChalStatus);
+        serviceAttr.save(attrChalDefStatus);
+        serviceAttr.save(attrMessage);
+        serviceAttr.save(attrIsMain);
+        
+        serviceAttr.save(refAttrFriends);
+        serviceAttr.save(refAttrAcceptedChalIns);
+        serviceAttr.save(refAttrAutorComment);
 
         TypeOfEntity entityUser = new TypeOfEntity("User", TypeEntity.USER.getValue());
         entityUser.add(attrName);
@@ -153,14 +82,14 @@ public class InitialLoader {
         entityUser.add(refAttrFriends);
         entityUser.add(refAttrAcceptedChalIns);
         entityUser.add(refAttrAutorComment);
-        //serviceEntity.save(entityUser);
+        serviceEntity.save(entityUser);
 
         TypeOfEntity entityChallenge = new TypeOfEntity("ChallengeDefinition", TypeEntity.CHALLENGE_DEFINITION.getValue());
         entityChallenge.add(attrName);
         entityChallenge.add(attrDate);
         entityChallenge.add(attrDescription);
         entityChallenge.add(attrChalDefStatus);
-        //serviceEntity.save(entityChallenge);
+        serviceEntity.save(entityChallenge);
 
         TypeOfEntity entityChallengeInstance = new TypeOfEntity("ChallengeInstance", TypeEntity.CHALLENGE_INSTANCE.getValue());
         entityChallengeInstance.add(attrName);
@@ -168,18 +97,19 @@ public class InitialLoader {
         entityChallengeInstance.add(attrDate);
         entityChallengeInstance.add(attrDescription);
         entityChallengeInstance.add(refAttrAcceptedChalIns);
-        //serviceEntity.save(entityChallengeInstance);
+        serviceEntity.save(entityChallengeInstance);
 
         TypeOfEntity entityComment = new TypeOfEntity("Comment", TypeEntity.COMMENT.getValue());
         entityComment.add(attrDate);
         entityComment.add(attrMessage);
 
         entityUser.add(refAttrAutorComment);
-        //serviceEntity.save(entityComment);
+        serviceEntity.save(entityComment);
 
         TypeOfEntity entityImage = new TypeOfEntity("Image", TypeEntity.IMAGE.getValue());
         entityImage.add(attrImageRef);
-        //serviceEntity.save(entityImage);
+        entityImage.add(attrIsMain);
+        serviceEntity.save(entityImage);
 
         ContextType contextType = ContextType.getInstance();
         contextType.add(attrName);
@@ -190,6 +120,7 @@ public class InitialLoader {
         contextType.add(attrChalStatus);
         contextType.add(attrChalDefStatus);
         contextType.add(attrMessage);
+        contextType.add(attrIsMain);
 
         contextType.add(refAttrFriends);
         contextType.add(refAttrAcceptedChalIns);
@@ -201,7 +132,7 @@ public class InitialLoader {
         contextType.add(entityComment);
         contextType.add(entityImage);
     }
-    
+
     public static String[] generateRandomWords(int numberOfWords) {
         String[] randomStrings = new String[numberOfWords];
         Random random = new Random();
@@ -228,13 +159,16 @@ public class InitialLoader {
             userToCreate.setName(generateRandomWords(1)[0] + "-user");
             serviceEntityInit.save(userToCreate);
             Image picForUser = new Image();
+            picForUser.setIsMain(Boolean.TRUE);
             serviceEntityInit.save(picForUser);
+            
             try {
                 ImageStoreService.saveImage(new File(images.get(new Random().nextInt(images.size()))), picForUser);
                 serviceEntityInit.update(picForUser);
             } catch (Exception ex) {
-                LOG.error("Error during database init", ex);
+                Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
             }
+                
             userToCreate.addImage(picForUser);
             serviceEntityInit.update(userToCreate);
             for (int k = 0; k < 2; k++) {
@@ -251,13 +185,14 @@ public class InitialLoader {
                 chalToCreate.setCreator(userToCreate);
                 serviceEntityInit.save(chalToCreate);
                 Image pic = new Image();
+                pic.setIsMain(Boolean.TRUE);
                 serviceEntityInit.save(pic);
                 try {
                     ImageStoreService.saveImage(new File(images.get(new Random().nextInt(images.size()))), pic);
                     serviceEntityInit.update(pic);
 
                 } catch (Exception ex) {
-                    LOG.error("Error during database init", ex);
+                    Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 chalToCreate.addImage(pic);
                 serviceEntityInit.update(chalToCreate);
@@ -278,13 +213,14 @@ public class InitialLoader {
                     chalInstance.setDate(new Date());
                     serviceEntityInit.save(chalInstance);
                     Image picForInstance = new Image();
+                    picForInstance.setIsMain(Boolean.TRUE);
                     serviceEntityInit.save(picForInstance);
                     try {
                         ImageStoreService.saveImage(new File(images.get(new Random().nextInt(images.size()))), picForInstance);
                         serviceEntityInit.update(picForInstance);
 
                     } catch (Exception ex) {
-                        LOG.error("Error during database init", ex);
+                        Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     chalInstance.addImage(picForInstance);
                     serviceEntityInit.update(chalInstance);
@@ -305,6 +241,7 @@ public class InitialLoader {
         chalDef1.setName("Make something");
         chalDef1.setDescription("Hi, I'm first. Selected me!");
         Image image = new Image();
+        image.setIsMain(Boolean.TRUE);
         serviceEntityInit.save(image);
         chalDef1.setStatus(ChallengeDefinitionStatus.CREATED);
         chalDef1.setDate(new Date());
@@ -315,18 +252,19 @@ public class InitialLoader {
             ImageStoreService.saveImage(new File("src/main/resources/static/images/firstExampleChallenge.jpg"), image);
             serviceEntityInit.update(image);
         } catch (Exception ex) {
-            LOG.error("Error during database init", ex);
+            Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         User user1 = new User();
         user1.setName("Evgeniy 1");
         Image profilePic = new Image();
+        profilePic.setIsMain(Boolean.TRUE);
         serviceEntityInit.save(profilePic);
         try {
             ImageStoreService.saveImage(new File("src/main/resources/static/images/AvaDefault.jpg"), profilePic);
             serviceEntityInit.update(profilePic);
         } catch (Exception ex) {
-            LOG.error("Error during database init", ex);
+            Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
         serviceEntityInit.save(user1);
         user1.addImage(profilePic);
@@ -336,6 +274,7 @@ public class InitialLoader {
         chalDef2.setName("Hi, make your's task 4 Ivan.");
         chalDef2.setDescription("After (may be)");
         Image image2 = new Image();
+        image2.setIsMain(Boolean.TRUE);
         serviceEntityInit.save(image2);
         chalDef2.setDate(new Date());
         chalDef2.setStatus(ChallengeDefinitionStatus.CREATED);
@@ -346,7 +285,7 @@ public class InitialLoader {
             ImageStoreService.saveImage(new File("src/main/resources/static/images/secondExampleTask.png"), image2);
             serviceEntityInit.update(image2);
         } catch (Exception ex) {
-            LOG.error("Error during database init", ex);
+            Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         user1.addChallenge(chalDef1);
@@ -359,12 +298,13 @@ public class InitialLoader {
         chalInstance1.setAcceptor(user1);
         chalInstance1.setDescription("After (may be)");
         Image imageForChalInstance1 = new Image();
+        imageForChalInstance1.setIsMain(Boolean.TRUE);
         serviceEntityInit.save(imageForChalInstance1);
         try {
             ImageStoreService.saveImage(new File("src/main/resources/static/images/secondExampleTask.png"), imageForChalInstance1);
             serviceEntityInit.update(imageForChalInstance1);
         } catch (Exception ex) {
-            LOG.error("Error during database init", ex);
+            Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
         chalInstance1.setDate(new Date());
         serviceEntityInit.save(chalInstance1);
@@ -377,12 +317,13 @@ public class InitialLoader {
         chalInstance2.setAcceptor(user1);
         chalInstance2.setDescription("After (may be)");
         Image imageForChalInstance2 = new Image();
+        imageForChalInstance2.setIsMain(Boolean.TRUE);
         serviceEntityInit.save(imageForChalInstance2);
         try {
             ImageStoreService.saveImage(new File("src/main/resources/static/images/secondExampleTask.png"), imageForChalInstance2);
             serviceEntityInit.update(imageForChalInstance2);
         } catch (Exception ex) {
-            LOG.error("Error during database init", ex);
+            Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
         chalInstance2.setDate(new Date());
         serviceEntityInit.save(chalInstance2);
@@ -392,12 +333,13 @@ public class InitialLoader {
         User user2 = new User();
         user2.setName("Jonnie Fast-Foot");
         Image profilePic2 = new Image();
+        profilePic2.setIsMain(Boolean.TRUE);
         serviceEntityInit.save(profilePic2);
         try {
             ImageStoreService.saveImage(new File("src/main/resources/static/images/AvaDefault.jpg"), profilePic2);
             serviceEntityInit.update(profilePic2);
         } catch (Exception ex) {
-            LOG.error("Error during database init", ex);
+            Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
         serviceEntityInit.save(user2);
         user2.addImage(profilePic2);
@@ -406,12 +348,13 @@ public class InitialLoader {
         User user3 = new User();
         user3.setName("Annet Fast-Food");
         Image profilePic3 = new Image();
+        profilePic3.setIsMain(Boolean.TRUE);
         serviceEntityInit.save(profilePic3);
         try {
             ImageStoreService.saveImage(new File("src/main/resources/static/images/AvaDefault.jpg"), profilePic3);
             serviceEntityInit.update(profilePic3);
         } catch (Exception ex) {
-            LOG.error("Error during database init", ex);
+            Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
         serviceEntityInit.save(user3);
         user3.addImage(profilePic3);

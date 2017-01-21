@@ -6,7 +6,8 @@ public enum TypeAttribute {
     STRING(1),
     INT(2),
     DATE(3),
-    REF(4);
+    REF(4),
+    BOOLEAN(5);
 
     private final int value;
 

@@ -126,29 +126,28 @@ public class User extends BaseEntity implements Commentable {
         info.append(entityInfo);
         return info.toString();
     }
-
-    public List<String> getImages() {
-        List<String> images = new ArrayList<>();
-        Set<DBSource> set = (Set<DBSource>) getDataSource().getChildren();
-        set.forEach((childDB) -> {
-            if (childDB.getEntityType() == TypeEntity.IMAGE.getValue()) {
-                try {
-                    String s = Base64.encodeBase64String(ImageStoreService.restoreImage(new Image(childDB)));
-                    images.add("data:image/jpg;base64," + s);
-                } catch (Exception ex) {
-                    Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
+    
+    public List<Image> getImageEntities() {
+        List<Image> images = new ArrayList<>();
+        Set<DBSource> children = (Set<DBSource>) getDataSource().getChildren();
+        children.forEach((childDB) -> {
+                if (childDB.getEntityType() == TypeEntity.IMAGE.getValue()) {
+                    images.add(new Image(childDB));
                 }
-            }
         });
         return images;
     }
 
-    public String getMainImage() {
-        List<String> allImages = getImages();
-        if (allImages.size() > 0) {
-            return allImages.get(0);
+    public Image getMainImageEntity() {
+        Set<DBSource> children = (Set<DBSource>) getDataSource().getChildren();
+        for (DBSource childDB : children) {
+            if (childDB.getEntityType() == TypeEntity.IMAGE.getValue()) {
+                Image currentImage = new Image(childDB);
+                if (currentImage.isMain())
+                    return currentImage;
+            }
         }
-        return new String();
+        return new Image();
     }
 
     public void addImage(Image image) {
