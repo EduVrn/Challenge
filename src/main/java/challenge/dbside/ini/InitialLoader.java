@@ -13,6 +13,7 @@ import java.util.Random;
 
 import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.ChallengeInstance;
+import challenge.dbside.models.Comment;
 import challenge.dbside.models.Image;
 import challenge.dbside.models.User;
 import challenge.dbside.models.ini.TypeAttribute;
@@ -23,6 +24,8 @@ import challenge.dbside.models.status.ChallengeDefinitionStatus;
 import challenge.dbside.models.status.ChallengeStatus;
 import challenge.dbside.services.ini.MediaService;
 import challenge.webside.imagesstorage.ImageStoreService;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 
 @Component
@@ -42,7 +45,8 @@ public class InitialLoader {
 
     public void initial() {
         createContext();
-        init();
+        // usersCount, user's chaldefsCount,instancesCount, CommentsCount, Comment'sEmbedenceCount
+        init(5, 2,2, 4, 3);
     }
 
     private void createContext() {
@@ -70,7 +74,7 @@ public class InitialLoader {
         serviceAttr.save(attrChalDefStatus);
         serviceAttr.save(attrMessage);
         serviceAttr.save(attrIsMain);
-        
+
         serviceAttr.save(refAttrFriends);
         serviceAttr.save(refAttrAcceptedChalIns);
         serviceAttr.save(refAttrAutorComment);
@@ -133,7 +137,7 @@ public class InitialLoader {
         contextType.add(entityImage);
     }
 
-    public static String[] generateRandomWords(int numberOfWords) {
+    private static String[] generateRandomWords(int numberOfWords) {
         String[] randomStrings = new String[numberOfWords];
         Random random = new Random();
         for (int i = 0; i < numberOfWords; i++) {
@@ -146,7 +150,29 @@ public class InitialLoader {
         return randomStrings;
     }
 
-    public void init() {
+    private Comment createNewEmbeddedComments(int countOfEmbedence, User userToCreate) {
+        Comment comment = createNewComment(userToCreate);
+        if (countOfEmbedence > 0) {
+            comment.addComment(createNewEmbeddedComments(countOfEmbedence - 1, userToCreate));
+        }
+        return comment;
+    }
+
+    private Comment createNewComment(User userToCreate) {
+        StringBuilder text = new StringBuilder();
+        Comment comment = new Comment();
+        for (String word : generateRandomWords(new Random().nextInt(20) + 2)) {
+            text.append(word).append(" ");
+        }
+        text.append(".");
+        comment.setMessage(text.toString());
+        comment.setDate(new Date());
+        comment.setAuthor(userToCreate);
+        serviceEntityInit.save(comment);
+        return comment;
+    }
+
+    public void init(int countOfUsers, int countOfChalDefs,int countOfInstanses, int countOfComments, int countOfEmbedence) {
         List<String> images = new ArrayList<>();
         images.add("src/main/resources/static/images/firstExampleChallenge.jpg");
         images.add("src/main/resources/static/images/secondExampleTask.png");
@@ -154,36 +180,39 @@ public class InitialLoader {
         images.add("src/main/resources/static/images/speed.jpg");
         images.add("src/main/resources/static/images/break.png");
         images.add("src/main/resources/static/images/AvaDefault.jpg");
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < countOfUsers; i++) {
             User userToCreate = new User();
             userToCreate.setName(generateRandomWords(1)[0] + "-user");
             serviceEntityInit.save(userToCreate);
             Image picForUser = new Image();
             picForUser.setIsMain(Boolean.TRUE);
             serviceEntityInit.save(picForUser);
-            
             try {
                 ImageStoreService.saveImage(new File(images.get(new Random().nextInt(images.size()))), picForUser);
                 serviceEntityInit.update(picForUser);
             } catch (Exception ex) {
                 Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
             }
-                
             userToCreate.addImage(picForUser);
             serviceEntityInit.update(userToCreate);
-            for (int k = 0; k < 2; k++) {
+            for (int k = 0; k < countOfChalDefs; k++) {
                 ChallengeDefinition chalToCreate = new ChallengeDefinition();
                 chalToCreate.setName(generateRandomWords(1)[0] + "-challenge");
                 chalToCreate.setStatus(ChallengeDefinitionStatus.CREATED);
-                StringBuilder descript = new StringBuilder();
+                StringBuilder text = new StringBuilder();
                 for (String word : generateRandomWords(new Random().nextInt(20) + 2)) {
-                    descript.append(word).append(" ");
+                    text.append(word).append(" ");
                 }
-                descript.append(".");
-                chalToCreate.setDescription(descript.toString());
+                text.append(".");
+                chalToCreate.setDescription(text.toString());
                 chalToCreate.setDate(new Date());
                 chalToCreate.setCreator(userToCreate);
                 serviceEntityInit.save(chalToCreate);
+                for (int m = 0; m < countOfComments; m++) {
+                    Comment comment = createNewEmbeddedComments(countOfEmbedence, userToCreate);
+                    chalToCreate.addComment(comment);
+                }
+                serviceEntityInit.update(chalToCreate);
                 Image pic = new Image();
                 pic.setIsMain(Boolean.TRUE);
                 serviceEntityInit.save(pic);
@@ -197,14 +226,12 @@ public class InitialLoader {
                 chalToCreate.addImage(pic);
                 serviceEntityInit.update(chalToCreate);
                 userToCreate.addChallenge(chalToCreate);
-
                 for (Object user : serviceEntityInit.getAll(User.class)) {
                     User userToSave = (User) user;
                     userToCreate.addFriend(userToSave);
                 };
                 serviceEntityInit.update(userToCreate);
-
-                for (int m = 0; m < 2; m++) {
+                for (int m = 0; m < countOfInstanses; m++) {
                     ChallengeInstance chalInstance = new ChallengeInstance();
                     chalInstance.setName(generateRandomWords(1)[0] + "-instance");
                     chalInstance.setStatus(ChallengeStatus.AWAITING);

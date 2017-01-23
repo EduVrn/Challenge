@@ -80,80 +80,6 @@ public class UsersDao {
 
     public void createUser(String userId, UserProfile profile) {
 
-        ChallengeDefinition chalDef1 = new ChallengeDefinition();
-        chalDef1.setName("Challenge Of SignUpedUser");
-        chalDef1.setDescription("Description");
-        Image image1 = new Image();
-        image1.setIsMain(Boolean.TRUE);
-        serviceEntity.save(image1);
-        chalDef1.setDate(new Date());
-        chalDef1.setStatus(ChallengeDefinitionStatus.CREATED);
-        serviceEntity.save(chalDef1);
-        chalDef1.addImage(image1);
-        serviceEntity.update(chalDef1);
-        try {
-            ImageStoreService.saveImage(new File("src/main/resources/static/images/race.jpg"), image1);
-            serviceEntity.update(image1);
-        } catch (Exception ex) {
-            Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        ChallengeDefinition chalDef2 = new ChallengeDefinition();
-        chalDef2.setName("Challenge Of SignUpedUser");
-        chalDef2.setDescription("Description");
-        Image image2 = new Image();
-        image2.setIsMain(Boolean.TRUE);
-        serviceEntity.save(image2);
-        chalDef2.setDate(new Date());
-        chalDef2.setStatus(ChallengeDefinitionStatus.CREATED);
-        serviceEntity.save(chalDef2);
-        chalDef2.addImage(image2);
-        serviceEntity.update(chalDef2);
-        try {
-            ImageStoreService.saveImage(new File("src/main/resources/static/images/race.jpg"), image2);
-            serviceEntity.update(image2);
-        } catch (Exception ex) {
-            Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        ChallengeDefinition chalDef3 = new ChallengeDefinition();
-        chalDef3.setName("Challenge Of SignUpedUser");
-        chalDef3.setDescription("Description");
-        Image image3 = new Image();
-        image3.setIsMain(Boolean.TRUE);
-        serviceEntity.save(image3);
-        chalDef3.setDate(new Date());
-        chalDef3.setStatus(ChallengeDefinitionStatus.CREATED);
-        serviceEntity.save(chalDef3);
-        chalDef3.addImage(image3);
-        serviceEntity.update(chalDef3);
-        try {
-            ImageStoreService.saveImage(new File("src/main/resources/static/images/race.jpg"), image3);
-            serviceEntity.update(image3);
-        } catch (Exception ex) {
-            Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        ChallengeDefinition chalDef4 = new ChallengeDefinition();
-        chalDef4.setName("Challenge Of SignUpedUser");
-        chalDef4.setDescription("Description");
-        Image image4 = new Image();
-        image4.setIsMain(Boolean.TRUE);
-        serviceEntity.save(image4);
-        chalDef4.setDate(new Date());
-        chalDef4.setStatus(ChallengeDefinitionStatus.CREATED);
-        serviceEntity.save(chalDef4);
-        chalDef4.addImage(image4);
-        serviceEntity.update(chalDef4);
-        try {
-            ImageStoreService.saveImage(new File("src/main/resources/static/images/race.jpg"), image4);
-            serviceEntity.update(image4);
-        } catch (Exception ex) {
-            Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        List<User> friendsCandidate = serviceEntity.getAll(User.class);
-
         User user = new User();
         user.setName(profile.getName());
         Image profilePic = new Image();
@@ -167,70 +93,9 @@ public class UsersDao {
         }
         serviceEntity.save(user);
         user.addImage(profilePic);
+   
         serviceEntity.update(user);
-
-        user.setFriends(friendsCandidate);
-        user.addChallenge(chalDef1);
-        user.addChallenge(chalDef2);
-        user.addChallenge(chalDef3);
-        user.addChallenge(chalDef4);
-
-        serviceEntity.update(user);
-
-        //
-        ChallengeInstance chalInstance1 = new ChallengeInstance();
-        chalInstance1.setName("Instance of SignUpedUser #1");
-
-        chalInstance1.setChallengeRoot(chalDef1);
-        chalInstance1.setStatus(ChallengeStatus.AWAITING);
-        chalInstance1.setAcceptor(user);
-        chalInstance1.setDescription("Description");
-        Image imageForChalInstance1 = new Image();
-        imageForChalInstance1.setIsMain(Boolean.TRUE);
-        serviceEntity.save(imageForChalInstance1);
-        try {
-            ImageStoreService.saveImage(new File("src/main/resources/static/images/race.jpg"), imageForChalInstance1);
-            serviceEntity.update(imageForChalInstance1);
-        } catch (Exception ex) {
-            Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        chalInstance1.setDate(new Date());
-        serviceEntity.save(chalInstance1);
-        chalInstance1.addImage(imageForChalInstance1);
-        serviceEntity.update(chalInstance1);
-
-        ChallengeInstance chalInstance2 = new ChallengeInstance();
-        chalInstance2.setName("Instance of SignUpedUser #");
-        chalInstance2.setDescription("Description");
-        Image imageForChalInstance2 = new Image();
-        imageForChalInstance2.setIsMain(Boolean.TRUE);
-        serviceEntity.save(imageForChalInstance2);
-        try {
-            ImageStoreService.saveImage(new File("src/main/resources/static/images/race.jpg"), imageForChalInstance2);
-            serviceEntity.update(imageForChalInstance2);
-        } catch (Exception ex) {
-            Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        chalInstance2.setDate(new Date());
-        chalInstance2.setAcceptor(user);
-        chalInstance2.setChallengeRoot(chalDef1);
-        chalInstance2.setStatus(ChallengeStatus.AWAITING);
-        serviceEntity.save(chalInstance2);
-        chalInstance2.addImage(imageForChalInstance2);
-        serviceEntity.update(chalInstance2);
-
-        user.addAcceptedChallenge(chalInstance1);
-        user.addAcceptedChallenge(chalInstance2);
-        serviceEntity.update(user);
-
-        user.setFriends(friendsCandidate);
-
-        serviceEntity.update(user);
-        for (User addedUser : friendsCandidate) {
-            addedUser.addFriend(user);
-            serviceEntity.update(addedUser);
-        }
-
+       
         profile.setUser(user);
         jdbcTemplate.update("INSERT into users(username,password,enabled) values(?,?,true)", userId, RandomStringUtils.randomAlphanumeric(8));
         jdbcTemplate.update("INSERT into authorities(username,authority) values(?,?)", userId, "USER");
