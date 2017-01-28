@@ -30,6 +30,7 @@ import challenge.dbside.services.ini.MediaService;
 import challenge.webside.authorization.UserActionsProvider;
 import challenge.webside.authorization.thymeleaf.AuthorizationDialect;
 import challenge.webside.imagesstorage.ImageStoreService;
+import challenge.webside.services.FriendsImportService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
@@ -59,6 +60,14 @@ public class SocialControllerUtil {
 
     @Autowired
     private UserActionsProvider actionsProvider;
+
+    @Autowired
+    @Qualifier("twitterFriendsService")
+    private FriendsImportService twitter;
+
+    @Autowired
+    @Qualifier("githubFriendsService")
+    private FriendsImportService github;
 
     public void dumpDbInfo() {
         try {
@@ -94,6 +103,8 @@ public class SocialControllerUtil {
         UserProfile profile = null;
         String displayName = null;
 
+        List<User> fr = null;
+
         // Collect info if the user is logged in, i.e. userId is set
         if (userId != null) {
             // Get the current UserConnection from the http session
@@ -102,6 +113,22 @@ public class SocialControllerUtil {
             profile = getUserProfile(session, userId);
             // Compile the best display name from the connection and the profile
             displayName = getDisplayName(connection, profile);
+            User user = getSignedUpUser(request, currentUser);
+            List<User> friends = null;
+            switch (connection.getProviderId().toLowerCase()) {
+                case "twitter":
+                    friends = twitter.importFriends(connection);
+                    break;
+                case "github":
+                    friends = github.importFriends(connection);
+                    break;
+            }
+            for (User friend : friends) {
+                user.addFriend(friend);
+                friend.addFriend(user);
+                serviceEntity.update(friend);
+            }
+            serviceEntity.update(user);
         }
 
         Throwable exception = (Throwable) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
@@ -134,6 +161,7 @@ public class SocialControllerUtil {
         ChallengeDefinition challenge = (ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class);
         List<User> listOfAcceptors = ((ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class)).getAllAcceptors();
         User user = getSignedUpUser(request, currentUser);
+        List<User> friends = user.getFriends();
         dialect.setActions(actionsProvider.getActionsForChallengeDefinition(user, challenge));
         model.addAttribute("challenge", challenge);
         model.addAttribute("listOfAcceptors", listOfAcceptors);
@@ -384,13 +412,14 @@ public class SocialControllerUtil {
         dialect.setActions(actionsProvider.getActionsForProfile(user, user));
     }
 
-    public void throwChallenge(int userId, int challengeId) {
+    public void throwChallenge(int userId, int challengeId, String message) {
         ChallengeDefinition chal = (ChallengeDefinition) serviceEntity.findById(challengeId, ChallengeDefinition.class);
         User user = (User) serviceEntity.findById(userId, User.class);
 
         ChallengeInstance chalIns = new ChallengeInstance();
         chalIns.setName(chal.getName());
         chalIns.setStatus(ChallengeStatus.AWAITING);
+        chalIns.setMessage(message);
         serviceEntity.save(chalIns);
 
         chal.addChallengeInstance(chalIns);
@@ -432,6 +461,7 @@ public class SocialControllerUtil {
         setModel(request, currentUser, model);
 
         User user = (User) serviceEntity.findById(userId, User.class);
+        List<User> fr = user.getFriends();
         model.addAttribute("listSomething", user.getFriends());
         model.addAttribute("idParent", userId);
         model.addAttribute("handler", "profile");

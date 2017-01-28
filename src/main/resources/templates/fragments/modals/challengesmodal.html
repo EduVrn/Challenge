@@ -35,7 +35,11 @@ and open the template in the editor.
                                         <input type="hidden" name="user-id" th:value="${userProfile.getId()}" />
                                         <input type="hidden" th:value="${challenge.getId()}" name="id"/>
                                         <input type="checkbox" name="check"/>
-                                        <label  th:text="${challenge.getName()}"></label>
+                                        <label  th:text="${challenge.getName()}" />
+                                        <div style="display: none;">
+                                            <label th:text="#{challengeInfoLabel}"/><br />
+                                            <input type="text" name="challenge-info" th:placeholder="#{challengeInfoPlaceholder}" width="100%"/><br />
+                                        </div>
                                     </li>
                                 </ul>
                             </div>

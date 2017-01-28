@@ -54,8 +54,12 @@ $(document).on('change', ':checkbox', function () {
 
     if (this.checked) {
         $(this).prev().attr('name', 'id-checked');
+        $(this).next().next().show();
+        $(this).next().next().children('input').attr('name', 'challenge-info');
     } else {
         $(this).prev().attr('name', 'id');
+        $(this).next().next().hide();
+        $(this).next().next().children('input').attr('name', 'challenge');
     }
 });
 

@@ -24,8 +24,6 @@ import challenge.dbside.models.status.ChallengeDefinitionStatus;
 import challenge.dbside.models.status.ChallengeStatus;
 import challenge.dbside.services.ini.MediaService;
 import challenge.webside.imagesstorage.ImageStoreService;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.logging.Level;
 
 @Component
@@ -46,7 +44,7 @@ public class InitialLoader {
     public void initial() {
         createContext();
         // usersCount, user's chaldefsCount,instancesCount, CommentsCount, Comment'sEmbedenceCount
-        init(5, 2,2, 4, 3);
+        init(1, 2,2, 4, 3);
     }
 
     private void createContext() {
@@ -100,6 +98,7 @@ public class InitialLoader {
         entityChallengeInstance.add(attrChalStatus);
         entityChallengeInstance.add(attrDate);
         entityChallengeInstance.add(attrDescription);
+        entityChallengeInstance.add(attrMessage);
         entityChallengeInstance.add(refAttrAcceptedChalIns);
         serviceEntity.save(entityChallengeInstance);
 
@@ -226,10 +225,10 @@ public class InitialLoader {
                 chalToCreate.addImage(pic);
                 serviceEntityInit.update(chalToCreate);
                 userToCreate.addChallenge(chalToCreate);
-                for (Object user : serviceEntityInit.getAll(User.class)) {
-                    User userToSave = (User) user;
-                    userToCreate.addFriend(userToSave);
-                };
+//                for (Object user : serviceEntityInit.getAll(User.class)) {
+//                    User userToSave = (User) user;
+//                    userToCreate.addFriend(userToSave);
+//                }
                 serviceEntityInit.update(userToCreate);
                 for (int m = 0; m < countOfInstanses; m++) {
                     ChallengeInstance chalInstance = new ChallengeInstance();
