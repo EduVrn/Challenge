@@ -6,10 +6,6 @@ import challenge.dbside.models.common.IdAttrGet;
 import challenge.dbside.models.dbentity.DBSource;
 import challenge.dbside.models.ini.TypeEntity;
 import challenge.dbside.models.status.ChallengeStatus;
-import challenge.webside.imagesstorage.ImageStoreService;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.commons.codec.binary.Base64;
 
 public class User extends BaseEntity implements Commentable {
 

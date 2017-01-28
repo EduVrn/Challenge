@@ -50,7 +50,8 @@
                                     <div id="chal-notification">
                                         <div th:each="challenge : ${challengeRequests}" class="chal-notification-wrap">
                                             <div>
-                                                <span class="chal-meta" th:text="${challenge.getName()}"></span>
+                                                <span class="chal-meta" th:text="${challenge.getMessage()}" style="color: black;"></span>
+                                                <span class="chal-meta" th:text="${challenge.getName()}"></span>                                                
                                                 <form name="submitForm" th:id="'accept_form'+${challenge.Id}"  method="GET" action="/accept" style="display: inline-block;">
                                                     <input type="hidden" name="id" th:value="${challenge.getId()}"/>
                                                     <input type="submit" class="btn btn-success" th:value="#{acceptChalButton}"/>

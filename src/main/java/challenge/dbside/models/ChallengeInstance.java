@@ -4,7 +4,6 @@ import challenge.dbside.models.common.IdAttrGet;
 import challenge.dbside.models.dbentity.DBSource;
 import challenge.dbside.models.ini.TypeEntity;
 import challenge.dbside.models.status.ChallengeStatus;
-import challenge.webside.imagesstorage.ImageStoreService;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,9 +12,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.commons.codec.binary.Base64;
 
 public class ChallengeInstance extends BaseEntity implements Commentable {
 
@@ -119,5 +115,13 @@ public class ChallengeInstance extends BaseEntity implements Commentable {
 
     public void addImage(Image image) {
         getDataSource().addChild(image.getDataSource());
+    }
+    
+    public String getMessage() {
+        return getDataSource().getAttributes().get(IdAttrGet.IdMessage()).getValue();
+    }
+    
+    public void setMessage(String message) {
+        getDataSource().getAttributes().get(IdAttrGet.IdMessage()).setValue(message);
     }
 }

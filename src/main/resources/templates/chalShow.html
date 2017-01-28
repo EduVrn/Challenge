@@ -30,7 +30,7 @@
                 <div class="row">
                     <div class="chal-photo col-md-6">
                         <img class="img-responsive img-rounded" th:src="${challenge.getMainImageEntity().getBase64()}"/>
-                    </div> 
+                    </div>                    
                     <div class="box-content">
                         <h3 th:text="${#dates.format(challenge.getDate(), 'dd/MM/yyyy HH:mm')}"></h3>
                         <h3  th:text="${challenge.getDescription()}"></h3>

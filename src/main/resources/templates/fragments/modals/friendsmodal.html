@@ -35,8 +35,10 @@ and open the template in the editor.
                                     </li>
                                 </ul>
                             </div>
+                            <label th:text="#{challengeInfoLabel}"/><br />
+                            <input type="text" name="challenge-info" th:placeholder="#{challengeInfoPlaceholder}" width="100%"/><br />
                             <input type="submit" class="btn btn-success" th:value="#{profileThrowChalButton}" disabled="disabled"/>
-                        </form>
+                        </form>                        
                     </div>
                     <div class="modal-footer">
                         <input type="button" class="btn btn-default" data-dismiss="modal" 

@@ -59,7 +59,7 @@ public class MainController {
 
     @Autowired
     private UserActionsProvider actionsProvider;
-
+    
     @RequestMapping("/")
     public String home(HttpServletRequest request, Principal currentUser, Model model) {
         util.setModelForMain(request, currentUser, model);
@@ -213,17 +213,21 @@ public class MainController {
     }
 
     @RequestMapping(value = "/friendsForChallenge", method = GET)
-    public String friendForChallenge(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id-checked") List<Integer> selectedFriendsIds, @RequestParam("chal-id") int chalId) {
+    public String friendForChallenge(HttpServletRequest request, Principal currentUser, Model model,
+            @RequestParam("id-checked") List<Integer> selectedFriendsIds, @RequestParam("chal-id") int chalId,
+            @RequestParam("challenge-info") String chalInfo) {
         for (Integer id : selectedFriendsIds) {
-            util.throwChallenge(id, chalId);
+            util.throwChallenge(id, chalId, chalInfo);
         }
         return getPreviousPageByRequest(request).orElse("/");
     }
 
     @RequestMapping(value = "/challengesForFriend", method = GET)
-    public String challengeForFriend(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id-checked") List<Integer> selectedChallengesIds, @RequestParam("user-id") int friendId) {
-        for (Integer id : selectedChallengesIds) {
-            util.throwChallenge(friendId, id);
+    public String challengeForFriend(HttpServletRequest request, Principal currentUser, Model model, 
+            @RequestParam("id-checked") List<Integer> selectedChallengesIds, @RequestParam("user-id") int friendId,
+            @RequestParam("challenge-info") List<String> messages) {
+        for (int i = 0; i < selectedChallengesIds.size(); i++) {
+            util.throwChallenge(friendId, selectedChallengesIds.get(i), messages.get(i));
         }
         return getPreviousPageByRequest(request).orElse("/");
     }

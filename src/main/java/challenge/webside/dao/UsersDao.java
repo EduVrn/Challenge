@@ -1,12 +1,8 @@
 package challenge.webside.dao;
 
 import challenge.dbside.ini.InitialLoader;
-import challenge.dbside.models.ChallengeDefinition;
-import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.Image;
 import challenge.dbside.models.User;
-import challenge.dbside.models.status.ChallengeDefinitionStatus;
-import challenge.dbside.models.status.ChallengeStatus;
 import challenge.webside.model.UserConnection;
 import challenge.webside.model.UserProfile;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -23,8 +19,6 @@ import challenge.dbside.services.ini.MediaService;
 import challenge.webside.imagesstorage.ImageStoreService;
 import java.io.File;
 
-import java.util.Date;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,7 +30,7 @@ public class UsersDao {
     private MediaService serviceEntity;
 
     private JdbcTemplate jdbcTemplate;
-
+    
     @Autowired
     public UsersDao(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -93,9 +87,9 @@ public class UsersDao {
         }
         serviceEntity.save(user);
         user.addImage(profilePic);
-   
+
         serviceEntity.update(user);
-       
+
         profile.setUser(user);
         jdbcTemplate.update("INSERT into users(username,password,enabled) values(?,?,true)", userId, RandomStringUtils.randomAlphanumeric(8));
         jdbcTemplate.update("INSERT into authorities(username,authority) values(?,?)", userId, "USER");
