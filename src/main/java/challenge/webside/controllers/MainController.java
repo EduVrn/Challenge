@@ -12,6 +12,7 @@ import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.request.WebRequest;
 import challenge.webside.controllers.util.SocialControllerUtil;
+import challenge.webside.dao.UsersDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,6 +53,9 @@ public class MainController {
 
     @Autowired
     private SocialControllerUtil util;
+
+    @Autowired
+    private UsersDao usersDao;
 
     @Autowired
     @Qualifier("storageServiceUser")
@@ -134,6 +138,11 @@ public class MainController {
     @RequestMapping(value = "/profile", method = GET, produces = "text/plain;charset=UTF-8")
     public String showProfile(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int userId) {
         util.setProfileShow(userId, request, currentUser, model);
+        return "profile";
+    }
+     @RequestMapping(value = "/myprofile", method = GET, produces = "text/plain;charset=UTF-8")
+    public String showSelfProfile(HttpServletRequest request, Principal currentUser, Model model) {
+        util.setProfileShow((usersDao.getUserProfile(currentUser.getName())).getUserEntityId(), request, currentUser, model);
         return "profile";
     }
 
@@ -234,15 +243,14 @@ public class MainController {
     AjaxResponseBody searchFriendsAjax(@RequestBody SearchCriteria search) {
 
         AjaxResponseBody result = new AjaxResponseBody();
-
         if (search != null) {
             List<User> users = util.filterUsers(search.getFilter(), search.getUserId());
 
             if (users.size() > 0) {
                 Map<Integer, String> usersNames = new HashMap<>();
-                for (User user : users) {
+                users.forEach((user) -> {
                     usersNames.put(user.getId(), user.getName());
-                }
+                });
                 result.setCode("200");
                 result.setMsg("");
                 result.setResult(usersNames);

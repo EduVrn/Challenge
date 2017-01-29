@@ -23,6 +23,29 @@
             <div class="row">
                 <!-- left side -->
                 <div class="avatar">
+                    <script th:unless="${#httpServletRequest.getParameter('social_addConnection_duplicate') == null}">
+                        // после полной загрузки страницы
+                        $(window).load(function () {
+                            // вызываем метод setInterval, который будет вызывать модальное окно каждые 5 минут, если оно не открыто
+                            // Если окно не открыто (т.е. не имеет класс in)
+                            if (!$("#myModal").hasClass("in")) {
+                                // то открыть модальное окно 
+                                $("#myModal").modal('show');
+                            }
+                        });
+                    </script>
+
+                    <div   id="myModal" class="modal fade">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header"><button class="close" type="button" data-dismiss="modal">×</button>
+                                    <h4 class="modal-title"  th:text="#{duplicateSNHeader}">Заголовок окна</h4>
+                                </div>
+                                <div class="modal-body" th:text="#{duplicateSNMessage}" >Данный клиент уже подключен к соц сети</div>
+                                <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal" th:text="#{duplicateSNClock}" >Закрыть</button></div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="avatar-image">
                         <img th:src="${userProfile.getMainImageEntity().getBase64()}" class="text-center img-rounded img-responsive" />
                     </div>
@@ -44,6 +67,7 @@
                         <button  name="lang" type="submit" th:value="ru" class="lang-button">Ru</button>
                     </form>
                     <!--<input id="throw_challenge" class="btn btn-default text-center" type="submit" th:value="#{profileThrowChallengeButton}" />-->
+                    <div th:replace="fragments/util/bind::bindSocialNetwork" th:remove="tag"/>                 
                 </div>
                 <!-- right side -->
                 <div class="col-md-8 col-sm-6 col-xs-12">
