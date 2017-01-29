@@ -43,7 +43,7 @@ public class GithubFriendsImportService implements FriendsImportService {
             GitHubUserProfile userProfile = github.userOperations().getUserProfile();
             List<GitHubUser> githubFriends = github.userOperations().getFollowing(userProfile.getUsername());
             friends = new ArrayList<>();
-            githubFriends.forEach((profile) -> {
+            for (GitHubUser profile: githubFriends) {
                 User user = new User();
                 user.setName(profile.getLogin());
                 Image profilePic = new Image();
@@ -60,9 +60,7 @@ public class GithubFriendsImportService implements FriendsImportService {
 
                 serviceEntity.update(user);
                 friends.add(user);
-            });
-        } else {
-            friends = new ArrayList<>();
+            }
         }
         return friends;
     }

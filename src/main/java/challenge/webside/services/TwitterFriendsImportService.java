@@ -46,11 +46,12 @@ public class TwitterFriendsImportService implements FriendsImportService {
                     : new TwitterTemplate(
                             environment.getProperty("twitter.consumerKey"),
                             environment.getProperty("twitter.consumerSecret"));
-            CursoredList<TwitterProfile> twitterFriends = twitter.friendOperations().getFriends(); 
+            CursoredList<TwitterProfile> twitterFriends = twitter.friendOperations().getFriends();
             friends = new ArrayList<>();
-            twitterFriends.forEach((profile) -> {
+            for (TwitterProfile profile : twitterFriends) {
                 User user = new User();
                 user.setName(profile.getName());
+                serviceEntity.save(user);
                 Image profilePic = new Image();
                 profilePic.setIsMain(Boolean.TRUE);
                 serviceEntity.save(profilePic);
@@ -60,13 +61,10 @@ public class TwitterFriendsImportService implements FriendsImportService {
                 } catch (Exception ex) {
                     Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                serviceEntity.save(user);
                 user.addImage(profilePic);
                 serviceEntity.update(user);
                 friends.add(user);
-            });
-        } else {
-            friends = new ArrayList<>();
+            }
         }
         return friends;
     }

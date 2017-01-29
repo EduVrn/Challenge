@@ -1,14 +1,11 @@
 package challenge.webside.imagesstorage;
 
 import challenge.dbside.models.Image;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import javax.imageio.ImageIO;
 import javax.jcr.Binary;
 import javax.jcr.SimpleCredentials;
 import javax.jcr.Repository;
@@ -71,7 +68,6 @@ public class ImageStoreService {
 
         content.setProperty("jcr:mimeType", "image/jpg");
         session.save();
-        session.logout();
     }
 
     public static byte[] restoreImage(Image image) throws Exception {

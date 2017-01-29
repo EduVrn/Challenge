@@ -68,6 +68,14 @@ public class SocialControllerUtil {
     @Autowired
     @Qualifier("githubFriendsService")
     private FriendsImportService github;
+    
+    @Autowired
+    @Qualifier("facebookFriendsService")
+    private FriendsImportService facebook;
+    
+    @Autowired
+    @Qualifier("vkFriendsService")
+    private FriendsImportService vk;
 
     public void dumpDbInfo() {
         try {
@@ -103,8 +111,6 @@ public class SocialControllerUtil {
         UserProfile profile = null;
         String displayName = null;
 
-        List<User> fr = null;
-
         // Collect info if the user is logged in, i.e. userId is set
         if (userId != null) {
             // Get the current UserConnection from the http session
@@ -122,13 +128,19 @@ public class SocialControllerUtil {
                 case "github":
                     friends = github.importFriends(connection);
                     break;
+                case "facebook":
+                    friends = facebook.importFriends(connection);
+                    break;
+                case "vkontakte":
+                    friends = vk.importFriends(connection);
+                    break;
             }
-            for (User friend : friends) {
-                user.addFriend(friend);
-                friend.addFriend(user);
-                serviceEntity.update(friend);
+            if (friends != null) {
+                for (User friend : friends) {
+                    user.addFriend(friend);
+                }
+                serviceEntity.update(user);
             }
-            serviceEntity.update(user);
         }
 
         Throwable exception = (Throwable) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
@@ -161,7 +173,6 @@ public class SocialControllerUtil {
         ChallengeDefinition challenge = (ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class);
         List<User> listOfAcceptors = ((ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class)).getAllAcceptors();
         User user = getSignedUpUser(request, currentUser);
-        List<User> friends = user.getFriends();
         dialect.setActions(actionsProvider.getActionsForChallengeDefinition(user, challenge));
         model.addAttribute("challenge", challenge);
         model.addAttribute("listOfAcceptors", listOfAcceptors);

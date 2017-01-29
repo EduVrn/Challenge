@@ -31,32 +31,36 @@ public class FacebookFriendsImportService implements FriendsImportService {
     @Qualifier("storageServiceUser")
     private MediaService serviceEntity;
 
+    private List<User> friends;
+
     @Override
     public List<User> importFriends(UserConnection connection) {
-        Connection<Facebook> conn = connectionRepository.findPrimaryConnection(Facebook.class);
-        Facebook facebook = conn != null
-                ? conn.getApi()
-                : new FacebookTemplate(connection.getAccessToken());
-        PagedList<Reference> facebookFriends = facebook.friendOperations().getFriends();
-        List<User> friends = new ArrayList<>();
-        facebookFriends.forEach((profile) -> {
-            User user = new User();
-            user.setName(profile.getName());
-            Image profilePic = new Image();
-            profilePic.setIsMain(Boolean.TRUE);
-            serviceEntity.save(profilePic);
-            try {
-                ImageStoreService.saveImage(new File("src/main/resources/static/images/AvaDefault.jpg"), profilePic);
-                serviceEntity.update(profilePic);
-            } catch (Exception ex) {
-                Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            serviceEntity.save(user);
-            user.addImage(profilePic);
+        if (friends == null) {
+            Connection<Facebook> conn = connectionRepository.findPrimaryConnection(Facebook.class);
+            Facebook facebook = conn != null
+                    ? conn.getApi()
+                    : new FacebookTemplate(connection.getAccessToken());
+            PagedList<Reference> facebookFriends = facebook.friendOperations().getFriends();
+            friends = new ArrayList<>();
+            for (Reference profile : facebookFriends) {
+                User user = new User();
+                user.setName(profile.getName());
+                Image profilePic = new Image();
+                profilePic.setIsMain(Boolean.TRUE);
+                serviceEntity.save(profilePic);
+                try {
+                    ImageStoreService.saveImage(new File("src/main/resources/static/images/AvaDefault.jpg"), profilePic);
+                    serviceEntity.update(profilePic);
+                } catch (Exception ex) {
+                    Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                serviceEntity.save(user);
+                user.addImage(profilePic);
 
-            serviceEntity.update(user);
-            friends.add(user);
-        });
+                serviceEntity.update(user);
+                friends.add(user);
+            }
+        }
         return friends;
     }
 }
