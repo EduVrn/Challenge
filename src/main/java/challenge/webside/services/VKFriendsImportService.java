@@ -30,29 +30,33 @@ public class VKFriendsImportService implements FriendsImportService {
     @Qualifier("storageServiceUser")
     private MediaService serviceEntity;
 
+    private List<User> friends;
+
     @Override
     public List<User> importFriends(UserConnection connection) {
-        Connection<VKontakte> conn = connectionRepository.findPrimaryConnection(VKontakte.class);
-        VKontakte vk = conn != null ? conn.getApi() : new VKontakteTemplate(connection.getAccessToken(), connection.getUserId());
-        List<VKontakteProfile> vkFriends = vk.friendsOperations().get();
-        List<User> friends = new ArrayList<>();
-        vkFriends.forEach((profile) -> {
-            User user = new User();
-            user.setName(profile.getScreenName());
-            Image profilePic = new Image();
-            profilePic.setIsMain(Boolean.TRUE);
-            serviceEntity.save(profilePic);
-            try {
-                ImageStoreService.saveImage(new File("src/main/resources/static/images/AvaDefault.jpg"), profilePic);
-                serviceEntity.update(profilePic);
-            } catch (Exception ex) {
-                Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
+        if (friends == null) {
+            Connection<VKontakte> conn = connectionRepository.findPrimaryConnection(VKontakte.class);
+            VKontakte vk = conn != null ? conn.getApi() : new VKontakteTemplate(connection.getAccessToken(), connection.getUserId());
+            List<VKontakteProfile> vkFriends = vk.friendsOperations().get();
+            friends = new ArrayList<>();
+            for (VKontakteProfile profile : vkFriends) {
+                User user = new User();
+                user.setName(profile.getScreenName());
+                Image profilePic = new Image();
+                profilePic.setIsMain(Boolean.TRUE);
+                serviceEntity.save(profilePic);
+                try {
+                    ImageStoreService.saveImage(new File("src/main/resources/static/images/AvaDefault.jpg"), profilePic);
+                    serviceEntity.update(profilePic);
+                } catch (Exception ex) {
+                    Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                serviceEntity.save(user);
+                user.addImage(profilePic);
+                serviceEntity.update(user);
+                friends.add(user);
             }
-            serviceEntity.save(user);
-            user.addImage(profilePic);
-            serviceEntity.update(user);
-            friends.add(user);
-        });
+        }
         return friends;
     }
 }
