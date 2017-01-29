@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<!-- add status="rm" to remove attribute or entity in next version -->
+
+<dbstructure info="db version 1">
+	<attributes>
+		<attribute id="1" name="name" type="STRING" />
+		<attribute id="2" name="surname" type="STRING" />
+		<attribute id="3" name="date" type="STRING" />
+		<attribute id="4" name="description" type="STRING" />
+		<attribute id="5" name="imageref" type="STRING" />
+		<attribute id="6" name="chalStatus" type="STRING" />
+		<attribute id="7" name="chalDefStatus" type="STRING" />
+		<attribute id="8" name="message" type="STRING" />
+		<attribute id="9" name="isMain" type="BOOLEAN" />
+		<!-- ref -->
+		<attribute id="10" name="friends" type="REF" />
+		<attribute id="11" name="acceptedChalIns" type="REF" />
+		<attribute id="12" name="autorComment" type="REF" />
+	</attributes>
+	<entities>
+		<entity name="User" type="USER">
+			<attribute ref="name" />
+			<attribute ref="surname" />
+			<!-- ref -->
+			<attribute ref="friends" />
+			<attribute ref="acceptedChalIns" />
+			<attribute ref="autorComment" />
+		</entity>
+		<entity name="ChallengeDefinition" type="CHALLENGE_DEFINITION">
+			<attribute ref="name" />
+			<attribute ref="date" />
+			<attribute ref="description" />
+			<attribute ref="chalDefStatus" />
+		</entity>
+		<entity name="ChallengeInstance" type="CHALLENGE_INSTANCE">
+			<attribute ref="name" />
+			<attribute ref="chalStatus" />
+			<attribute ref="date" />
+			<attribute ref="description" />
+			<!-- ref -->
+			<attribute ref="acceptedChalIns" />
+		</entity>
+		<entity name="Comment" type="COMMENT">
+			<attribute ref="date" />
+			<attribute ref="message" />
+		</entity>
+		<entity name="Image" type="IMAGE">
+			<attribute ref="imageref" />
+			<attribute ref="isMain" />
+		</entity>
+	</entities>
+</dbstructure>

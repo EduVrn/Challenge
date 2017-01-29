@@ -103,9 +103,9 @@ public class SocialControllerUtil {
             // Compile the best display name from the connection and the profile
             displayName = getDisplayName(connection, profile);
         }
-
+        
         Throwable exception = (Throwable) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
-
+        
         model.addAttribute("exception", exception == null ? null : exception.getMessage());
         model.addAttribute("currentUserId", userId);
         model.addAttribute("currentUserProfile", profile);

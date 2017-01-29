@@ -1,6 +1,8 @@
 package challenge.dbside.models.ini;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -36,14 +38,24 @@ public class TypeOfEntity {
     public void add(TypeOfAttribute type) {
         listAttributes.add(type);
     }
+    
+    
+    public void removeAttr(String nameAttr) {
+    	for(Iterator<TypeOfAttribute> itr = listAttributes.listIterator();
+    			itr.hasNext();) {
+    		TypeOfAttribute t = itr.next();
+    		if(t.getName().equals(nameAttr)) {
+    			itr.remove();
+    			break;
+    		}    		
+    	}
+    }
 
     public List<TypeOfAttribute> getAttributes() {
         return listAttributes;
     }
 
-    public void setAttributes(List<TypeOfAttribute> attributes) {
-        this.listAttributes = attributes;
-    }
+
 
     public int getTypeEntityID() {
         return typeEntityID;

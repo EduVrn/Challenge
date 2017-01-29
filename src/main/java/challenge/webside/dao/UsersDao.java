@@ -79,7 +79,6 @@ public class UsersDao {
     }
 
     public void createUser(String userId, UserProfile profile) {
-
         User user = new User();
         user.setName(profile.getName());
         Image profilePic = new Image();
@@ -107,5 +106,14 @@ public class UsersDao {
                 profile.getName(),
                 profile.getUsername(),
                 profile.getUser().getId());
+        
+        List<User> list = serviceEntity.getAll(User.class);
+        for(User fr: list) {	
+        	user.addFriend(fr);	
+        	fr.addFriend(user);	
+        	serviceEntity.update(fr);     
+        }
+        
+        serviceEntity.update(user);
     }
 }
