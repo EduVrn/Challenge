@@ -26,17 +26,19 @@ public class MediaServiceTypeOfEntity implements MediaService<TypeOfEntity> {
     }
 
     @Override
+    @Transactional
     public void update(TypeOfEntity entity) {
         dao.update(entity);
     }
 
     @Override
+    @Transactional
     public void delete(TypeOfEntity entity) {
         dao.delete(entity);
     }
 
     @Override
-    public TypeOfEntity findById(Integer id, Class<TypeOfEntity> classType) {
+    public TypeOfEntity findById(Object id, Class<TypeOfEntity> classType) {
         return dao.findById(id, classType);
     }    
 }

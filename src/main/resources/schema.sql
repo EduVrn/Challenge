@@ -43,80 +43,10 @@ create table authorities (
     create unique index ix_auth_username on authorities (username,authority);
 
     
-    
-    
-    
--- Table: public."entities"
-DROP TABLE public.entities;
-    
-CREATE TABLE public.entities
-(
-  entity_id integer NOT NULL,
-  type_of_entity integer,
-  parent_id integer,
-  CONSTRAINT entities_pkey PRIMARY KEY (entity_id),
-  CONSTRAINT fk_2f7wt9plqgav1h2bu3vprtodb FOREIGN KEY (parent_id)
-      REFERENCES public.entities (entity_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE
-      
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE public.entities
-  OWNER TO postgres;
 
--- Table: public."values"
 
-DROP TABLE public."values";
-
-CREATE TABLE public."values"
-(
-  attribute_id integer NOT NULL,
-  entity_id integer NOT NULL,
-  date_value timestamp without time zone,
-  int_value integer,
-  text_value character varying(255),
-  boolean_value boolean,
-  CONSTRAINT values_pkey PRIMARY KEY (attribute_id, entity_id),
-  CONSTRAINT fk_re5hfjwgt2xf596qgl4tvpdj8 FOREIGN KEY (entity_id)
-      REFERENCES public.entities (entity_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE public."values"
-  OWNER TO postgres;
-
-    
-    
--- Table: public.relationship
--- remove it outside
-
--- DROP TABLE public.relationship;
-DROP TABLE public.relationship;
-    
-CREATE TABLE public.relationship
-(
-  entity_id integer NOT NULL,
-  entity_val integer NOT NULL,
-  attribute_id integer NOT NULL,
-  CONSTRAINT relationship_pkey PRIMARY KEY (entity_id, entity_val, attribute_id),
-  CONSTRAINT fk_1mujrn3bp408pujeeg4skmwaw FOREIGN KEY (entity_id)
-      REFERENCES public.entities (entity_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT fk_7ml7ux1mvkqa295fvh26epds1 FOREIGN KEY (entity_val)
-      REFERENCES public.entities (entity_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE public.relationship
-  OWNER TO postgres;
-  
-  
+ALTER TABLE relationship DROP CONSTRAINT relationship_pkey;
+ALTER TABLE relationship ADD PRIMARY KEY ( entity_id, entity_val, attribute_id);
 
 
 create sequence serial start 1;

@@ -1,16 +1,32 @@
 package challenge.dbside.ini;
 
 import java.util.logging.Logger;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import challenge.common.AccessProp;
+import challenge.dbside.dbconfig.ParserDBConfiguration;
 import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.Comment;
@@ -22,8 +38,11 @@ import challenge.dbside.models.ini.TypeOfAttribute;
 import challenge.dbside.models.ini.TypeOfEntity;
 import challenge.dbside.models.status.ChallengeDefinitionStatus;
 import challenge.dbside.models.status.ChallengeStatus;
+import challenge.dbside.property.PropertyDB;
 import challenge.dbside.services.ini.MediaService;
 import challenge.webside.imagesstorage.ImageStoreService;
+import liquibase.sdk.Context;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -42,99 +61,113 @@ public class InitialLoader {
     @Autowired
     @Qualifier("storageServiceUser")
     private MediaService serviceEntityInit;
+    
+    @Autowired
+    @Qualifier("storageServiceProperty")
+    private MediaService serviceProperty;
+    
 
     public void initial() {
-        createContext();
+    	boolean iniFlag = false;
+    	PropertyDB version = (PropertyDB) serviceProperty.findById("version", PropertyDB.class);
+    	
+    	if(version == null) {
+    		iniFlag = true;
+    		version = new PropertyDB("version", "0");
+    	}
+    	Integer nVersion = Integer.valueOf(version.getValue());
+    	
+    	try {    	
+    	    nVersion = createContext(nVersion);    	    
+    	    if(version.getValue().equals("0")) {
+    	    	version.setValue(nVersion.toString());
+    	    	serviceProperty.save(version);
+    	    }
+    	    else {
+    	    	serviceProperty.update(version);
+    	    }
+    	    
+    	}
+    	catch(Exception ex) {
+    		ex.printStackTrace();
+    	}
         // usersCount, user's chaldefsCount,instancesCount, CommentsCount, Comment'sEmbedenceCount
-        init(5, 2,2, 4, 3);
+        
+        //init(5, 2,2, 4, 3);
+        
+    	if(iniFlag == true) {
+    		init(1, 2,2, 4, 3);
+    	}
     }
 
-    private void createContext() {
-
-        TypeOfAttribute attrName = new TypeOfAttribute(1, "name", TypeAttribute.STRING.getValue());
-        TypeOfAttribute attrSurname = new TypeOfAttribute(2, "surname", TypeAttribute.STRING.getValue());
-        TypeOfAttribute attrDate = new TypeOfAttribute(3, "date", TypeAttribute.STRING.getValue());
-        TypeOfAttribute attrDescription = new TypeOfAttribute(4, "description", TypeAttribute.STRING.getValue());
-        TypeOfAttribute attrImageRef = new TypeOfAttribute(5, "imageref", TypeAttribute.STRING.getValue());
-        TypeOfAttribute attrChalStatus = new TypeOfAttribute(6, "chalStatus", TypeAttribute.STRING.getValue());
-        TypeOfAttribute attrChalDefStatus = new TypeOfAttribute(7, "chalDefStatus", TypeAttribute.STRING.getValue());
-        TypeOfAttribute attrMessage = new TypeOfAttribute(8, "message", TypeAttribute.STRING.getValue());
-        TypeOfAttribute attrIsMain = new TypeOfAttribute(9, "isMain", TypeAttribute.BOOLEAN.getValue());
-
-        TypeOfAttribute refAttrFriends = new TypeOfAttribute(31, "friends", TypeAttribute.REF.getValue());
-        TypeOfAttribute refAttrAcceptedChalIns = new TypeOfAttribute(32, "acceptedChalIns", TypeAttribute.REF.getValue());
-        TypeOfAttribute refAttrAutorComment = new TypeOfAttribute(33, "autorComment", TypeAttribute.REF.getValue());
-
-        serviceAttr.save(attrName);
-        serviceAttr.save(attrSurname);
-        serviceAttr.save(attrDate);
-        serviceAttr.save(attrDescription);
-        serviceAttr.save(attrImageRef);
-        serviceAttr.save(attrChalStatus);
-        serviceAttr.save(attrChalDefStatus);
-        serviceAttr.save(attrMessage);
-        serviceAttr.save(attrIsMain);
-
-        serviceAttr.save(refAttrFriends);
-        serviceAttr.save(refAttrAcceptedChalIns);
-        serviceAttr.save(refAttrAutorComment);
-
-        TypeOfEntity entityUser = new TypeOfEntity("User", TypeEntity.USER.getValue());
-        entityUser.add(attrName);
-        entityUser.add(attrSurname);
-
-        entityUser.add(refAttrFriends);
-        entityUser.add(refAttrAcceptedChalIns);
-        entityUser.add(refAttrAutorComment);
-        serviceEntity.save(entityUser);
-
-        TypeOfEntity entityChallenge = new TypeOfEntity("ChallengeDefinition", TypeEntity.CHALLENGE_DEFINITION.getValue());
-        entityChallenge.add(attrName);
-        entityChallenge.add(attrDate);
-        entityChallenge.add(attrDescription);
-        entityChallenge.add(attrChalDefStatus);
-        serviceEntity.save(entityChallenge);
-
-        TypeOfEntity entityChallengeInstance = new TypeOfEntity("ChallengeInstance", TypeEntity.CHALLENGE_INSTANCE.getValue());
-        entityChallengeInstance.add(attrName);
-        entityChallengeInstance.add(attrChalStatus);
-        entityChallengeInstance.add(attrDate);
-        entityChallengeInstance.add(attrDescription);
-        entityChallengeInstance.add(refAttrAcceptedChalIns);
-        serviceEntity.save(entityChallengeInstance);
-
-        TypeOfEntity entityComment = new TypeOfEntity("Comment", TypeEntity.COMMENT.getValue());
-        entityComment.add(attrDate);
-        entityComment.add(attrMessage);
-
-        entityUser.add(refAttrAutorComment);
-        serviceEntity.save(entityComment);
-
-        TypeOfEntity entityImage = new TypeOfEntity("Image", TypeEntity.IMAGE.getValue());
-        entityImage.add(attrImageRef);
-        entityImage.add(attrIsMain);
-        serviceEntity.save(entityImage);
-
-        ContextType contextType = ContextType.getInstance();
-        contextType.add(attrName);
-        contextType.add(attrSurname);
-        contextType.add(attrDate);
-        contextType.add(attrDescription);
-        contextType.add(attrImageRef);
-        contextType.add(attrChalStatus);
-        contextType.add(attrChalDefStatus);
-        contextType.add(attrMessage);
-        contextType.add(attrIsMain);
-
-        contextType.add(refAttrFriends);
-        contextType.add(refAttrAcceptedChalIns);
-        contextType.add(refAttrAutorComment);
-
-        contextType.add(entityUser);
-        contextType.add(entityChallenge);
-        contextType.add(entityChallengeInstance);
-        contextType.add(entityComment);
-        contextType.add(entityImage);
+    private Integer createContext(Integer versionDB) throws Exception {
+    	Integer versionApp = Integer.valueOf(AccessProp.getProperties().getCurrentVersionDB());
+    	
+    	ParserDBConfiguration p = new ParserDBConfiguration();
+    	if(versionDB > 0) {
+    		ContextType contextType = ContextType.getInstance(); 
+    		
+    		for(TypeOfAttribute t : (List<TypeOfAttribute>)serviceAttr.getAll(TypeOfAttribute.class)) {
+    			p.getAllAttribute().put(t.getName(), t);
+    			
+    			//p.getAddCandiateAttributes().put(t.getName(), t);
+    			//contextType.add(t);
+    		}
+    		
+    		for(TypeOfEntity t : (List<TypeOfEntity>)serviceEntity.getAll(TypeOfEntity.class)) {
+    			p.getAllEntities().put(t.getNameTypeEntity(), t);
+    			//p.getAddCandidateEntities().put(t.getNameTypeEntity(), t);
+    			//contextType.add(t);
+    		}    		
+    	}
+    	
+    	for(Integer i = versionDB + 1; i <= versionApp; i++ ) {
+    		String filePath = AccessProp.getProperties().getStructureDBPath() 
+    				+ "v" + i.toString() + ".xml";    
+    		
+    		InputStream input = new ClassPathResource(filePath).getInputStream();    		
+    		//p = new ParserDBConfiguration();    		
+    		p.applyConfiguration(input);    		
+    		
+    		
+    		for(TypeOfAttribute t : p.getAddCandiateAttributes()) {
+    			serviceAttr.save(t);
+    		}
+    		for(TypeOfAttribute t : p.getRmCandiateAttributes()) {
+    			serviceAttr.delete(t);
+    		}
+    		
+    		
+    		for(TypeOfEntity t : p.getAddCandidateEntities()) {
+    			serviceEntity.save(t);
+    		}
+    		for(TypeOfEntity t : p.getUpdateCandidateEntities()) {
+    			serviceEntity.update(t);
+    		}
+    		for(TypeOfEntity t : p.getRmCandidateEntities()) {
+    			serviceEntity.delete(t);
+    		}        	
+    		
+    	}  
+    	
+    	for(TypeOfAttribute t : (List<TypeOfAttribute>)serviceAttr.getAll(TypeOfAttribute.class)) {
+    		ContextType.getInstance().add(t);
+    	}
+    	
+    	for(TypeOfEntity t : (List<TypeOfEntity>)serviceEntity.getAll(TypeOfEntity.class)) {
+    		ContextType.getInstance().add(t);
+    	}
+    	
+    	/*for(TypeOfAttribute t : ContextType.getInstance().getAvailableAttributes()) {
+    		
+    		serviceAttr.save(t);
+    	}
+    	
+    	for(TypeOfEntity t : ContextType.getInstance().getAvailableEntities()) {
+    		serviceEntity.save(t);
+    	}*/
+    	
+    	return versionApp;
     }
 
     private static String[] generateRandomWords(int numberOfWords) {
@@ -228,7 +261,9 @@ public class InitialLoader {
                 userToCreate.addChallenge(chalToCreate);
                 for (Object user : serviceEntityInit.getAll(User.class)) {
                     User userToSave = (User) user;
-                    userToCreate.addFriend(userToSave);
+                    if(userToCreate != userToSave) {
+                    	userToCreate.addFriend(userToSave);
+                    }
                 };
                 serviceEntityInit.update(userToCreate);
                 for (int m = 0; m < countOfInstanses; m++) {
@@ -372,6 +407,7 @@ public class InitialLoader {
         user2.addImage(profilePic2);
         serviceEntityInit.update(user2);
 
+        
         User user3 = new User();
         user3.setName("Annet Fast-Food");
         Image profilePic3 = new Image();
@@ -385,6 +421,8 @@ public class InitialLoader {
         }
         serviceEntityInit.save(user3);
         user3.addImage(profilePic3);
-        serviceEntityInit.update(user3);
+        serviceEntityInit.update(user3);        
+        
+        
     }
 }
