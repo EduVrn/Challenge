@@ -37,8 +37,8 @@ and open the template in the editor.
                                         <input type="checkbox" name="check"/>
                                         <label  th:text="${challenge.getName()}" />
                                         <div style="display: none;">
-                                            <label th:text="#{challengeInfoLabel}"/><br />
-                                            <input type="text" name="challenge-info" th:placeholder="#{challengeInfoPlaceholder}" width="100%"/><br />
+                                            <label id="challenge-label" th:text="#{challengeInfoLabel}"/><br />
+                                            <input id="challenge-input" type="text" name="challenge-info" th:placeholder="#{challengeInfoPlaceholder}" style="width: 100%; box-sizing: border-box;"/><br />
                                         </div>
                                     </li>
                                 </ul>

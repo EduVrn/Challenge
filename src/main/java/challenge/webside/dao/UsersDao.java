@@ -1,8 +1,10 @@
 package challenge.webside.dao;
 
 import challenge.dbside.ini.InitialLoader;
+import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.Image;
 import challenge.dbside.models.User;
+import challenge.dbside.models.status.ChallengeStatus;
 import challenge.webside.model.UserConnection;
 import challenge.webside.model.UserProfile;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -18,6 +20,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import challenge.dbside.services.ini.MediaService;
 import challenge.webside.imagesstorage.ImageStoreService;
 import java.io.File;
+import java.util.Date;
+import java.util.Random;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +34,7 @@ public class UsersDao {
     private MediaService serviceEntity;
 
     private JdbcTemplate jdbcTemplate;
-    
+
     @Autowired
     public UsersDao(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -101,5 +105,36 @@ public class UsersDao {
                 profile.getName(),
                 profile.getUsername(),
                 profile.getUser().getId());
+        
+        User friend = new User();
+        friend.setName("Friend");
+        serviceEntity.save(friend);
+        user.addFriend(friend);
+        serviceEntity.update(user);
+        friend.addFriend(user);
+        serviceEntity.update(friend);
+        
+        ChallengeInstance chalInstance = new ChallengeInstance();
+        chalInstance.setName("challenge with message");
+        chalInstance.setStatus(ChallengeStatus.AWAITING);
+
+        chalInstance.setDescription("After (may be)");
+        chalInstance.setDate(new Date());
+        chalInstance.setMessage("Check this out");
+        serviceEntity.save(chalInstance);
+        Image picForInstance = new Image();
+        picForInstance.setIsMain(Boolean.TRUE);
+        serviceEntity.save(picForInstance);
+        try {
+            ImageStoreService.saveImage(new File("src/main/resources/static/images/firstExampleChallenge.jpg"), picForInstance);
+            serviceEntity.update(picForInstance);
+
+        } catch (Exception ex) {
+            Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        chalInstance.addImage(picForInstance);
+        serviceEntity.update(chalInstance);
+        chalInstance.setAcceptor(user);
+        serviceEntity.update(chalInstance);
     }
 }

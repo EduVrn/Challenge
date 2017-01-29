@@ -64,6 +64,10 @@ $(document).on('change', ':checkbox', function () {
 });
 
 $(document).ready(function ($) {
+    $('#modal-challenges').on('shown.bs.modal', function () {
+        labelChallengeMessage = $('#challenge-label').text();
+        placeholderChallengeMessage = $('#challenge-input').attr('placeholder');
+    });
     $("#filter-friends").on('input', function (event) {
         event.preventDefault();
         searchViaAjax(true);
@@ -73,6 +77,8 @@ $(document).ready(function ($) {
         searchViaAjax(false);
     });
 });
+
+var labelChallengeMessage, placeholderChallengeMessage;
 
 function searchViaAjax(friends) {
     var search = {};
@@ -143,15 +149,29 @@ function display(data, friends) {
             "text": value
         });
         if (!friends) {
+            var $div = $('<div />', {
+                "style": "display: none;"
+            });
+            var $inputMessage = $('<input />', {
+                "type": "text",
+                "name": "challenge-info",
+                "placeholder": placeholderChallengeMessage,
+                "style": "width: 100%; box-sizing: border-box;"
+            });
             $li.append($('<input />', {
                 "type": "hidden",
                 "name": "user-id",
                 "value": $("#friend-id").val()
             }));
+            $div.append('<label>' + labelChallengeMessage + '</label><br />');
+            $div.append($inputMessage);
         }
         $li.append($hidden);
         $li.append($checkbox);
         $li.append($label);
+        if (!friends) {
+            $li.append($div);
+        }
         $list.append($li);
     });
 }
@@ -168,12 +188,12 @@ $('.media-body small a').on('click', function () {
         children[children.length - 2].style.display = "none";
 });
 
-$(document).on('change', 'input[type="file"]', function() {
+$(document).on('change', 'input[type="file"]', function () {
     var $p = $('<p />');
     $p.html($('#input-file').val().split('\\').pop());
     $p.addClass('image-name');
     $p.css('display', 'inline-block');
-    $('p.image-name').remove();    
+    $('p.image-name').remove();
     $('#input-file').after($p);
     var file = document.querySelector('input[type="file"]').files[0];
     var reader = new FileReader();
