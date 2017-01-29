@@ -38,6 +38,7 @@
 			<attribute ref="chalStatus" />
 			<attribute ref="date" />
 			<attribute ref="description" />
+                        <attribute ref="message" />
 			<!-- ref -->
 			<attribute ref="acceptedChalIns" />
 		</entity>
