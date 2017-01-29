@@ -1,5 +1,9 @@
 package challenge.webside.config;
 
+import challenge.webside.config.interceptors.GithubAfterConnectInterceptor;
+import challenge.webside.config.interceptors.FacebookAfterConnectInterceptor;
+import challenge.webside.config.interceptors.TwitterAfterConnectInterceptor;
+import challenge.webside.config.interceptors.VkontakteAfterConnectInterceptor;
 import org.springframework.social.github.connect.GitHubConnectionFactory;
 import org.springframework.social.twitter.connect.TwitterConnectionFactory;
 import challenge.webside.dao.UsersDao;
@@ -18,6 +22,9 @@ import org.springframework.social.connect.jdbc.JdbcUsersConnectionRepository;
 import org.springframework.social.security.AuthenticationNameUserIdSource;
 
 import javax.sql.DataSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.social.connect.ConnectionRepository;
+import org.springframework.social.connect.web.ConnectController;
 import org.springframework.social.facebook.connect.FacebookConnectionFactory;
 import org.springframework.social.vkontakte.connect.VKontakteConnectionFactory;
 
@@ -25,6 +32,15 @@ import org.springframework.social.vkontakte.connect.VKontakteConnectionFactory;
 @EnableSocial
 public class SocialConfig implements SocialConfigurer {
 
+    @Autowired
+    TwitterAfterConnectInterceptor tweetInterceptor;
+    @Autowired
+    GithubAfterConnectInterceptor gitInterceptor;
+    @Autowired
+    FacebookAfterConnectInterceptor facebookInterceptor;
+    @Autowired
+    VkontakteAfterConnectInterceptor vkInterceptor;
+    
     @Autowired
     private DataSource dataSource;
 
@@ -45,7 +61,6 @@ public class SocialConfig implements SocialConfigurer {
         connectionFactoryConfigurer.addConnectionFactory(new VKontakteConnectionFactory(
                 environment.getProperty("vkontakte.appKey"),
                 environment.getProperty("vkontakte.appSecret")));
-
     }
 
     @Override
@@ -59,4 +74,12 @@ public class SocialConfig implements SocialConfigurer {
         repository.setConnectionSignUp(new AccountConnectionSignUpService(usersDao));
         return repository;
     }
+
+    @Bean
+    public ConnectController connectController(ConnectionFactoryLocator connectionFactoryLocator,
+            ConnectionRepository connectionRepository) {
+        ConnectController controller = new CustomConnectController(connectionFactoryLocator, connectionRepository, tweetInterceptor, gitInterceptor, facebookInterceptor,vkInterceptor);
+        return controller;
+    }
+
 }
