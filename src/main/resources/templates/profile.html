@@ -84,6 +84,7 @@
                         <div class="text-center col-md-12">
                             <h2 th:text="#{listOfUnacceptedChalsTitle}"></h2>
                             <div th:each="challenge : ${challengeRequests}" class="elementOfListInProfile">
+                                <span class="chal-meta" th:text="${challenge.getMessage()}" style="color: red; font-size: 18px;"/>
                                 <div th:replace="fragments/challengeViews/acceptedChallenge::acceptedChallenge(challenge=${challenge})" th:remove="tag"/>
                             </div>
                         </div>
