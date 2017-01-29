@@ -3,8 +3,8 @@ package challenge.dbside.ini;
 import challenge.dbside.models.ini.TypeOfAttribute;
 import challenge.dbside.models.ini.TypeOfEntity;
 
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
 
 public class ContextType {
     
@@ -41,4 +41,28 @@ public class ContextType {
     public void add(TypeOfEntity entity) {
         availableEntities.put(entity.getNameTypeEntity(), entity);
     }
+    
+    public void rmEntity(String name) {
+    	availableEntities.remove(name);
+    }
+    
+    public void rmAttribute(String name) {
+    	availableAttributes.remove(name);    	
+    	for(TypeOfEntity t : availableEntities.values()) {
+    		t.removeAttr(name);
+    	}    	
+    }
+
+    public void rmAttributeFromEntity(String nameEntity, String nameAttr) {
+    	availableEntities.get(nameEntity).removeAttr(nameAttr);    	
+    }
+    
+    
+	public Collection<TypeOfEntity> getAvailableEntities() {
+		return availableEntities.values();
+	}
+
+	public Collection<TypeOfAttribute> getAvailableAttributes() {
+		return availableAttributes.values();
+	}
 }

@@ -75,7 +75,7 @@ public class MediaDaoEntity<E extends BaseEntity> implements MediaDao<E> {
     }
 
     @Override
-    public E findById(Integer id, Class<E> classType) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+    public E findById(Object id, Class<E> classType) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
         TypedQuery<DBSource> query = em.createQuery("SELECT c FROM " + DBSource.class.getSimpleName()
                 + " c WHERE c.id = ?1 and type_of_entity = "
                 + ContextType.getInstance().getTypeEntity(classType.getSimpleName()).getTypeEntityID(), DBSource.class);

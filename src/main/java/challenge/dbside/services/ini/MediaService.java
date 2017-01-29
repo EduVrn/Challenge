@@ -12,6 +12,6 @@ public interface MediaService<E> {
     
     public void delete(E entity);
 
-    public E findById(Integer id, Class<E> classType);
+    public E findById(Object id, Class<E> classType);
     
 }

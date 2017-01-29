@@ -19,8 +19,13 @@ import challenge.dbside.services.ini.MediaService;
 import challenge.webside.imagesstorage.ImageStoreService;
 import java.io.File;
 
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.springframework.social.connect.Connection;
+import org.springframework.social.connect.ConnectionData;
+import org.springframework.web.context.request.WebRequest;
 
 @Repository
 public class UsersDao {
@@ -73,7 +78,6 @@ public class UsersDao {
     }
 
     public void createUser(String userId, UserProfile profile) {
-
         User user = new User();
         user.setName(profile.getName());
         serviceEntity.save(user);
@@ -100,5 +104,42 @@ public class UsersDao {
                 profile.getName(),
                 profile.getUsername(),
                 profile.getUser().getId());
+
+        List<User> list = serviceEntity.getAll(User.class);
+        for (User fr : list) {
+            user.addFriend(fr);
+            fr.addFriend(user);
+            serviceEntity.update(fr);
+        }
+
+        serviceEntity.update(user);
     }
+
+    public void bindUser(Connection<?> connection, WebRequest request) {
+        String userId = UUID.randomUUID().toString();
+        UserProfile profile = new UserProfile(userId, connection.fetchUserProfile());
+        UserProfile currentUser = getUserProfile(request.getUserPrincipal().getName());
+        ConnectionData data = connection.createData();
+        if (jdbcTemplate.queryForList("select * from userconnection where providerUserId = ?", data.getProviderUserId()).size() == 1) {
+            jdbcTemplate.update("update userconnection set userId = ?  where userId = ? AND providerUserId = ?",
+                    userId, currentUser.getUserId(), data.getProviderUserId());
+
+            jdbcTemplate.update("INSERT into users(username,password,enabled) values(?,?,true)", userId, RandomStringUtils.randomAlphanumeric(8));
+            jdbcTemplate.update("INSERT into authorities(username,authority) values(?,?)", userId, "USER");
+            jdbcTemplate.update("INSERT into userprofile(userId, email, firstName, lastName, name, username, userEntityId) values(?,?,?,?,?,?,?)",
+                    userId,
+                    profile.getEmail(),
+                    profile.getFirstName(),
+                    profile.getLastName(),
+                    profile.getName(),
+                    profile.getUsername(),
+                    currentUser.getUserEntityId());
+        } else {
+            if (jdbcTemplate.queryForList("select * from userconnection where providerUserId = ?", data.getProviderUserId()).size() == 2) {
+                jdbcTemplate.update("delete from userconnection where UserID = ? and providerUserId = ?",
+                        currentUser.getUserId(), data.getProviderUserId());
+            }
+        }
+    }
+
 }

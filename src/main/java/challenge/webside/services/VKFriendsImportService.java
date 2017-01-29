@@ -41,7 +41,7 @@ public class VKFriendsImportService implements FriendsImportService {
             friends = new ArrayList<>();
             for (VKontakteProfile profile : vkFriends) {
                 User user = new User();
-                user.setName(profile.getScreenName());
+                user.setName(profile.getFirstName() + " " + profile.getLastName());
                 Image profilePic = new Image();
                 profilePic.setIsMain(Boolean.TRUE);
                 serviceEntity.save(profilePic);
