@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+
+    <!--
+    To change this license header, choose License Headers in Project Properties.
+    To change this template file, choose Tools | Templates
+    and open the template in the editor.
+    -->
+
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8"/>
+    </head>
+    <body>
+        <th:block th:fragment="bindSocialNetwork">
+            <h2 class="bind-account" th:text="#{profileBindLabel}" > Bind to your account:</h2>
+            <form class="bind-account" action="/connect/twitter"  method="POST">
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> 
+                <a href="javascript:;" onclick="parentNode.submit();" class="ml btn btn-block btn-social btn-sm btn-twitter"><i class="fa fa-twitter"></i>Twitter</a>
+            </form>
+            <form class="bind-account" action="/connect/github"  method="POST">
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> 
+                <a href="javascript:;" onclick="parentNode.submit();" class="ml btn btn-block btn-social btn-sm btn-github"><i class="fa fa-github"></i>Github</a>   
+            </form>
+            <form class="bind-account" action="/connect/facebook"  method="POST">
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> 
+                <a  href="javascript:;" onclick="parentNode.submit();" class="ml btn btn-block btn-social btn-sm btn-facebook"><i class="fa fa-facebook"></i>Facebook</a>
+            </form>
+            <form class="col-md-6 col-sm-6 col-xs-6" action="/connect/vkontakte"  method="POST">
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> 
+                <a href="javascript:;" onclick="parentNode.submit();"  class="ml btn btn-block btn-social btn-sm btn-vk"><i class="fa fa-vk"></i>Vkontakte</a>
+            </form>
+        </th:block>
+    </body>
+</html>

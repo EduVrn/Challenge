@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<!-- add status="rm" to remove attribute or "alter" -->
+
+<dbstructure info="db version 2">
+	<attributes>
+
+		<attribute id="13" name="kkkk" type="REF" />
+	</attributes>
+
+	<entities>
+
+
+		<entity status="alter" name="User" type="USER">
+			<attribute ref="kkkk" />
+		</entity>
+
+	</entities>
+
+</dbstructure>

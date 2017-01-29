@@ -34,7 +34,7 @@ public class MediaDaoTypeOfAttribute implements MediaDao<TypeOfAttribute> {
     }
 
     @Override
-    public TypeOfAttribute findById(Integer id, Class<TypeOfAttribute> classType) {
+    public TypeOfAttribute findById(Object id, Class<TypeOfAttribute> classType) {
         return em.find(classType, id);
     }
 }

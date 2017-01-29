@@ -51,7 +51,7 @@ public class MediaServiceEntity<E extends BaseEntity> implements MediaService<E>
     }
 
     @Override
-    public E findById(Integer id, Class<E> classType) {
+    public E findById(Object id, Class<E> classType) {
     	E el = null;    	    	
     	try {
     		el = classType.cast(dao.findById(id, classType));

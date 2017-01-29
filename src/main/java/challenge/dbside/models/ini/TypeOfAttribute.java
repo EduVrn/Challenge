@@ -58,13 +58,13 @@ public class TypeOfAttribute {
         this.name = name;
     }
 
-    public List<TypeOfEntity> getTypeEntities() {
+    /*public List<TypeOfEntity> getTypeEntities() {
         return typeEntities;
     }
 
     public void setTypeEntities(List<TypeOfEntity> typeEntities) {
         this.typeEntities = typeEntities;
-    }
+    }*/
 
     public String toString() {
         return "\n    ID_TypeOfAttribute: " + id + "  Name: " + name + "  ";
