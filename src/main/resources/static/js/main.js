@@ -195,6 +195,9 @@ $(document).on('change', 'input[type="file"]', function () {
     $p.css('display', 'inline-block');
     $('p.image-name').remove();
     $('#input-file').after($p);
+    var $k = $('#image-name');
+    $k.val($('#input-file').val().split('\\').pop());
+
     var file = document.querySelector('input[type="file"]').files[0];
     var reader = new FileReader();
 

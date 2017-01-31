@@ -68,11 +68,11 @@ public class SocialControllerUtil {
     @Autowired
     @Qualifier("githubFriendsService")
     private FriendsImportService github;
-    
+
     @Autowired
     @Qualifier("facebookFriendsService")
     private FriendsImportService facebook;
-    
+
     @Autowired
     @Qualifier("vkFriendsService")
     private FriendsImportService vk;
@@ -101,8 +101,23 @@ public class SocialControllerUtil {
         }
     }
 
+    public void setModelForBadDateNewChal(ChallengeDefinition challenge, HttpServletRequest request, Principal currentUser, Model model, String image, String imageName) {
+        setModel(request, currentUser, model);
+        if (challenge.getId() != null) {
+         //   ChallengeDefinition challengeToSend = (ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class);
+            // challengeToSend.setDate(new Date());
+            model.addAttribute("challenge", challenge);
+            model.addAttribute("image64", image);
+            model.addAttribute("imageName", imageName);
+        } else {
+            // challenge.setDate(new Date());
+            model.addAttribute("challenge", challenge);
+            model.addAttribute("image64", image);
+            model.addAttribute("imageName", imageName);
+        }
+    }
+
     public void setModel(HttpServletRequest request, Principal currentUser, Model model) {
-        // SecurityContext ctx = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
         String userId = currentUser == null ? null : currentUser.getName();
         String path = request.getRequestURI();
         HttpSession session = request.getSession();
@@ -142,9 +157,9 @@ public class SocialControllerUtil {
                 serviceEntity.update(user);
             }
         }
-        
+
         Throwable exception = (Throwable) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
-        
+
         model.addAttribute("exception", exception == null ? null : exception.getMessage());
         model.addAttribute("currentUserId", userId);
         model.addAttribute("currentUserProfile", profile);
@@ -384,6 +399,7 @@ public class SocialControllerUtil {
         model.addAttribute("listOfAccepted", userWhichProfileRequested.getAcceptedChallenges());
         dialect.setActions(actionsProvider.getActionsForProfile(signedUpUser, userWhichProfileRequested));
         model.addAttribute("friends", signedUpUser.getFriends());
+        model.addAttribute("mapOfNetworks", usersDao.getListOfNetworks(userDBId));
     }
 
     public void setModelForAcceptOrDeclineChallenge(HttpServletRequest request, Principal currentUser, Model model, int chalId, boolean accept) {
