@@ -14,6 +14,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import javax.validation.constraints.Future;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class ChallengeDefinition extends BaseEntity implements Commentable {
 
@@ -37,6 +41,8 @@ public class ChallengeDefinition extends BaseEntity implements Commentable {
         return acceptors;
     }
 
+    @NotNull
+    @Size(min = 5, max = 40, message = "{error.name.length}")
     public String getName() {
         return getDataSource().getAttributes().get(IdAttrGet.IdName()).getValue();
     }
@@ -45,6 +51,8 @@ public class ChallengeDefinition extends BaseEntity implements Commentable {
         getDataSource().getAttributes().get(IdAttrGet.IdName()).setValue(name);
     }
 
+    @NotNull
+    @Size(min = 5, max = 250, message = "{error.description.length}")
     public String getDescription() {
         return getDataSource().getAttributes().get(IdAttrGet.IdDescr()).getValue();
     }
@@ -53,6 +61,8 @@ public class ChallengeDefinition extends BaseEntity implements Commentable {
         getDataSource().getAttributes().get(IdAttrGet.IdDescr()).setValue(description);
     }
 
+    @NotNull
+    @Future(message = "{error.date}")
     public Date getDate() {
         try {
             DateFormat df = new SimpleDateFormat("EEE MMM dd kk:mm:ss z yyyy", Locale.ENGLISH);
@@ -90,26 +100,27 @@ public class ChallengeDefinition extends BaseEntity implements Commentable {
     public void addChallengeInstance(ChallengeInstance chalIns) {
         getDataSource().getChildren().add(chalIns.getDataSource());
     }
-    
+
     public Image getMainImageEntity() {
         Set<DBSource> children = (Set<DBSource>) getDataSource().getChildren();
         for (DBSource childDB : children) {
             if (childDB.getEntityType() == TypeEntity.IMAGE.getValue()) {
                 Image currentImage = new Image(childDB);
-                if (currentImage.isMain())
+                if (currentImage.isMain()) {
                     return currentImage;
+                }
             }
         }
         return new Image();
     }
-    
+
     public List<Image> getImageEntities() {
         List<Image> images = new ArrayList<>();
         Set<DBSource> children = (Set<DBSource>) getDataSource().getChildren();
         children.forEach((childDB) -> {
-                if (childDB.getEntityType() == TypeEntity.IMAGE.getValue()) {
-                    images.add(new Image(childDB));
-                }
+            if (childDB.getEntityType() == TypeEntity.IMAGE.getValue()) {
+                images.add(new Image(childDB));
+            }
         });
         return images;
     }

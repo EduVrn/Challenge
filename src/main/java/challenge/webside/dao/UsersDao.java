@@ -17,9 +17,12 @@ import java.sql.SQLException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import challenge.dbside.services.ini.MediaService;
 import challenge.webside.imagesstorage.ImageStoreService;
+import com.google.common.base.Strings;
 import java.io.File;
+import java.util.HashMap;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,6 +60,22 @@ public class UsersDao {
         }, userId);
     }
 
+    public List<UserProfile> getUserProfiles(final int userDbId) {
+        return jdbcTemplate.query("select * from UserProfile where userEntityId = ?",
+                new RowMapper<UserProfile>() {
+            public UserProfile mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new UserProfile(
+                        rs.getString("userId"),
+                        rs.getString("name"),
+                        rs.getString("firstName"),
+                        rs.getString("lastName"),
+                        rs.getString("email"),
+                        rs.getString("username"),
+                        userDbId);
+            }
+        }, userDbId);
+    }
+
     public UserConnection getUserConnection(final String userId) {
         return jdbcTemplate.queryForObject("select * from UserConnection where userId = ?",
                 new RowMapper<UserConnection>() {
@@ -75,6 +94,15 @@ public class UsersDao {
                         rs.getLong("expireTime"));
             }
         }, userId);
+    }
+
+    public Map<String, String> getListOfNetworks(final int userDbId) {
+        List<UserProfile> profiles = getUserProfiles(userDbId);
+        Map<String, String> result = new HashMap<>();
+        for (UserProfile up : profiles) {
+            result.put(getUserConnection(up.getUserId()).getProviderId(), Strings.isNullOrEmpty(up.getName()) ? up.getUsername() : up.getName() );
+        }
+        return result;
     }
 
     public void createUser(String userId, UserProfile profile) {

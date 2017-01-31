@@ -1,7 +1,7 @@
--- Drop Table if exists Users cascade;
--- Drop Table if exists UserProfile cascade;
--- Drop Table if exists authorities cascade;
--- Drop Table if exists userconnection cascade;
+Drop Table if exists Users cascade;
+Drop Table if exists UserProfile cascade;
+Drop Table if exists authorities cascade;
+Drop Table if exists userconnection cascade;
 
 create table UserConnection (
   userId varchar(255) not null,
