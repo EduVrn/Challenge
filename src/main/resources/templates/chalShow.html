@@ -37,22 +37,23 @@
                     </div>
                 </div>
                 <h2 th:text="#{creatorLabelShow}" />
-                <div>
+                <div th:if="${challenge instanceof T(challenge.dbside.models.ChallengeDefinition)}">
                     <span class="chal-meta" th:text="${challenge.getCreator().getName()}"></span>
                 </div>
-                <h2 th:text="#{acceptorsLabelShow}" />
-                <div th:each="acceptor : ${listOfAcceptors}" >
-                    <div  class="challenge col-lg-1 col-md-1 col-sm-2 col-xs-2">
-                        <div class="chal-body">
-                            <div >
-                                <img th:src="${currentUserConnection.imageUrl}" class="img-rounded img-responsive" />
+                <th:block th:if="${challenge instanceof T(challenge.dbside.models.ChallengeDefinition)}">
+                    <h2 th:text="#{acceptorsLabelShow}" />
+                    <div th:each="acceptor : ${listOfAcceptors}" >
+                        <div  class="challenge col-lg-1 col-md-1 col-sm-2 col-xs-2">
+                            <div class="chal-body">
+                                <div >
+                                    <img th:src="${currentUserConnection.imageUrl}" class="img-rounded img-responsive" />
+                                </div>
+                                <span class="chal-meta" th:text="${acceptor.getName()}"></span>
                             </div>
-                            <span class="chal-meta" th:text="${acceptor.getName()}"></span>
                         </div>
-
                     </div>
-                </div>
-                <div class="row">
+                </th:block>
+                <div th:if="${challenge instanceof T(challenge.dbside.models.ChallengeDefinition)}" class="row">
                     <div class="col-md-12"  style="margin-bottom: 60px;">
                         <div class="page-header">
                             <h3 th:text="#{commentsCount} + ' (' + ${commentsCount} + ')'"></h3>

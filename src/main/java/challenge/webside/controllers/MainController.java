@@ -80,6 +80,11 @@ public class MainController {
         util.setModelForChallengeShow(id, request, currentUser, model);
         return "chalShow";
     }
+    @RequestMapping(value = "challengeins/information", method = GET, produces = "text/plain;charset=UTF-8")
+    public String showInstance(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int id) {
+        util.setModelForChallengeInstanceShow(id, request, currentUser, model);
+        return "chalShow";
+    }
 
     @RequestMapping(value = "challenge/update", method = GET, produces = "text/plain;charset=UTF-8")
     public String updateChal(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int id) {
