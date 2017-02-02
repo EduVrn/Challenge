@@ -284,8 +284,8 @@ public class MainController {
              Model model,
             @RequestParam("id-checked") List<Integer> selectedChallengesIds,
             @RequestParam("user-id") int friendId,
-            @RequestParam("challenge-info") List<String> messages
-    ) {
+            @RequestParam("challenge-info") List<String> messages) 
+    {
         for (int i = 0; i < selectedChallengesIds.size(); i++) {
             util.throwChallenge(friendId, selectedChallengesIds.get(i), messages.get(i));
         }
@@ -294,10 +294,7 @@ public class MainController {
 
     @RequestMapping(value = "/getFriends", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody
-    AjaxResponseBody searchFriendsAjax(@RequestBody SearchCriteria search
-    ) {
-
+    public @ResponseBody AjaxResponseBody searchFriendsAjax(@RequestBody SearchCriteria search) {
         AjaxResponseBody result = new AjaxResponseBody();
         if (search != null) {
             List<User> users = util.filterUsers(search.getFilter(), search.getUserId());

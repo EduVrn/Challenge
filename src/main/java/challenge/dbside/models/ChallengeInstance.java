@@ -46,13 +46,25 @@ public class ChallengeInstance extends BaseEntity implements Commentable {
 
     public User getAcceptor() {
         List list = (List<DBSource>) getDataSource().getBackRel().get(IdAttrGet.refAcChalIns());
-
         DBSource userDB = (DBSource) (list.get(0));
         return new User(userDB);
     }
 
     public void setAcceptor(User acceptor) {
         getDataSource().getBackRel().put(IdAttrGet.refAcChalIns(), acceptor.getDataSource());
+    }
+
+    public List<User> getSubscribers() {
+        List<DBSource> list = (List<DBSource>) getDataSource().getRel().get(IdAttrGet.refSubscriber());
+        List<User> subscribers = new ArrayList<>();
+        for (DBSource ds : list) {
+            subscribers.add(new User(ds));
+        }
+        return subscribers;
+    }
+
+    public void addSubscriber(User subscriber) {
+        getDataSource().getRel().put(IdAttrGet.refSubscriber(), subscriber.getDataSource());
     }
 
     public ChallengeStatus getStatus() {
@@ -89,6 +101,21 @@ public class ChallengeInstance extends BaseEntity implements Commentable {
         getDataSource().getAttributes().get(IdAttrGet.IdDate()).setValue(date.toString());
     }
 
+    public List<ChallengeStep> getSteps() {
+        List<ChallengeStep> steps = new ArrayList<>();
+        Set<DBSource> children = (Set<DBSource>) getDataSource().getChildren();
+        children.forEach((childDB) -> {
+            if (childDB.getEntityType() == TypeEntity.CHALLENGE_STEP.getValue()) {
+                steps.add(new ChallengeStep(childDB));
+            }
+        });
+        return steps;
+    }
+
+    public void addStep(ChallengeStep step) {
+        getDataSource().getChildren().add(step.getDataSource());
+    }
+
     public Image getMainImageEntity() {
         Set<DBSource> children = (Set<DBSource>) getDataSource().getChildren();
         for (DBSource childDB : children) {
@@ -116,11 +143,11 @@ public class ChallengeInstance extends BaseEntity implements Commentable {
     public void addImage(Image image) {
         getDataSource().addChild(image.getDataSource());
     }
-    
+
     public String getMessage() {
         return getDataSource().getAttributes().get(IdAttrGet.IdMessage()).getValue();
     }
-    
+
     public void setMessage(String message) {
         getDataSource().getAttributes().get(IdAttrGet.IdMessage()).setValue(message);
     }

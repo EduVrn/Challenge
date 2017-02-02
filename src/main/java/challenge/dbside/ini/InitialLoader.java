@@ -252,6 +252,7 @@ public class InitialLoader {
                     chalInstance.setDescription("After (may be)");
                     chalInstance.setDate(new Date());
                     serviceEntityInit.save(chalInstance);
+
                     Image picForInstance = new Image();
                     picForInstance.setIsMain(Boolean.TRUE);
                     serviceEntityInit.save(picForInstance);
@@ -268,7 +269,10 @@ public class InitialLoader {
                     serviceEntityInit.update(chalToCreate);
                     User user = (User) serviceEntityInit.getAll(User.class).get(new Random().nextInt(serviceEntityInit.getAll(User.class).size()));
                     chalInstance.setAcceptor(user);
+                    chalInstance.addSubscriber(userToCreate);
                     serviceEntityInit.update(chalInstance);
+                    userToCreate.addSubscription(chalInstance);
+                    serviceEntityInit.update(userToCreate);
 
                 }
             }

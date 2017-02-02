@@ -5,7 +5,8 @@ public enum TypeEntity {
 	CHALLENGE_DEFINITION(2),
 	CHALLENGE_INSTANCE(3),
 	COMMENT(4),
-        IMAGE(5);
+        IMAGE(5),
+        CHALLENGE_STEP(6);
 	
 	private final int value;
 	
