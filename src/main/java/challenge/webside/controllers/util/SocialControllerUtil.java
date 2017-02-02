@@ -210,8 +210,10 @@ public class SocialControllerUtil {
             }
             if (!image.isEmpty()) {
                 Image oldImage = chalToUpdate.getMainImageEntity();
-                oldImage.setIsMain(Boolean.FALSE);
-                serviceEntity.update(oldImage);
+                if (oldImage.getId() != null) {
+                    oldImage.setIsMain(Boolean.FALSE);
+                    serviceEntity.update(oldImage);
+                }
             }
         } else {
             challenge.setStatus(ChallengeDefinitionStatus.CREATED);

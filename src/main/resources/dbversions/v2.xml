@@ -10,6 +10,11 @@
         <entity status="alter" name="ChallengeInstance" type="CHALLENGE_INSTANCE">        
             <attribute ref="subscriber" />
         </entity>
-        
+        <entity name="ChallengeStep" type="CHALLENGE_STEP">
+            <attribute ref="name" />
+            <attribute ref="date" />
+            <attribute ref="message" />
+            <attribute ref="imageref" />
+        </entity>
     </entities>
 </dbstructure>

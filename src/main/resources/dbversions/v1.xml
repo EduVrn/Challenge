@@ -50,11 +50,5 @@
             <attribute ref="imageref" />
             <attribute ref="isMain" />
         </entity>
-        <entity name="ChallengeStep" type="CHALLENGE_STEP">
-            <attribute ref="name" />
-            <attribute ref="date" />
-            <attribute ref="message" />
-            <attribute ref="imageref" />
-        </entity>
     </entities>
 </dbstructure>
