@@ -184,7 +184,6 @@ public class SocialControllerUtil {
 
     public void setModelForChallengeShow(int id, HttpServletRequest request, Principal currentUser, Model model) {
         setModel(request, currentUser, model);
-
         ChallengeDefinition challenge = (ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class);
         List<User> listOfAcceptors = ((ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class)).getAllAcceptors();
         User user = getSignedUpUser(request, currentUser);
@@ -193,6 +192,15 @@ public class SocialControllerUtil {
         model.addAttribute("listOfAcceptors", listOfAcceptors);
         model.addAttribute("userProfile", user);
         setModelForComments(id, request, currentUser, model);
+    }
+    public void setModelForChallengeInstanceShow(int id, HttpServletRequest request, Principal currentUser, Model model) {
+        setModel(request, currentUser, model);
+        ChallengeInstance challenge = (ChallengeInstance) serviceEntity.findById(id, ChallengeInstance.class);
+        User user = getSignedUpUser(request, currentUser);
+        dialect.setActions(actionsProvider.getActionsForChallengeInstance(user, challenge));
+        model.addAttribute("challenge", challenge);
+        model.addAttribute("userProfile", user);
+      //  setModelForComments(id, request, currentUser, model);
     }
 
     public void setModelForNewOrUpdatedChalShow(ChallengeDefinition challenge, HttpServletRequest request, Principal currentUser, Model model, String image) {
@@ -447,6 +455,12 @@ public class SocialControllerUtil {
 
         ChallengeInstance chalIns = new ChallengeInstance();
         chalIns.setName(chal.getName());
+        chalIns.setDate(chal.getDate());
+        Image img=new Image();
+        img.setIsMain(true);
+        img.setImageRef(chal.getMainImageEntity().getImageRef());
+        serviceEntity.save(img);
+        chalIns.addImage(img);
         chalIns.setStatus(ChallengeStatus.AWAITING);
         chalIns.setMessage(message);
         serviceEntity.save(chalIns);

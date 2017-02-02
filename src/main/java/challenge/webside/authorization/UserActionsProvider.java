@@ -37,7 +37,7 @@ public class UserActionsProvider {
         return actions;
     }
 
-    public static Set<Action> getActionsForChallengeInstance(User user, ChallengeInstance challenge) {
+    public Set<Action> getActionsForChallengeInstance(User user, ChallengeInstance challenge) {
         Set<Action> actions = new HashSet<>();
         if (user.getId().equals(challenge.getAcceptor().getId())) {
             actions.add(Action.EDIT_CHALLENGE);
