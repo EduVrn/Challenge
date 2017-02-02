@@ -3,18 +3,13 @@
 <!-- add status="rm" to remove attribute or "alter" -->
 
 <dbstructure info="db version 2">
-	<attributes>
-
-		<attribute id="13" name="kkkk" type="REF" />
-	</attributes>
-
-	<entities>
-
-
-		<entity status="alter" name="User" type="USER">
-			<attribute ref="kkkk" />
-		</entity>
-
-	</entities>
-
+    <attributes>
+        <attribute id="13" name="subscriber" type="REF" />
+    </attributes>
+    <entities>
+        <entity status="alter" name="ChallengeInstance" type="CHALLENGE_INSTANCE">        
+            <attribute ref="subscriber" />
+        </entity>
+        
+    </entities>
 </dbstructure>

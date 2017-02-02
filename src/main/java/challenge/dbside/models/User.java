@@ -149,4 +149,17 @@ public class User extends BaseEntity implements Commentable {
     public void addImage(Image image) {
         getDataSource().addChild(image.getDataSource());
     }
+    
+     public List<ChallengeInstance> getSubscriptions() {
+        List<DBSource> list = (List<DBSource>) getDataSource().getBackRel().get(IdAttrGet.refSubscriber());
+        List<ChallengeInstance> subscriptions = new ArrayList<>();
+        for (DBSource ds : list) {
+            subscriptions.add(new ChallengeInstance(ds));
+        }
+        return subscriptions;
+    }
+
+    public void addSubscription(ChallengeInstance subscriptions) {
+        getDataSource().getBackRel().put(IdAttrGet.refSubscriber(), subscriptions.getDataSource());
+    }
 }

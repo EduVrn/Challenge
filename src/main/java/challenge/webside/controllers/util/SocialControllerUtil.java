@@ -104,7 +104,7 @@ public class SocialControllerUtil {
     public void setModelForBadDateNewChal(ChallengeDefinition challenge, HttpServletRequest request, Principal currentUser, Model model, String image, String imageName) {
         setModel(request, currentUser, model);
         if (challenge.getId() != null) {
-         //   ChallengeDefinition challengeToSend = (ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class);
+            //   ChallengeDefinition challengeToSend = (ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class);
             // challengeToSend.setDate(new Date());
             model.addAttribute("challenge", challenge);
             model.addAttribute("image64", image);
@@ -454,6 +454,9 @@ public class SocialControllerUtil {
 
         user.addAcceptedChallenge(chalIns);
         serviceEntity.update(user);
+        
+        chalIns.setAcceptor(user);
+        serviceEntity.update(chalIns);
     }
 
     public List<User> filterUsers(String filter, int userId) {
@@ -461,10 +464,10 @@ public class SocialControllerUtil {
 
         List<User> allFriends = user.getFriends();
         List<User> filteredFriends = new ArrayList<>();
-        for (int i = 0; i < allFriends.size(); i++) {
-            String name = ((User) allFriends.get(i)).getName();
+        for (User friend : allFriends) {
+            String name = friend.getName();
             if (name.toLowerCase().startsWith(filter.toLowerCase())) {
-                filteredFriends.add((User) allFriends.get(i));
+                filteredFriends.add(friend);
             }
         }
         return filteredFriends;
@@ -475,10 +478,10 @@ public class SocialControllerUtil {
 
         List<ChallengeDefinition> challenges = user.getChallenges();
         List<ChallengeDefinition> filteredChallenges = new ArrayList<>();
-        for (int i = 0; i < challenges.size(); i++) {
-            String name = ((ChallengeDefinition) challenges.get(i)).getName();
+        for (ChallengeDefinition challenge : challenges) {
+            String name = challenge.getName();
             if (name.toLowerCase().startsWith(filter.toLowerCase())) {
-                filteredChallenges.add((ChallengeDefinition) challenges.get(i));
+                filteredChallenges.add(challenge);
             }
         }
         return filteredChallenges;

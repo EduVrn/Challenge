@@ -31,7 +31,7 @@ public class IdAttrGet {
     static public Integer IdMessage() {
         return ContextType.getInstance().getTypeAttribute("message").getId();
     }
-    
+
     static public Integer IdIsMain() {
         return ContextType.getInstance().getTypeAttribute("isMain").getId();
     }
@@ -43,6 +43,10 @@ public class IdAttrGet {
 
     static public Integer refFriend() {
         return ContextType.getInstance().getTypeAttribute("friends").getId();
+    }
+
+    static public Integer refSubscriber() {
+        return ContextType.getInstance().getTypeAttribute("subscriber").getId();
     }
 
     static public Integer refAutorCom() {
