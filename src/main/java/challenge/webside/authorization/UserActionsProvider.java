@@ -3,7 +3,9 @@ package challenge.webside.authorization;
 import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.User;
+import challenge.dbside.models.status.ChallengeStatus;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
@@ -42,6 +44,12 @@ public class UserActionsProvider {
         if (user.getId().equals(challenge.getAcceptor().getId())) {
             actions.add(Action.EDIT_CHALLENGE);
             actions.add(Action.DELETE_CHALLENGE);
+            if (challenge.getStatus() == ChallengeStatus.ACCEPTED) {
+                actions.add(Action.CLOSE_CHALLENGE);
+            } else if (challenge.getStatus() == ChallengeStatus.PUT_TO_VOTE) {
+                List<ChallengeInstance> subscriptions = user.getSubscriptions();
+                actions.add(Action.VOTE_FOR_CHALLENGE);
+            }
         }
         return actions;
     }
