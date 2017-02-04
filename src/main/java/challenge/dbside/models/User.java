@@ -75,7 +75,7 @@ public class User extends BaseEntity implements Commentable {
             list.forEach((chalInsDB) -> {
                 ChallengeInstance ch = new ChallengeInstance(chalInsDB);
                 //TODO: optimize it (checked ChallengeStatus without creation new object)
-                if (ch.getStatus() == ChallengeStatus.ACCEPTED) {
+                if (ch.getStatus() != ChallengeStatus.AWAITING) {
                     accepted.add(ch);
                 }
             });
@@ -97,6 +97,22 @@ public class User extends BaseEntity implements Commentable {
             });
         }
         return requests;
+    }
+    
+    public List<ChallengeInstance> getChallengesToVote() {
+        List<ChallengeInstance> challengesToVote = new ArrayList<>();
+
+        List<DBSource> list = (List<DBSource>) getDataSource().getRel().get(IdAttrGet.refAcChalIns());
+        if (list != null) {
+            list.forEach((chalInsDB) -> {
+                ChallengeInstance ch = new ChallengeInstance(chalInsDB);
+                //TODO: optimize it (checked ChallengeStatus without creation new object)
+                if (ch.getStatus() == ChallengeStatus.PUT_TO_VOTE) {
+                    challengesToVote.add(ch);
+                }
+            });
+        }
+        return challengesToVote;
     }
 
     public void acceptChallenge(ChallengeInstance chal) {

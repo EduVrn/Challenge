@@ -170,6 +170,8 @@ public class SocialControllerUtil {
         if (profile != null) {
             List<ChallengeInstance> challengeList = ((User) serviceEntity.findById(profile.getUserEntityId(), User.class)).getChallengeRequests();
             model.addAttribute("challengeRequests", challengeList);
+            List<ChallengeInstance> challengesToVote = ((User) serviceEntity.findById(profile.getUserEntityId(), User.class)).getChallengesToVote();
+            model.addAttribute("challengesToVote", challengesToVote);
         }
     }
 
@@ -258,10 +260,8 @@ public class SocialControllerUtil {
 
     public void setModelForEditProfile(int userId, HttpServletRequest request, Principal currentUser, Model model) {
         setModel(request, currentUser, model);
-
         User user = (User) serviceEntity.findById(userId, User.class);
         model.addAttribute("userProfile", user);
-
     }
 
     public void setModelForUpdatedProfile(User user, HttpServletRequest request, Principal currentUser, Model model, String image) {
@@ -437,16 +437,41 @@ public class SocialControllerUtil {
             ChallengeInstance chalInstance = new ChallengeInstance(chalToAccept);
             chalInstance.setStatus(ChallengeStatus.ACCEPTED);
             serviceEntity.save(chalInstance);
-            Image image = chalToAccept.getMainImageEntity();
+            Image image = new Image();
+            image.setIsMain(true);
+            image.setImageRef(chalToAccept.getMainImageEntity().getImageRef());
             serviceEntity.save(image);
             chalInstance.addImage(image);
             serviceEntity.update(chalInstance);
             chalToAccept.setStatus(ChallengeDefinitionStatus.ACCEPTED);
+            serviceEntity.update(chalToAccept);
             chalInstance.setAcceptor(user);
             user.addAcceptedChallenge(chalInstance);
             serviceEntity.update(user);
+            serviceEntity.update(chalInstance);
         }
         dialect.setActions(actionsProvider.getActionsForProfile(user, user));
+    }
+    
+    public void setModelForCloseChallenge(HttpServletRequest request, Principal currentUser, Model model, int chalId) {
+        ChallengeInstance challengeToClose = (ChallengeInstance) serviceEntity.findById(chalId, ChallengeInstance.class);
+        challengeToClose.setStatus(ChallengeStatus.PUT_TO_VOTE);
+        serviceEntity.update(challengeToClose);
+        
+        //to remove
+        User subscriber = getSignedUpUser(request, currentUser);
+        
+        challengeToClose.addSubscriber(subscriber);
+        serviceEntity.update(challengeToClose);
+        
+        //to remove
+        subscriber.addSubscription(challengeToClose);
+        serviceEntity.update(subscriber);        
+        
+        List<User> subscribers = challengeToClose.getSubscribers();
+        List<User> subcribers2 = challengeToClose.getSubscribers();
+                
+        List<ChallengeInstance> subcriptions = subscriber.getSubscriptions();
     }
 
     public void throwChallenge(int userId, int challengeId, String message) {
@@ -456,7 +481,7 @@ public class SocialControllerUtil {
         ChallengeInstance chalIns = new ChallengeInstance();
         chalIns.setName(chal.getName());
         chalIns.setDate(chal.getDate());
-        Image img=new Image();
+        Image img = new Image();
         img.setIsMain(true);
         img.setImageRef(chal.getMainImageEntity().getImageRef());
         serviceEntity.save(img);

@@ -1,18 +1,15 @@
 package challenge.webside.services;
 
-import challenge.dbside.ini.InitialLoader;
-import challenge.dbside.models.Image;
 import challenge.dbside.models.User;
 import challenge.dbside.services.ini.MediaService;
-import challenge.webside.imagesstorage.ImageStoreService;
 import challenge.webside.model.UserConnection;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.facebook.api.Facebook;
@@ -33,6 +30,13 @@ public class FacebookFriendsImportService implements FriendsImportService {
 
     private List<User> friends;
 
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public FacebookFriendsImportService(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
     @Override
     public List<User> importFriends(UserConnection connection) {
         if (friends == null) {
@@ -43,22 +47,19 @@ public class FacebookFriendsImportService implements FriendsImportService {
             PagedList<Reference> facebookFriends = facebook.friendOperations().getFriends();
             friends = new ArrayList<>();
             for (Reference profile : facebookFriends) {
-                User user = new User();
-                user.setName(profile.getName());
-                Image profilePic = new Image();
-                profilePic.setIsMain(Boolean.TRUE);
-                serviceEntity.save(profilePic);
+                Integer id;
                 try {
-                    ImageStoreService.saveImage(new File("src/main/resources/static/images/AvaDefault.jpg"), profilePic);
-                    serviceEntity.update(profilePic);
-                } catch (Exception ex) {
-                    Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
+                    id = jdbcTemplate.queryForObject("SELECT userentityid FROM userprofile p "
+                            + "JOIN userconnection c ON p.userid = c.userid WHERE c.providerid = ? "
+                            + "AND c.provideruserid = ?",
+                            new Object[]{connection.getProviderId(), profile.getId()}, Integer.class);
+                } catch (EmptyResultDataAccessException e) {
+                    id = null;
                 }
-                serviceEntity.save(user);
-                user.addImage(profilePic);
-
-                serviceEntity.update(user);
-                friends.add(user);
+                if (id != null) {
+                    User user = (User) serviceEntity.findById(id, User.class);
+                    friends.add(user);
+                }
             }
         }
         return friends;

@@ -48,7 +48,15 @@ public class IdAttrGet {
     static public Integer refSubscriber() {
         return ContextType.getInstance().getTypeAttribute("subscriber").getId();
     }
+    
+    static public Integer refVoteFor() {
+        return ContextType.getInstance().getTypeAttribute("voteFor").getId();
+    }
 
+    static public Integer refVoteAgainst() {
+        return ContextType.getInstance().getTypeAttribute("voteAgainst").getId();
+    }
+    
     static public Integer refAutorCom() {
         return ContextType.getInstance().getTypeAttribute("autorComment").getId();
     }

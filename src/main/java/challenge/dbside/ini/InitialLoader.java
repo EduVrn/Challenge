@@ -269,11 +269,7 @@ public class InitialLoader {
                     serviceEntityInit.update(chalToCreate);
                     User user = (User) serviceEntityInit.getAll(User.class).get(new Random().nextInt(serviceEntityInit.getAll(User.class).size()));
                     chalInstance.setAcceptor(user);
-                    chalInstance.addSubscriber(userToCreate);
                     serviceEntityInit.update(chalInstance);
-                    userToCreate.addSubscription(chalInstance);
-                    serviceEntityInit.update(userToCreate);
-
                 }
             }
         }

@@ -25,6 +25,18 @@
                                 <span class="glyphicon glyphicon-wrench" style="font-size: 30px;" />
                             </a>
                         </form>
+                        <form auth:can="CLOSE_CHALLENGE"
+                              style="display: inline-block; float: right;" action="close">
+                            <input type='hidden' th:value='${challenge.getId()}' name='id'/>
+                            <input type='submit' class="btn btn-success" th:value="#{closeChallenge}" />                            
+                        </form>
+                        <h2 th:if="${challenge instanceof T(challenge.dbside.models.ChallengeInstance) and
+                            challenge.getStatus() ==
+                            T(challenge.dbside.models.status.ChallengeStatus).PUT_TO_VOTE}"
+                            style="display: inline-block; float: right;">
+                            <span class="label label-info"
+                                  th:text="#{putToVoteLabel}" />
+                        </h2>
                     </div> 
                 </div> 
                 <div class="row">
@@ -70,7 +82,9 @@
                             </ul>
                         </div>
                     </div>
-                </div>  
+                </div>
+                <span auth:can="VOTE_FOR_CHALLENGE" class="glyphicon glyphicon-plus"/>
+                <span auth:can="VOTE_FOR_CHALLENGE" class="glyphicon glyphicon-minus"/>
             </div> 
         </div>
         <script src="../js/main.js"></script>

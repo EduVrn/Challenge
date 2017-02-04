@@ -38,15 +38,11 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
-import org.springframework.validation.Errors;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -80,6 +76,7 @@ public class MainController {
         util.setModelForChallengeShow(id, request, currentUser, model);
         return "chalShow";
     }
+
     @RequestMapping(value = "challengeins/information", method = GET, produces = "text/plain;charset=UTF-8")
     public String showInstance(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int id) {
         util.setModelForChallengeInstanceShow(id, request, currentUser, model);
@@ -154,55 +151,46 @@ public class MainController {
     }
 
     @RequestMapping(value = "/profile", method = GET, produces = "text/plain;charset=UTF-8")
-    public String showProfile(HttpServletRequest request, Principal currentUser,
-             Model model,
-            @RequestParam("id") int userId
-    ) {
+    public String showProfile(HttpServletRequest request, Principal currentUser, Model model,
+            @RequestParam("id") int userId) {
         util.setProfileShow(userId, request, currentUser, model);
         return "profile";
     }
 
     @RequestMapping(value = "/myprofile", method = GET, produces = "text/plain;charset=UTF-8")
-    public String showSelfProfile(HttpServletRequest request, Principal currentUser,
-             Model model
-    ) {
+    public String showSelfProfile(HttpServletRequest request, Principal currentUser, Model model) {
         util.setProfileShow((usersDao.getUserProfile(currentUser.getName())).getUserEntityId(), request, currentUser, model);
         return "profile";
     }
 
     @RequestMapping(value = "profile", method = POST, produces = "text/plain;charset=UTF-8")
     public String updateProfile(HttpServletRequest request, Principal currentUser,
-             Model model, User user,
-             RedirectAttributes redirectAttributes,
-            @RequestParam("image") String img
-    ) {
+            Model model, User user,
+            RedirectAttributes redirectAttributes,
+            @RequestParam("image") String img) 
+    {
         util.setModelForUpdatedProfile(user, request, currentUser, model, img);
         redirectAttributes.addAttribute("id", user.getId());
         return "redirect:profile";
     }
 
     @RequestMapping("/login")
-    public String login(HttpServletRequest request, Principal currentUser,
-             Model model
-    ) {
+    public String login(HttpServletRequest request, Principal currentUser, Model model) {
         util.setModel(request, currentUser, model);
         return "login";
     }
 
     @RequestMapping(value = "/accept", method = GET, produces = "text/plain;charset=UTF-8")
-    public String accept(HttpServletRequest request, Principal currentUser,
-             Model model,
-            @RequestParam("id") int chalId
-    ) {
+    public String accept(HttpServletRequest request, Principal currentUser, Model model,
+            @RequestParam("id") int chalId) {
         util.setModelForAcceptOrDeclineChallenge(request, currentUser, model, chalId, true);
         return getPreviousPageByRequest(request).orElse("/");
     }
 
     @RequestMapping(value = "/newcomment", method = POST, produces = "text/plain;charset=UTF-8")
     public String newComment(@RequestParam("id") int id, HttpServletRequest request,
-             Principal currentUser, Model model,
-             @ModelAttribute Comment comment, RedirectAttributes redirectAttributes
-    ) {
+            Principal currentUser, Model model,
+            @ModelAttribute Comment comment, RedirectAttributes redirectAttributes) {
         util.addNewComment(id, request, currentUser, model, comment);
         redirectAttributes.addAttribute("id", id);
         return "redirect:challenge/information";
@@ -210,44 +198,45 @@ public class MainController {
 
     @RequestMapping(value = "/newreply", method = POST, produces = "text/plain;charset=UTF-8")
     public String newReply(@RequestParam("id") int id, HttpServletRequest request,
-             Principal currentUser, Model model,
-             @ModelAttribute Comment comment
-    ) {
+            Principal currentUser, Model model,
+            @ModelAttribute Comment comment) {
         util.addNewReply(id, request, currentUser, model, comment);
         return getPreviousPageByRequest(request).orElse("/");
     }
 
     @RequestMapping(value = "/decline", method = GET, produces = "text/plain;charset=UTF-8")
     public String decline(HttpServletRequest request, Principal currentUser,
-             Model model,
-            @RequestParam("id") int chalId
-    ) {
+            Model model,
+            @RequestParam("id") int chalId) {
         util.setModelForAcceptOrDeclineChallenge(request, currentUser, model, chalId, false);
         return getPreviousPageByRequest(request).orElse("/");
     }
 
     @RequestMapping(value = "/acceptDefinition", method = GET, produces = "text/plain;charset=UTF-8")
-    public String acceptChallengeDefinition(HttpServletRequest request, Principal currentUser,
-             Model model,
-            @RequestParam("id") int chalId
-    ) {
+    public String acceptChallengeDefinition(HttpServletRequest request, Principal currentUser, Model model,
+            @RequestParam("id") int chalId) {
         util.setModelForAcceptChallengeDefinition(request, currentUser, model, chalId);
         return getPreviousPageByRequest(request).orElse("/");
+    }
+    
+    @RequestMapping(value = "challengeins/close", method = GET, produces = "text/plain;charset=UTF-8")
+    public String closeChallenge(HttpServletRequest request, Principal currentUser, Model model,
+            @RequestParam("id") int chalId, RedirectAttributes redirectAttributes) {
+        util.setModelForCloseChallenge(request, currentUser, model, chalId);
+        redirectAttributes.addAttribute("id", chalId);
+        return "redirect:information";
     }
 
     @RequestMapping(value = "/friends", method = GET, produces = "text/plain;charset=UTF-8")
     public String selectUserFriends(HttpServletRequest request, Principal currentUser,
-             Model model,
-            @RequestParam("id") int userId
-    ) {
+            Model model,
+            @RequestParam("id") int userId) {
         util.setModelForShowFriends(request, currentUser, model, userId);
-
         return "listSomething";
     }
 
     @InitBinder
-    public void initBinder(WebDataBinder binder
-    ) {
+    public void initBinder(WebDataBinder binder) {
         CustomDateEditor editor = new CustomDateEditor(new SimpleDateFormat("dd/MM/yyyy HH:mm"), true);
         binder.registerCustomEditor(Date.class, editor);
     }
@@ -256,10 +245,9 @@ public class MainController {
     public String updateStatus(
             WebRequest webRequest,
             HttpServletRequest request,
-             Principal currentUser,
+            Principal currentUser,
             Model model,
-             @RequestParam(value = "status", required = true) String status
-    ) {
+            @RequestParam(value = "status", required = true) String status) {
         MultiValueMap<String, Connection<?>> cmap = connectionRepository.findAllConnections();
         Set<Map.Entry<String, List<Connection<?>>>> entries = cmap.entrySet();
         for (Map.Entry<String, List<Connection<?>>> entry : entries) {
@@ -273,11 +261,10 @@ public class MainController {
 
     @RequestMapping(value = "/friendsForChallenge", method = GET)
     public String friendForChallenge(HttpServletRequest request, Principal currentUser,
-             Model model,
+            Model model,
             @RequestParam("id-checked") List<Integer> selectedFriendsIds,
             @RequestParam("chal-id") int chalId,
-            @RequestParam("challenge-info") String chalInfo
-    ) {
+            @RequestParam("challenge-info") String chalInfo) {
         for (Integer id : selectedFriendsIds) {
             util.throwChallenge(id, chalId, chalInfo);
         }
@@ -286,11 +273,10 @@ public class MainController {
 
     @RequestMapping(value = "/challengesForFriend", method = GET)
     public String challengeForFriend(HttpServletRequest request, Principal currentUser,
-             Model model,
+            Model model,
             @RequestParam("id-checked") List<Integer> selectedChallengesIds,
             @RequestParam("user-id") int friendId,
-            @RequestParam("challenge-info") List<String> messages) 
-    {
+            @RequestParam("challenge-info") List<String> messages) {
         for (int i = 0; i < selectedChallengesIds.size(); i++) {
             util.throwChallenge(friendId, selectedChallengesIds.get(i), messages.get(i));
         }
@@ -325,8 +311,7 @@ public class MainController {
 
     @RequestMapping(value = "/getChallenges", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody
-    AjaxResponseBody searchChallengesViaAjax(@RequestBody SearchCriteria search
+    public @ResponseBody AjaxResponseBody searchChallengesViaAjax(@RequestBody SearchCriteria search
     ) {
 
         AjaxResponseBody result = new AjaxResponseBody();
