@@ -98,19 +98,14 @@ public class User extends BaseEntity implements Commentable {
         }
         return requests;
     }
-    
+
     public List<ChallengeInstance> getChallengesToVote() {
         List<ChallengeInstance> challengesToVote = new ArrayList<>();
-
-        List<DBSource> list = (List<DBSource>) getDataSource().getRel().get(IdAttrGet.refAcChalIns());
-        if (list != null) {
-            list.forEach((chalInsDB) -> {
-                ChallengeInstance ch = new ChallengeInstance(chalInsDB);
-                //TODO: optimize it (checked ChallengeStatus without creation new object)
-                if (ch.getStatus() == ChallengeStatus.PUT_TO_VOTE) {
-                    challengesToVote.add(ch);
-                }
-            });
+        List<ChallengeInstance> subscriptions = getSubscriptions();
+        for (ChallengeInstance challenge : subscriptions) {
+            if (challenge.getStatus() == ChallengeStatus.PUT_TO_VOTE) {
+                challengesToVote.add(challenge);
+            }
         }
         return challengesToVote;
     }
@@ -138,14 +133,14 @@ public class User extends BaseEntity implements Commentable {
         info.append(entityInfo);
         return info.toString();
     }
-    
+
     public List<Image> getImageEntities() {
         List<Image> images = new ArrayList<>();
         Set<DBSource> children = (Set<DBSource>) getDataSource().getChildren();
         children.forEach((childDB) -> {
-                if (childDB.getEntityType() == TypeEntity.IMAGE.getValue()) {
-                    images.add(new Image(childDB));
-                }
+            if (childDB.getEntityType() == TypeEntity.IMAGE.getValue()) {
+                images.add(new Image(childDB));
+            }
         });
         return images;
     }
@@ -155,8 +150,9 @@ public class User extends BaseEntity implements Commentable {
         for (DBSource childDB : children) {
             if (childDB.getEntityType() == TypeEntity.IMAGE.getValue()) {
                 Image currentImage = new Image(childDB);
-                if (currentImage.isMain())
+                if (currentImage.isMain()) {
                     return currentImage;
+                }
             }
         }
         return new Image();
@@ -165,17 +161,27 @@ public class User extends BaseEntity implements Commentable {
     public void addImage(Image image) {
         getDataSource().addChild(image.getDataSource());
     }
-    
-     public List<ChallengeInstance> getSubscriptions() {
+
+    public List<ChallengeInstance> getSubscriptions() {
         List<DBSource> list = (List<DBSource>) getDataSource().getBackRel().get(IdAttrGet.refSubscriber());
         List<ChallengeInstance> subscriptions = new ArrayList<>();
-        for (DBSource ds : list) {
-            subscriptions.add(new ChallengeInstance(ds));
+        if (list != null) {
+            for (DBSource ds : list) {
+                subscriptions.add(new ChallengeInstance(ds));
+            }
         }
         return subscriptions;
     }
 
     public void addSubscription(ChallengeInstance subscriptions) {
         getDataSource().getBackRel().put(IdAttrGet.refSubscriber(), subscriptions.getDataSource());
+    }
+
+    public void addVoteFor(ChallengeInstance challenge) {
+        getDataSource().getBackRel().put(IdAttrGet.refVoteFor(), challenge.getDataSource());
+    }
+
+    public void addVoteAgainst(ChallengeInstance challenge) {
+        getDataSource().getBackRel().put(IdAttrGet.refVoteAgainst(), challenge.getDataSource());
     }
 }

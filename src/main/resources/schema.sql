@@ -48,5 +48,5 @@ create table authorities (
 ALTER TABLE relationship DROP CONSTRAINT relationship_pkey;
 ALTER TABLE relationship ADD PRIMARY KEY ( entity_id, entity_val, attribute_id);
 
-
+drop if exists sequence serial;
 create sequence serial start 1;

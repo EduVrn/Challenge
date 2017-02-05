@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<!-- add status="rm" to remove attribute or "alter" -->
+
+<dbstructure info="db version 2">
+    <attributes>
+        <attribute id="14" name="voteFor" type="REF" />
+        <attribute id="15" name="voteAgainst" type="REF" />
+        <attribute id="16" name="closingDate" type="STRING" />
+    </attributes>
+    <entities>
+        <entity status="alter" name="ChallengeInstance" type="CHALLENGE_INSTANCE">
+            <attribute ref="voteFor" />
+            <attribute ref="voteAgainst" />
+            <attribute ref="closingDate" />
+        </entity>     
+    </entities>
+</dbstructure>

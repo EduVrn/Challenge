@@ -36,6 +36,10 @@ public class IdAttrGet {
         return ContextType.getInstance().getTypeAttribute("isMain").getId();
     }
 
+    static public Integer IdClosingDate() {
+        return ContextType.getInstance().getTypeAttribute("closingDate").getId();
+    }
+    
     //Ref \/
     static public Integer refAcChalIns() {
         return ContextType.getInstance().getTypeAttribute("acceptedChalIns").getId();
