@@ -19,6 +19,13 @@
                         <span class="glyphicon glyphicon-pencil" style="font-size: 30px;" />
                     </a>
                 </form>
+                <form auth:can="CREATE_CHALLENGE" 
+                      class="navbar-right" name="newCallenge" th:id="newChallenge"
+                      method="GET" action="challenge/new">
+                    <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> 
+                    <input class="btn btn-default text-center" type="submit" name="submit3"
+                           th:value="#{createNewChallengeFromProfileButton}" />
+                </form>
             </div>
             <div class="row">
                 <!-- left side -->
@@ -71,13 +78,7 @@
                 </div>
                 <!-- right side -->
                 <div class="col-md-8 col-sm-6 col-xs-12">
-                    <form auth:can="CREATE_CHALLENGE" 
-                          class="navbar-right" name="newCallenge" th:id="newChallenge"
-                          method="GET" action="challenge/new">
-                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> 
-                        <input class="btn btn-default text-center" type="submit" name="submit3"
-                               th:value="#{createNewChallengeFromProfileButton}" />
-                    </form>
+
                     <!--tabs-->
                     <ul class="nav nav-tabs">
                         <li class="active">
@@ -91,6 +92,9 @@
                         </li>
                         <li>
                             <a data-toggle="tab" href="#created-chals" th:text="#{listOfCreatedChalsTitle}"></a>
+                        </li>
+                        <li class="active">
+                            <a data-toggle="tab" href="#subscripted-chals" th:text="#{listOfSubscriptionChalsTitle}"></a>
                         </li>
                     </ul>
 
@@ -127,6 +131,20 @@
                             </div>
                         </div>
                         <h4 th:if="${listOfAccepted.size() == 0}" th:text="#{noAcceptedChallengesMsg}"></h4>
+                    </section>
+
+                    <section id="subscripted-chals" class="col-md-12 tab-content active">
+                        <div class="text-center col-md-12">
+                            <h2 th:text="#{listOfSubscriptionChalsTitle}"></h2>
+                            <div th:each="challenge : ${listOfSubscripted}" class="elementOfListInProfile">
+                                <div style="border-width: 5" class="panel panel-default">
+                                    <div class="box-content panel-body ">
+                                        <div th:replace="fragments/modelElementsViews/challengeImageAndBody :: challengePanel(${challenge})" th:remove="tag"  /> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <h4 th:if="${listOfSubscripted.size() == 0}" th:text="#{noSubscriptedChallengesMsg}"></h4>
                     </section>
                 </div>
             </div>

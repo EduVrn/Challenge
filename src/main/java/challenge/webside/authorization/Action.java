@@ -3,6 +3,7 @@ package challenge.webside.authorization;
 public enum Action {
     CREATE_CHALLENGE,
     EDIT_CHALLENGE, 
+    SUBSCRIBE_CHALLENGE, 
     DELETE_CHALLENGE,
     CLOSE_CHALLENGE,
     VOTE_FOR_CHALLENGE,

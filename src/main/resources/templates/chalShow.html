@@ -14,7 +14,7 @@
     </head>
     <body>
         <div th:replace="fragments/header :: userInfo"/>
-        <div class="content-wrapper">
+        <div class="content-wrapper" th:with="isChalDef = ${challenge instanceof T(challenge.dbside.models.ChallengeDefinition)}">
             <div class="inner-container container">
                 <div style="margin-top: 100px; " class="row">
                     <div class="section-header col-md-12">
@@ -30,7 +30,12 @@
                             <input type='hidden' th:value='${challenge.getId()}' name='id'/>
                             <input type='submit' class="btn btn-success" th:value="#{closeChallenge}" />                            
                         </form>
-                        <th:block th:if="${challenge instanceof T(challenge.dbside.models.ChallengeInstance)}">
+                        <form auth:can="SUBSCRIBE_CHALLENGE"
+                              style="display: inline-block; float: right;" action="subscribe">
+                            <input type='hidden' th:value='${challenge.getId()}' name='id'/>
+                            <input type='submit' class="btn btn-success" th:value="#{closeChallenge}" />                            
+                        </form>
+                        <th:block th:unless="${isChalDef}">
                             <h2 th:if="${challenge.getStatus() ==
                                 T(challenge.dbside.models.status.ChallengeStatus).PUT_TO_VOTE}"
                                 style="display: inline-block; float: right;">
@@ -57,6 +62,11 @@
                         <img class="img-responsive img-rounded" th:src="${challenge.getMainImageEntity().getBase64()}"/>
                     </div>                    
                     <div class="box-content">
+                        <h3 th:text="${isChalDef} ? #{creatorLabelShow} : #{acceptorLabelShow}" />
+                        <div>
+                            <span  class="chal-meta" th:text="${isChalDef} ? ${challenge.getCreator().getName()} 
+                                   : ${challenge.getAcceptor().getName()}"></span>
+                        </div>
                         <h3 th:text="${#dates.format(challenge.getDate(), 'dd/MM/yyyy HH:mm')}"></h3>
                         <h3  th:text="${challenge.getDescription()}"></h3>
                     </div>
@@ -77,11 +87,21 @@
                         <h3 style="display: inline-block" th:text="${challenge.getVotesAgainst().size()}" />
                     </form>
                 </div>
-                <h2 th:text="#{creatorLabelShow}" />
-                <div th:if="${challenge instanceof T(challenge.dbside.models.ChallengeDefinition)}">
-                    <span class="chal-meta" th:text="${challenge.getCreator().getName()}"></span>
-                </div>
-                <th:block th:if="${challenge instanceof T(challenge.dbside.models.ChallengeDefinition)}">
+                <h2 th:text="#{chalStepsLabel}" />
+                <div th:if="${!isChalDef}" th:each="step : ${listOfSteps}">
+                    <div class="box-content panel-body panel panel-danger col-md-12" style="border-width: 5;" >
+                        <div class="col-md-3"> 
+                            <img class="img-rounded col-md-12" th:src="${challenge.getMainImageEntity().getBase64()}"  alt=""></img> 
+                        </div>
+                        <div class="col-md-9">
+                            <h2 class="chal-title" ><a th:text="${step.getName()}"></a></h2>
+                            <span class="chal-meta" th:text="${#dates.format(step.date, 'dd/MM/yyyy HH:mm')}"></span>
+                            <h4 class="ellipsis desc" th:text="${step.getMessage()}"></h4>
+                        </div>
+                    </div> 
+                </div> 
+
+                <th:block th:if="${isChalDef}">
                     <h2 th:text="#{acceptorsLabelShow}" />
                     <div th:each="acceptor : ${listOfAcceptors}" >
                         <div  class="challenge col-lg-1 col-md-1 col-sm-2 col-xs-2">
@@ -94,12 +114,12 @@
                         </div>
                     </div>
                 </th:block>
-                <div th:if="${challenge instanceof T(challenge.dbside.models.ChallengeDefinition)}" class="row">
+                <div class="row">
                     <div class="col-md-12"  style="margin-bottom: 60px;">
                         <div class="page-header">
                             <h3 th:text="#{commentsCount} + ' (' + ${commentsCount} + ')'"></h3>
                         </div> 
-                        <form th:object="${comment}" th:action="@{/newcomment}" method="post" style="margin-bottom: 40px;">
+                        <form th:object="${comment}" th:action="${challenge instanceof T(challenge.dbside.models.ChallengeDefinition)} ? @{/newcomment} : @{/newinscomment}" method="post" style="margin-bottom: 40px;">
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                             <input type="hidden" name="id" th:value="${challenge.getId()}"/>
                             <input type="text" class="form-control" th:placeholder="#{commentPlaceholder}" th:field="*{message}" />

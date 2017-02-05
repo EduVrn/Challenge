@@ -59,12 +59,16 @@ public class UserActionsProvider {
                     break;
             }
         } else if (user.getSubscriptions().contains(challenge)) {
+
             if (challenge.getStatus() == ChallengeStatus.PUT_TO_VOTE) {
                 actions.add(Action.VOTE_FOR_CHALLENGE);
             } else if (challenge.getStatus() == ChallengeStatus.COMPLETED || challenge.getStatus() == ChallengeStatus.FAILED) {
                 actions.add(Action.VOTE_FOR_CHALLENGE);
             }
+        } else {
+            actions.add(Action.SUBSCRIBE_CHALLENGE);
         }
+
         return actions;
     }
 

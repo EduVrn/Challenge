@@ -31,16 +31,16 @@ public class ChallengeStep extends BaseEntity implements Commentable {
         return getDataSource().getAttributes().get(IdAttrGet.IdMessage()).getValue();
     }
 
+    public void setMessage(String msg) {
+        getDataSource().getAttributes().get(IdAttrGet.IdMessage()).setValue(msg);
+    }
+
     public void setInstance(ChallengeInstance challengeInstance) {
         getDataSource().setParent(challengeInstance.getDataSource());
     }
 
     public ChallengeInstance getInstance() {
         return new ChallengeInstance(getDataSource().getParent());
-    }
-
-    public void setMessage(String msg) {
-        getDataSource().getAttributes().get(IdAttrGet.IdMessage()).setValue(msg);
     }
 
     public Date getDate() {
