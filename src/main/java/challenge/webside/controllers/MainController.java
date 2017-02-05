@@ -137,8 +137,6 @@ public class MainController {
 
     @RequestMapping(value = "challenge/information", method = POST, produces = "text/plain;charset=UTF-8")
     public String saveOrUpdateChallenge(HttpServletRequest request, Principal currentUser, Model model, @Valid @ModelAttribute("challenge") ChallengeDefinition challenge, BindingResult bindingResult, RedirectAttributes redirectAttributes, @RequestParam("image") String img, @RequestParam(required = false, value = "image-name") String imgName) {
-        Date currentDate = new Date();
-        // if (challenge.getDate().before(currentDate)) {
         if (bindingResult.hasFieldErrors()) {
             util.setModelForBadDateNewChal(challenge, request, currentUser, model, img, imgName);
             model.addAttribute(bindingResult.getAllErrors());
@@ -195,6 +193,15 @@ public class MainController {
         return "redirect:challenge/information";
     }
 
+    @RequestMapping(value = "/newinscomment", method = POST, produces = "text/plain;charset=UTF-8")
+    public String newInstanceComment(@RequestParam("id") int id, HttpServletRequest request,
+            Principal currentUser, Model model,
+            @ModelAttribute Comment comment, RedirectAttributes redirectAttributes) {
+        util.addNewInstanceComment(id, request, currentUser, model, comment);
+        redirectAttributes.addAttribute("id", id);
+        return "redirect:challengeins/information";
+    }
+
     @RequestMapping(value = "/newreply", method = POST, produces = "text/plain;charset=UTF-8")
     public String newReply(@RequestParam("id") int id, HttpServletRequest request,
             Principal currentUser, Model model,
@@ -218,6 +225,14 @@ public class MainController {
         return getPreviousPageByRequest(request).orElse("/");
     }
 
+    @RequestMapping(value = "challengeins/subscribe", method = GET, produces = "text/plain;charset=UTF-8")
+    public String subscribeOnChallengeInstance(HttpServletRequest request, Principal currentUser, Model model,
+            @RequestParam("id") int chalId, RedirectAttributes redirectAttributes) {
+        util.setModelForInstanceSubscribe(request, currentUser, model, chalId);
+        redirectAttributes.addAttribute("id", chalId);
+        return "redirect:challengeins/information";
+    }
+
     @RequestMapping(value = "challengeins/close", method = GET, produces = "text/plain;charset=UTF-8")
     public String closeChallenge(HttpServletRequest request, Principal currentUser, Model model,
             @RequestParam("id") int chalId, RedirectAttributes redirectAttributes) {
@@ -233,7 +248,7 @@ public class MainController {
         redirectAttributes.addAttribute("id", chalId);
         return "redirect:information";
     }
-    
+
     @RequestMapping(value = "challengeins/voteAgainst", method = GET, produces = "text/plain;charset=UTF-8")
     public String voteAgainst(HttpServletRequest request, Principal currentUser, Model model,
             @RequestParam("id") int chalId, RedirectAttributes redirectAttributes) {
@@ -300,7 +315,8 @@ public class MainController {
 
     @RequestMapping(value = "/getFriends", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody AjaxResponseBody searchFriendsAjax(@RequestBody SearchCriteria search) {
+    public @ResponseBody
+    AjaxResponseBody searchFriendsAjax(@RequestBody SearchCriteria search) {
         AjaxResponseBody result = new AjaxResponseBody();
         if (search != null) {
             List<User> users = util.filterUsers(search.getFilter(), search.getUserId());
@@ -326,7 +342,8 @@ public class MainController {
 
     @RequestMapping(value = "/getChallenges", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody AjaxResponseBody searchChallengesViaAjax(@RequestBody SearchCriteria search) {
+    public @ResponseBody
+    AjaxResponseBody searchChallengesViaAjax(@RequestBody SearchCriteria search) {
 
         AjaxResponseBody result = new AjaxResponseBody();
 
