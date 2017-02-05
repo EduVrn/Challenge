@@ -30,13 +30,26 @@
                             <input type='hidden' th:value='${challenge.getId()}' name='id'/>
                             <input type='submit' class="btn btn-success" th:value="#{closeChallenge}" />                            
                         </form>
-                        <h2 th:if="${challenge instanceof T(challenge.dbside.models.ChallengeInstance) and
-                            challenge.getStatus() ==
-                            T(challenge.dbside.models.status.ChallengeStatus).PUT_TO_VOTE}"
-                            style="display: inline-block; float: right;">
-                            <span class="label label-info"
-                                  th:text="#{putToVoteLabel}" />
-                        </h2>
+                        <th:block th:if="${challenge instanceof T(challenge.dbside.models.ChallengeInstance)}">
+                            <h2 th:if="${challenge.getStatus() ==
+                                T(challenge.dbside.models.status.ChallengeStatus).PUT_TO_VOTE}"
+                                style="display: inline-block; float: right;">
+                                <span class="label label-info"
+                                      th:text="#{putToVoteLabel}" />
+                            </h2>
+                            <h2 th:if="${challenge.getStatus() ==
+                                T(challenge.dbside.models.status.ChallengeStatus).COMPLETED}"
+                                style="display: inline-block; float: right;">
+                                <span class="label label-success"
+                                      th:text="#{competedChallengeLabel}" />
+                            </h2>
+                            <h2 th:if="${challenge.getStatus() ==
+                                T(challenge.dbside.models.status.ChallengeStatus).FAILED}"
+                                style="display: inline-block; float: right;">
+                                <span class="label label-danger"
+                                      th:text="#{failedChallengeLabel}" />
+                            </h2>
+                        </th:block>
                     </div> 
                 </div> 
                 <div class="row">
@@ -47,6 +60,22 @@
                         <h3 th:text="${#dates.format(challenge.getDate(), 'dd/MM/yyyy HH:mm')}"></h3>
                         <h3  th:text="${challenge.getDescription()}"></h3>
                     </div>
+                </div>
+                <div auth:can="VOTE_FOR_CHALLENGE" style="margin-top: 15px;">
+                    <form  method="GET" action="voteFor" style='display: inline-block;'>
+                        <input type="hidden" th:value="${challenge.getId()}" name="id"/>
+                        <a onclick='this.parentNode.submit();' style="display: inline-block;">
+                            <h3><span class="glyphicon glyphicon-thumbs-up" /></h3>
+                        </a>
+                        <h3 style="display: inline-block" th:text="${challenge.getVotesFor().size()}" />
+                    </form>
+                    <form method="GET" action="voteAgainst" style='display: inline-block; margin-left: 30px;'>
+                        <input type="hidden" th:value="${challenge.getId()}" name="id"/>
+                        <a onclick='this.parentNode.submit();' style="display: inline-block;">
+                            <h3><span class="glyphicon glyphicon-thumbs-down" /></h3>
+                        </a>
+                        <h3 style="display: inline-block" th:text="${challenge.getVotesAgainst().size()}" />
+                    </form>
                 </div>
                 <h2 th:text="#{creatorLabelShow}" />
                 <div th:if="${challenge instanceof T(challenge.dbside.models.ChallengeDefinition)}">
@@ -83,8 +112,6 @@
                         </div>
                     </div>
                 </div>
-                <span auth:can="VOTE_FOR_CHALLENGE" class="glyphicon glyphicon-plus"/>
-                <span auth:can="VOTE_FOR_CHALLENGE" class="glyphicon glyphicon-minus"/>
             </div> 
         </div>
         <script src="../js/main.js"></script>

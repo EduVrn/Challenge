@@ -57,14 +57,46 @@ public class ChallengeInstance extends BaseEntity implements Commentable {
     public List<User> getSubscribers() {
         List<DBSource> list = (List<DBSource>) getDataSource().getRel().get(IdAttrGet.refSubscriber());
         List<User> subscribers = new ArrayList<>();
-        for (DBSource ds : list) {
-            subscribers.add(new User(ds));
+        if (list != null) {
+            for (DBSource ds : list) {
+                subscribers.add(new User(ds));
+            }
         }
         return subscribers;
     }
 
     public void addSubscriber(User subscriber) {
         getDataSource().getRel().put(IdAttrGet.refSubscriber(), subscriber.getDataSource());
+    }
+
+    public List<User> getVotesFor() {
+        List<DBSource> list = (List<DBSource>) getDataSource().getRel().get(IdAttrGet.refVoteFor());
+        List<User> voters = new ArrayList<>();
+        if (list != null) {
+            for (DBSource ds : list) {
+                voters.add(new User(ds));
+            }
+        }
+        return voters;
+    }
+
+    public void addVoteFor(User voter) {
+        getDataSource().getRel().put(IdAttrGet.refVoteFor(), voter.getDataSource());
+    }
+
+    public List<User> getVotesAgainst() {
+        List<DBSource> list = (List<DBSource>) getDataSource().getRel().get(IdAttrGet.refVoteAgainst());
+        List<User> voters = new ArrayList<>();
+        if (list != null) {
+            for (DBSource ds : list) {
+                voters.add(new User(ds));
+            }
+        }
+        return voters;
+    }
+
+    public void addVoteAgainst(User voter) {
+        getDataSource().getRel().put(IdAttrGet.refVoteAgainst(), voter.getDataSource());
     }
 
     public ChallengeStatus getStatus() {
@@ -151,5 +183,20 @@ public class ChallengeInstance extends BaseEntity implements Commentable {
     public void setMessage(String message) {
         getDataSource().getAttributes().get(IdAttrGet.IdMessage()).setValue(message);
     }
-    
+
+    public void setClosingDate(Date date) {
+        getDataSource().getAttributes().get(IdAttrGet.IdClosingDate()).setValue(date.toString());
+    }
+
+    public Date getClosingDate() {
+        try {
+            DateFormat df = new SimpleDateFormat("EEE MMM dd kk:mm:ss z yyyy", Locale.ENGLISH);
+            String ddt = getDataSource().getAttributes().get(IdAttrGet.IdClosingDate()).getValue();
+            Date result = df.parse(ddt);
+            return result;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return (new Date());
+        }
+    }
 }

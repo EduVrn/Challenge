@@ -167,8 +167,7 @@ public class MainController {
     public String updateProfile(HttpServletRequest request, Principal currentUser,
             Model model, User user,
             RedirectAttributes redirectAttributes,
-            @RequestParam("image") String img) 
-    {
+            @RequestParam("image") String img) {
         util.setModelForUpdatedProfile(user, request, currentUser, model, img);
         redirectAttributes.addAttribute("id", user.getId());
         return "redirect:profile";
@@ -218,11 +217,27 @@ public class MainController {
         util.setModelForAcceptChallengeDefinition(request, currentUser, model, chalId);
         return getPreviousPageByRequest(request).orElse("/");
     }
-    
+
     @RequestMapping(value = "challengeins/close", method = GET, produces = "text/plain;charset=UTF-8")
     public String closeChallenge(HttpServletRequest request, Principal currentUser, Model model,
             @RequestParam("id") int chalId, RedirectAttributes redirectAttributes) {
         util.setModelForCloseChallenge(request, currentUser, model, chalId);
+        redirectAttributes.addAttribute("id", chalId);
+        return "redirect:information";
+    }
+
+    @RequestMapping(value = "challengeins/voteFor", method = GET, produces = "text/plain;charset=UTF-8")
+    public String voteFor(HttpServletRequest request, Principal currentUser, Model model,
+            @RequestParam("id") int chalId, RedirectAttributes redirectAttributes) {
+        util.setModelForVote(request, currentUser, model, chalId, true);
+        redirectAttributes.addAttribute("id", chalId);
+        return "redirect:information";
+    }
+    
+    @RequestMapping(value = "challengeins/voteAgainst", method = GET, produces = "text/plain;charset=UTF-8")
+    public String voteAgainst(HttpServletRequest request, Principal currentUser, Model model,
+            @RequestParam("id") int chalId, RedirectAttributes redirectAttributes) {
+        util.setModelForVote(request, currentUser, model, chalId, false);
         redirectAttributes.addAttribute("id", chalId);
         return "redirect:information";
     }
@@ -311,8 +326,7 @@ public class MainController {
 
     @RequestMapping(value = "/getChallenges", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody AjaxResponseBody searchChallengesViaAjax(@RequestBody SearchCriteria search
-    ) {
+    public @ResponseBody AjaxResponseBody searchChallengesViaAjax(@RequestBody SearchCriteria search) {
 
         AjaxResponseBody result = new AjaxResponseBody();
 

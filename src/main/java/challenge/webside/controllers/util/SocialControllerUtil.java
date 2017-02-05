@@ -34,6 +34,7 @@ import challenge.webside.services.FriendsImportService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.codec.binary.Base64;
@@ -170,8 +171,6 @@ public class SocialControllerUtil {
         if (profile != null) {
             List<ChallengeInstance> challengeList = ((User) serviceEntity.findById(profile.getUserEntityId(), User.class)).getChallengeRequests();
             model.addAttribute("challengeRequests", challengeList);
-            List<ChallengeInstance> challengesToVote = ((User) serviceEntity.findById(profile.getUserEntityId(), User.class)).getChallengesToVote();
-            model.addAttribute("challengesToVote", challengesToVote);
         }
     }
 
@@ -195,14 +194,26 @@ public class SocialControllerUtil {
         model.addAttribute("userProfile", user);
         setModelForComments(id, request, currentUser, model);
     }
+
     public void setModelForChallengeInstanceShow(int id, HttpServletRequest request, Principal currentUser, Model model) {
         setModel(request, currentUser, model);
         ChallengeInstance challenge = (ChallengeInstance) serviceEntity.findById(id, ChallengeInstance.class);
         User user = getSignedUpUser(request, currentUser);
+
+        Date closingDate = challenge.getClosingDate();
+        Date currentDate = new Date();
+        long diffInMillies = currentDate.getTime() - closingDate.getTime();
+        long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+        if (diff >= 24) {
+            int votesFor = challenge.getVotesFor().size();
+            int votesAgainst = challenge.getVotesAgainst().size();
+            challenge.setStatus(votesFor > votesAgainst ? ChallengeStatus.COMPLETED : ChallengeStatus.FAILED);
+        }
+        
         dialect.setActions(actionsProvider.getActionsForChallengeInstance(user, challenge));
         model.addAttribute("challenge", challenge);
         model.addAttribute("userProfile", user);
-      //  setModelForComments(id, request, currentUser, model);
+        //  setModelForComments(id, request, currentUser, model);
     }
 
     public void setModelForNewOrUpdatedChalShow(ChallengeDefinition challenge, HttpServletRequest request, Principal currentUser, Model model, String image) {
@@ -240,14 +251,14 @@ public class SocialControllerUtil {
             Image imageEntity = new Image();
             imageEntity.setIsMain(Boolean.TRUE);
             serviceEntity.save(imageEntity);
-            challenge.addImage(imageEntity);
-            serviceEntity.update(challenge);
             try {
                 ImageStoreService.saveImage(array, imageEntity);
                 serviceEntity.update(imageEntity);
             } catch (Exception ex) {
                 Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
             }
+            challenge.addImage(imageEntity);
+            serviceEntity.update(challenge);
         } else if (StringUtils.isNumeric(image)) {
             Image newMainImage = (Image) serviceEntity.findById(Integer.valueOf(image), Image.class);
             newMainImage.setIsMain(Boolean.TRUE);
@@ -434,44 +445,60 @@ public class SocialControllerUtil {
         ChallengeDefinition chalToAccept = (ChallengeDefinition) serviceEntity.findById(chalId, ChallengeDefinition.class);
         User user = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
         if (chalToAccept.getStatus() != ChallengeDefinitionStatus.ACCEPTED) {
-            ChallengeInstance chalInstance = new ChallengeInstance(chalToAccept);
-            chalInstance.setStatus(ChallengeStatus.ACCEPTED);
-            serviceEntity.save(chalInstance);
             Image image = new Image();
             image.setIsMain(true);
-            image.setImageRef(chalToAccept.getMainImageEntity().getImageRef());
+            image.setImageRef(chalToAccept.getMainImageEntity().getImageRef());      
             serviceEntity.save(image);
+            
+            ChallengeInstance chalInstance = new ChallengeInstance(chalToAccept);
+            chalInstance.setStatus(ChallengeStatus.ACCEPTED);
             chalInstance.addImage(image);
-            serviceEntity.update(chalInstance);
+            chalInstance.setAcceptor(user);
+            serviceEntity.save(chalInstance);
+     
             chalToAccept.setStatus(ChallengeDefinitionStatus.ACCEPTED);
             serviceEntity.update(chalToAccept);
-            chalInstance.setAcceptor(user);
-            user.addAcceptedChallenge(chalInstance);
-            serviceEntity.update(user);
-            serviceEntity.update(chalInstance);
         }
         dialect.setActions(actionsProvider.getActionsForProfile(user, user));
     }
-    
+
     public void setModelForCloseChallenge(HttpServletRequest request, Principal currentUser, Model model, int chalId) {
         ChallengeInstance challengeToClose = (ChallengeInstance) serviceEntity.findById(chalId, ChallengeInstance.class);
         challengeToClose.setStatus(ChallengeStatus.PUT_TO_VOTE);
+        challengeToClose.setClosingDate(new Date());
         serviceEntity.update(challengeToClose);
-        
-        //to remove
-        User subscriber = getSignedUpUser(request, currentUser);
-        
-        challengeToClose.addSubscriber(subscriber);
+
+        User user = getSignedUpUser(request, currentUser);
+        user.addSubscription(challengeToClose);
+        serviceEntity.update(user);
+
+        challengeToClose.addSubscriber(user);
         serviceEntity.update(challengeToClose);
-        
-        //to remove
-        subscriber.addSubscription(challengeToClose);
-        serviceEntity.update(subscriber);        
-        
-        List<User> subscribers = challengeToClose.getSubscribers();
-        List<User> subcribers2 = challengeToClose.getSubscribers();
-                
-        List<ChallengeInstance> subcriptions = subscriber.getSubscriptions();
+    }
+
+    public void setModelForVote(HttpServletRequest request, Principal currentUser, Model model, int chalId, boolean voteFor) {
+        ChallengeInstance challenge = (ChallengeInstance) serviceEntity.findById(chalId, ChallengeInstance.class);
+        User user = getSignedUpUser(request, currentUser);
+//        if (challenge.getAcceptor().getId().equals(user.getId())) {
+//            return;
+//        }
+        if (challenge.getVotesFor().contains(user) || challenge.getVotesAgainst().contains(user)) {
+            return;
+        }
+        if (challenge.getStatus() != ChallengeStatus.PUT_TO_VOTE) {
+            return;
+        }
+        if (voteFor) {
+            challenge.addVoteFor(user);
+            serviceEntity.update(challenge);
+            user.addVoteFor(challenge);
+            serviceEntity.update(user);
+        } else {
+            challenge.addVoteAgainst(user);
+            serviceEntity.update(challenge);
+            user.addVoteAgainst(challenge);
+            serviceEntity.update(user);
+        }
     }
 
     public void throwChallenge(int userId, int challengeId, String message) {
@@ -495,7 +522,7 @@ public class SocialControllerUtil {
 
         user.addAcceptedChallenge(chalIns);
         serviceEntity.update(user);
-        
+
         chalIns.setAcceptor(user);
         serviceEntity.update(chalIns);
     }

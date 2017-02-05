@@ -44,10 +44,24 @@ public class UserActionsProvider {
         if (user.getId().equals(challenge.getAcceptor().getId())) {
             actions.add(Action.EDIT_CHALLENGE);
             actions.add(Action.DELETE_CHALLENGE);
-            if (challenge.getStatus() == ChallengeStatus.ACCEPTED) {
-                actions.add(Action.CLOSE_CHALLENGE);
-            } else if (challenge.getStatus() == ChallengeStatus.PUT_TO_VOTE) {
-                List<ChallengeInstance> subscriptions = user.getSubscriptions();
+            switch (challenge.getStatus()) {
+                case ACCEPTED:
+                    actions.add(Action.CLOSE_CHALLENGE);
+                    break;
+                case PUT_TO_VOTE:
+                    actions.add(Action.VOTE_FOR_CHALLENGE);
+                    break;
+                case COMPLETED:
+                case FAILED:
+                    actions.add(Action.VOTE_FOR_CHALLENGE);
+                    break;
+                default:
+                    break;
+            }
+        } else if (user.getSubscriptions().contains(challenge)) {
+            if (challenge.getStatus() == ChallengeStatus.PUT_TO_VOTE) {
+                actions.add(Action.VOTE_FOR_CHALLENGE);
+            } else if (challenge.getStatus() == ChallengeStatus.COMPLETED || challenge.getStatus() == ChallengeStatus.FAILED) {
                 actions.add(Action.VOTE_FOR_CHALLENGE);
             }
         }
