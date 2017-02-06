@@ -482,19 +482,14 @@ public class SocialControllerUtil {
         User user = (User) serviceEntity.findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
         user.addSubscription(challenge);
         serviceEntity.update(user);
+        challenge.addSubscriber(user);
+        serviceEntity.update(challenge);
     }
 
     public void setModelForCloseChallenge(HttpServletRequest request, Principal currentUser, Model model, int chalId) {
         ChallengeInstance challengeToClose = (ChallengeInstance) serviceEntity.findById(chalId, ChallengeInstance.class);
         challengeToClose.setStatus(ChallengeStatus.PUT_TO_VOTE);
         challengeToClose.setClosingDate(new Date());
-        serviceEntity.update(challengeToClose);
-
-        User user = getSignedUpUser(request, currentUser);
-        user.addSubscription(challengeToClose);
-        serviceEntity.update(user);
-
-        challengeToClose.addSubscriber(user);
         serviceEntity.update(challengeToClose);
     }
 

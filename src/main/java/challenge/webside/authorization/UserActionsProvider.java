@@ -48,25 +48,36 @@ public class UserActionsProvider {
                 case ACCEPTED:
                     actions.add(Action.CLOSE_CHALLENGE);
                     break;
-                case PUT_TO_VOTE:
-                    actions.add(Action.VOTE_FOR_CHALLENGE);
+//                case COMPLETED:
+//                case FAILED:
+//                case PUT_TO_VOTE:
+//                    actions.add(Action.WATCH_VOTES);
+//                    break;
+                default:
                     break;
+            }
+        }
+        if (user.getSubscriptions().contains(challenge)) {
+            if (challenge.getStatus() == ChallengeStatus.PUT_TO_VOTE) {
+                if (challenge.getVotesFor().contains(user) || challenge.getVotesAgainst().contains(user)) {
+                    actions.add(Action.WATCH_VOTES);
+                } else {
+                    actions.add(Action.VOTE_FOR_CHALLENGE);
+                }
+            } else if (challenge.getStatus() == ChallengeStatus.COMPLETED || challenge.getStatus() == ChallengeStatus.FAILED) {
+                actions.add(Action.WATCH_VOTES);
+            }
+        } else {
+            actions.add(Action.SUBSCRIBE_CHALLENGE);
+            switch (challenge.getStatus()) {
                 case COMPLETED:
                 case FAILED:
-                    actions.add(Action.VOTE_FOR_CHALLENGE);
+                case PUT_TO_VOTE:
+                    actions.add(Action.WATCH_VOTES);
                     break;
                 default:
                     break;
             }
-        } else if (user.getSubscriptions().contains(challenge)) {
-
-            if (challenge.getStatus() == ChallengeStatus.PUT_TO_VOTE) {
-                actions.add(Action.VOTE_FOR_CHALLENGE);
-            } else if (challenge.getStatus() == ChallengeStatus.COMPLETED || challenge.getStatus() == ChallengeStatus.FAILED) {
-                actions.add(Action.VOTE_FOR_CHALLENGE);
-            }
-        } else {
-            actions.add(Action.SUBSCRIBE_CHALLENGE);
         }
 
         return actions;

@@ -12,12 +12,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import challenge.dbside.dao.ini.MediaDao;
 import challenge.dbside.ini.ContextType;
 import challenge.dbside.models.BaseEntity;
-import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.dbentity.Attribute;
 import challenge.dbside.models.dbentity.DBSource;
-import challenge.dbside.models.status.ChallengeStatus;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 @Repository
 public class MediaDaoEntity<E extends BaseEntity> implements MediaDao<E> {

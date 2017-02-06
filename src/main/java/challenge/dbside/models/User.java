@@ -178,10 +178,10 @@ public class User extends BaseEntity implements Commentable {
     }
 
     public void addVoteFor(ChallengeInstance challenge) {
-        getDataSource().getBackRel().put(IdAttrGet.refVoteFor(), challenge.getDataSource());
+        getDataSource().getRel().put(IdAttrGet.refVoteFor(), challenge.getDataSource());
     }
 
     public void addVoteAgainst(ChallengeInstance challenge) {
-        getDataSource().getBackRel().put(IdAttrGet.refVoteAgainst(), challenge.getDataSource());
+        getDataSource().getRel().put(IdAttrGet.refVoteAgainst(), challenge.getDataSource());
     }
 }
