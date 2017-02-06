@@ -230,7 +230,7 @@ public class MainController {
             @RequestParam("id") int chalId, RedirectAttributes redirectAttributes) {
         util.setModelForInstanceSubscribe(request, currentUser, model, chalId);
         redirectAttributes.addAttribute("id", chalId);
-        return "redirect:challengeins/information";
+        return "redirect:information";
     }
 
     @RequestMapping(value = "challengeins/close", method = GET, produces = "text/plain;charset=UTF-8")
