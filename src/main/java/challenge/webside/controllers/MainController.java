@@ -3,6 +3,7 @@ package challenge.webside.controllers;
 import challenge.webside.model.ajax.AjaxResponseBody;
 import challenge.webside.model.ajax.SearchCriteria;
 import challenge.dbside.models.ChallengeDefinition;
+import challenge.dbside.models.ChallengeStep;
 import challenge.dbside.models.Comment;
 import challenge.dbside.models.User;
 import challenge.dbside.services.ini.MediaService;
@@ -106,6 +107,15 @@ public class MainController {
         return "chalNewOrUpdate";
     }
 
+    @RequestMapping(value = "challengeins/newstep",method = POST, produces = "text/plain;charset=UTF-8")
+    public String newStep(HttpServletRequest request, Principal currentUser, Model model,
+            @ModelAttribute("step") ChallengeStep step, @RequestParam("id") int id, RedirectAttributes redirectAttributes) {
+        util.setModelForNewStepForChallenge(request, currentUser, model, step, id);
+        redirectAttributes.addAttribute("id", id);
+        return "redirect:information";
+        
+    }
+
     @RequestMapping(value = "profile/edit", produces = "text/plain;charset=UTF-8")
     public String editProfile(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int userId) {
         util.setModelForEditProfile(userId, request, currentUser, model);
@@ -131,7 +141,6 @@ public class MainController {
     public String changeLang(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("lang") String lang) {
         SessionLocaleResolver slr = new SessionLocaleResolver();
         slr.setDefaultLocale(Locale.forLanguageTag(lang));
-
         return getPreviousPageByRequest(request).orElse("/");
     }
 

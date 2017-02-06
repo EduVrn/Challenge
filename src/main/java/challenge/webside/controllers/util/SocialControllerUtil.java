@@ -33,6 +33,7 @@ import challenge.webside.authorization.thymeleaf.AuthorizationDialect;
 import challenge.webside.imagesstorage.ImageStoreService;
 import challenge.webside.services.FriendsImportService;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -204,8 +205,8 @@ public class SocialControllerUtil {
         Date closingDate = challenge.getClosingDate();
         Date currentDate = new Date();
         long diffInMillies = currentDate.getTime() - closingDate.getTime();
-        long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-        if (diff >= 24) {
+        long diff = TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS);
+        if (diff >= 5) {
             int votesFor = challenge.getVotesFor().size();
             int votesAgainst = challenge.getVotesAgainst().size();
             challenge.setStatus(votesFor > votesAgainst ? ChallengeStatus.COMPLETED : ChallengeStatus.FAILED);
@@ -213,8 +214,13 @@ public class SocialControllerUtil {
 
         dialect.setActions(actionsProvider.getActionsForChallengeInstance(user, challenge));
         model.addAttribute("challenge", challenge);
+        ChallengeStep step = new ChallengeStep();
+        step.setDate(new Date());
+        model.addAttribute("step", step);
         model.addAttribute("userProfile", user);
-        model.addAttribute("listOfSteps", challenge.getSteps());
+        List<ChallengeStep> listOfSteps = challenge.getSteps();
+        Collections.sort(listOfSteps, ChallengeStep.COMPARE_BY_DATE);
+        model.addAttribute("listOfSteps", listOfSteps);
         setModelForComments(challenge.getComments(), request, currentUser, model);
     }
 
@@ -275,6 +281,7 @@ public class SocialControllerUtil {
         setModel(request, currentUser, model);
         User user = (User) serviceEntity.findById(userId, User.class);
         model.addAttribute("userProfile", user);
+        model.addAttribute("mapOfNetworks", usersDao.getListOfNetworks(userId));
     }
 
     public void setModelForUpdatedProfile(User user, HttpServletRequest request, Principal currentUser, Model model, String image) {
@@ -346,6 +353,13 @@ public class SocialControllerUtil {
         serviceEntity.update(currentChallenge);
     }
 
+    public void setModelForNewStepForChallenge(HttpServletRequest request, Principal currentUser, Model model, ChallengeStep step, int chalId) {
+        ChallengeInstance currentChallenge = (ChallengeInstance) serviceEntity.findById(chalId, ChallengeInstance.class);
+        serviceEntity.save(step);
+        currentChallenge.addStep(step);
+        serviceEntity.update(currentChallenge);
+    }
+
     public void addNewInstanceComment(int chalId, HttpServletRequest request, Principal currentUser, Model model, Comment comment) {
         User curDBUser = (User) serviceEntity.
                 findById(getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
@@ -354,7 +368,6 @@ public class SocialControllerUtil {
         comment.setDate(new Date());
         comment.setAuthor(curDBUser);
         serviceEntity.save(comment);
-
         currentChallenge.addComment(comment);
         serviceEntity.update(currentChallenge);
     }
@@ -533,23 +546,16 @@ public class SocialControllerUtil {
         chalIns.addImage(img);
         chalIns.setStatus(ChallengeStatus.AWAITING);
         chalIns.setMessage(message);
+        chalIns.setDescription(chal.getDescription());
         chalIns.setAcceptor(user);
 
-        //TEST
         ChallengeStep step = new ChallengeStep();
-        step.setDate(new Date());
-        step.setMessage("ChallengeStep jjhjgjhvckuuh jk jk kg hg hj g gh k f f f f ");
-        step.setName("ChallengeStep");
+        step.setDate(chalIns.getDate());
+        step.setMessage(chalIns.getDescription());
+        step.setName(chalIns.getName());
         serviceEntity.save(step);
-        ChallengeStep step1 = new ChallengeStep();
-        step1.setDate(new Date());
-        step1.setMessage("ChallengeStep2 jjhjgjhvckuuh jk jk kg hg hj g gh k f f f f ");
-        step1.setName("ChallengeStep2");
-        serviceEntity.save(step1);
 
         chalIns.addStep(step);
-        chalIns.addStep(step1);
-        //TEST
         serviceEntity.save(chalIns);
 
         chal.addChallengeInstance(chalIns);

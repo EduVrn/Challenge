@@ -68,7 +68,9 @@ public class UserActionsProvider {
                 actions.add(Action.WATCH_VOTES);
             }
         } else {
-            actions.add(Action.SUBSCRIBE_CHALLENGE);
+            if (!user.getId().equals(challenge.getAcceptor().getId())) {
+                actions.add(Action.SUBSCRIBE_CHALLENGE);
+            }
             switch (challenge.getStatus()) {
                 case COMPLETED:
                 case FAILED:
@@ -79,7 +81,6 @@ public class UserActionsProvider {
                     break;
             }
         }
-
         return actions;
     }
 

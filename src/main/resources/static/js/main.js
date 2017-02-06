@@ -188,6 +188,15 @@ $('.media-body small a').on('click', function () {
         children[children.length - 2].style.display = "none";
 });
 
+var showingStepForm = false;
+$('.new_step small a').on('click', function () {
+    showingStepForm = !showingStepForm;
+    if (showingStepForm)
+        $('#step_div').css('display' , 'block');
+    else
+        $('#step_div').css('display' , 'none');
+});
+
 $(document).on('change', 'input[type="file"]', function () {
     var $p = $('<p />');
     $p.html($('#input-file').val().split('\\').pop());

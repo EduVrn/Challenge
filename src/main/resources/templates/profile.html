@@ -74,7 +74,7 @@
                         <button  name="lang" type="submit" th:value="ru" class="lang-button">Ru</button>
                     </form>
                     <!--<input id="throw_challenge" class="btn btn-default text-center" type="submit" th:value="#{profileThrowChallengeButton}" />-->
-                    <div th:replace="fragments/util/bind::bindSocialNetwork" th:remove="tag"/>                 
+                    <div th:replace="fragments/util/bind::bindedSocialNetworks" th:remove="tag"/>                 
                 </div>
                 <!-- right side -->
                 <div class="col-md-8 col-sm-6 col-xs-12">
@@ -93,7 +93,7 @@
                         <li>
                             <a data-toggle="tab" href="#created-chals" th:text="#{listOfCreatedChalsTitle}"></a>
                         </li>
-                        <li class="active">
+                        <li>
                             <a data-toggle="tab" href="#subscripted-chals" th:text="#{listOfSubscriptionChalsTitle}"></a>
                         </li>
                     </ul>
@@ -133,10 +133,30 @@
                         <h4 th:if="${listOfAccepted.size() == 0}" th:text="#{noAcceptedChallengesMsg}"></h4>
                     </section>
 
-                    <section id="subscripted-chals" class="col-md-12 tab-content active">
+                    <section id="subscripted-chals" class="col-md-12 tab-content hide">
                         <div class="text-center col-md-12">
                             <h2 th:text="#{listOfSubscriptionChalsTitle}"></h2>
                             <div th:each="challenge : ${listOfSubscripted}" class="elementOfListInProfile">
+                                <th:block th:unless="${isChalDef}">
+                                    <h3 th:if="${challenge.getStatus() ==
+                                        T(challenge.dbside.models.status.ChallengeStatus).PUT_TO_VOTE}"
+                                        style="display: inline-block; float: right;">
+                                        <span class="label label-info"
+                                              th:text="#{putToVoteLabel}" />
+                                    </h3>
+                                    <h3 th:if="${challenge.getStatus() ==
+                                        T(challenge.dbside.models.status.ChallengeStatus).COMPLETED}"
+                                        style="display: inline-block; float: right;">
+                                        <span class="label label-success"
+                                              th:text="#{competedChallengeLabel}" />
+                                    </h3>
+                                    <h3 th:if="${challenge.getStatus() ==
+                                        T(challenge.dbside.models.status.ChallengeStatus).FAILED}"
+                                        style="display: inline-block; float: right;">
+                                        <span class="label label-danger"
+                                              th:text="#{failedChallengeLabel}" />
+                                    </h3>
+                                </th:block>
                                 <div style="border-width: 5" class="panel panel-default">
                                     <div class="box-content panel-body ">
                                         <div th:replace="fragments/modelElementsViews/challengeImageAndBody :: challengePanel(${challenge})" th:remove="tag"  /> 

@@ -42,7 +42,8 @@
                             <input class="btn btn-default" onclick="javascript:history.back()"  th:value="#{backButton}"  style="float: left;"/>
                         </div>
                     </div>
-                </form>             
+                </form> 
+                <div th:replace="fragments/util/bind::bindSocialNetwork" th:remove="tag"/>  
             </div> 
         </div>
 
