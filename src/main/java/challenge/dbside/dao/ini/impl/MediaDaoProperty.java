@@ -1,6 +1,5 @@
 package challenge.dbside.dao.ini.impl;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -9,7 +8,6 @@ import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
 import challenge.dbside.dao.ini.MediaDao;
-import challenge.dbside.models.ini.TypeOfAttribute;
 import challenge.dbside.property.PropertyDB;
 
 @Repository

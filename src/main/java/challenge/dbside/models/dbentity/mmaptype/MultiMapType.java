@@ -11,7 +11,6 @@ import org.apache.commons.collections4.map.MultiValueMap;
 //import org.apache.commons.collections.MultiHashMap;
 //import org.apache.commons.collections.MultiMap;
 import org.hibernate.HibernateException;
-import org.hibernate.collection.internal.PersistentMap;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.persister.collection.CollectionPersister;

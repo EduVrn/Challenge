@@ -99,8 +99,8 @@ public class UsersDao {
     public Map<String, String> getListOfNetworks(final int userDbId) {
         List<UserProfile> profiles = getUserProfiles(userDbId);
         Map<String, String> result = new HashMap<>();
-        for (UserProfile up : profiles) {
-            result.put(getUserConnection(up.getUserId()).getProviderId(), Strings.isNullOrEmpty(up.getName()) ? up.getUsername() : up.getName() );
+        for (UserProfile userProfile : profiles) {
+            result.put(getUserConnection(userProfile.getUserId()).getProviderId(), (Strings.isNullOrEmpty(userProfile.getName()) || userProfile.getName().equals("null")) ? userProfile.getUsername() : userProfile.getName() );
         }
         return result;
     }
@@ -108,6 +108,7 @@ public class UsersDao {
     public void createUser(String userId, UserProfile profile) {
         User user = new User();
         user.setName(profile.getName());
+        user.setRating(0);
         serviceEntity.save(user);
         Image profilePic = new Image();
         profilePic.setIsMain(Boolean.TRUE);

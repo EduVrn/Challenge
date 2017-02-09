@@ -61,6 +61,14 @@ public class Attribute implements Serializable {
     public void setValue(String value) {
         this.value = value;
     }
+    
+    public Integer getIntValue() {
+        return int_value;
+    }
+
+    public void setIntValue(Integer value) {
+        this.int_value = value;
+    }
 
     public Date getDateValue() {
         return date_value;

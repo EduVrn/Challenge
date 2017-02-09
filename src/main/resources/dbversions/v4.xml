@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<!-- add status="rm" to remove attribute or "alter" -->
+
+<dbstructure info="db version 4">
+    <attributes>
+        <attribute id="17" name="rating" type="INT" />
+        <attribute id="18" name="voteForComment" type="REF" />
+        <attribute id="19" name="voteAgainstComment" type="REF" />
+    </attributes>
+    <entities>
+        <entity status="alter" name="User" type="USER">
+            <attribute ref="rating" />
+        </entity>
+        <entity status="alter" name="Comment" type="COMMENT">
+            <attribute ref="voteForComment" />
+            <attribute ref="voteAgainstComment" />
+        </entity>     
+    </entities>
+</dbstructure>

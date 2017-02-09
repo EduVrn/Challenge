@@ -1,6 +1,5 @@
 package challenge.common;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,16 +12,11 @@ public class AccessProp {
 	private static AccessProp properties;
 	
 	private AccessProp()  {
-		//prop = new Properties();
-		property = new Properties();
-		
+		property = new Properties();		
 	}
 	
-	private Properties property;
-	//private static InputStream input;
-	
-	
-	
+	private Properties property;	
+
 	public static AccessProp getProperties() throws FileNotFoundException, IOException {
 		if(properties == null) {
 			InputStream input = new ClassPathResource("application.properties").getInputStream();			
