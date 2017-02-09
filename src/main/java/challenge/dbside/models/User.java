@@ -166,9 +166,9 @@ public class User extends BaseEntity implements Commentable {
         List<DBSource> list = (List<DBSource>) getDataSource().getBackRel().get(IdAttrGet.refSubscriber());
         List<ChallengeInstance> subscriptions = new ArrayList<>();
         if (list != null) {
-            for (DBSource ds : list) {
+            list.forEach((ds) -> {
                 subscriptions.add(new ChallengeInstance(ds));
-            }
+            });
         }
         return subscriptions;
     }
@@ -184,4 +184,26 @@ public class User extends BaseEntity implements Commentable {
     public void addVoteAgainst(ChallengeInstance challenge) {
         getDataSource().getRel().put(IdAttrGet.refVoteAgainst(), challenge.getDataSource());
     }
+
+    public void addVoteForComment(Comment comment) {
+        getDataSource().getBackRel().put(IdAttrGet.refVoteForComment(), comment.getDataSource());
+    }
+
+    public void addVoteAgainstComment(Comment comment) {
+        getDataSource().getBackRel().put(IdAttrGet.refVoteAgainstComment(), comment.getDataSource());
+    }
+
+    public Integer getRating() {
+        return getDataSource().getAttributes().get(IdAttrGet.IdRating()).getIntValue();
+    }
+
+    public void setRating(Integer rating) {
+        getDataSource().getAttributes().get(IdAttrGet.IdRating()).setIntValue(rating);
+    }
+
+    public void addRating(Integer rating) {
+        Integer curRate = getRating();
+        getDataSource().getAttributes().get(IdAttrGet.IdRating()).setIntValue(curRate += rating);
+    }
+
 }

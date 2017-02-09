@@ -193,6 +193,7 @@ public class InitialLoader {
         images.add("src/main/resources/static/images/AvaDefault.jpg");
         for (int i = 0; i < countOfUsers; i++) {
             User userToCreate = new User();
+            userToCreate.setRating(0);
             userToCreate.setName(generateRandomWords(1)[0] + "-user");
             serviceEntityInit.save(userToCreate);
             Image picForUser = new Image();
@@ -237,12 +238,6 @@ public class InitialLoader {
                 chalToCreate.addImage(pic);
                 serviceEntityInit.update(chalToCreate);
                 userToCreate.addChallenge(chalToCreate);
-//                for (Object user : serviceEntityInit.getAll(User.class)) {
-//                    User userToSave = (User) user;
-//                    if (userToCreate != userToSave) {
-//                        userToCreate.addFriend(userToSave);
-//                    }
-//                }
                 serviceEntityInit.update(userToCreate);
                 for (int m = 0; m < countOfInstanses; m++) {
                     ChallengeInstance chalInstance = new ChallengeInstance();

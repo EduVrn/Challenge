@@ -39,7 +39,11 @@ public class IdAttrGet {
     static public Integer IdClosingDate() {
         return ContextType.getInstance().getTypeAttribute("closingDate").getId();
     }
-    
+
+    static public Integer IdRating() {
+        return ContextType.getInstance().getTypeAttribute("rating").getId();
+    }
+
     //Ref \/
     static public Integer refAcChalIns() {
         return ContextType.getInstance().getTypeAttribute("acceptedChalIns").getId();
@@ -52,7 +56,7 @@ public class IdAttrGet {
     static public Integer refSubscriber() {
         return ContextType.getInstance().getTypeAttribute("subscriber").getId();
     }
-    
+
     static public Integer refVoteFor() {
         return ContextType.getInstance().getTypeAttribute("voteFor").getId();
     }
@@ -60,7 +64,14 @@ public class IdAttrGet {
     static public Integer refVoteAgainst() {
         return ContextType.getInstance().getTypeAttribute("voteAgainst").getId();
     }
-    
+    static public Integer refVoteForComment() {
+        return ContextType.getInstance().getTypeAttribute("voteForComment").getId();
+    }
+
+    static public Integer refVoteAgainstComment() {
+        return ContextType.getInstance().getTypeAttribute("voteAgainstComment").getId();
+    }
+
     static public Integer refAutorCom() {
         return ContextType.getInstance().getTypeAttribute("autorComment").getId();
     }

@@ -422,7 +422,6 @@ public class SocialControllerUtil {
     }
 
     protected String getDisplayName(UserConnection connection, UserProfile profile) {
-        // The name is set differently in different providers so we better look in both places...
         if (connection.getDisplayName() != null) {
             return connection.getDisplayName();
         } else {
@@ -509,9 +508,6 @@ public class SocialControllerUtil {
     public void setModelForVote(HttpServletRequest request, Principal currentUser, Model model, int chalId, boolean voteFor) {
         ChallengeInstance challenge = (ChallengeInstance) serviceEntity.findById(chalId, ChallengeInstance.class);
         User user = getSignedUpUser(request, currentUser);
-//        if (challenge.getAcceptor().getId().equals(user.getId())) {
-//            return;
-//        }
         if (challenge.getVotesFor().contains(user) || challenge.getVotesAgainst().contains(user)) {
             return;
         }
@@ -528,6 +524,31 @@ public class SocialControllerUtil {
             serviceEntity.update(challenge);
             user.addVoteAgainst(challenge);
             serviceEntity.update(user);
+        }
+    }
+
+    public void setModelForCommentVote(HttpServletRequest request, Principal currentUser, Model model, int commentId, boolean voteFor) {
+        Comment comment = (Comment) serviceEntity.findById(commentId, Comment.class);
+        User user = getSignedUpUser(request, currentUser);
+
+        if (voteFor) {
+            if (comment.getVotesAgainst().contains(user)) {
+                comment.removeVoteAgainst(user);
+            }
+            comment.addVoteFor(user);
+            serviceEntity.update(comment);
+            User author = comment.getAuthor();
+            author.addRating(1);
+            serviceEntity.update(author);
+        } else {
+            if (comment.getVotesFor().contains(user)) {
+                comment.removeVoteFor(user);
+            }
+            comment.addVoteAgainst(user);
+            serviceEntity.update(comment);
+            User author = comment.getAuthor();
+            author.addRating(-1);
+            serviceEntity.update(author);
         }
     }
 
@@ -592,7 +613,6 @@ public class SocialControllerUtil {
 
     public void setModelForShowFriends(HttpServletRequest request, Principal currentUser, Model model, int userId) {
         setModel(request, currentUser, model);
-
         User user = (User) serviceEntity.findById(userId, User.class);
         List<User> fr = user.getFriends();
         model.addAttribute("listSomething", user.getFriends());

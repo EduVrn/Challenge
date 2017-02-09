@@ -265,6 +265,20 @@ public class MainController {
         redirectAttributes.addAttribute("id", chalId);
         return "redirect:information";
     }
+    
+     @RequestMapping(value = "comment/voteFor", method = GET, produces = "text/plain;charset=UTF-8")
+    public String voteForComment(HttpServletRequest request, Principal currentUser, Model model,
+            @RequestParam("id") int commId, RedirectAttributes redirectAttributes) {
+        util.setModelForCommentVote(request, currentUser, model, commId, true);
+        return getPreviousPageByRequest(request).orElse("/");
+    }
+
+    @RequestMapping(value = "comment/voteAgainst", method = GET, produces = "text/plain;charset=UTF-8")
+    public String voteAgainstComment(HttpServletRequest request, Principal currentUser, Model model,
+            @RequestParam("id") int commId, RedirectAttributes redirectAttributes) {
+        util.setModelForCommentVote(request, currentUser, model, commId, false);
+        return getPreviousPageByRequest(request).orElse("/");
+    }
 
     @RequestMapping(value = "/friends", method = GET, produces = "text/plain;charset=UTF-8")
     public String selectUserFriends(HttpServletRequest request, Principal currentUser,

@@ -57,7 +57,6 @@ public class MediaDaoEntity<E extends BaseEntity> implements MediaDao<E> {
             E p = classType.getDeclaredConstructor(DBSource.class).newInstance(el);
             listG.add(p);
         }
-
         return listG;
     }
 
