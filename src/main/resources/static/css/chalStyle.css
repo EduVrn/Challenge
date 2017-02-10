@@ -1,17 +1,9 @@
-/*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
-/* 
-    Created on : Dec 5, 2016, 4:09:26 PM
-    Author     : DNS
-*/
 .cut-text {
-  text-overflow: ellipsis; 
-  overflow: hidden; 
-  width: 100%; 
-  white-space: nowrap; 
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .challenge {

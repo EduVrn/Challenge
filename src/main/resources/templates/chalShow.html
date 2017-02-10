@@ -18,7 +18,7 @@
             <div class="inner-container container">
                 <div style="margin-top: 100px; " class="row">
                     <div class="section-header col-md-12">
-                        <h2 th:text="${challenge.getName()}" style='display: inline-block;'/>   
+                        <h2 th:text="${#strings.toUpperCase(challenge.getName())}" style='display: inline-block;'/>   
                         <form auth:can="EDIT_CHALLENGE" method="GET" action="update" style='display: inline-block; margin-left: 20px;'>
                             <input type="hidden" th:value="${challenge.getId()}" name="id"/>
                             <a onclick='this.parentNode.submit();'>
@@ -55,20 +55,24 @@
                                       th:text="#{failedChallengeLabel}" />
                             </h2>
                         </th:block>
-                    </div> 
+                    </div>                     
                 </div> 
+                <hr/>
                 <div class="row">
                     <div class="chal-photo col-md-6">
                         <img class="img-responsive img-rounded" th:src="${challenge.getMainImageEntity().getBase64()}"/>
                     </div>                    
-                    <div class="box-content">
-                        <h4 th:text="${isChalDef} ? #{creatorLabelShow} : #{acceptorLabelShow}" />
-                        <div>
-                            <span  class="chal-meta" th:text="${isChalDef} ? ${challenge.getCreator().getName()} 
-                                   : ${challenge.getAcceptor().getName()}"></span>
+                    <div class="box-content col-md-6">
+                        <div class="col-md-12">
+                            <h3 class="col-md-6" th:text="${isChalDef} ? #{creatorLabelShow} : #{acceptorLabelShow}" />
+                            <h3 class="col-md-5"  th:text="${isChalDef} ? ${challenge.getCreator().getName()} 
+                                : ${challenge.getAcceptor().getName()}"/>
                         </div>
-                        <h3 th:text="${#dates.format(challenge.getDate(), 'dd/MM/yyyy HH:mm')}"></h3>
-                        <h3  th:text="${challenge.getDescription()}"></h3>
+                        <div class="col-md-12">
+                            <h3 class="col-md-6" th:text="#{dateLabelShow}" />
+                            <h3 class="col-md-5" th:text="${#dates.format(challenge.getDate(), 'dd/MM/yyyy HH:mm')}"/> 
+                        </div>
+                        <h4 class="col-md-12"  th:text="${challenge.getDescription()}"/>
                     </div>
                 </div>
                 <div auth:can="VOTE_FOR_CHALLENGE" style="margin-top: 15px;">
@@ -120,7 +124,7 @@
                 </div>
                 <div th:if="${!isChalDef}" th:each="step : ${listOfSteps}">
                     <div class="box-content panel-body panel panel-danger col-md-12" style="border-width: 5;" >
-                        <div class="col-md-3"> 
+                        <div class="col-md-3 col-lg-3 col-sm-3 col-xs-3"> 
                             <img class="img-rounded col-md-12" th:src="${challenge.getMainImageEntity().getBase64()}"  alt=""></img> 
                         </div>
                         <div class="col-md-9">
@@ -176,5 +180,3 @@
         </script>
     </body>
 </html>
-
-
