@@ -17,7 +17,7 @@
                         <h2 class="chal-title"><a  th:onclick="'document.getElementById(\'challenge_form'+${challenge.getId()}+'\').submit();'" th:text="${challenge.getName()}"></a></h2>
                     </form>
                     <span class="chal-meta" th:text="${#dates.format(challenge.date, 'yyyy/MM/dd HH:mm')}"></span>
-                    <h4 class="desc" th:text="${challenge.getDescription()}"></h4>
+                    <h4 class="cut-text ellipsis desc" th:text="${challenge.getDescription()}"></h4>
                 </div>
             </th:block>
             <th:block th:if="${challenge instanceof T(challenge.dbside.models.ChallengeInstance)}">
@@ -30,7 +30,7 @@
                         <h2 class="chal-title"><a  th:onclick="'document.getElementById(\'challenge_form'+${challenge.getId()}+'\').submit();'" th:text="${challenge.getName()}"></a></h2>
                     </form>
                     <span class="chal-meta" th:text="${#dates.format(challenge.date, 'yyyy/MM/dd HH:mm')}"></span>
-                    <h4 class="desc" th:text="${challenge.getDescription()}"></h4>
+                    <h4 class="cut-text ellipsis desc" th:text="${challenge.getDescription()}"></h4>
                 </div>
             </th:block>
         </th:block>

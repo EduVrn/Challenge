@@ -197,21 +197,31 @@ public class SocialControllerUtil {
         setModelForComments(challenge.getComments(), request, currentUser, model);
     }
 
-    public void setModelForChallengeInstanceShow(int id, HttpServletRequest request, Principal currentUser, Model model) {
-        setModel(request, currentUser, model);
-        ChallengeInstance challenge = (ChallengeInstance) serviceEntity.findById(id, ChallengeInstance.class);
-        User user = getSignedUpUser(request, currentUser);
-
+    private void checkAndUpdateIfOutdated(ChallengeInstance challenge) {
         Date closingDate = challenge.getClosingDate();
         Date currentDate = new Date();
         long diffInMillies = currentDate.getTime() - closingDate.getTime();
         long diff = TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS);
-        if (diff >= 5) {
-            int votesFor = challenge.getVotesFor().size();
-            int votesAgainst = challenge.getVotesAgainst().size();
-            challenge.setStatus(votesFor > votesAgainst ? ChallengeStatus.COMPLETED : ChallengeStatus.FAILED);
+        synchronized (challenge) {
+            if (diff >= 5 && challenge.getStatus()==ChallengeStatus.PUT_TO_VOTE) {
+                int votesFor = challenge.getVotesFor().size();
+                int votesAgainst = challenge.getVotesAgainst().size();
+                challenge.setStatus(votesFor > votesAgainst ? ChallengeStatus.COMPLETED : ChallengeStatus.FAILED);
+                serviceEntity.update(challenge);
+                User authorUser = challenge.getAcceptor();
+                authorUser.addRating(votesFor - votesAgainst);
+                serviceEntity.update(authorUser);
+            }
         }
+    }
 
+    public void setModelForChallengeInstanceShow(int id, HttpServletRequest request, Principal currentUser, Model model) {
+        setModel(request, currentUser, model);
+        ChallengeInstance challenge = (ChallengeInstance) serviceEntity.findById(id, ChallengeInstance.class);
+        User user = getSignedUpUser(request, currentUser);
+       
+        checkAndUpdateIfOutdated(challenge);
+      
         dialect.setActions(actionsProvider.getActionsForChallengeInstance(user, challenge));
         model.addAttribute("challenge", challenge);
         ChallengeStep step = new ChallengeStep();
@@ -511,6 +521,7 @@ public class SocialControllerUtil {
         if (challenge.getVotesFor().contains(user) || challenge.getVotesAgainst().contains(user)) {
             return;
         }
+        checkAndUpdateIfOutdated(challenge);
         if (challenge.getStatus() != ChallengeStatus.PUT_TO_VOTE) {
             return;
         }

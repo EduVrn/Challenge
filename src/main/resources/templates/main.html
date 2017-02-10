@@ -15,7 +15,7 @@
 
     <body>        
         <div th:replace="fragments/header::userInfo"/>
-        
+
         <div th:replace="fragments/util/loader::loader"/>
 
         <div class="container bootstrap snippets">
@@ -36,7 +36,7 @@
                                             <h2 class="chal-title" ><a onclick="document.getElementById('challenge_form').submit();"  th:text="${mainChallenge.getName()}"></a></h2>
                                         </form>
                                         <span class="chal-meta" th:text="${#dates.format(mainChallenge.date, 'dd/MM/yyyy HH:mm')}"></span>
-                                        <h4 class="ellipsis desc" th:text="${mainChallenge.getDescription()}"></h4>
+                                        <h4  class="cut-text ellipsis desc" th:text="${mainChallenge.getDescription()}"></h4>
                                     </div>
                                 </div> 
                             </div> 

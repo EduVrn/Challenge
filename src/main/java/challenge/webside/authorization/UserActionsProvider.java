@@ -5,7 +5,6 @@ import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.User;
 import challenge.dbside.models.status.ChallengeStatus;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
