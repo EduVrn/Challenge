@@ -107,24 +107,37 @@ public class SocialControllerUtil {
     public void setModelForBadDateNewChal(ChallengeDefinition challenge, HttpServletRequest request, Principal currentUser, Model model, String image, String imageName) {
         setModel(request, currentUser, model);
         if (challenge.getId() != null) {
-            //   ChallengeDefinition challengeToSend = (ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class);
-            // challengeToSend.setDate(new Date());
             model.addAttribute("challenge", challenge);
             model.addAttribute("image64", image);
             model.addAttribute("imageName", imageName);
         } else {
-            // challenge.setDate(new Date());
+            challenge.setDate(new Date());
             model.addAttribute("challenge", challenge);
             model.addAttribute("image64", image);
             model.addAttribute("imageName", imageName);
         }
     }
 
+    public void setModelForBadStepChal(int chalId, ChallengeStep step, HttpServletRequest request, Principal currentUser, Model model) {
+        setModel(request, currentUser, model);
+        ChallengeInstance challenge = (ChallengeInstance) serviceEntity.findById(chalId, ChallengeInstance.class);
+        User user = getSignedUpUser(request, currentUser);
+        checkAndUpdateIfOutdated(challenge);
+        dialect.setActions(actionsProvider.getActionsForChallengeInstance(user, challenge));
+        model.addAttribute("challenge", challenge);
+        model.addAttribute("userProfile", user);
+        List<ChallengeStep> listOfSteps = challenge.getSteps();
+        Collections.sort(listOfSteps, ChallengeStep.COMPARE_BY_DATE);
+        model.addAttribute("listOfSteps", listOfSteps);
+        setModelForComments(challenge.getComments(), request, currentUser, model);
+        model.addAttribute("step", step);
+        model.addAttribute("showStepForm", true);
+    }
+
     public void setModel(HttpServletRequest request, Principal currentUser, Model model) {
         String userId = currentUser == null ? null : currentUser.getName();
         String path = request.getRequestURI();
         HttpSession session = request.getSession();
-
         UserConnection connection = null;
         UserProfile profile = null;
         String displayName = null;
@@ -231,12 +244,13 @@ public class SocialControllerUtil {
         User user = getSignedUpUser(request, currentUser);
 
         checkAndUpdateIfOutdated(challenge);
-
         dialect.setActions(actionsProvider.getActionsForChallengeInstance(user, challenge));
         model.addAttribute("challenge", challenge);
         ChallengeStep step = new ChallengeStep();
         step.setDate(new Date());
         model.addAttribute("step", step);
+        model.addAttribute("showStepForm", false);
+        model.addAttribute("dateError", false);
         model.addAttribute("userProfile", user);
         List<ChallengeStep> listOfSteps = challenge.getSteps();
         Collections.sort(listOfSteps, ChallengeStep.COMPARE_BY_DATE);
@@ -585,6 +599,7 @@ public class SocialControllerUtil {
         ChallengeInstance chalIns = new ChallengeInstance();
         chalIns.setName(chal.getName());
         chalIns.setDate(chal.getDate());
+        chalIns.setClosingDate(chal.getDate());
         chalIns.addImage(img);
         chalIns.setStatus(ChallengeStatus.AWAITING);
         chalIns.setMessage(message);

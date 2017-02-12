@@ -3,6 +3,7 @@ package challenge.webside.controllers;
 import challenge.webside.model.ajax.AjaxResponseBody;
 import challenge.webside.model.ajax.SearchCriteria;
 import challenge.dbside.models.ChallengeDefinition;
+import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.ChallengeStep;
 import challenge.dbside.models.Comment;
 import challenge.dbside.models.User;
@@ -107,13 +108,28 @@ public class MainController {
         return "chalNewOrUpdate";
     }
 
-    @RequestMapping(value = "challengeins/newstep",method = POST, produces = "text/plain;charset=UTF-8")
+    @RequestMapping(value = "challengeins/newstep", method = POST, produces = "text/plain;charset=UTF-8")
     public String newStep(HttpServletRequest request, Principal currentUser, Model model,
-            @ModelAttribute("step") ChallengeStep step, @RequestParam("id") int id, RedirectAttributes redirectAttributes) {
-        util.setModelForNewStepForChallenge(request, currentUser, model, step, id);
-        redirectAttributes.addAttribute("id", id);
-        return "redirect:information";
-        
+            @Valid @ModelAttribute("step") ChallengeStep step, BindingResult bindingResult, @RequestParam("id") int id, RedirectAttributes redirectAttributes) {
+        ChallengeInstance challenge = (ChallengeInstance) serviceEntity.findById(id, ChallengeInstance.class);
+        if (bindingResult.hasFieldErrors()
+                || challenge.getDate().before(step.getDate())
+                || step.getDate().before(new Date())) {
+            util.setModelForBadStepChal(id, step, request, currentUser, model);
+            model.addAttribute(bindingResult.getAllErrors());
+            if (challenge.getDate().before(step.getDate())
+                    || step.getDate().before(new Date())) {
+                model.addAttribute("dateError", true);
+            } else {
+                model.addAttribute("dateError", false);
+            }
+            //#stepform
+            return "chalShow";
+        } else {
+            util.setModelForNewStepForChallenge(request, currentUser, model, step, id);
+            redirectAttributes.addAttribute("id", id);
+            return "redirect:information";
+        }
     }
 
     @RequestMapping(value = "profile/edit", produces = "text/plain;charset=UTF-8")
@@ -265,8 +281,8 @@ public class MainController {
         redirectAttributes.addAttribute("id", chalId);
         return "redirect:information";
     }
-    
-     @RequestMapping(value = "comment/voteFor", method = GET, produces = "text/plain;charset=UTF-8")
+
+    @RequestMapping(value = "comment/voteFor", method = GET, produces = "text/plain;charset=UTF-8")
     public String voteForComment(HttpServletRequest request, Principal currentUser, Model model,
             @RequestParam("id") int commId, RedirectAttributes redirectAttributes) {
         util.setModelForCommentVote(request, currentUser, model, commId, true);
