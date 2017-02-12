@@ -4,6 +4,8 @@ import challenge.dbside.models.common.IdAttrGet;
 import challenge.dbside.models.dbentity.DBSource;
 import java.util.Comparator;
 import java.util.Date;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class ChallengeStep extends BaseEntity implements Commentable {
 
@@ -15,8 +17,8 @@ public class ChallengeStep extends BaseEntity implements Commentable {
         super(dataSource);
     }
 
-    //  @NotNull
-    //@Size(min = 5, max = 40, message = "{error.name.length}")
+    @NotNull
+    @Size(min = 5, max = 40, message = "{error.name.length}")
     public String getName() {
         return getDataSource().getAttributes().get(IdAttrGet.IdName()).getValue();
     }
@@ -25,6 +27,8 @@ public class ChallengeStep extends BaseEntity implements Commentable {
         getDataSource().getAttributes().get(IdAttrGet.IdName()).setValue(name);
     }
 
+    @NotNull
+    @Size(min = 5, max = 250, message = "{error.description.length}")
     public String getMessage() {
         return getDataSource().getAttributes().get(IdAttrGet.IdMessage()).getValue();
     }
