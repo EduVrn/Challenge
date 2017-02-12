@@ -4,9 +4,6 @@ import challenge.dbside.models.common.IdAttrGet;
 import challenge.dbside.models.dbentity.DBSource;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 public class ChallengeStep extends BaseEntity implements Commentable {
 

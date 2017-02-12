@@ -179,8 +179,9 @@ public class SocialControllerUtil {
     public void setModelForMain(HttpServletRequest request, Principal currentUser, Model model) {
         setModel(request, currentUser, model);
 
-        ChallengeDefinition mainChallenge = (ChallengeDefinition) serviceEntity.getAll(ChallengeDefinition.class).get(0);
         List<ChallengeDefinition> challenges = serviceEntity.getAll(ChallengeDefinition.class);
+        Collections.sort(challenges, ChallengeDefinition.COMPARE_BY_RATING);
+        ChallengeDefinition mainChallenge = challenges.remove(0);
         model.addAttribute("mainChallenge", mainChallenge);
         model.addAttribute("challenges", challenges);
     }
@@ -203,7 +204,7 @@ public class SocialControllerUtil {
         long diffInMillies = currentDate.getTime() - closingDate.getTime();
         long diff = TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS);
         synchronized (challenge) {
-            if (diff >= 5 && challenge.getStatus()==ChallengeStatus.PUT_TO_VOTE) {
+            if (diff >= 5 && challenge.getStatus() == ChallengeStatus.PUT_TO_VOTE) {
                 int votesFor = challenge.getVotesFor().size();
                 int votesAgainst = challenge.getVotesAgainst().size();
                 challenge.setStatus(votesFor > votesAgainst ? ChallengeStatus.COMPLETED : ChallengeStatus.FAILED);
@@ -211,6 +212,15 @@ public class SocialControllerUtil {
                 User authorUser = challenge.getAcceptor();
                 authorUser.addRating(votesFor - votesAgainst);
                 serviceEntity.update(authorUser);
+                ChallengeDefinition challengeDef = challenge.getChallengeRoot();
+                challengeDef.addRating(votesFor - votesAgainst);
+                serviceEntity.update(challengeDef);
+            } else {
+                if (currentDate.compareTo(challenge.getDate()) >= 0 && challenge.getStatus() == ChallengeStatus.ACCEPTED) {
+                    challenge.setStatus(ChallengeStatus.PUT_TO_VOTE);
+                    challenge.setClosingDate(new Date());
+                    serviceEntity.update(challenge);
+                }
             }
         }
     }
@@ -219,9 +229,9 @@ public class SocialControllerUtil {
         setModel(request, currentUser, model);
         ChallengeInstance challenge = (ChallengeInstance) serviceEntity.findById(id, ChallengeInstance.class);
         User user = getSignedUpUser(request, currentUser);
-       
+
         checkAndUpdateIfOutdated(challenge);
-      
+
         dialect.setActions(actionsProvider.getActionsForChallengeInstance(user, challenge));
         model.addAttribute("challenge", challenge);
         ChallengeStep step = new ChallengeStep();
@@ -625,7 +635,6 @@ public class SocialControllerUtil {
     public void setModelForShowFriends(HttpServletRequest request, Principal currentUser, Model model, int userId) {
         setModel(request, currentUser, model);
         User user = (User) serviceEntity.findById(userId, User.class);
-        List<User> fr = user.getFriends();
         model.addAttribute("listSomething", user.getFriends());
         model.addAttribute("idParent", userId);
         model.addAttribute("handler", "profile");

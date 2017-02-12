@@ -15,6 +15,9 @@
         <entity status="alter" name="Comment" type="COMMENT">
             <attribute ref="voteForComment" />
             <attribute ref="voteAgainstComment" />
-        </entity>     
+        </entity>   
+        <entity status="alter" name="ChallengeDefinition" type="CHALLENGE_DEFINITION">
+            <attribute ref="rating" />
+        </entity>  
     </entities>
 </dbstructure>
