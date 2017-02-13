@@ -39,12 +39,26 @@ task getDeps(type: Copy) {
     into 'runtime/'
 }
 
+ext {
+    springSessionVersion = '1.1.0.M1'
+}
+
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
     compile("org.springframework.boot:spring-boot-starter-security")
     compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+    compile("org.springframework.boot:spring-boot-starter-websocket")
+    compile("org.springframework:spring-messaging")
+    
+    //compile("org.springframework:spring-context)
+    // https://mvnrepository.com/artifact/org.springframework/spring-context
+	// https://mvnrepository.com/artifact/org.springframework/spring-context
+	compile group: 'org.springframework', name: 'spring-context', version: '4.0.3.RELEASE'
+
+    
+    
     compile("org.springframework.social:spring-social-security:1.1.0.RELEASE")
     compile("org.springframework.social:spring-social-config:1.1.0.RELEASE")
     compile("org.springframework.social:spring-social-facebook:1.1.0.RELEASE")
@@ -53,6 +67,10 @@ dependencies {
     compile("org.hibernate:hibernate-validator")
     // https://mvnrepository.com/artifact/javax.validation/validation-api
     compile group: 'javax.validation', name: 'validation-api', version: '1.0.0.GA'
+
+// https://mvnrepository.com/artifact/org.springframework/spring-messaging
+//compile group: 'org.springframework', name: 'spring-messaging', version: '4.0.3.RELEASE'
+
 
     // https://mvnrepository.com/artifact/javax.validation/validation-api
     // compile group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
