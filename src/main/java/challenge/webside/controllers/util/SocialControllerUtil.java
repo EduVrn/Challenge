@@ -341,11 +341,18 @@ public class SocialControllerUtil {
         comment.setAuthor(getSignedUpUser(request, currentUser));
         model.addAttribute("comment", comment);
         int commentsCount = 0;
-
+        
         for (Comment comm : comments) {
             commentsCount++;
             commentsCount += comm.getSubCommentsCount();
         }
+        Comment hiddenComment = new Comment();
+        hiddenComment.setId(-1);
+        hiddenComment.setMessage("hidden Comment");
+        hiddenComment.setDate(new Date());
+        hiddenComment.setAuthor(comment.getAuthor());
+        
+        model.addAttribute("hiddenComment", hiddenComment);
         model.addAttribute("commentsCount", commentsCount);
         model.addAttribute("comments", comments);
     }

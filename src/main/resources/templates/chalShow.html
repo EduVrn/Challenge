@@ -10,6 +10,8 @@
         <link th:replace="fragments/commonDependencies :: commonDependencies" th:remove="tag"/>
         <link rel="stylesheet" href="../css/pageLoader.css"/>
         <script src="../js/jquery.min.js"></script>
+        <script src="../js/Interactive/ControlSwitchPages/challengeControl.js"></script>
+        
         <link rel="stylesheet" href="../css/style.css"/>
     </head>
     <body>
@@ -18,6 +20,8 @@
             <div class="inner-container container">
                 <div style="margin-top: 100px; " class="row">
                     <div class="section-header col-md-12">
+                    <input id="mainObjectId" type="hidden" th:value="${challenge.getId()}" name="id"/>
+                    
                         <h2 th:text="${#strings.toUpperCase(challenge.getName())}" style='display: inline-block;'/>   
                         <form auth:can="EDIT_CHALLENGE" method="GET" action="update" style='display: inline-block; margin-left: 20px;'>
                             <input type="hidden" th:value="${challenge.getId()}" name="id"/>
@@ -78,13 +82,13 @@
                 <div auth:can="VOTE_FOR_CHALLENGE" style="margin-top: 15px;">
                     <form  method="GET" action="voteFor" style='display: inline-block;'>
                         <input type="hidden" th:value="${challenge.getId()}" name="id"/>
-                        <input type="submit" onclick='this.parentNode.submit();' class="btn btn-success" 
+                        <input type="submit" onclick='this.parentNode.submit();' class="btn btn-success send-vote" 
                                style="display: inline-block;" th:value="#{approveChallenge}" />
                         <span style="display: inline-block; font-size: 14px;" class="badge" th:text="${challenge.getVotesFor().size()}"/>
                     </form>
                     <form method="GET" action="voteAgainst" style='display: inline-block; margin-left: 30px;'>
                         <input type="hidden" th:value="${challenge.getId()}" name="id"/>
-                        <input type="submit" onclick='this.parentNode.submit();' class="btn btn-danger" 
+                        <input type="submit" onclick='this.parentNode.submit();' class="btn btn-danger send-vote" 
                                style="display: inline-block;" th:value="#{disapproveChallenge}" />                        
                         <span style="display: inline-block; font-size: 14px;" class="badge" th:text="${challenge.getVotesAgainst().size()}"/> 
                     </form>
@@ -119,7 +123,7 @@
                                 <span class="glyphicon glyphicon-calendar"></span>
                             </span>
                         </div>
-                        <input type="submit" class="btn btn-default" th:value="#{sendComment}" />
+                        <input type="submit" class="btn btn-default send-message" th:value="#{sendComment}" />
                     </form>
                 </div>
                 <div th:if="${!isChalDef}" th:each="step : ${listOfSteps}">
@@ -155,11 +159,19 @@
                         </div> 
                         <form th:object="${comment}" th:action="${challenge instanceof T(challenge.dbside.models.ChallengeDefinition)} ? @{/newcomment} : @{/newinscomment}" method="post" style="margin-bottom: 40px;">
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                            <input type="hidden" name="id" th:value="${challenge.getId()}"/>
+                            <input type="hidden" name="idMainObject" th:value="${challenge.getId()}"/>
                             <input type="text" class="form-control" th:placeholder="#{commentPlaceholder}" th:field="*{message}" />
-                            <input type="submit" class="btn btn-default" th:value="#{sendComment}" />
+                            <!-- input type="text" class="form-control" th:placeholder="#{commentPlaceholder}" /-->
+                            <input type="submit" class="btn btn-default send-message" th:value="#{sendComment}" />
+                            <!-- button class="btn btn-default" onclick="sendMessage(this)" />send<button/-->
+                            
                         </form>
                         <div class="comments-list">
+                        	<ul id="templateComment" class="media" style="display: none;">
+                        		<li th:replace="fragments/modelElementsViews/comment :: subcomment(comment =${hiddenComment}, depth=0)" />
+                        	</ul>
+                        	
+                            
                             <ul th:each="comment : ${comments}" class="media">
                                 <li th:replace="fragments/modelElementsViews/comment :: subcomment(comment =${comment}, depth=0)"/>                                 
                             </ul>

@@ -61,7 +61,7 @@ public class UsersDao {
     }
 
     public List<UserProfile> getUserProfiles(final int userDbId) {
-        return jdbcTemplate.query("select * from UserProfile where userEntityId = ?",
+    	return jdbcTemplate.query("select * from UserProfile where userEntityId = ?",
                 new RowMapper<UserProfile>() {
             public UserProfile mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return new UserProfile(
