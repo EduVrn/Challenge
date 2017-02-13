@@ -9,6 +9,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 
 import java.util.List;
@@ -23,10 +24,16 @@ public class ChallengeDefinition extends BaseEntity implements Commentable {
 
     public ChallengeDefinition() {
         super(ChallengeDefinition.class.getSimpleName());
+        if (getRating() == null) {
+            setRating(0);
+        }
     }
 
     public ChallengeDefinition(DBSource dataSource) {
         super(dataSource);
+        if (getRating() == null) {
+            setRating(0);
+        }
     }
 
     public List<User> getAllAcceptors() {
@@ -128,4 +135,21 @@ public class ChallengeDefinition extends BaseEntity implements Commentable {
     public void addImage(Image image) {
         getDataSource().getChildren().add(image.getDataSource());
     }
+
+    public Integer getRating() {
+        return getDataSource().getAttributes().get(IdAttrGet.IdRating()).getIntValue();
+    }
+
+    public void setRating(Integer rating) {
+        getDataSource().getAttributes().get(IdAttrGet.IdRating()).setIntValue(rating);
+    }
+
+    public void addRating(Integer rating) {
+        Integer curRate = getRating();
+        getDataSource().getAttributes().get(IdAttrGet.IdRating()).setIntValue(curRate += rating);
+    }
+
+    public static final Comparator<ChallengeDefinition> COMPARE_BY_RATING = (ChallengeDefinition left, ChallengeDefinition right)
+            -> Integer.signum(right.getRating() - left.getRating());
+
 }

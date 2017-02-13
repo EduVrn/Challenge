@@ -107,24 +107,37 @@ public class SocialControllerUtil {
     public void setModelForBadDateNewChal(ChallengeDefinition challenge, HttpServletRequest request, Principal currentUser, Model model, String image, String imageName) {
         setModel(request, currentUser, model);
         if (challenge.getId() != null) {
-            //   ChallengeDefinition challengeToSend = (ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class);
-            // challengeToSend.setDate(new Date());
             model.addAttribute("challenge", challenge);
             model.addAttribute("image64", image);
             model.addAttribute("imageName", imageName);
         } else {
-            // challenge.setDate(new Date());
+            challenge.setDate(new Date());
             model.addAttribute("challenge", challenge);
             model.addAttribute("image64", image);
             model.addAttribute("imageName", imageName);
         }
     }
 
+    public void setModelForBadStepChal(int chalId, ChallengeStep step, HttpServletRequest request, Principal currentUser, Model model) {
+        setModel(request, currentUser, model);
+        ChallengeInstance challenge = (ChallengeInstance) serviceEntity.findById(chalId, ChallengeInstance.class);
+        User user = getSignedUpUser(request, currentUser);
+        checkAndUpdateIfOutdated(challenge);
+        dialect.setActions(actionsProvider.getActionsForChallengeInstance(user, challenge));
+        model.addAttribute("challenge", challenge);
+        model.addAttribute("userProfile", user);
+        List<ChallengeStep> listOfSteps = challenge.getSteps();
+        Collections.sort(listOfSteps, ChallengeStep.COMPARE_BY_DATE);
+        model.addAttribute("listOfSteps", listOfSteps);
+        setModelForComments(challenge.getComments(), request, currentUser, model);
+        model.addAttribute("step", step);
+        model.addAttribute("showStepForm", true);
+    }
+
     public void setModel(HttpServletRequest request, Principal currentUser, Model model) {
         String userId = currentUser == null ? null : currentUser.getName();
         String path = request.getRequestURI();
         HttpSession session = request.getSession();
-
         UserConnection connection = null;
         UserProfile profile = null;
         String displayName = null;
@@ -179,8 +192,9 @@ public class SocialControllerUtil {
     public void setModelForMain(HttpServletRequest request, Principal currentUser, Model model) {
         setModel(request, currentUser, model);
 
-        ChallengeDefinition mainChallenge = (ChallengeDefinition) serviceEntity.getAll(ChallengeDefinition.class).get(0);
         List<ChallengeDefinition> challenges = serviceEntity.getAll(ChallengeDefinition.class);
+        Collections.sort(challenges, ChallengeDefinition.COMPARE_BY_RATING);
+        ChallengeDefinition mainChallenge = challenges.remove(0);
         model.addAttribute("mainChallenge", mainChallenge);
         model.addAttribute("challenges", challenges);
     }
@@ -203,7 +217,7 @@ public class SocialControllerUtil {
         long diffInMillies = currentDate.getTime() - closingDate.getTime();
         long diff = TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS);
         synchronized (challenge) {
-            if (diff >= 5 && challenge.getStatus()==ChallengeStatus.PUT_TO_VOTE) {
+            if (diff >= 5 && challenge.getStatus() == ChallengeStatus.PUT_TO_VOTE) {
                 int votesFor = challenge.getVotesFor().size();
                 int votesAgainst = challenge.getVotesAgainst().size();
                 challenge.setStatus(votesFor > votesAgainst ? ChallengeStatus.COMPLETED : ChallengeStatus.FAILED);
@@ -211,6 +225,15 @@ public class SocialControllerUtil {
                 User authorUser = challenge.getAcceptor();
                 authorUser.addRating(votesFor - votesAgainst);
                 serviceEntity.update(authorUser);
+                ChallengeDefinition challengeDef = challenge.getChallengeRoot();
+                challengeDef.addRating(votesFor - votesAgainst);
+                serviceEntity.update(challengeDef);
+            } else {
+                if (currentDate.compareTo(challenge.getDate()) >= 0 && challenge.getStatus() == ChallengeStatus.ACCEPTED) {
+                    challenge.setStatus(ChallengeStatus.PUT_TO_VOTE);
+                    challenge.setClosingDate(new Date());
+                    serviceEntity.update(challenge);
+                }
             }
         }
     }
@@ -219,14 +242,15 @@ public class SocialControllerUtil {
         setModel(request, currentUser, model);
         ChallengeInstance challenge = (ChallengeInstance) serviceEntity.findById(id, ChallengeInstance.class);
         User user = getSignedUpUser(request, currentUser);
-       
+
         checkAndUpdateIfOutdated(challenge);
-      
         dialect.setActions(actionsProvider.getActionsForChallengeInstance(user, challenge));
         model.addAttribute("challenge", challenge);
         ChallengeStep step = new ChallengeStep();
         step.setDate(new Date());
         model.addAttribute("step", step);
+        model.addAttribute("showStepForm", false);
+        model.addAttribute("dateError", false);
         model.addAttribute("userProfile", user);
         List<ChallengeStep> listOfSteps = challenge.getSteps();
         Collections.sort(listOfSteps, ChallengeStep.COMPARE_BY_DATE);
@@ -582,6 +606,7 @@ public class SocialControllerUtil {
         ChallengeInstance chalIns = new ChallengeInstance();
         chalIns.setName(chal.getName());
         chalIns.setDate(chal.getDate());
+        chalIns.setClosingDate(chal.getDate());
         chalIns.addImage(img);
         chalIns.setStatus(ChallengeStatus.AWAITING);
         chalIns.setMessage(message);
@@ -632,7 +657,6 @@ public class SocialControllerUtil {
     public void setModelForShowFriends(HttpServletRequest request, Principal currentUser, Model model, int userId) {
         setModel(request, currentUser, model);
         User user = (User) serviceEntity.findById(userId, User.class);
-        List<User> fr = user.getFriends();
         model.addAttribute("listSomething", user.getFriends());
         model.addAttribute("idParent", userId);
         model.addAttribute("handler", "profile");
