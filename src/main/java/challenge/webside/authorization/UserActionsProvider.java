@@ -24,6 +24,9 @@ public class UserActionsProvider {
             actions.add(Action.EDIT_PROFILE);
         } else {
             actions.add(Action.THROW_CHALLENGE_FOR_USER);
+            if (!userWhichMakesRequest.getFriends().contains(userWhoseProfileRequested)) {
+                actions.add(Action.ADD_FRIEND);
+            }
         }
         return actions;
     }

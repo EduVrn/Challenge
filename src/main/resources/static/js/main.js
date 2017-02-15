@@ -192,9 +192,9 @@ var showingStepForm = false;
 $('.new_step small a').on('click', function () {
     showingStepForm = !showingStepForm;
     if (showingStepForm)
-        $('#step_div').css('display' , 'block');
+        $('#step_div').css('display', 'block');
     else
-        $('#step_div').css('display' , 'none');
+        $('#step_div').css('display', 'none');
 });
 
 $(document).on('change', 'input[type="file"]', function () {
