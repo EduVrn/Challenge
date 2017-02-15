@@ -206,4 +206,6 @@ public class User extends BaseEntity implements Commentable {
         getDataSource().getAttributes().get(IdAttrGet.IdRating()).setIntValue(curRate += rating);
     }
 
+    public static final Comparator<User> COMPARE_BY_RATING = (User left, User right)
+            -> Integer.signum(right.getRating() - left.getRating());
 }

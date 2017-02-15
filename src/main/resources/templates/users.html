@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+
+    <head>
+        <title>Users</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link th:replace="fragments/commonDependencies :: commonDependencies" th:remove="tag"/>
+        <link rel="stylesheet" href="css/pageLoader.css"/>
+        <link rel="stylesheet" href="../css/style.css" />
+        <script src="js/jquery.min.js"></script>
+    </head>
+
+    <body>
+        <div th:replace="fragments/header::userInfo"/>
+        <div class="content-wrapper">
+            <div class="inner-container container">
+                <div style="margin-top: 100px; " class="row">
+                    <div class="col-md-12">
+                        <form style="width: 100%;" action="users/filter">
+                            <input type="hidden" id="csrf-token" name="_csrf" th:value="${_csrf.token}" />
+                            <input type="text" name="filter" th:placeholder="#{usersSearchPlaceholder}" style="width: 90%"/>
+                            <button class="btn btn-default" onclick="this.parentNode.submit();"><span class="glyphicon glyphicon-search"></span><a /></button> 
+                        </form>
+                        <form th:unless="${showingAllUsers}" method="GET" action="/users" style="margin: 10px 0px;">
+                            <a th:text="#{showAllUsersLink}" onclick="this.parentNode.submit();"/>
+                        </form>
+                        <form th:if="${showingAllUsers}" action="users/notFriends" style="margin: 10px 0px;">
+                            <a th:text="#{showNotFriendsLink}" onclick="this.parentNode.submit();"/>
+                        </form>
+                        <div class="list-content">
+                            <ul id="list-users" class="list-group">
+                                <li th:each="user : ${users}" class="list-group-item text-left">
+                                    <img class="img-thumbnail" style="width: 80px; height: 80px; display: inline-block;" th:src="${user.getMainImageEntity().getBase64()}" />
+                                    <form style="display: inline-block;" method="GET" action="/profile">
+                                        <input type="hidden" name="id" th:value="${user.getId()}" />
+                                        <h3><a th:text="${user.getName()}" class="name" onclick="this.parentNode.parentNode.submit();" /></h3>
+                                    </form>
+                                    <div class="pull-right">
+                                        <form th:unless="${curUser.getFriends().contains(user)}" method="GET" action="/addFriend">
+                                            <input type="hidden" name="id" th:value="${user.getId()}" />
+                                            <input type="submit" class="btn btn-default" th:value="#{addFriendButton}" />
+                                        </form>
+                                        <h3 th:if="${curUser.getFriends().contains(user)}">
+                                            <span class="label label-info" th:text="#{friendLabel}" />
+                                        </h3>
+                                    </div>
+                                    <div class="break" style="width: 100%; margin: 20px;"></div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+        </div>
+
+        <script th:replace="fragments/commonDependencies :: commonJS" th:remove="tag"/>
+        <script src="js/csslayoutextenders/mainPageLayout.js"></script>
+        <script src="js/responsiveLayout/plugins.js"></script>
+        <script src="js/responsiveLayout/chalAnimating.js"></script>
+    </body>
+</html>
+
