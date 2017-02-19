@@ -17,7 +17,7 @@
             <div class="inner-container container">
                 <form   th:action="@{information}" th:object="${challenge}" method="post">
                     <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrf-token"/>
-                    <div style="margin-top: 100px; " class="row">
+                    <div style="margin-top: 40px; " class="row">
                         <div class="section-header col-md-12">
                         </div> 
                     </div> 
@@ -27,62 +27,65 @@
                             <h1 th:text="#{updatingTitle}" th:case="*" /> 
                         </div>
                         <div class="col-md-12">
-
-                            <input type="hidden" th:field="*{id}" />
-                            <label th:text="#{titleLabel}" class="col-md-2 control-label" />
-                            <div class="chal-photo col-md-10">
-                                <input  class="form-control" type="text" th:placeholder="#{titlePlaceholder}"  th:field="*{name}" />
-                                <div class="alert alert-danger" th:if="${#fields.hasErrors('name')}">
-                                    <p  th:errors="*{name}">Name Error</p>    
-                                </div>
-                            </div>
-                            <label th:text="#{descriptionLabel}" class="col-md-2 control-label" />
-                            <div class="chal-photo col-md-10">
-                                <h4><textarea  maxlength="254"  class="form-control"  cols="40" rows="5" th:placeholder="#{descriptionPlaceholder}"  th:field="*{description}" /></h4>
-                                <div class="alert alert-danger" th:if="${#fields.hasErrors('description')}">
-                                    <p  th:errors="*{description}">Name Error</p>    
-                                </div>
-                            </div>
-                            <label th:text="#{imageLabel}" class="col-md-2 control-label" />
-                            <div th:if="${challenge.getId() != null}" class="chal-photo col-md-10">
-                                <div style="width: 300px;">
-                                    <img th:src="${challenge.getMainImageEntity().getBase64()}" alt="" id="new-image" style="width: 100%;"/>
-                                </div>
-                                <input type="button" data-target="#modal-challenge-images" id="new-image-btn"
-                                       data-toggle="modal" th:value="#{changeImageButton}" style="cursor:pointer; color: black; margin: 10px 0px;" />
-                                <input type="hidden" name="image" />
-                            </div>
-                            <div th:if="${challenge.getId() == null}" class="chal-photo col-md-10">
-                                <input type="button" th:value="#{uploadImageButton}" id="upload-file-btn" class="btn btn-default" />
-                                <input type="file" name="pic" accept="image/*" id="input-file" style="display: none;"/>
-                                <p class="image-name" style="display: inline-block;" th:utext="${imageName}"/>
-                                <input id="image-name" type="hidden" th:value="${imageName}"  name="image-name" />
-                                <input type="hidden" th:value="${image64}"  name="image" />
-                            </div>
-                            <div class="chal-photo col-md-12"> 
-                                <span/>
-                            </div>
-                            <label th:text="#{endDateLabel}" class="col-md-2 control-label" />
-                            <div class="chal-photo col-md-10">  
-                                <div class="form-group">
-                                    <div class="input-group date" id="datetimepicker1">
-                                        <input type="text" placeholder="dd/MM/yyyy HH:mm" pattern="^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[0-2])\/\d\d\d\d (00|0[0-9]|1[0-9]|2[0-3]):([0-9]|[0-5][0-9])$" th:field="*{date}" class="form-control" />
-
-                                        <span class="input-group-addon">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                        </span>
+                            <div class="chalShowChallenge" style="padding-top:15px;">
+                                <div class="row">
+                                    <input type="hidden" th:field="*{id}" />
+                                    <label th:text="#{titleLabel}" class="col-md-2 control-label" />
+                                    <div class="chal-photo col-md-10">
+                                        <input  class="form-control" type="text" th:placeholder="#{titlePlaceholder}"  th:field="*{name}" />
+                                        <div class="alert alert-danger" th:if="${#fields.hasErrors('name')}">
+                                            <p  th:errors="*{name}">Name Error</p>    
+                                        </div>
                                     </div>
+                                    <label th:text="#{descriptionLabel}" class="col-md-2 control-label" />
+                                    <div class="chal-photo col-md-10">
+                                        <h4><textarea  maxlength="254"  class="form-control"  cols="40" rows="5" th:placeholder="#{descriptionPlaceholder}"  th:field="*{description}" /></h4>
+                                        <div class="alert alert-danger" th:if="${#fields.hasErrors('description')}">
+                                            <p  th:errors="*{description}">Name Error</p>    
+                                        </div>
+                                    </div>
+                                    <label th:text="#{imageLabel}" class="col-md-2 control-label" />
+                                    <div th:if="${challenge.getId() != null}" class="chal-photo col-md-10">
+                                        <div style="width: 300px;">
+                                            <img th:src="${challenge.getMainImageEntity().getBase64()}" alt="" id="new-image" style="width: 100%;"/>
+                                        </div>
+                                        <input type="button" data-target="#modal-challenge-images" id="new-image-btn"
+                                               data-toggle="modal" th:value="#{changeImageButton}" style="cursor:pointer; color: black; margin: 10px 0px;" />
+                                        <input type="hidden" name="image" />
+                                    </div>
+                                    <div th:if="${challenge.getId() == null}" class="chal-photo col-md-10">
+                                        <input type="button" th:value="#{uploadImageButton}" id="upload-file-btn" class="btn btn-default" />
+                                        <input type="file" name="pic" accept="image/*" id="input-file" style="display: none;"/>
+                                        <p class="image-name" style="display: inline-block;" th:utext="${imageName}"/>
+                                        <input id="image-name" type="hidden" th:value="${imageName}"  name="image-name" />
+                                        <input type="hidden" th:value="${image64}"  name="image" />
+                                    </div>
+                                    <div class="chal-photo col-md-12"> 
+                                        <span/>
+                                    </div>
+                                    <label th:text="#{endDateLabel}" class="col-md-2 control-label" />
+                                    <div class="chal-photo col-md-10">  
+                                        <div class="form-group">
+                                            <div class="input-group date" id="datetimepicker1">
+                                                <input type="text" placeholder="dd/MM/yyyy HH:mm" pattern="^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[0-2])\/\d\d\d\d (00|0[0-9]|1[0-9]|2[0-3]):([0-9]|[0-5][0-9])$" th:field="*{date}" class="form-control" />
+
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="alert alert-danger" th:if="${#fields.hasErrors('date')}">
+                                            <p  th:errors="*{date}">Name Error</p>    
+                                        </div> 
+                                    </div> 
                                 </div>
-                                <div class="alert alert-danger" th:if="${#fields.hasErrors('date')}">
-                                    <p  th:errors="*{date}">Name Error</p>    
-                                </div> 
-                            </div> 
+                            </div>
+                            <div th:switch="*{id}"> 
+                                <input th:case="null" class="btn btn-default text-center" type="submit" name="k" th:value="#{createNewButton}" style="float: right;"/>
+                                <input th:case="*" class="btn btn-default text-center" type="submit" name="k" th:value="#{updateButton}" style="float: right;"/>
+                                <input class="btn btn-default" onclick="javascript:history.back()"  th:value="#{backButton}"  style="float: left;"/>
+                            </div>
                         </div> 
-                        <div th:switch="*{id}"> 
-                            <input th:case="null" class="btn btn-default text-center" type="submit" name="k" th:value="#{createNewButton}" style="float: right;"/>
-                            <input th:case="*" class="btn btn-default text-center" type="submit" name="k" th:value="#{updateButton}" style="float: right;"/>
-                            <input class="btn btn-default" onclick="javascript:history.back()"  th:value="#{backButton}"  style="float: left;"/>
-                        </div>
                     </div>
                 </form>             
             </div> 
@@ -95,20 +98,20 @@
         <script type="text/javascript" src="../js/moment.js"></script>
         <script src="../js/bootstrap-datetimepicker.min.js"></script>
         <script type="text/javascript">
-                                $(function () {
-                                    $('#datetimepicker1').datetimepicker({format: 'DD/MM/YYYY HH:mm'})
-                                            .data("DateTimePicker").setMinDate(new Date());
-                                });
+                                    $(function () {
+                                        $('#datetimepicker1').datetimepicker({format: 'DD/MM/YYYY HH:mm'})
+                                                .data("DateTimePicker").setMinDate(new Date());
+                                    });
 
-                                $("#upload-file-btn").click(function () {
-                                    $("#input-file").trigger('click');
-                                    $('#modal-challenge-images').modal('hide');
-                                });
-                                $('img[name="image-link"]').on('click', function () {
-                                    $('#new-image').attr('src', $(this).attr('src'));
-                                    $('input[name="image"]').val($(this).prev().val());
-                                    $('#modal-challenge-images').modal('hide');
-                                });
+                                    $("#upload-file-btn").click(function () {
+                                        $("#input-file").trigger('click');
+                                        $('#modal-challenge-images').modal('hide');
+                                    });
+                                    $('img[name="image-link"]').on('click', function () {
+                                        $('#new-image').attr('src', $(this).attr('src'));
+                                        $('input[name="image"]').val($(this).prev().val());
+                                        $('#modal-challenge-images').modal('hide');
+                                    });
         </script>
     </body>
 </html>

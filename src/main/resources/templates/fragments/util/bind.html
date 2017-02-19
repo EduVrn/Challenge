@@ -14,27 +14,29 @@
     </head>
     <body>
         <th:block th:fragment="bindedSocialNetworks">
-            <h3 class="col-md-12 col-sm-12 col-xs-12" th:text="#{profileBindedLabel}" > Already connected</h3>
-            <div th:if="${mapOfNetworks.get('twitter')}!=null"><i class="fa fa-twitter"></i><a th:utext="${mapOfNetworks.get('twitter')}">  </a></div>
-            <div th:if="${mapOfNetworks.get('github')}!=null"> <i class="fa fa-github"></i><a th:utext="${mapOfNetworks.get('github')}"> </a></div>
-            <div th:if="${mapOfNetworks.get('facebook')}!=null"><i class="fa fa-facebook"></i><a th:utext="${mapOfNetworks.get('facebook')}"></a></div>
-            <div th:if="${mapOfNetworks.get('vkontakte')}!=null"><i class="fa fa-vk"></i><a th:utext="${mapOfNetworks.get('vkontakte')}">  </a></div>
+            <div>
+                <h3 class="col-md-12 col-sm-12 col-xs-12" th:text="#{profileBindedLabel}" > Already connected</h3>
+                <div th:if="${mapOfNetworks.get('twitter')}!=null"><i class="fa fa-twitter"></i><a th:utext="${mapOfNetworks.get('twitter')}">  </a></div>
+                <div th:if="${mapOfNetworks.get('github')}!=null"> <i class="fa fa-github"></i><a th:utext="${mapOfNetworks.get('github')}"> </a></div>
+                <div th:if="${mapOfNetworks.get('facebook')}!=null"><i class="fa fa-facebook"></i><a th:utext="${mapOfNetworks.get('facebook')}"></a></div>
+                <div th:if="${mapOfNetworks.get('vkontakte')}!=null"><i class="fa fa-vk"></i><a th:utext="${mapOfNetworks.get('vkontakte')}">  </a></div>
+            </div>
         </th:block>  
         <th:block th:fragment="bindSocialNetwork">
             <h2 class="col-md-12 col-sm-12 col-xs-12" th:text="#{profileBindLabel}" > Bind to your account:</h2>
-            <form th:if="${mapOfNetworks.get('twitter')}==null" class="bind-account" action="/connect/twitter"  method="POST">
+            <form th:if="${mapOfNetworks.get('twitter')}==null" class="bind-account bindButton" action="/connect/twitter"  method="POST">
                 <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> 
                 <a href="javascript:;" onclick="parentNode.submit();" class="ml btn btn-block btn-social btn-sm btn-twitter"><i class="fa fa-twitter"></i>Twitter</a>
             </form>
-            <form th:if="${mapOfNetworks.get('github')}==null" class="bind-account" action="/connect/github"  method="POST">
+            <form th:if="${mapOfNetworks.get('github')}==null" class="bind-account bindButton" action="/connect/github"  method="POST">
                 <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> 
                 <a href="javascript:;" onclick="parentNode.submit();" class="ml btn btn-block btn-social btn-sm btn-github"><i class="fa fa-github"></i>Github</a>   
             </form>
-            <form th:if="${mapOfNetworks.get('facebook')}==null" class="bind-account" action="/connect/facebook"  method="POST">
+            <form th:if="${mapOfNetworks.get('facebook')}==null" class="bind-account bindButton" action="/connect/facebook"  method="POST">
                 <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> 
-                <a  href="javascript:;" onclick="parentNode.submit();" class="ml btn btn-block btn-social btn-sm btn-facebook"><i class="fa fa-facebook"></i>Facebook</a>
+                <a  href="javascript:;" onclick="parentNode.submit();" class=" ml btn btn-block btn-social btn-sm btn-facebook"><i class="fa fa-facebook"></i>Facebook</a>
             </form>
-            <form th:if="${mapOfNetworks.get('vkontakte')}==null" class="col-md-6 col-sm-6 col-xs-6" action="/connect/vkontakte"  method="POST">
+            <form th:if="${mapOfNetworks.get('vkontakte')}==null" class="bind-account bindButton " action="/connect/vkontakte"  method="POST">
                 <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> 
                 <a href="javascript:;" onclick="parentNode.submit();"  class="ml btn btn-block btn-social btn-sm btn-vk"><i class="fa fa-vk"></i>Vkontakte</a>
             </form>
