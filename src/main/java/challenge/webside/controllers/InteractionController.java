@@ -4,9 +4,7 @@ import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.Comment;
 import challenge.dbside.models.User;
 import challenge.dbside.services.ini.MediaService;
-import challenge.webside.authorization.UserActionsProvider;
 import challenge.webside.controllers.util.ChallengeDefinitionUtil;
-import challenge.webside.controllers.util.SocialControllerUtil;
 import challenge.webside.controllers.util.UserUtil;
 import challenge.webside.dao.UsersDao;
 import challenge.webside.interactive.InteractiveHandler;
@@ -15,6 +13,7 @@ import challenge.webside.interactive.InteractiveVote;
 import challenge.webside.model.UserProfile;
 import challenge.webside.model.ajax.AjaxResponseBody;
 import challenge.webside.model.ajax.SearchCriteria;
+import challenge.webside.model.ajax.NameAndImage;
 import java.security.Principal;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,7 +28,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,17 +44,8 @@ public class InteractionController {
     private UsersDao usersDao;
 
     @Autowired
-    private ConnectionRepository connectionRepository;
-
-    @Autowired
-    private SocialControllerUtil util;
-
-    @Autowired
     @Qualifier("storageServiceUser")
     private MediaService serviceEntity;
-
-    @Autowired
-    private UserActionsProvider actionsProvider;
 
     @Autowired
     private SimpMessagingTemplate template;
@@ -162,12 +151,14 @@ public class InteractionController {
     AjaxResponseBody searchFriendsAjax(@RequestBody SearchCriteria search) {
         AjaxResponseBody result = new AjaxResponseBody();
         if (search != null) {
-            List<User> users = userUtil.filterUsers(search.getFilter(), search.getUserId());
+            List<User> users = userUtil.filterFriends(search.getFilter(), search.getUserId());
 
             if (users.size() > 0) {
-                Map<Integer, String> usersNames = new HashMap<>();
+                Map<Integer, NameAndImage> usersNames = new HashMap<>();
                 users.forEach((user) -> {
-                    usersNames.put(user.getId(), user.getName());
+                    NameAndImage nameAndImage = new NameAndImage();
+                    nameAndImage.setName(user.getName());
+                    usersNames.put(user.getId(), nameAndImage);
                 });
                 result.setCode("200");
                 result.setMsg("");
@@ -194,9 +185,11 @@ public class InteractionController {
             List<ChallengeDefinition> challenges = challengeDefUtil.filterChallenges(search.getFilter(), search.getUserId());
 
             if (challenges.size() > 0) {
-                Map<Integer, String> chalNames = new HashMap<>();
+                Map<Integer, NameAndImage> chalNames = new HashMap<>();
                 for (ChallengeDefinition challenge : challenges) {
-                    chalNames.put(challenge.getId(), challenge.getName());
+                    NameAndImage nameAndImage = new NameAndImage();
+                    nameAndImage.setName(challenge.getName());
+                    chalNames.put(challenge.getId(), nameAndImage);
                 }
                 result.setCode("200");
                 result.setMsg("");
@@ -212,4 +205,37 @@ public class InteractionController {
         return result;
     }
 
+    @RequestMapping(value = "/getUsers", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody
+    AjaxResponseBody searchUsers(@RequestBody SearchCriteria search) {
+
+        AjaxResponseBody result = new AjaxResponseBody();
+
+        if (search != null) {
+            List<User> filteredUsers = userUtil.filterUsers(search.getFilter());
+
+            User currentUser = (User) serviceEntity.findById(search.getUserId(), User.class);
+            if (filteredUsers.size() > 0) {
+                Map<Integer, NameAndImage> usersAjax = new HashMap<>();
+                for (User user : filteredUsers) {
+                    NameAndImage nameAndImage = new NameAndImage();
+                    nameAndImage.setName(user.getName());
+                    nameAndImage.setImage(user.getMainImageEntity().getBase64());
+                    nameAndImage.setIsFriend(currentUser.getFriends().contains(user));
+                    usersAjax.put(user.getId(), nameAndImage);
+                }
+                result.setCode("200");
+                result.setMsg("");
+                result.setResult(usersAjax);
+            } else {
+                result.setCode("204");
+                result.setMsg("No users");
+            }
+        } else {
+            result.setCode("400");
+            result.setMsg("Search criteria is empty");
+        }
+        return result;
+    }
 }

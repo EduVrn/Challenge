@@ -12,7 +12,7 @@ public class AjaxResponseBody {
     String code;
 
     @JsonView(Views.Public.class)
-    Map<Integer, String> result;
+    Map<Integer, NameAndImage> result;
 
     public String getMsg() {
         return msg;
@@ -30,11 +30,11 @@ public class AjaxResponseBody {
         this.code = code;
     }
 
-    public Map<Integer, String> getResult() {
+    public Map<Integer, NameAndImage> getResult() {
         return result;
     }
 
-    public void setResult(Map<Integer, String> result) {
+    public void setResult(Map<Integer, NameAndImage> result) {
         this.result = result;
     }
 

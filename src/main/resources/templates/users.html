@@ -19,10 +19,9 @@
             <div class="inner-container container">
                 <div style="margin-top: 100px; " class="row">
                     <div class="col-md-12">
-                        <form style="width: 100%;" action="users/filter">
+                        <form style="width: 100%;">
                             <input type="hidden" id="csrf-token" name="_csrf" th:value="${_csrf.token}" />
-                            <input type="text" name="filter" th:placeholder="#{usersSearchPlaceholder}" style="width: 90%"/>
-                            <button class="btn btn-default" onclick="this.parentNode.submit();"><span class="glyphicon glyphicon-search"></span><a /></button> 
+                            <input type="text" id="users-filter" th:placeholder="#{usersSearchPlaceholder}" style="width: 100%"/>
                         </form>
                         <form th:unless="${showingAllUsers}" method="GET" action="/users" style="margin: 10px 0px;">
                             <a th:text="#{showAllUsersLink}" onclick="this.parentNode.submit();"/>
@@ -30,6 +29,9 @@
                         <form th:if="${showingAllUsers}" action="users/notFriends" style="margin: 10px 0px;">
                             <a th:text="#{showNotFriendsLink}" onclick="this.parentNode.submit();"/>
                         </form>
+                        <input type="hidden" th:value="${curUser.getId()}" id="user-id" />
+                        <input type="hidden" th:value="#{addFriendButton}" id="add-friend-text" />
+                        <input type="hidden" th:value="#{friendLabel}" id="friend-label" />
                         <div class="list-content">
                             <ul id="list-users" class="list-group">
                                 <li th:each="user : ${users}" class="list-group-item text-left">
@@ -60,6 +62,7 @@
         <script src="js/csslayoutextenders/mainPageLayout.js"></script>
         <script src="js/responsiveLayout/plugins.js"></script>
         <script src="js/responsiveLayout/chalAnimating.js"></script>
+        <script src="js/ajaxSearch.js"></script>
     </body>
 </html>
 
