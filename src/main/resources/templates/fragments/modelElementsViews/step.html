@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8"/>
+
+    </head>
+    <body>
+        <th:block th:fragment="stepAddAndShow">
+            <h2 th:if="${!isChalDef}" th:text="#{chalStepsLabel}" /> 
+            <div auth:can="EDIT_CHALLENGE" th:if="${!isChalDef}" class="new_step">
+                <small>
+                    <a name="step-link" th:text="#{newStepForChallenge}"></a>
+                </small>
+            </div>
+            <div name="stepform" auth:can="EDIT_CHALLENGE" th:if="${!isChalDef}" class="step_div" th:id="step_div" th:style="${showStepForm} ? 'display: block;' : 'display: none;'">  
+                <form th:action="@{newstep}" th:object="${step}" method="post" style="margin-bottom: 40px;">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <input type='hidden' th:value='${challenge.getId()}' name='id'/>                       
+                    <input  class="form-control" type="text" th:placeholder="#{titlePlaceholder}"  th:field="*{name}" />                               
+                    <div class="alert alert-danger" th:if="${#fields.hasErrors('name')}">
+                        <p  th:errors="*{name}">Name Error</p>    
+                    </div>
+                    <input type="text" class="form-control" th:placeholder="#{commentPlaceholder}" th:field="*{message}" />
+                    <div class="alert alert-danger" th:if="${#fields.hasErrors('message')}">
+                        <p  th:errors="*{message}">Name Error</p>    
+                    </div>
+                    <div class="input-group date" id="datetimepicker1">
+                        <input type="text" placeholder="dd/MM/yyyy HH:mm" pattern="^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[0-2])\/\d\d\d\d (00|0[0-9]|1[0-9]|2[0-3]):([0-9]|[0-5][0-9])$" th:field="*{date}" class="form-control" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                    <div class="alert alert-danger" th:if="${dateError}">
+                        <p  th:text="#{dateStepErrorMessage}">Date Error</p>    
+                    </div>
+                    <input type="submit" class="btn btn-default" th:value="#{sendComment}" />
+                </form>
+            </div>
+
+            <div class="row">
+                <div th:if="${!isChalDef}" th:each="step : ${listOfSteps}" class="box-content panel-body panel panel-danger col-md-12 col-lg-12 col-sm-12 col-xs-12" style="border-width: 5;" >
+                    <div class="col-md-3 col-lg-3 col-sm-4 col-xs-6"> 
+                        <img class="img-rounded img-responsive" th:src="${challenge.getMainImageEntity().getBase64()}"  alt=""></img> 
+                    </div>
+                    <div class="col-md-9 col-lg-9 col-sm-8 col-xs-6">
+                        <h2 class="chal-title" th:text="${step.getName()}"></h2>
+                        <span class="chal-meta" th:text="${#dates.format(step.date, 'dd/MM/yyyy HH:mm')}"></span>
+                        <h4 class="ellipsis desc" th:text="${step.getMessage()}"></h4>
+                    </div>
+                </div> 
+            </div> 
+        </th:block>
+    </body>
+</html>

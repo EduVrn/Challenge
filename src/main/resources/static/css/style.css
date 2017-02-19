@@ -8,7 +8,7 @@
 }*/
 body,
 html {
-    background-color: #ffffff;
+    background-color: #f5f4f4;
     color: #8c989e;
     font-family: 'Open Sans', sans-serif;
     font-weight: 300;
@@ -44,13 +44,18 @@ html {
 }
 h1,
 h2,
-h3,
+h3 {
+    font-family:  "Comic Sans MS", cursive, sans-serif;
+    color: #1c2334;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
 h4,
 h5,
 h6 {
-    font-family: 'Montserrat', sans-serif;
+    font-family:  'Montserrat', sans-serif;
     color: #1c2334;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     margin-top: 20px;
 }
 h3,
@@ -199,19 +204,6 @@ a {
 
 
 
-
-
-/*
- * Blog
- */
-
-.blog-main .blog-item {
-    margin-bottom: 50px;
-}
-.blog-main .pager {
-    margin-top: 90px;
-}
-.post-media,
 .chal-title,
 .post-meta {
     display: block;
@@ -400,4 +392,102 @@ label {
 
 .dynamicTile {
     padding: 5px;
+}
+
+.header-button{
+    margin-left: 5px;
+    margin-top: -6px;
+}
+
+.chalShowChallenge{
+    background-color: #ffffff; 
+    padding-bottom:25px; 
+    padding-left:25px;
+    padding-right:25px;
+    border-radius: 10px; 
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    margin-bottom: 15px;
+}
+
+@media screen and (max-width: 767px) {
+    .social-icons {
+        font-size: 40vw;
+    }
+    
+    .subcommentList{
+        margin-left:-40px;
+    }
+    
+}
+
+@media screen and (min-width: 768px) and (max-width: 991px) {
+    .social-icons{
+        font-size: 20vw;
+    }
+}
+
+@media screen and (min-width: 992px) and (max-width: 1199px) {
+    .social-icons{
+        font-size: 20vw;
+    }
+    .affix {  
+        margin-left: -20px;
+        top:70px;
+        position:fixed;
+    }
+}
+@media screen and (min-width: 768px) {
+    .fixed-profile {
+        position:fixed;
+    }
+
+    .affix {
+        top:70px;
+        position:fixed;
+    }
+}
+
+@media (max-width: 767px) {
+    .affix {
+        position: static;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .social-icons {
+        font-size: 20vw;
+    }
+}
+
+.github-icon {
+    margin-top: 5vh;
+    color: rgba(0,0,0,1);
+}
+
+.twitter-icon {
+    margin-top: 5vh;
+    color: rgba(105,167,249,1);
+}
+.facebook-icon {
+    margin-left: 5vw;
+    color: rgba(68,93,125,1);
+}
+.vk-icon {
+    color: rgba(79,117,167,1);
+}
+
+.collapse.in {
+    height: auto !important;
+}
+
+.avatar-image {
+    margin-top: 15px;
+}
+
+.underAvatarButton{
+    margin-top:5px;
+}
+
+.bindButton {
+   margin-top:5px; 
 }

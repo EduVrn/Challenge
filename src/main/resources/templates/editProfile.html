@@ -13,37 +13,59 @@
             <div class="inner-container container">
                 <form action="/profile" th:object="${userProfile}" method="post">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" id="csrf-token"/>
-                    <div style="margin-top: 100px; " class="row">
+                    <div style="margin-top: 40px; " class="row">
                         <div class="section-header col-md-12">
+                            <h1 th:text="#{profileSettingsButton}"/>
                         </div> 
                     </div> 
-                    <div class="row">
-                        <h1 th:text="#{editingTitle}" />
-                        <div class="col-md-12">
-                            <input type="hidden" th:field="*{id}" />
-                            <label th:text="#{nameLabel}" class="col-md-2 control-label" />
-                            <div class="chal-photo col-md-10">
-                                <input maxlength="" class="form-control" type="text" th:placeholder="#{namePlaceholder}"  th:field="*{name}" />
-                            </div>
-                            <label th:text="#{photoLabel}" class="col-md-2 control-label" />
-                            <div class="chal-photo col-md-10"> 
-                                <div style="width: 300px;">
-                                    <img th:src="${userProfile.getMainImageEntity().getBase64()}" alt="" id="new-image" style="width: 100%;"/>
+                    <div class="col-md-6">
+                        <div class="chalShowChallenge" style="padding-top: 15px;">
+                            <div class="row">
+                                <h1 th:text="#{editingTitle}" />
+                                <div class="col-md-12">
+                                    <input type="hidden" th:field="*{id}" />
+                                    <label th:text="#{nameLabel}" class="col-md-2 control-label" />
+                                    <div class="chal-photo col-md-10">
+                                        <input maxlength="" class="form-control" type="text" th:placeholder="#{namePlaceholder}"  th:field="*{name}" />
+                                    </div>
+                                    <label th:text="#{photoLabel}" class="col-md-2 control-label" />
+                                    <div class="chal-photo col-md-10"> 
+                                        <div style="width: 300px;">
+                                            <img th:src="${userProfile.getMainImageEntity().getBase64()}" alt="" id="new-image" style="width: 100%;"/>
+                                        </div>
+                                        <div style="margin: 10px 0px;">
+                                            <input type="button" data-target="#modal-user-images" id="new-image-btn"
+                                                   data-toggle="modal" th:value="#{changeImageButton}" style="cursor:pointer; color: black; top: 10px;" />
+                                        </div>
+                                        <input type="hidden" name="image" />
+                                    </div>
+                                </div> 
+                                <div> 
+                                    <input class="btn btn-default text-center" type="submit" name="k" th:value="#{updateButton}" style="float: right;"/>
+                                    <input class="btn btn-default" onclick="javascript:history.back()"  th:value="#{backButton}"  style="float: left;"/>
                                 </div>
-                                <div style="margin: 10px 0px;">
-                                    <input type="button" data-target="#modal-user-images" id="new-image-btn"
-                                           data-toggle="modal" th:value="#{changeImageButton}" style="cursor:pointer; color: black; top: 10px;" />
-                                </div>
-                                <input type="hidden" name="image" />
                             </div>
-                        </div> 
-                        <div> 
-                            <input class="btn btn-default text-center" type="submit" name="k" th:value="#{updateButton}" style="float: right;"/>
-                            <input class="btn btn-default" onclick="javascript:history.back()"  th:value="#{backButton}"  style="float: left;"/>
                         </div>
                     </div>
                 </form> 
-                <div th:replace="fragments/util/bind::bindSocialNetwork" th:remove="tag"/>  
+                <div class="col-md-6">
+                    <div class="chalShowChallenge">
+                        <div class="row">
+                            <div th:replace="fragments/util/bind::bindSocialNetwork" th:remove="tag"/>  
+                        </div>
+                    </div> 
+                </div>
+                <div class="col-md-6">
+                    <div class="chalShowChallenge">
+                        <div class="row">
+                            <h1 th:text="#{changeLangTitle}" />
+                            <form  method="GET" th:action="@{../changelang}">
+                                <button name="lang" type="submit" th:value="en" class="lang-button col-md-6">English</button>
+                                <button  name="lang" type="submit" th:value="ru" class="lang-button col-md-6">Russian</button>
+                            </form>
+                        </div>
+                    </div>
+                </div> 
             </div> 
         </div>
 
@@ -56,15 +78,15 @@
         <script src="../js/responsiveLayout/plugins.js"></script>
         <script src="../js/responsiveLayout/chalAnimating.js"></script>
         <script>
-            $('img[name="image-link"]').on('click', function () {
-                $('#new-image').attr('src', $(this).attr('src'));
-                $('input[name="image"]').val($(this).prev().val());
-                $('#modal-user-images').modal('hide');
-            });
-            $("#upload-file-btn").click(function () {
-                $("#input-file").trigger('click');
-                $('#modal-user-images').modal('hide');
-            });
+                                        $('img[name="image-link"]').on('click', function () {
+                                            $('#new-image').attr('src', $(this).attr('src'));
+                                            $('input[name="image"]').val($(this).prev().val());
+                                            $('#modal-user-images').modal('hide');
+                                        });
+                                        $("#upload-file-btn").click(function () {
+                                            $("#input-file").trigger('click');
+                                            $('#modal-user-images').modal('hide');
+                                        });
         </script>
     </body>
 </html>
