@@ -38,14 +38,6 @@ public class UserController {
         return ControllerUtil.getPreviousPageByRequest(request).orElse("/");
     }
 
-    @RequestMapping(value = "users/filter", method = GET)
-    public String getUsers(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("filter") String filter) {
-        util.setModel(request, currentUser, model);
-        User user = util.getSignedUpUser(request, currentUser);
-        userUtil.setModelForFilterUsers(request, user, model, filter);
-        return "users";
-    }
-
     @RequestMapping(value = "users/notFriends", method = GET)
     public String getNotFriends(HttpServletRequest request, Principal currentUser, Model model) {
         util.setModel(request, currentUser, model);
