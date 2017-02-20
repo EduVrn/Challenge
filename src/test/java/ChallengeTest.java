@@ -3,8 +3,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.concurrent.TimeUnit;
 
@@ -22,6 +20,10 @@ public class ChallengeTest {
         driver = new ChromeDriver();
         baseUrl = "http://localhost:8080/";
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+    }
+
+    @Test
+    public void testCreateNewChallengeWithBadDate() throws Exception {
         driver.get(baseUrl);
         driver.findElement(By.cssSelector("button.btn.btn-default")).click();
         driver.findElement(By.xpath("//div[4]/a/i")).click();
@@ -30,17 +32,21 @@ public class ChallengeTest {
         driver.findElement(By.id("password")).clear();
         driver.findElement(By.id("password")).sendKeys("bill102030");
         driver.findElement(By.name("commit")).click();
-        driver.get("http://localhost:8080/myprofile");
-    }
 
-    @Test
-    public void testCreateNewChallengeWithBadDate() throws Exception {
-        driver.get("http://localhost:8080/myprofile");
-        WebDriverWait wait = new WebDriverWait(driver, 15);
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("loader")));
+        Thread.sleep(2000);
 
-        wait.until(ExpectedConditions.elementToBeClickable(By.name("submit3")));
-        driver.findElement(By.name("submit3")).click();
+        boolean clicked = false;
+        do{
+            try {
+                WebElement element = driver.findElement(By.name("submit3"));
+                element.click();
+            } catch (WebDriverException e) {
+                continue;
+            } finally {
+                clicked = true;
+            }
+        } while (!clicked);
+
         driver.findElement(By.id("name")).clear();
         driver.findElement(By.id("name")).sendKeys("Make a picture of your cat");
         driver.findElement(By.id("description")).clear();
