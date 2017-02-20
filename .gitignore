@@ -4,7 +4,6 @@
 *.iml
 .idea/
 /out/
-derby.log
 repository.xml
 repository/
 src/main/webapp/

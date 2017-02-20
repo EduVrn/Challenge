@@ -112,6 +112,12 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.liquibase/liquibase-core
     compile group: 'org.liquibase', name: 'liquibase-core', version: '3.5.3'
+
+    compile group: 'junit', name: 'junit', version: '4.+'
+    compile 'org.seleniumhq.selenium:selenium-java:2.48.2'
+    compile 'org.seleniumhq.selenium:selenium-server:2.48.2'
+    compile 'org.seleniumhq.selenium:selenium-chrome-driver:2.48.2'
+    compile 'org.seleniumhq.selenium:selenium-firefox-driver:2.48.2'
 }
 
 mainClassName = 'challenge.Application'
