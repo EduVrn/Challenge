@@ -34,6 +34,26 @@ public class LoginTest {
         driver.findElement(By.name("commit")).click();
     }
 
+    @Test
+    public void testLoginWithCorrectCredentials() {
+        driver.get(baseUrl);
+        driver.findElement(By.cssSelector("button.btn.btn-default")).click();
+        driver.findElement(By.xpath("//div[4]/a/i")).click();
+        driver.findElement(By.id("login_field")).clear();
+        driver.findElement(By.id("login_field")).sendKeys("saenghwal");
+        driver.findElement(By.id("password")).clear();
+        driver.findElement(By.id("password")).sendKeys("bill102030");
+        driver.findElement(By.name("commit")).click();
+    }
+
+    @Test
+    public void testLoginWithEmptyCredentials() throws Exception  {
+        driver.get(baseUrl);
+        driver.findElement(By.cssSelector("button.btn.btn-default")).click();
+        driver.findElement(By.xpath("//div[4]/a/i")).click();
+        driver.findElement(By.name("commit")).click();
+    }
+
     @After
     public void tearDown() throws Exception {
         driver.quit();
