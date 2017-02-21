@@ -91,12 +91,7 @@ public class InitialLoader {
         return result;
     }
 
-    public void initial(String contexts) {
-        createContext(contexts);
-        init();
-    }
-
-    private void createContext(String contexts) {
+    public void createTables(String contexts) {
         try {
             Class.forName(jdbcProperties.getDriverClassName()).newInstance();
             DatabaseConnection connection = new JdbcConnection(DriverManager.getConnection(jdbcProperties.getUrl()));
@@ -118,8 +113,19 @@ public class InitialLoader {
         } catch (LiquibaseException e) {
             e.printStackTrace();
         }
+    }
+    
+    public void initial() {
+    	
+    	
+        createContext();
+        init();
+    }
 
-
+    private void createContext() {
+    	/**/
+    	
+    	
         TypeOfAttribute attrName = new TypeOfAttribute(1, "name", TypeAttribute.STRING.getValue());
         TypeOfAttribute attrSurname = new TypeOfAttribute(2, "surname", TypeAttribute.STRING.getValue());
         TypeOfAttribute attrDate = new TypeOfAttribute(3, "date", TypeAttribute.STRING.getValue());
