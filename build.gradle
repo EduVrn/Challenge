@@ -44,6 +44,7 @@ ext {
 }
 
 dependencies {
+    compile('org.springframework.boot:spring-boot-starter')
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -56,9 +57,6 @@ dependencies {
     // https://mvnrepository.com/artifact/org.springframework/spring-context
 	// https://mvnrepository.com/artifact/org.springframework/spring-context
 	compile group: 'org.springframework', name: 'spring-context', version: '4.0.3.RELEASE'
-
-    
-    
     compile("org.springframework.social:spring-social-security:1.1.0.RELEASE")
     compile("org.springframework.social:spring-social-config:1.1.0.RELEASE")
     compile("org.springframework.social:spring-social-facebook:1.1.0.RELEASE")
@@ -113,11 +111,12 @@ dependencies {
     // https://mvnrepository.com/artifact/org.liquibase/liquibase-core
     compile group: 'org.liquibase', name: 'liquibase-core', version: '3.5.3'
 
-    compile group: 'junit', name: 'junit', version: '4.+'
-    compile 'org.seleniumhq.selenium:selenium-java:2.48.2'
-    compile 'org.seleniumhq.selenium:selenium-server:2.48.2'
-    compile 'org.seleniumhq.selenium:selenium-chrome-driver:2.48.2'
-    compile 'org.seleniumhq.selenium:selenium-firefox-driver:2.48.2'
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+    testCompile 'org.seleniumhq.selenium:selenium-java:2.48.2'
+    testCompile 'org.seleniumhq.selenium:selenium-server:2.48.2'
+    testCompile 'org.seleniumhq.selenium:selenium-chrome-driver:2.48.2'
+    testCompile 'org.seleniumhq.selenium:selenium-firefox-driver:2.48.2'
+    testCompile('org.seleniumhq.selenium:selenium-support:2.49.0')
 }
 
 mainClassName = 'challenge.Application'
@@ -126,6 +125,10 @@ if (!hasProperty('mainClass')) {
 }
 task wrapper(type: Wrapper) {
     gradleVersion = '2.5'
+}
+
+test {
+    exclude 'src/test/**'
 }
 
 sourceSets.main.output.resourcesDir = sourceSets.main.output.classesDir
