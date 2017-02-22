@@ -20,26 +20,26 @@ import challenge.webside.imagesstorage.ImageStoreService;
 @ComponentScan
 public class Application extends SpringBootServletInitializer {
 
-    private static InitialLoader initiator;
+	private static InitialLoader initiator;
 
-    @Autowired
-    public void setSomeThing(InitialLoader someThing) {
-        Application.initiator = someThing;
-    }
+	@Autowired
+	public void setSomeThing(InitialLoader someThing) {
+		Application.initiator = someThing;
+	}
 
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(Application.class);
-    }
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		return application.sources(Application.class);
+	}
 
-    public static void main(String[] args) {
-        ApplicationContext ctx = SpringApplication.run(Application.class, args);
-        try {
-            ImageStoreService.login();
-        } catch (Exception ex) {
-            Logger.getLogger(Application.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        initiator.initial();
-    }
+	public static void main(String[] args) {
+		ApplicationContext ctx = SpringApplication.run(Application.class, args);
+		try {
+			ImageStoreService.login();
+		} catch (Exception ex) {
+			Logger.getLogger(Application.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		initiator.initial();
+	}
 
 }
