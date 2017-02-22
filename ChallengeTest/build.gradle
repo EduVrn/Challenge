@@ -1,0 +1,18 @@
+apply plugin: 'java'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'org.slf4j:slf4j-api:1.7.21'
+
+    testCompile 'junit:junit:4.12'
+    
+    testCompile 'org.seleniumhq.selenium:selenium-java:2.48.2'
+    testCompile 'org.seleniumhq.selenium:selenium-server:2.48.2'
+    testCompile 'org.seleniumhq.selenium:selenium-chrome-driver:2.48.2'
+    testCompile 'org.seleniumhq.selenium:selenium-firefox-driver:2.48.2'
+    testCompile('org.seleniumhq.selenium:selenium-support:2.49.0')
+    
+}
