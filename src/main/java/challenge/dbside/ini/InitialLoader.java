@@ -74,10 +74,9 @@ public class InitialLoader {
             ex.printStackTrace();
         }
         // usersCount, user's chaldefsCount,instancesCount, CommentsCount, Comment'sEmbedenceCount
-
         //init(5, 2,2, 4, 3);
         if (iniFlag == true) {
-            init(1, 2, 2, 4, 3);
+            init(1, 2, 2, 4, 7);
         }
     }
 

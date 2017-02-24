@@ -2,11 +2,13 @@ package challenge.webside.controllers.util;
 
 import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.ChallengeInstance;
+import challenge.dbside.models.ChallengeStep;
 import challenge.dbside.models.Comment;
 import challenge.dbside.models.User;
 import challenge.dbside.services.ini.MediaService;
 import challenge.webside.model.UserProfile;
 import java.security.Principal;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -59,6 +61,15 @@ public class CommentUtil {
         serviceEntity.update(currentChallenge);
     }
 
+    private void sortCommentsByDate(List<Comment> comments) {
+        Collections.sort(comments, Comment.COMPARE_BY_DATE);
+        for (Comment comm : comments) {
+            if ( !comm.getComments().isEmpty())
+                sortCommentsByDate(comm.getComments());
+        }
+
+    }
+
     public void setModelForComments(List<Comment> comments, HttpServletRequest request, User currentUser, Model model) {
         Comment comment = new Comment();
         comment.setDate(new Date());
@@ -70,6 +81,7 @@ public class CommentUtil {
             commentsCount++;
             commentsCount += comm.getSubCommentsCount();
         }
+        sortCommentsByDate(comments);
         Comment hiddenComment = new Comment();
         hiddenComment.setId(-1);
         hiddenComment.setMessage("hidden Comment");

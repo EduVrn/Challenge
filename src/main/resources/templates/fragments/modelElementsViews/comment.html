@@ -19,6 +19,7 @@
                     <h4 class="media-heading user_name">
                         <a  th:onclick="'document.getElementById(\'comment_form'+${comment.getId()}+'\').submit();'"
                             th:text="${comment.getAuthor().getName()}"></a>
+                        <small class="showOnMobile" th:classappend="${depth>3} ? embedenceShowToWhom : noEmbedence" th:if="${comment.getParentComment() != null}" th:text="'To '+${comment?.getParentComment()?.getAuthor()?.getName()}"></small>
                     </h4>
                 </form>
                 <p th:text="${comment.getMessage()}" style="color: black;"></p>
@@ -48,8 +49,8 @@
                 </form>
             </div>
             <ul>
-                <li class="subcommentList" th:each="child : ${comment.getComments()}">
-                    <div th:replace="fragments/modelElementsViews/comment :: subcomment(comment =${child}, depth=${depth+1})"  />
+                <li class="subcommentList" th:classappend="${depth>3} ? embedenceNoShift : withShift" th:each="child : ${comment.getComments()}">
+                    <div class="subCommentWithParentAuthor" th:replace="fragments/modelElementsViews/comment :: subcomment(comment =${child}, depth=${depth+1})"  />
                 </li>
             </ul>
         </div>
