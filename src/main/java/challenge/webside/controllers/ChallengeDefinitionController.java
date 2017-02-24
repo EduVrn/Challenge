@@ -56,6 +56,7 @@ public class ChallengeDefinitionController {
 
     @RequestMapping(value = "challenge/update", method = GET, produces = "text/plain;charset=UTF-8")
     public String updateChal(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int id) {
+        util.setModel(request, currentUser, model);
         User user = util.getSignedUpUser(request, currentUser);
         challengeDefUtil.setModelForChallengeShow(id, request, user, model);
         ChallengeDefinition challengeToUpdate = (ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class);
@@ -79,7 +80,11 @@ public class ChallengeDefinitionController {
     }
 
     @RequestMapping(value = "challenge/information", method = POST, produces = "text/plain;charset=UTF-8")
-    public String saveOrUpdateChallenge(HttpServletRequest request, Principal currentUser, Model model, @Valid @ModelAttribute("challenge") ChallengeDefinition challenge, BindingResult bindingResult, RedirectAttributes redirectAttributes, @RequestParam("image") String img, @RequestParam(required = false, value = "image-name") String imgName) {
+    public String saveOrUpdateChallenge(HttpServletRequest request, Principal currentUser, Model model, 
+            @Valid @ModelAttribute("challenge") ChallengeDefinition challenge, BindingResult bindingResult, 
+            RedirectAttributes redirectAttributes, @RequestParam("image") String img, 
+            @RequestParam(required = false, value = "image-name") String imgName,
+            @RequestParam(value="tags", required=false) List<Integer> selectedTags) {
         UserProfile userProfile = util.getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName());
         User user = util.getSignedUpUser(request, currentUser);
         if (bindingResult.hasFieldErrors()) {
@@ -90,7 +95,7 @@ public class ChallengeDefinitionController {
         } else {
             util.setModel(request, currentUser, model);
 
-            challengeDefUtil.setModelForNewOrUpdatedChalShow(challenge, request, user, userProfile, model, img);
+            challengeDefUtil.setModelForNewOrUpdatedChalShow(challenge, request, user, userProfile, model, img, selectedTags);
             redirectAttributes.addAttribute("id", challenge.getId());
             return "redirect:information";
         }

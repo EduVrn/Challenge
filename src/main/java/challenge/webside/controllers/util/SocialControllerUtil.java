@@ -14,15 +14,9 @@ import org.springframework.ui.Model;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
 import challenge.dbside.services.ini.MediaService;
-import challenge.webside.authorization.UserActionsProvider;
-import challenge.webside.authorization.thymeleaf.AuthorizationDialect;
 import challenge.webside.services.FriendsImportService;
 
 @Component

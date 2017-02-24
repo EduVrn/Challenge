@@ -506,3 +506,7 @@ label {
 .bindButton {
     margin-top:5px; 
 }
+
+span.tag-link {
+    cursor: pointer;
+}

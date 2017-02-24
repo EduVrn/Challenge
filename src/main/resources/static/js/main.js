@@ -85,6 +85,20 @@ $('.new_step small a').on('click', function () {
 });
 
 $(document).on('change', 'input[type="file"]', function () {
+    var file = this.files[0];
+    if (Math.round(file.size / 1024) >= 1300) {
+        var $errorDiv = $('<div />', {
+            "class": "alert alert-danger",
+            "id": "image-error"
+        });
+        var $p = $('<p />');
+        $p.html($('#image-size-error').val());
+        $errorDiv.append($p);
+        $('#image-name').after($errorDiv);
+        return;
+    }
+
+    $('#image-error').remove();
     var $p = $('<p />');
     $p.html($('#input-file').val().split('\\').pop());
     $p.addClass('image-name');
@@ -94,7 +108,6 @@ $(document).on('change', 'input[type="file"]', function () {
     var $k = $('#image-name');
     $k.val($('#input-file').val().split('\\').pop());
 
-    var file = document.querySelector('input[type="file"]').files[0];
     var reader = new FileReader();
 
     reader.onloadend = function () {

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+
+    <head>
+        <title>Tags</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link th:replace="fragments/commonDependencies :: commonDependencies" th:remove="tag"/>
+        <link rel="stylesheet" href="../css/style.css" />
+        <link rel="stylesheet" href="../css/footer.css" />
+        <script src="../js/jquery.min.js"></script>
+    </head>
+
+    <body>
+        <div th:replace="fragments/header::userInfo"/>
+        <div class="content-wrapper">
+            <div class="container" style="margin-top:40px;">
+                <div>
+                    <h1 th:text="#{menuTags}"/>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="chalShowChallenge">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <form class="input-group" style="margin-top: 20px">
+                                        <input type="hidden" id="csrf-token" name="_csrf" th:value="${_csrf.token}" />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-search"></span>
+                                        </span>
+                                        <input class="form-control" id="tags-filter" th:placeholder="#{tagsSearchPlaceholder}" type="text" />
+                                    </form>
+                                    <div class="col-md-10">
+                                        <div class="tag-list">
+                                            <form th:each="tag : ${tags}" action="/tags/find">
+                                                <h3>
+                                                    <span class="label label-default tag-link" style="font-size: 16px; display: inline-block;" 
+                                                          th:text="${tag.getName()}" onclick="this.parentNode.parentNode.submit()"/>
+                                                    <span style="display: inline-block; font-size: 18px;" th:text="${tag.getChallenges().size()}" />
+                                                </h3>
+                                                <input type="hidden" th:value="${tag.getId()}" name="id"/>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script th:replace="fragments/commonDependencies :: commonJS" th:remove="tag"/>
+        <script src="../js/csslayoutextenders/mainPageLayout.js"></script>
+        <script src="../js/responsiveLayout/plugins.js"></script>
+        <script src="../js/responsiveLayout/chalAnimating.js"></script>
+        <script src="../js/ajaxSearch.js"></script>
+        <div th:replace="fragments/footer::footer"/>
+    </body>
+</html>
+

@@ -34,7 +34,7 @@
                                             <img th:src="${userProfile.getMainImageEntity().getBase64()}" alt="" id="new-image" style="width: 100%;"/>
                                         </div>
                                         <div style="margin: 10px 0px;">
-                                            <input type="button" data-target="#modal-user-images" id="new-image-btn"
+                                            <input type="button" class="btn btn-default" data-target="#modal-user-images" id="new-image-btn"
                                                    data-toggle="modal" th:value="#{changeImageButton}" style="cursor:pointer; color: black; top: 10px;" />
                                         </div>
                                         <input type="hidden" name="image" />

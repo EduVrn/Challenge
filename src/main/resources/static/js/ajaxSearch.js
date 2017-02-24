@@ -17,6 +17,10 @@ $(document).ready(function ($) {
         event.preventDefault();
         filterUsers();
     });
+    $("#tags-filter").on('input', function (event) {
+        event.preventDefault();
+        filterTags();
+    });
 });
 
 function searchViaAjax(friends) {
@@ -80,6 +84,37 @@ function filterUsers() {
         success: function (data) {
             console.log("SUCCESS: ", data);
             displayUsers(data);
+            return false;
+        },
+        error: function (e) {
+            console.log("ERROR: ", e);
+        },
+        done: function (e) {
+            console.log("DONE");
+        }
+    });
+}
+
+function filterTags() {
+    var search = {};
+    search["filter"] = $("#tags-filter").val();
+
+    $.ajax({
+        type: "POST",
+        contentType: "application/json",
+        url: "getTags",
+        async: true,
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Accept", "application/json");
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.setRequestHeader("X-CSRF-TOKEN", $('#csrf-token').val());
+        },
+        data: JSON.stringify(search),
+        dataType: 'json',
+        timeout: 100000,
+        success: function (data) {
+            console.log("SUCCESS: ", data);
+            displayTags(data);
             return false;
         },
         error: function (e) {
@@ -226,5 +261,40 @@ function display(data, friends) {
             $li.append($div);
         }
         $list.append($li);
+    });
+}
+
+function displayTags(data) {
+
+    var $list = $(".tag-list");
+    $list.empty();
+
+    var results = data["result"];
+
+    $.each(results, function (key, value) {
+        var $form = $('<form />', {
+            "action": "/tags/find"
+        });
+        var $h3 = $('<h3 />');
+        var $spanLabel = $('<span />', {
+            "class": "label label-default tag-link",
+            "style": "font-size: 16px; display: inline-block;",
+            "text": value.name,
+            "onclick": "this.parentNode.parentNode.submit()"
+        });
+        var $spanSize = $('<span />', {
+            "style": "display: inline-block; font-size: 18px; margin-left: 7px;",
+            "text": value.image
+        });
+        $h3.append($spanLabel);
+        $h3.append($spanSize);
+        var $hidden = $('<input />', {
+            "type": "hidden",
+            "value": key,
+            "name": "id"
+        });
+        $form.append($h3);
+        $form.append($hidden);
+        $list.append($form);
     });
 }

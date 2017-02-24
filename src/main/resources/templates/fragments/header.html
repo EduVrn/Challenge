@@ -20,7 +20,11 @@
                         <ul class="nav navbar-nav">
                             <li class="active"><a href="#" th:text="#{menuBest}"><span class="sr-only">(current)</span></a></li>                   
                             <li> <a href="#" th:text="#{menuExtreme}"/></li>
-                        </ul> 
+                            <li>
+                                <a href="#" th:text="#{menuTags}" onclick="document.getElementById('tags-form').submit()"/>
+                            </li>
+                        </ul>
+                        <form action="/tags" id="tags-form"></form>
                         <ul> 
                             <li>
                                 <tr th:if="${currentUserConnection != null}">
@@ -73,11 +77,13 @@
                                         </div> 
                                     </div>
                                 </div>
+                                <form style="margin-top: 7px; margin-left: 5px;" th:unless="${currentUserConnection == null}" class="navbar-right" method="GET" th:action="@{../users}">
+                                    <button class="btn btn-default" onclick="this.parentNode.submit();"  ><i class="fa fa-users" aria-hidden="true"></i><a /></button>
+                                </form>
                             </li>
                         </ul>  
 
                     </div>              
-
 
                 </div>
             </nav>

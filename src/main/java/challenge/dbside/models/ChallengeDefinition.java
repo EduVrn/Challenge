@@ -148,7 +148,31 @@ public class ChallengeDefinition extends BaseEntity implements Commentable {
         Integer curRate = getRating();
         getDataSource().getAttributes().get(IdAttrGet.IdRating()).setIntValue(curRate += rating);
     }
-
+    
+    public void addTag(Tag tag) {
+        getDataSource().getRel().put(IdAttrGet.refChallengeDefTag(), tag.getDataSource());
+    }
+    
+    public List<Tag> getTags() {
+        List<DBSource> list = (List<DBSource>) getDataSource().getRel().get(IdAttrGet.refChallengeDefTag());
+        List<Tag> tags = new ArrayList<>();
+        if (list != null) {
+            for (DBSource ds : list) {
+                tags.add(new Tag(ds));
+            }
+        }
+        return tags;
+    }
+    
+    public void removeAllTags() {
+        List<DBSource> list = (List<DBSource>) getDataSource().getRel().get(IdAttrGet.refChallengeDefTag());
+        if (list != null) {
+            for (DBSource ds : list) {
+                getDataSource().getRel().removeMapping(IdAttrGet.refChallengeDefTag(), ds);
+            }
+        }
+    }
+    
     public static final Comparator<ChallengeDefinition> COMPARE_BY_RATING = (ChallengeDefinition left, ChallengeDefinition right)
             -> Integer.signum(right.getRating() - left.getRating());
 

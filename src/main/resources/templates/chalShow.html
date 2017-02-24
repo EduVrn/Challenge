@@ -9,6 +9,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link th:replace="fragments/commonDependencies :: commonDependencies" th:remove="tag"/>
         <link rel="stylesheet" href="../css/pageLoader.css"/>
+        <link rel="stylesheet" href="../css/style.css" />
         <script src="../js/jquery.min.js"></script>
         <script src="../js/Interactive/ControlSwitchPages/challengeControl.js"></script>
 
@@ -67,6 +68,14 @@
 
                         <div class="col-md-3 col-sm-4 col-xs-6"><i class="glyphicon glyphicon-calendar"> </i><span th:text="${#dates.format(challenge.getDate(), 'dd/MM/yyyy HH:mm')}" >July 14, 2014</span></div>
                         <div class="col-md-2 col-sm-3 col-xs-6"><a href="#"><i class="glyphicon glyphicon-user"> </i><span th:text="${isChalDef} ? ${challenge.getCreator().getName()} : ${challenge.getAcceptor().getName()}" >Admin</span></a></div>
+                        <div class="col-sm-4 col-xs-6" th:if="${isChalDef}">
+                            <form th:each="tag : ${challenge.getTags()}" action="/tags/find" style="display: inline-block">
+                                <span class="label label-default tag-link" 
+                                      style="font-size: 16px;" th:text="${tag.getName()}"
+                                      onclick="this.parentNode.submit()"/>
+                                <input type="hidden" th:value="${tag.getId()}" name="id"/>
+                            </form>
+                        </div>
 
                     </div>
                     <hr style="margin-top: 5px; margin-bottom: 15px; margin-left: -15px;" class="col-lg-12 col-md-12 col-sm-12 col-xs-12"/>

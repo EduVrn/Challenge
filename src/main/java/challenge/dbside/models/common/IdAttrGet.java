@@ -75,5 +75,9 @@ public class IdAttrGet {
     static public Integer refAutorCom() {
         return ContextType.getInstance().getTypeAttribute("autorComment").getId();
     }
+    
+    static public Integer refChallengeDefTag() {
+        return ContextType.getInstance().getTypeAttribute("challengeDefinitionTag").getId();
+    }
 
 }
