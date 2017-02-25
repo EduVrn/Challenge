@@ -444,7 +444,9 @@ label {
     .fixed-profile {
         position:fixed;
     }
-
+    .showScrollUp{
+        display:block !important;
+    }
     .affix {
         top:70px;
         position:fixed;

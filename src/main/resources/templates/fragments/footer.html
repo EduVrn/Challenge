@@ -7,9 +7,32 @@
     </head>
     <body>
         <div th:fragment="footer">
-            <ul class="nav pull-right scroll-top">
-                <li><a  href="#" title="Scroll to top"><span class="glyphicon glyphicon-chevron-up"></span></a></li>
+            <ul id="back-to-top" style="display:none;" class="nav pull-right scroll-top">
+                <li><a  href="#"  title="Scroll to top"><span class="glyphicon glyphicon-chevron-up"></span></a></li>
             </ul>
+            <script>  if ($('#back-to-top').length) {
+                    var scrollTrigger = 100, // px
+                            backToTop = function () {
+                                var scrollTop = $(window).scrollTop();
+                                if (scrollTop > scrollTrigger) {
+                                    $('#back-to-top').addClass('showScrollUp');
+                                    
+                                } else {
+                                    $('#back-to-top').removeClass('showScrollUp');
+                                }
+                            };
+                    backToTop();
+                    $(window).on('scroll', function () {
+                        backToTop();
+                    });
+                    $('#back-to-top').on('click', function (e) {
+                        e.preventDefault();
+                        $('html,body').animate({
+                            scrollTop: 0
+                        }, 1000);
+                    });
+                }
+            </script>
         </div>
     </body>
 </html>

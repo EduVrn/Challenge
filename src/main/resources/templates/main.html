@@ -11,14 +11,12 @@
         <link rel="stylesheet" href="../css/pageLoader.css"/>
         <link rel="stylesheet" href="../css/style.css" />
         <link rel="stylesheet" href="../css/footer.css" />
-        <script src="../js/jquery.min.js"></script>
+        <script src="../js/jquery.min.js"></script>      
     </head>
 
     <body>
 
-
         <div th:replace="fragments/header::userInfo"/>
-
         <div th:replace="fragments/util/loader::loader"/>
 
         <div class="container bootstrap snippets">
@@ -62,11 +60,13 @@
                 </div>
             </div>
         </div> 
+        <div th:replace="fragments/customModal::modalBody"/>
 
         <script th:replace="fragments/commonDependencies :: commonJS" th:remove="tag"/>
         <script src="../js/csslayoutextenders/mainPageLayout.js"></script>
         <script src="../js/responsiveLayout/plugins.js"></script>
         <script src="../js/responsiveLayout/chalAnimating.js"></script>
+        <script src="../js/Interactive/customModal.js"></script>
         <div th:replace="fragments/footer::footer"/>
     </body>
 </html>
