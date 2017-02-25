@@ -18,7 +18,7 @@
                             <h1 th:text="#{profileSettingsButton}"/>
                         </div> 
                     </div> 
-                    <div class="col-md-6">
+                    <div class="column">
                         <div class="chalShowChallenge" style="padding-top: 15px;">
                             <div class="row">
                                 <h1 th:text="#{editingTitle}" />
@@ -48,14 +48,14 @@
                         </div>
                     </div>
                 </form> 
-                <div class="col-md-6">
+                <div class="column">
                     <div class="chalShowChallenge">
                         <div class="row">
                             <div th:replace="fragments/util/bind::bindSocialNetwork" th:remove="tag"/>  
                         </div>
                     </div> 
                 </div>
-                <div class="col-md-6">
+                <div class="column">
                     <div class="chalShowChallenge">
                         <div class="row">
                             <h1 th:text="#{changeLangTitle}" />
@@ -72,7 +72,7 @@
         <div th:replace="fragments/modals/userImagesModal::userimagesmodal" />
 
         <script th:replace="fragments/commonDependencies :: commonJS" th:remove="tag"/>
-        <script src="../js/csslayoutextenders/profileLayout.js"></script>
+        <script src="../js/csslayoutextenders/profileEditLayout.js"></script>
         <script src="../js/csslayoutextenders/langSwitcherLayout.js"></script>
         <script src="../js/throwsChallenges/show.js"></script>
         <script src="../js/responsiveLayout/plugins.js"></script>

@@ -49,14 +49,17 @@ public class ChallengeInstanceController {
 
     @RequestMapping(value = "challengeins/newstep", method = POST, produces = "text/plain;charset=UTF-8")
     public String newStep(HttpServletRequest request, Principal currentUser, Model model,
-            @Valid @ModelAttribute("step") ChallengeStep step, BindingResult bindingResult, @RequestParam("id") int id, RedirectAttributes redirectAttributes) {
+            @Valid @ModelAttribute("step") ChallengeStep step, BindingResult bindingResult,
+            @RequestParam("id") int id, RedirectAttributes redirectAttributes,
+            @RequestParam("image") String img,
+            @RequestParam(required = false, value = "image-name") String imgName) {
         ChallengeInstance challenge = (ChallengeInstance) serviceEntity.findById(id, ChallengeInstance.class);
         if (bindingResult.hasFieldErrors()
                 || challenge.getDate().before(step.getDate())
                 || step.getDate().before(new Date())) {
             util.setModel(request, currentUser, model);
             User user = util.getSignedUpUser(request, currentUser);
-            challengeInsUtil.setModelForBadStepChal(id, step, request, user, model);
+            challengeInsUtil.setModelForBadStepChal(id, step, request, user, model,img, imgName);
             model.addAttribute(bindingResult.getAllErrors());
             if (challenge.getDate().before(step.getDate())
                     || step.getDate().before(new Date())) {
@@ -67,7 +70,7 @@ public class ChallengeInstanceController {
             //#stepform
             return "chalShow";
         } else {
-            challengeInsUtil.setModelForNewStepForChallenge(request, currentUser, model, step, id);
+            challengeInsUtil.setModelForNewStepForChallenge(request, currentUser, model, step, img, id);
             redirectAttributes.addAttribute("id", id);
             return "redirect:information";
         }

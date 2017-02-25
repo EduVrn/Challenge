@@ -10,12 +10,18 @@ import challenge.dbside.models.status.ChallengeStatus;
 import challenge.dbside.services.ini.MediaService;
 import challenge.webside.authorization.UserActionsProvider;
 import challenge.webside.authorization.thymeleaf.AuthorizationDialect;
+import challenge.webside.dao.UsersDao;
+import challenge.webside.imagesstorage.ImageStoreService;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -37,9 +43,30 @@ public class ChallengeInstanceUtil {
     @Autowired
     private CommentUtil commentUtil;
 
-    public void setModelForNewStepForChallenge(HttpServletRequest request, Principal currentUser, Model model, ChallengeStep step, int chalId) {
+    public void setModelForNewStepForChallenge(HttpServletRequest request, Principal currentUser, Model model, ChallengeStep step, String image, int chalId) {
         ChallengeInstance currentChallenge = (ChallengeInstance) serviceEntity.findById(chalId, ChallengeInstance.class);
         serviceEntity.save(step);
+        //need to update or create image
+        if (!image.isEmpty() && !StringUtils.isNumeric(image)) {
+            String base64Image = image.split(",")[1];
+            byte[] array = Base64.decodeBase64(base64Image);
+            Image imageEntity = new Image();
+            imageEntity.setIsMain(Boolean.TRUE);
+            serviceEntity.save(imageEntity);
+            try {
+                ImageStoreService.saveImage(array, imageEntity);
+                serviceEntity.update(imageEntity);
+            } catch (Exception ex) {
+                Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            step.addImage(imageEntity);
+            serviceEntity.update(step);
+        } else if (StringUtils.isNumeric(image)) {
+            Image newMainImage = (Image) serviceEntity.findById(Integer.valueOf(image), Image.class);
+            newMainImage.setIsMain(Boolean.TRUE);
+            serviceEntity.update(newMainImage);
+        }
+
         currentChallenge.addStep(step);
         serviceEntity.update(currentChallenge);
     }
@@ -92,7 +119,7 @@ public class ChallengeInstanceUtil {
         dialect.setActions(actionsProvider.getActionsForProfile(user, user));
     }
 
-    public void setModelForBadStepChal(int chalId, ChallengeStep step, HttpServletRequest request, User user, Model model) {
+    public void setModelForBadStepChal(int chalId, ChallengeStep step, HttpServletRequest request, User user, Model model, String image, String imageName) {
 
         ChallengeInstance challenge = (ChallengeInstance) serviceEntity.findById(chalId, ChallengeInstance.class);
         checkAndUpdateIfOutdated(challenge);
@@ -105,6 +132,8 @@ public class ChallengeInstanceUtil {
         commentUtil.setModelForComments(challenge.getComments(), request, user, model);
         model.addAttribute("step", step);
         model.addAttribute("showStepForm", true);
+        model.addAttribute("image64", image);
+        model.addAttribute("imageName", imageName);
     }
 
     public void checkAndUpdateIfOutdated(ChallengeInstance challenge) {

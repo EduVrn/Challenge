@@ -110,25 +110,7 @@
         <script type="text/javascript" src="../js/moment.js"></script>
         <script src="../js/bootstrap-datetimepicker.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
-        <script type="text/javascript">
-                                    $(function () {
-                                        $('#datetimepicker1').datetimepicker({format: 'DD/MM/YYYY HH:mm'})
-                                                .data("DateTimePicker").setMinDate(new Date());
-                                    });
-
-                                    $("#upload-file-btn").click(function () {
-                                        $("#input-file").trigger('click');
-                                        $('#modal-challenge-images').modal('hide');
-                                    });
-                                    $('img[name="image-link"]').on('click', function () {
-                                        $('#new-image').attr('src', $(this).attr('src'));
-                                        $('input[name="image"]').val($(this).prev().val());
-                                        $('#modal-challenge-images').modal('hide');
-                                    });
-                                    window.onload = function () {
-                                        $('.selectpicker').selectpicker();
-                                    };
-        </script>
+        <script src="../js/dateAndImageHelper.js"></script>
     </body>
 </html>
 

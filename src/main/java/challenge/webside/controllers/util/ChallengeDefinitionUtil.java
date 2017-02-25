@@ -84,6 +84,11 @@ public class ChallengeDefinitionUtil {
         step.setDate(chalIns.getDate());
         step.setMessage(chalIns.getDescription());
         step.setName(chalIns.getName());
+        Image stepImg = new Image();
+        stepImg.setIsMain(true);
+        stepImg.setImageRef(chal.getMainImageEntity().getImageRef());
+        serviceEntity.save(stepImg);
+        step.addImage(stepImg);
         serviceEntity.save(step);
 
         chalIns.addStep(step);
@@ -203,16 +208,12 @@ public class ChallengeDefinitionUtil {
     }
 
     public void setModelForBadDateNewChal(ChallengeDefinition challenge, HttpServletRequest request, Principal currentUser, Model model, String image, String imageName) {
-        if (challenge.getId() != null) {
-            model.addAttribute("challenge", challenge);
-            model.addAttribute("image64", image);
-            model.addAttribute("imageName", imageName);
-        } else {
+        if (challenge.getId() == null) {
             challenge.setDate(new Date());
-            model.addAttribute("challenge", challenge);
-            model.addAttribute("image64", image);
-            model.addAttribute("imageName", imageName);
         }
+        model.addAttribute("challenge", challenge);
+        model.addAttribute("image64", image);
+        model.addAttribute("imageName", imageName);
     }
 
     public void setModelForMain(HttpServletRequest request, Principal currentUser, Model model) {

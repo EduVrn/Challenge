@@ -21,7 +21,7 @@
             <div class="inner-container container">
                 <div class="chalShowChallenge">
                     <div style="margin-top: 80px; " class="row">
-                        <div class="section-header col-md-12">
+                        <div class="section-header main-column">
                             <input id="mainObjectId" type="hidden" th:value="${challenge.getId()}" name="id"/>
                             <h2  th:text="${isChalDef} ? ${#strings.toUpperCase(challenge.getName())}+' ('+${challenge.getRating()}+')' : 
                                  ${#strings.toUpperCase(challenge.getName())}" style="display: inline-block;margin-top: 10px; margin-bottom: 5px;"/>   
@@ -63,7 +63,7 @@
                             </th:block>
                         </div>                     
                     </div> 
-                    <hr style="margin-top: 5px; margin-bottom: 5px; margin-left: -15px;" class="col-lg-12 col-md-12 col-sm-12 col-xs-12"/>
+                    <hr style="margin-bottom: 5px;" class="hr_divider"/>
                     <div>
 
                         <div class="col-md-3 col-sm-4 col-xs-6"><i class="glyphicon glyphicon-calendar"> </i><span th:text="${#dates.format(challenge.getDate(), 'dd/MM/yyyy HH:mm')}" >July 14, 2014</span></div>
@@ -78,16 +78,16 @@
                         </div>
 
                     </div>
-                    <hr style="margin-top: 5px; margin-bottom: 15px; margin-left: -15px;" class="col-lg-12 col-md-12 col-sm-12 col-xs-12"/>
+                    <hr style="margin-bottom: 15px;" class="hr_divider"/>
 
                     <div class="row">
-                        <div class="chal-photo col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <div class="chal-photo chal_column">
                             <img style="width: 100%;" class="img-responsive img-rounded" th:src="${challenge.getMainImageEntity().getBase64()}"/>
                         </div>                    
-                        <div class="box-content col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <div class="box-content chal_column">
                             <h4 class="col-md-12"  th:text="${challenge.getDescription()}"/>
                         </div>
-                        <div style="margin-top: 20px;" class="col-lg-6 col-md-6 col-sm-6 col-xs-12"  th:if="${isChalDef}">
+                        <div style="margin-top: 20px;" class="chal_column"  th:if="${isChalDef}">
                             <h3 style="margin-top: 5px; margin-bottom: 5px;" th:text="#{acceptorsLabelShow}" />
                             <div th:each="acceptor : ${listOfAcceptors}" >
                                 <div class="col-lg-2 col-md-2 col-sm-4 col-xs-4">
@@ -129,7 +129,7 @@
                 </div>
                 <div class="chalShowChallenge">
                     <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="main-column">
                             <div>
                                 <h3 style="margin-bottom: 5px;" th:text="#{newCommentLabel}">Новый комментарий</h3>
                             </div> 
@@ -144,7 +144,7 @@
                 </div>
                 <div class="chalShowChallenge">
                     <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="main-column">
                             <div>
                                 <h3 th:text="#{commentsCount} + ' (' + ${commentsCount} + ')'"></h3>
                             </div> 
@@ -160,14 +160,10 @@
             </div> 
         </div>
         <script th:replace="fragments/commonDependencies :: commonJS" th:remove="tag"/>
+        <script src="js/csslayoutextenders/chalShowLayout.js"></script>
         <script type="text/javascript" src="../js/moment-with-locales.min.js"></script>
         <script type="text/javascript" src="../js/moment.js"></script>
         <script src="../js/bootstrap-datetimepicker.min.js"></script>
-        <script type="text/javascript">
-                                $(function () {
-                                    $('#datetimepicker1').datetimepicker({format: 'DD/MM/YYYY HH:mm'})
-                                            .data("DateTimePicker").setMinDate(new Date());
-                                });
-        </script>
+        <script src="../js/dateAndImageHelper.js"></script>
     </body>
 </html>

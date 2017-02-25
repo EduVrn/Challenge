@@ -93,8 +93,9 @@
                                 <div id="collapseOne" class="panel-collapse collapse in">
                                     <!-- Содержимое 1 панели -->
                                     <div class="panel-body">
-                                        <div class="text-center">
-                                            <h2 th:text="#{listOfAcceptedChalsTitle}"></h2>
+                                        <h2 class="text-center" th:text="#{listOfAcceptedChalsTitle}"></h2>
+                                        <div class="text-center chalList">
+
                                             <div th:each="challenge : ${listOfAccepted}" class="elementOfListInProfile">
                                                 <div style="border-width: 5" class="panel panel-default">
                                                     <div class="box-content panel-body ">
@@ -118,8 +119,8 @@
                                 <div id="collapseTwo" class="panel-collapse collapse">
                                     <!-- Содержимое 2 панели -->
                                     <div class="panel-body">
-                                        <div class="text-center">
-                                            <h2 th:text="#{listOfUnacceptedChalsTitle}"></h2>
+                                        <h2 class="text-center" th:text="#{listOfUnacceptedChalsTitle}"></h2>
+                                        <div class="text-center chalList">
                                             <div th:each="challenge : ${challengeRequests}" class="elementOfListInProfile">
                                                 <span class="chal-meta" th:text="${challenge.getMessage()}" style="color: red; font-size: 18px;"/>
                                                 <div th:replace="fragments/challengeViews/acceptedChallenge::acceptedChallenge(challenge=${challenge})" th:remove="tag"/>
@@ -137,11 +138,12 @@
                                         <a data-toggle="collapse" data-parent="#accordion" th:text="#{listOfCreatedChalsTitle}" href="#collapseThree"></a>
                                     </h4>
                                 </div>
+                                <!-- Содержимое 3 панели -->
+
                                 <div id="collapseThree" class="panel-collapse collapse">
-                                    <!-- Содержимое 3 панели -->
                                     <div class="panel-body">
-                                        <div class="text-center">
-                                            <h2 th:text="#{listOfCreatedChalsTitle}"></h2>
+                                        <h2 class="text-center" th:text="#{listOfCreatedChalsTitle}"></h2>
+                                        <div class="text-center chalList">
                                             <div th:each="challenge : ${listOfDefined}" class="elementOfListInProfile">
                                                 <div th:replace="fragments/challengeViews/createdChallenge::createdChallenge(challenge=${challenge})" th:remove="tag"/>
                                             </div>
@@ -161,8 +163,8 @@
                                 <div id="collapseFour" class="panel-collapse collapse">
                                     <!-- Содержимое 4 панели -->
                                     <div class="panel-body">
-                                        <div class="text-center">
-                                            <h2 th:text="#{listOfSubscriptionChalsTitle}"></h2>
+                                        <h2 class="text-center" th:text="#{listOfSubscriptionChalsTitle} "></h2>                                           
+                                        <div class="text-center chalList">
                                             <div th:each="challenge : ${listOfSubscripted}" class="elementOfListInProfile">
                                                 <th:block th:unless="${isChalDef}">
                                                     <h3 th:if="${challenge.getStatus() ==
@@ -214,6 +216,7 @@
         <script src="js/responsiveLayout/tabs.js"></script>
         <script src="js/ajaxSearch.js"></script>
         <div th:replace="fragments/footer::footer"/>
+
     </body>
 </html>
 

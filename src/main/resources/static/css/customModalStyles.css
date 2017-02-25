@@ -25,6 +25,7 @@ and open the template in the editor.
 /* Modal Content */
 .custom-modal-content {
     max-width: 350px;
+    min-width: 150px;
     border-radius: 7px;
     border: 2px solid #5cb85c;
     position: fixed;
