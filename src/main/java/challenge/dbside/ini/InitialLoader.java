@@ -20,6 +20,7 @@ import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.Comment;
 import challenge.dbside.models.Image;
+import challenge.dbside.models.Tag;
 import challenge.dbside.models.User;
 import challenge.dbside.models.ini.TypeOfAttribute;
 import challenge.dbside.models.ini.TypeOfEntity;
@@ -74,10 +75,9 @@ public class InitialLoader {
             ex.printStackTrace();
         }
         // usersCount, user's chaldefsCount,instancesCount, CommentsCount, Comment'sEmbedenceCount
-
         //init(5, 2,2, 4, 3);
         if (iniFlag == true) {
-            init(1, 2, 2, 4, 3);
+            init(1, 2, 2, 4, 7);
         }
     }
 
@@ -183,6 +183,24 @@ public class InitialLoader {
         return comment;
     }
 
+    public void createTags() {
+        Tag tag1 = new Tag();
+        tag1.setName("кот");
+        serviceEntityInit.save(tag1);
+        Tag tag2 = new Tag();
+        tag2.setName("безысходность");
+        serviceEntityInit.save(tag2);
+        Tag tag4 = new Tag();
+        tag4.setName("ааа");
+        serviceEntityInit.save(tag4);
+        Tag tag5 = new Tag();
+        tag5.setName("ббб");
+        serviceEntityInit.save(tag5);
+        Tag tag6 = new Tag();
+        tag6.setName("другое");
+        serviceEntityInit.save(tag6);
+    }
+
     public void init(int countOfUsers, int countOfChalDefs, int countOfInstanses, int countOfComments, int countOfEmbedence) {
         List<String> images = new ArrayList<>();
         images.add("src/main/resources/static/images/firstExampleChallenge.jpg");
@@ -191,6 +209,7 @@ public class InitialLoader {
         images.add("src/main/resources/static/images/speed.jpg");
         images.add("src/main/resources/static/images/break.png");
         images.add("src/main/resources/static/images/AvaDefault.jpg");
+        createTags();
         for (int i = 0; i < countOfUsers; i++) {
             User userToCreate = new User();
             userToCreate.setRating(0);

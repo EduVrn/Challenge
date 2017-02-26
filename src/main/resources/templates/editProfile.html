@@ -18,7 +18,7 @@
                             <h1 th:text="#{profileSettingsButton}"/>
                         </div> 
                     </div> 
-                    <div class="col-md-6">
+                    <div class="column">
                         <div class="chalShowChallenge" style="padding-top: 15px;">
                             <div class="row">
                                 <h1 th:text="#{editingTitle}" />
@@ -34,9 +34,10 @@
                                             <img th:src="${userProfile.getMainImageEntity().getBase64()}" alt="" id="new-image" style="width: 100%;"/>
                                         </div>
                                         <div style="margin: 10px 0px;">
-                                            <input type="button" data-target="#modal-user-images" id="new-image-btn"
+                                            <input type="button" class="btn btn-default" data-target="#modal-user-images" id="new-image-btn"
                                                    data-toggle="modal" th:value="#{changeImageButton}" style="cursor:pointer; color: black; top: 10px;" />
                                         </div>
+                                        <input type="hidden" id="image-size-error" th:value="#{imageSizeError}" />
                                         <input type="hidden" name="image" />
                                     </div>
                                 </div> 
@@ -48,14 +49,14 @@
                         </div>
                     </div>
                 </form> 
-                <div class="col-md-6">
+                <div class="column">
                     <div class="chalShowChallenge">
                         <div class="row">
                             <div th:replace="fragments/util/bind::bindSocialNetwork" th:remove="tag"/>  
                         </div>
                     </div> 
                 </div>
-                <div class="col-md-6">
+                <div class="column">
                     <div class="chalShowChallenge">
                         <div class="row">
                             <h1 th:text="#{changeLangTitle}" />
@@ -72,22 +73,12 @@
         <div th:replace="fragments/modals/userImagesModal::userimagesmodal" />
 
         <script th:replace="fragments/commonDependencies :: commonJS" th:remove="tag"/>
-        <script src="../js/csslayoutextenders/profileLayout.js"></script>
+        <script src="../js/csslayoutextenders/profileEditLayout.js"></script>
         <script src="../js/csslayoutextenders/langSwitcherLayout.js"></script>
         <script src="../js/throwsChallenges/show.js"></script>
         <script src="../js/responsiveLayout/plugins.js"></script>
         <script src="../js/responsiveLayout/chalAnimating.js"></script>
-        <script>
-                                        $('img[name="image-link"]').on('click', function () {
-                                            $('#new-image').attr('src', $(this).attr('src'));
-                                            $('input[name="image"]').val($(this).prev().val());
-                                            $('#modal-user-images').modal('hide');
-                                        });
-                                        $("#upload-file-btn").click(function () {
-                                            $("#input-file").trigger('click');
-                                            $('#modal-user-images').modal('hide');
-                                        });
-        </script>
+        <script src="../js/dateAndImageHelper.js"></script>
     </body>
 </html>
 

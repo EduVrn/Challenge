@@ -10,6 +10,7 @@ import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.request.WebRequest;
 import challenge.webside.controllers.util.SocialControllerUtil;
+import challenge.webside.controllers.util.TagsUtil;
 import challenge.webside.controllers.util.UserUtil;
 import challenge.webside.dao.UsersDao;
 import challenge.webside.model.UserProfile;
@@ -70,11 +71,21 @@ public class MainController {
     
     @Autowired
     private ChallengeDefinitionUtil challengeDefUtil;
+    
+    @Autowired
+    private TagsUtil tagsUtil;
 
     @RequestMapping("/")
     public String home(HttpServletRequest request, Principal currentUser, Model model) {
         util.setModel(request, currentUser, model);
         challengeDefUtil.setModelForMain(request, currentUser, model);
+        return "main";
+    }
+    
+    @RequestMapping("tags/find")
+    public String findByTag(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int id) {
+        util.setModel(request, currentUser, model);
+        challengeDefUtil.setModelForMainFilteredByTag(request, currentUser, model, id);
         return "main";
     }
 
@@ -165,6 +176,13 @@ public class MainController {
         }
 
         return "index";
+    }
+    
+    @RequestMapping(value="tags", method=GET)
+    public String tags(HttpServletRequest request, Principal currentUser, Model model) {
+        util.setModel(request, currentUser, model);
+        tagsUtil.setModelForTags(request, currentUser, model);
+        return "tags";
     }
 
 }

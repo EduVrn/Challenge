@@ -75,6 +75,7 @@ public class ImageStoreService {
             session = repository.login(new SimpleCredentials("admin", "admin".toCharArray()));
         }
         Node folder = session.getRootNode();
+        String ref = image.getImageRef();
         Node file = folder.getNode(image.getImageRef());
         Node content = file.getNode("jcr:content");
         String path = content.getPath();

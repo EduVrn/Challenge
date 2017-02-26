@@ -64,6 +64,16 @@
     return CellsByRow;
 
 }));
+$('#accordion').on('show.bs.collapse', function (e) {
+    $(".loader").delay(0).fadeIn(0);
+});
+
+$('#accordion').on('shown.bs.collapse', function (e) {
+    $(".chalList").isotope('layout'); 
+    $(".loader").delay(300).fadeOut("slow");
+});
+
+
 
 $(window).load(function () {
     var r = $(".chalList");
@@ -72,7 +82,7 @@ $(window).load(function () {
             itemSelector: ".challenge",
             animationEngine: "jquery",
             layoutMode: 'masonry',
-            transitionDuration: '1.0s',
+            transitionDuration: '0.0s',
             masonry: {
                 columnWidth: 1
             }
@@ -81,6 +91,9 @@ $(window).load(function () {
     r.imagesLoaded().progress(function () {
         isotopeInit();
     });
+//    r.isotope('on', 'layoutComplete', onLayout);
+
+
     //isotopeInit();
 });
 

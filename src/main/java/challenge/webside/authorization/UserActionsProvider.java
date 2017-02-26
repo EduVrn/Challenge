@@ -44,8 +44,9 @@ public class UserActionsProvider {
     public Set<Action> getActionsForChallengeInstance(User user, ChallengeInstance challenge) {
         Set<Action> actions = new HashSet<>();
         if (user.getId().equals(challenge.getAcceptor().getId())) {
-            actions.add(Action.EDIT_CHALLENGE);
-            actions.add(Action.DELETE_CHALLENGE);
+            if (challenge.getStatus() == ChallengeStatus.ACCEPTED) {
+                actions.add(Action.ADD_STEPS);
+            }
             switch (challenge.getStatus()) {
                 case ACCEPTED:
                     actions.add(Action.CLOSE_CHALLENGE);

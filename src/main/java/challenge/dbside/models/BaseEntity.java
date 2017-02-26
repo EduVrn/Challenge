@@ -29,7 +29,21 @@ public class BaseEntity {
         dataSource = dt;
     }
 
+    @Override
     public boolean equals(Object obj) {
-        return (this.getId() == ((BaseEntity) obj).getId());
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        BaseEntity other = (BaseEntity) obj;
+        if (!this.getId().equals(other.getId())) {
+            return false;
+        }
+        return true;
     }
 }

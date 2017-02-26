@@ -12,10 +12,16 @@
                     <img class="img-rounded" th:src="${challenge.getMainImageEntity().getBase64()}" alt=""/> 
                 </div>
                 <div class="chal-body">
-                    <form name="submitForm" th:id="'challenge_form'+${challenge.Id}"  method="GET" action="challenge/information">
+                    <form name="submitForm" th:id="'challenge_form'+${challenge.Id}"  method="GET" action="/challenge/information">
                         <input type="hidden" name="id" th:value="${challenge.getId()}"/>
                         <h2 class="chal-title"><a  th:onclick="'document.getElementById(\'challenge_form'+${challenge.getId()}+'\').submit();'" th:text="${challenge.getName()}"></a></h2>
                     </form>
+                    <form th:each="tag : ${challenge.getTags()}" action="/tags/find" style="display: inline-block">
+                        <span class="label label-default tag-link" style="font-size: 14px;" th:text="${tag.getName()}"
+                              onclick="this.parentNode.submit()"/>
+                        <input type="hidden" th:value="${tag.getId()}" name="id"/>
+                    </form>
+                    <br />
                     <span class="chal-meta" th:text="${#dates.format(challenge.date, 'yyyy/MM/dd HH:mm')}"></span>
                     <h4 class="cut-text ellipsis desc" th:text="${challenge.getDescription()}"></h4>
                 </div>

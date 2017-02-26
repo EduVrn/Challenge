@@ -10,6 +10,7 @@
         <link th:replace="fragments/commonDependencies :: commonDependencies" th:remove="tag"/>
         <link rel="stylesheet" href="../css/style.css" />
         <link rel="stylesheet" href="../css/bootstrap-datetimepicker.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css" />
     </head>
     <body>
         <div th:replace="fragments/header :: userInfo"/>
@@ -17,6 +18,7 @@
             <div class="inner-container container">
                 <form   th:action="@{information}" th:object="${challenge}" method="post">
                     <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrf-token"/>
+                    <input type="hidden" id="image-size-error" th:value="#{imageSizeError}" />                  
                     <div style="margin-top: 40px; " class="row">
                         <div class="section-header col-md-12">
                         </div> 
@@ -49,7 +51,7 @@
                                         <div style="width: 300px;">
                                             <img th:src="${challenge.getMainImageEntity().getBase64()}" alt="" id="new-image" style="width: 100%;"/>
                                         </div>
-                                        <input type="button" data-target="#modal-challenge-images" id="new-image-btn"
+                                        <input type="button" class="btn btn-default" data-target="#modal-challenge-images" id="new-image-btn"
                                                data-toggle="modal" th:value="#{changeImageButton}" style="cursor:pointer; color: black; margin: 10px 0px;" />
                                         <input type="hidden" name="image" />
                                     </div>
@@ -57,6 +59,7 @@
                                         <input type="button" th:value="#{uploadImageButton}" id="upload-file-btn" class="btn btn-default" />
                                         <input type="file" name="pic" accept="image/*" id="input-file" style="display: none;"/>
                                         <p class="image-name" style="display: inline-block;" th:utext="${imageName}"/>
+                                        <p style="display: inline-block; color: black;" th:text="#{maxSizeHint}" />
                                         <input id="image-name" type="hidden" th:value="${imageName}"  name="image-name" />
                                         <input type="hidden" th:value="${image64}"  name="image" />
                                     </div>
@@ -77,7 +80,16 @@
                                         <div class="alert alert-danger" th:if="${#fields.hasErrors('date')}">
                                             <p  th:errors="*{date}">Name Error</p>    
                                         </div> 
-                                    </div> 
+                                    </div>
+                                    <label th:text="#{menuTags}" class="col-md-2 control-label" />
+                                    <div class="chal-photo col-md-10">
+                                        <select name="tags" class="selectpicker" th:title="#{selectTitle}" multiple="" style="display: none;">
+                                            <th:block th:each="tag : ${tags}">
+                                                <option th:if="${challenge.getTags().contains(tag)}" selected="selected" th:value="${tag.getId()}" th:text="${tag.getName()}"/>
+                                                <option th:unless="${challenge.getTags().contains(tag)}" th:value="${tag.getId()}" th:text="${tag.getName()}"/>
+                                            </th:block>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             <div th:switch="*{id}"> 
@@ -97,22 +109,8 @@
         <script type="text/javascript" src="../js/moment-with-locales.min.js"></script>
         <script type="text/javascript" src="../js/moment.js"></script>
         <script src="../js/bootstrap-datetimepicker.min.js"></script>
-        <script type="text/javascript">
-                                    $(function () {
-                                        $('#datetimepicker1').datetimepicker({format: 'DD/MM/YYYY HH:mm'})
-                                                .data("DateTimePicker").setMinDate(new Date());
-                                    });
-
-                                    $("#upload-file-btn").click(function () {
-                                        $("#input-file").trigger('click');
-                                        $('#modal-challenge-images').modal('hide');
-                                    });
-                                    $('img[name="image-link"]').on('click', function () {
-                                        $('#new-image').attr('src', $(this).attr('src'));
-                                        $('input[name="image"]').val($(this).prev().val());
-                                        $('#modal-challenge-images').modal('hide');
-                                    });
-        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
+        <script src="../js/dateAndImageHelper.js"></script>
     </body>
 </html>
 

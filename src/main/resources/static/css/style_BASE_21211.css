@@ -413,15 +413,11 @@ label {
     .social-icons {
         font-size: 40vw;
     }
-
+    
     .subcommentList{
         margin-left:-40px;
     }
-
-    .showOnMobile{
-        display: -webkit-inline-box;
-    }
-
+    
 }
 
 @media screen and (min-width: 768px) and (max-width: 991px) {
@@ -444,23 +440,10 @@ label {
     .fixed-profile {
         position:fixed;
     }
-    .showScrollUp{
-        display:block !important;
-    }
+
     .affix {
         top:70px;
         position:fixed;
-    }
-
-    .embedenceNoShift{
-        margin-left:-40px; 
-    }
-    .embedenceShowToWhom{
-        display: -webkit-inline-box !important;
-    }
-
-    .showOnMobile{
-        display: none;
     }
 }
 
@@ -472,7 +455,7 @@ label {
 
 @media screen and (min-width: 1200px) {
     .social-icons {
-        font-size: 20vw;
+        font-size: 15vw;
     }
 }
 
@@ -507,22 +490,4 @@ label {
 
 .bindButton {
    margin-top:5px; 
-}
-
-.vote_hide {
-	display: none;
-}
-
-.notify_hide {
-	display: none;
-}
-
-span.tag-link {
-    cursor: pointer;
-}
-
-.hr_divider
-{
-    margin-top: 5px; 
-    margin-left: -15px;
 }

@@ -4,7 +4,9 @@ import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.ChallengeStep;
 import challenge.dbside.models.Image;
+import challenge.dbside.models.Tag;
 import challenge.dbside.models.User;
+import challenge.dbside.models.common.IdAttrGet;
 import challenge.dbside.models.status.ChallengeDefinitionStatus;
 import challenge.dbside.models.status.ChallengeStatus;
 import challenge.dbside.services.ini.MediaService;
@@ -41,7 +43,7 @@ public class ChallengeDefinitionUtil {
 
     @Autowired
     private UserActionsProvider actionsProvider;
-    
+
     @Autowired
     private CommentUtil commentUtil;
 
@@ -85,6 +87,11 @@ public class ChallengeDefinitionUtil {
         step.setDate(chalIns.getDate());
         step.setMessage(chalIns.getDescription());
         step.setName(chalIns.getName());
+        Image stepImg = new Image();
+        stepImg.setIsMain(true);
+        stepImg.setImageRef(chal.getMainImageEntity().getImageRef());
+        serviceEntity.save(stepImg);
+        step.addImage(stepImg);
         serviceEntity.save(step);
 
         chalIns.addStep(step);
@@ -97,7 +104,7 @@ public class ChallengeDefinitionUtil {
     }
 
     public void setModelForAcceptChallengeDefinition(HttpServletRequest request, User user, Model model, int chalId) {
-        
+
         ChallengeDefinition chalToAccept = (ChallengeDefinition) serviceEntity.findById(chalId, ChallengeDefinition.class);
         if (chalToAccept.getStatus() != ChallengeDefinitionStatus.ACCEPTED) {
             Image image = new Image();
@@ -121,9 +128,12 @@ public class ChallengeDefinitionUtil {
         ChallengeDefinition chalDefNew = new ChallengeDefinition();
         chalDefNew.setDate(new Date());
         model.addAttribute("challenge", chalDefNew);
+        List<Tag> tags = serviceEntity.getAll(Tag.class);
+        model.addAttribute("tags", tags);
     }
 
-    public void setModelForNewOrUpdatedChalShow(ChallengeDefinition challenge, HttpServletRequest request, User currentUser, UserProfile userProfile, Model model, String image) {
+    public void setModelForNewOrUpdatedChalShow(ChallengeDefinition challenge, HttpServletRequest request,
+            User currentUser, UserProfile userProfile, Model model, String image, List<Integer> selectedTags) {
 
         User curDBUser = ((User) serviceEntity.findById(userProfile.getUserEntityId(), User.class));
 
@@ -143,6 +153,13 @@ public class ChallengeDefinitionUtil {
                     serviceEntity.update(oldImage);
                 }
             }
+            List<Tag> tags = chalToUpdate.getTags();
+            chalToUpdate.removeAllTags();
+            serviceEntity.update(chalToUpdate);
+            for (Tag t : tags) {
+                t.removeChallenge(chalToUpdate);
+                serviceEntity.update(t);
+            }
         } else {
             challenge.setStatus(ChallengeDefinitionStatus.CREATED);
             challenge.setCreator(curDBUser);
@@ -151,6 +168,13 @@ public class ChallengeDefinitionUtil {
 
         challenge = (ChallengeDefinition) serviceEntity.findById(challenge.getId(), ChallengeDefinition.class);
 
+        if (selectedTags != null) {
+            for (Integer tagId : selectedTags) {
+                Tag tag = (Tag) serviceEntity.findById(tagId, Tag.class);
+                challenge.addTag(tag);
+                serviceEntity.update(challenge);
+            }
+        }
         //need to update or create image
         if (!image.isEmpty() && !StringUtils.isNumeric(image)) {
             String base64Image = image.split(",")[1];
@@ -177,27 +201,24 @@ public class ChallengeDefinitionUtil {
     }
 
     public void setModelForChallengeShow(int id, HttpServletRequest request, User currentUser, Model model) {
-        
+
         ChallengeDefinition challenge = (ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class);
         List<User> listOfAcceptors = ((ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class)).getAllAcceptors();
         dialect.setActions(actionsProvider.getActionsForChallengeDefinition(currentUser, challenge));
         model.addAttribute("challenge", challenge);
         model.addAttribute("listOfAcceptors", listOfAcceptors);
         model.addAttribute("userProfile", currentUser);
+        model.addAttribute("tags", serviceEntity.getAll(Tag.class));
         commentUtil.setModelForComments(challenge.getComments(), request, currentUser, model);
     }
 
     public void setModelForBadDateNewChal(ChallengeDefinition challenge, HttpServletRequest request, Principal currentUser, Model model, String image, String imageName) {
-        if (challenge.getId() != null) {
-            model.addAttribute("challenge", challenge);
-            model.addAttribute("image64", image);
-            model.addAttribute("imageName", imageName);
-        } else {
+        if (challenge.getId() == null) {
             challenge.setDate(new Date());
-            model.addAttribute("challenge", challenge);
-            model.addAttribute("image64", image);
-            model.addAttribute("imageName", imageName);
         }
+        model.addAttribute("challenge", challenge);
+        model.addAttribute("image64", image);
+        model.addAttribute("imageName", imageName);
     }
 
     public void setModelForMain(HttpServletRequest request, Principal currentUser, Model model) {
@@ -206,5 +227,19 @@ public class ChallengeDefinitionUtil {
         ChallengeDefinition mainChallenge = challenges.remove(0);
         model.addAttribute("mainChallenge", mainChallenge);
         model.addAttribute("challenges", challenges);
+        model.addAttribute("tag", "");
+    }
+
+    public void setModelForMainFilteredByTag(HttpServletRequest request, Principal currentUser, Model model, int tagId) {
+        Tag tag = (Tag) serviceEntity.findById(tagId, Tag.class);
+        List<ChallengeDefinition> challenges = tag.getChallenges();
+        ChallengeDefinition mainChallenge = null;
+        if (!challenges.isEmpty()) {
+            Collections.sort(challenges, ChallengeDefinition.COMPARE_BY_RATING);
+            mainChallenge = challenges.remove(0);
+        }
+        model.addAttribute("mainChallenge", mainChallenge);
+        model.addAttribute("challenges", challenges);
+        model.addAttribute("tag", tag.getName());
     }
 }

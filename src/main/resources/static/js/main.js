@@ -9,27 +9,6 @@ $('#notification').click(function () {
     }
 });
 
-//show tabs' content
-$('.nav-tabs a').click(function () {
-    var active_tab_selector = $('.nav-tabs > li.active > a').attr('href');
-
-    //find actived navigation and remove 'active' css
-    var actived_nav = $('.nav-tabs > li.active');
-    actived_nav.removeClass('active');
-
-    //add 'active' css into clicked navigation
-    $(this).parents('li').addClass('active');
-
-    //hide displaying tab content
-    $(active_tab_selector).removeClass('active');
-    $(active_tab_selector).addClass('hide');
-
-    //show target tab content
-    var target_tab_selector = $(this).attr('href');
-    $(target_tab_selector).removeClass('hide');
-    $(target_tab_selector).addClass('active');
-});
-
 //send challengeId from challenge-form  to friends-form
 $("input[name='throw']").click(function () {
     var chalId = $(this).prev().val();
@@ -87,6 +66,21 @@ $('.new_step small a').on('click', function () {
 });
 
 $(document).on('change', 'input[type="file"]', function () {
+    var file = this.files[0];
+    if (Math.round(file.size / 1024) >= 1300) {
+        var $errorDiv = $('<div />', {
+            "class": "alert alert-danger",
+            "id": "image-error"
+        });
+        var $p = $('<p />');
+        $p.html($('#image-size-error').val());
+        $errorDiv.append($p);
+        $('#image-name').after($errorDiv);
+        $('#new-image-btn').after($errorDiv);
+        return;
+    }
+
+    $('#image-error').remove();
     var $p = $('<p />');
     $p.html($('#input-file').val().split('\\').pop());
     $p.addClass('image-name');
@@ -96,7 +90,6 @@ $(document).on('change', 'input[type="file"]', function () {
     var $k = $('#image-name');
     $k.val($('#input-file').val().split('\\').pop());
 
-    var file = document.querySelector('input[type="file"]').files[0];
     var reader = new FileReader();
 
     reader.onloadend = function () {

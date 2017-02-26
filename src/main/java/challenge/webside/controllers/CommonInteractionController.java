@@ -4,9 +4,11 @@ import challenge.Application;
 import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.Comment;
+import challenge.dbside.models.Tag;
 import challenge.dbside.models.User;
 import challenge.dbside.services.ini.MediaService;
 import challenge.webside.controllers.util.ChallengeDefinitionUtil;
+import challenge.webside.controllers.util.TagsUtil;
 import challenge.webside.controllers.util.UserUtil;
 import challenge.webside.dao.UsersDao;
 import challenge.webside.interactive.InteractiveRepository;
@@ -64,6 +66,9 @@ public class CommonInteractionController {
 
     @Autowired
     private UserUtil userUtil;
+    
+    @Autowired
+    private TagsUtil tagsUtil;
 
 	private static final Logger logger =
 			LoggerFactory.getLogger(CommonInteractionController.class);
@@ -246,6 +251,38 @@ public class CommonInteractionController {
             } else {
                 result.setCode("204");
                 result.setMsg("No users");
+            }
+        } else {
+            result.setCode("400");
+            result.setMsg("Search criteria is empty");
+        }
+        return result;
+    }
+    
+    @RequestMapping(value = "/getTags", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody
+    AjaxResponseBody searchTags(@RequestBody SearchCriteria search) {
+
+        AjaxResponseBody result = new AjaxResponseBody();
+
+        if (search != null) {
+            List<Tag> filteredTags = tagsUtil.filterTags(search.getFilter());
+
+            if (filteredTags.size() > 0) {
+                Map<Integer, NameAndImage> tagsAjax = new HashMap<>();
+                for (Tag tag : filteredTags) {
+                    NameAndImage nameAndImage = new NameAndImage();
+                    nameAndImage.setName(tag.getName());
+                    nameAndImage.setImage(String.valueOf(tag.getChallenges().size()));
+                    tagsAjax.put(tag.getId(), nameAndImage);
+                }
+                result.setCode("200");
+                result.setMsg("");
+                result.setResult(tagsAjax);
+            } else {
+                result.setCode("204");
+                result.setMsg("No tags");
             }
         } else {
             result.setCode("400");

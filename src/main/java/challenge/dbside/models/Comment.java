@@ -3,6 +3,7 @@ package challenge.dbside.models;
 import challenge.dbside.models.common.IdAttrGet;
 import challenge.dbside.models.dbentity.DBSource;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -55,6 +56,13 @@ public class Comment extends BaseEntity implements Commentable { //TODO: add imp
         getDataSource().setParent(comment.getDataSource());
     }
 
+    public Comment getParentComment() {
+        if (getDataSource().getParent() != null) {
+            return getDataSource().getParent().getEntityType() == this.getDataSource().getEntityType() ? new Comment(getDataSource().getParent()) : null;
+        }
+        return null;
+    }
+
     public List<User> getVotesFor() {
         List<DBSource> list = (List<DBSource>) getDataSource().getRel().get(IdAttrGet.refVoteForComment());
         List<User> voters = new ArrayList<>();
@@ -93,4 +101,8 @@ public class Comment extends BaseEntity implements Commentable { //TODO: add imp
     public boolean rmVoteAgainst(User voter) {
     	return getDataSource().getRel().removeMapping(IdAttrGet.refVoteAgainstComment(), voter.getDataSource());
     }
+
+    public static final Comparator<Comment> COMPARE_BY_DATE = (Comment leftToCompare, Comment rightToCompare)
+            -> rightToCompare.getDate().compareTo(leftToCompare.getDate());
+
 }

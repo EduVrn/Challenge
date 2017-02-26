@@ -2,8 +2,12 @@ package challenge.dbside.models;
 
 import challenge.dbside.models.common.IdAttrGet;
 import challenge.dbside.models.dbentity.DBSource;
+import challenge.dbside.models.ini.TypeEntity;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -53,6 +57,34 @@ public class ChallengeStep extends BaseEntity implements Commentable {
         getDataSource().getAttributes().get(IdAttrGet.IdDate()).setDateValue(date);
     }
 
+    public Image getMainImageEntity() {
+        Set<DBSource> children = (Set<DBSource>) getDataSource().getChildren();
+        for (DBSource childDB : children) {
+            if (childDB.getEntityType() == TypeEntity.IMAGE.getValue()) {
+                Image currentImage = new Image(childDB);
+                if (currentImage.isMain()) {
+                    return currentImage;
+                }
+            }
+        }
+        return new Image();
+    }
+
+    public List<Image> getImageEntities() {
+        List<Image> images = new ArrayList<>();
+        Set<DBSource> children = (Set<DBSource>) getDataSource().getChildren();
+        children.forEach((childDB) -> {
+            if (childDB.getEntityType() == TypeEntity.IMAGE.getValue()) {
+                images.add(new Image(childDB));
+            }
+        });
+        return images;
+    }
+
+    public void addImage(Image image) {
+        getDataSource().getChildren().add(image.getDataSource());
+    }
+    
     public static final Comparator<ChallengeStep> COMPARE_BY_DATE = (ChallengeStep leftToCompare, ChallengeStep rightToCompare)
             -> leftToCompare.getDate().compareTo(rightToCompare.getDate());
 
