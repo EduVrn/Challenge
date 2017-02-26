@@ -69,10 +69,12 @@ $('.media-body small a').on('click', function () {
     var parent = $(this).parent().parent().parent();
     var children = parent.children();
     showingReplyForm = !showingReplyForm;
-    if (showingReplyForm)
+    if (showingReplyForm) {
         children[children.length - 2].style.display = "block";
-    else
-        children[children.length - 2].style.display = "none";
+    }
+    else {
+    	children[children.length - 2].style.display = "none";
+    }
 });
 
 var showingStepForm = false;

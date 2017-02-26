@@ -46,6 +46,7 @@ public class ChallengeDefinitionController {
     @Autowired
     private ChallengeDefinitionUtil challengeDefUtil;
 
+    
     @RequestMapping(value = "challenge/information", method = GET, produces = "text/plain;charset=UTF-8")
     public String show(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int id) {
         util.setModel(request, currentUser, model);
@@ -111,8 +112,10 @@ public class ChallengeDefinitionController {
             @RequestParam("id-checked") List<Integer> selectedFriendsIds,
             @RequestParam("chal-id") int chalId,
             @RequestParam("challenge-info") String chalInfo) {
+    	
         for (Integer id : selectedFriendsIds) {
             challengeDefUtil.throwChallenge(id, chalId, chalInfo);
+            
         }
         return ControllerUtil.getPreviousPageByRequest(request).orElse("/");
     }
@@ -123,8 +126,10 @@ public class ChallengeDefinitionController {
             @RequestParam("id-checked") List<Integer> selectedChallengesIds,
             @RequestParam("user-id") int friendId,
             @RequestParam("challenge-info") List<String> messages) {
+    	
         for (int i = 0; i < selectedChallengesIds.size(); i++) {
             challengeDefUtil.throwChallenge(friendId, selectedChallengesIds.get(i), messages.get(i));
+            
         }
         return ControllerUtil.getPreviousPageByRequest(request).orElse("/");
     }

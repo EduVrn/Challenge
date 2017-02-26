@@ -491,3 +491,11 @@ label {
 .bindButton {
    margin-top:5px; 
 }
+
+.vote_hide {
+	display: none;
+}
+
+.notify_hide {
+	display: none;
+}

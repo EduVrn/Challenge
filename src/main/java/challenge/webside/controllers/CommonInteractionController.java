@@ -1,15 +1,18 @@
 package challenge.webside.controllers;
 
+import challenge.Application;
 import challenge.dbside.models.ChallengeDefinition;
+import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.Comment;
 import challenge.dbside.models.User;
 import challenge.dbside.services.ini.MediaService;
 import challenge.webside.controllers.util.ChallengeDefinitionUtil;
 import challenge.webside.controllers.util.UserUtil;
 import challenge.webside.dao.UsersDao;
-import challenge.webside.interactive.InteractiveHandler;
-import challenge.webside.interactive.InteractiveMessage;
-import challenge.webside.interactive.InteractiveVote;
+import challenge.webside.interactive.InteractiveRepository;
+import challenge.webside.interactive.model.ActiveUser;
+import challenge.webside.interactive.model.InteractiveComment;
+import challenge.webside.interactive.model.InteractiveVote;
 import challenge.webside.model.UserProfile;
 import challenge.webside.model.ajax.AjaxResponseBody;
 import challenge.webside.model.ajax.SearchCriteria;
@@ -20,6 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -35,10 +41,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
-public class InteractionController {
+public class CommonInteractionController {
 
     @Autowired
-    private InteractiveHandler interactiveHandler;
+    private InteractiveRepository commonInteractiveHandler;
 
     @Autowired
     private UsersDao usersDao;
@@ -59,35 +65,30 @@ public class InteractionController {
     @Autowired
     private UserUtil userUtil;
 
-    @MessageMapping("/interactive.open.{username}")
-    public void onopen(@Payload InteractiveMessage message, @DestinationVariable("username") String username, Principal principal) {
-
-        interactiveHandler.addConnection(message.getMainObjectId(), username);
-    }
-
-    @MessageMapping("/interactive.close.{username}")
-    public void onclose(@Payload InteractiveMessage message, @DestinationVariable("username") String username, Principal principal) {
-        interactiveHandler.rmConnection(message.getMainObjectId(), username);
-
-    }
-
+	private static final Logger logger =
+			LoggerFactory.getLogger(CommonInteractionController.class);
+    
+    
     @MessageMapping("/interactive.like.{username}")
     public void like(@Payload InteractiveVote message, @DestinationVariable("username") String username, Principal principal) {
-
         UserProfile userProf = usersDao.getUserProfile(principal.getName());
         User user = (User) serviceEntity.findById(userProf.getUserEntityId(), User.class);
-        ChallengeDefinition chal = (ChallengeDefinition) serviceEntity.findById(message.getMainObjectId(), ChallengeDefinition.class);
-
-        Comment comment = (Comment) serviceEntity.findById(message.getIdMessage(), Comment.class);
-        boolean voteFor = message.isDown();
+        
+        //typeMain
+        //ChallengeDefinition chal = (ChallengeDefinition) serviceEntity.findById(message.getMainObjectId(), ChallengeDefinition.class);
+        
+        
+        Comment comment = (Comment) serviceEntity.findById(message.getIdOwner(), Comment.class);
+        
+        boolean voteFor = message.getChangeVote() == 1 ? true : false;
         if (voteFor) {
             if (comment.getVotesAgainst().contains(user)) {
-                comment.removeVoteAgainst(user);
+                comment.rmVoteAgainst(user);
                 //remove in web
-                message.setStatus(1);
+                message.setChangeVote(2);
             } else {
                 //don't remove in web
-                message.setStatus(2);
+                message.setChangeVote(1);
             }
             comment.addVoteFor(user);
             serviceEntity.update(comment);
@@ -96,10 +97,10 @@ public class InteractionController {
             serviceEntity.update(author);
         } else {
             if (comment.getVotesFor().contains(user)) {
-                comment.removeVoteFor(user);
-                message.setStatus(-1);
+                comment.rmVoteFor(user);
+                message.setChangeVote(-2);
             } else {
-                message.setStatus(-2);
+                message.setChangeVote(-1);
             }
             comment.addVoteAgainst(user);
             serviceEntity.update(comment);
@@ -107,44 +108,58 @@ public class InteractionController {
             author.addRating(-1);
             serviceEntity.update(author);
         }
-        Set<String> candidates = interactiveHandler.getConnection4Object(message.getMainObjectId());
+        Set<String> candidates = commonInteractiveHandler.getCommonConnection4Object(message.getMainObjectId());
         for (String resp : candidates) {
             template.convertAndSend("/user/" + resp + "/exchange/like", message);
         }
     }
 
     @MessageMapping("/interactive.comment.{username}")
-    public void interactiveComment(@Payload InteractiveMessage message, @DestinationVariable("username") String username, Principal principal) {
-        UserProfile userProf = usersDao.getUserProfile(principal.getName());
-        User user = (User) serviceEntity.findById(userProf.getUserEntityId(), User.class);
-        ChallengeDefinition chal = (ChallengeDefinition) serviceEntity.findById(message.getMainObjectId(), ChallengeDefinition.class);
-
-        Comment newComment = new Comment();
-        newComment.setDate(new Date());
-        newComment.setMessage(message.getMessageContent());
-        newComment.setAuthor(user);
-        serviceEntity.save(newComment);
-        Integer id = message.getIdParent();
-        if (id != null) {
-            Comment parentComment = (Comment) serviceEntity.findById(id, Comment.class);
-            parentComment.addComment(newComment);
-            serviceEntity.update(parentComment);
-        } else {
-            chal.addComment(newComment);
-            serviceEntity.update(chal);
-        }
-
-        message.setUserName(user.getName());
-        message.setMessageId(newComment.getId());
-        message.setDate(newComment.getDate());
-        message.setUserId(user.getId());
-
-        Set<String> candidates = interactiveHandler.getConnection4Object(message.getMainObjectId());
+    public void interactiveComment(@Payload InteractiveComment message, @DestinationVariable("username") String username, Principal principal) {
+    	Integer mainObjectId = message.getMainObjectId();
+		UserProfile userProf = usersDao.getUserProfile(principal.getName());
+		User user = (User) serviceEntity.findById(userProf.getUserEntityId(), User.class);
+		
+		Comment newComment = new Comment();
+		newComment.setDate(new Date());
+		newComment.setMessage(message.getMessageContent());
+		newComment.setAuthor(user);
+		serviceEntity.save(newComment);
+		Integer id = message.getIdParent();
+		if (id != null) {
+			Comment parentComment = (Comment) serviceEntity.findById(id, Comment.class);
+			parentComment.addComment(newComment);
+			serviceEntity.update(parentComment);
+		} else {
+			if(message.getTypeMain().equals("ChallengeDefinitionType")) {
+				ChallengeDefinition chal = (ChallengeDefinition) serviceEntity.findById(mainObjectId, ChallengeDefinition.class);
+				chal.addComment(newComment);
+				serviceEntity.update(chal);
+			}
+			else if(message.getTypeMain().equals("ChallengeInstanceType")) {
+				ChallengeInstance chal = (ChallengeInstance) serviceEntity.findById(mainObjectId, ChallengeInstance.class);
+				chal.addComment(newComment);
+				serviceEntity.update(chal);
+			}
+			else {
+				logger.error("unknown typeMain: " + message.getTypeMain());
+				return;
+			}
+		}
+		
+		message.setStatus("SUCCESS");
+		message.setUserName(user.getName());
+		message.setMessageId(newComment.getId());
+		message.setDate(newComment.getDate());
+		message.setUserId(user.getId());
+				
+		Set<String> candidates = commonInteractiveHandler.getCommonConnection4Object(mainObjectId);
         for (String resp : candidates) {
             template.convertAndSend("/user/" + resp + "/exchange/comment", message);
         }
     }
-
+    
+    
     @RequestMapping(value = "/getFriends", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody

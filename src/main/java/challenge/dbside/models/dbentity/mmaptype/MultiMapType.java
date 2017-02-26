@@ -8,8 +8,6 @@ import java.util.Map;
 import org.apache.commons.collections4.MultiMap;
 import org.apache.commons.collections4.map.MultiValueMap;
 
-//import org.apache.commons.collections.MultiHashMap;
-//import org.apache.commons.collections.MultiMap;
 import org.hibernate.HibernateException;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.engine.spi.SessionImplementor;
@@ -72,7 +70,5 @@ public class MultiMapType implements UserCollectionType {
 	public Object instantiate(int anticipatedSize) {
 		return new MultiValueMap();
 	}
-
-
 
 }

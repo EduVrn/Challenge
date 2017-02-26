@@ -83,6 +83,10 @@ public class ChallengeInstance extends BaseEntity implements Commentable {
     public void addVoteFor(User voter) {
         getDataSource().getRel().put(IdAttrGet.refVoteFor(), voter.getDataSource());
     }
+    
+    public boolean rmVoteFor(User voter) {
+    	return getDataSource().getRel().removeMapping(IdAttrGet.refVoteFor(), voter.getDataSource());
+    }
 
     public List<User> getVotesAgainst() {
         List<DBSource> list = (List<DBSource>) getDataSource().getRel().get(IdAttrGet.refVoteAgainst());
@@ -99,6 +103,10 @@ public class ChallengeInstance extends BaseEntity implements Commentable {
         getDataSource().getRel().put(IdAttrGet.refVoteAgainst(), voter.getDataSource());
     }
 
+    public boolean rmVoteAgainst(User voter) {
+    	return getDataSource().getRel().removeMapping(IdAttrGet.refVoteAgainst(), voter.getDataSource());
+    }
+    
     public ChallengeStatus getStatus() {
         return ChallengeStatus.valueOf(getDataSource().getAttributes().get(IdAttrGet.IdChalStat()).getValue());
     }

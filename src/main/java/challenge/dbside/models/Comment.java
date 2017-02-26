@@ -68,7 +68,6 @@ public class Comment extends BaseEntity implements Commentable { //TODO: add imp
 
     public void addVoteFor(User voter) {
         getDataSource().getRel().put(IdAttrGet.refVoteForComment(), voter.getDataSource());
-
     }
 
     public List<User> getVotesAgainst() {
@@ -86,11 +85,12 @@ public class Comment extends BaseEntity implements Commentable { //TODO: add imp
         getDataSource().getRel().put(IdAttrGet.refVoteAgainstComment(), voter.getDataSource());
     }
 
-    public void removeVoteFor(User voter) {
-        getDataSource().getRel().remove(IdAttrGet.refVoteForComment(), voter.getDataSource());
+    public boolean rmVoteFor(User voter) {
+    	boolean b = getDataSource().getRel().removeMapping(IdAttrGet.refVoteForComment(), voter.getDataSource()); 
+        return b;
     }
 
-    public void removeVoteAgainst(User voter) {
-        getDataSource().getRel().remove(IdAttrGet.refVoteAgainstComment(), voter.getDataSource());
+    public boolean rmVoteAgainst(User voter) {
+    	return getDataSource().getRel().removeMapping(IdAttrGet.refVoteAgainstComment(), voter.getDataSource());
     }
 }

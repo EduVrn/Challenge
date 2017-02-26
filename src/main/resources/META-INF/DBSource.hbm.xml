@@ -25,7 +25,7 @@
 			<one-to-many class="challenge.dbside.models.dbentity.DBSource" />
 		</set>
 				
-		<map name="rel" table="relationship" cascade="none" collection-type="challenge.dbside.models.dbentity.mmaptype.MultiMapType" lazy="false">
+		<map name="rel" table="relationship" cascade="delete" collection-type="challenge.dbside.models.dbentity.mmaptype.MultiMapType" lazy="false">
 			<key column="entity_id" />
 			<map-key column="attribute_id" type="java.lang.Integer" />
 			<many-to-many column="entity_val" class="challenge.dbside.models.dbentity.DBSource" />

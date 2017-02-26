@@ -45,6 +45,9 @@ public class ChallengeDefinitionUtil {
     @Autowired
     private CommentUtil commentUtil;
 
+    @Autowired
+    private InteractiveUtil interactiveUtil;
+    
     public List<ChallengeDefinition> filterChallenges(String filter, int userId) {
         User user = (User) serviceEntity.findById(userId, User.class);
 
@@ -89,6 +92,8 @@ public class ChallengeDefinitionUtil {
 
         chal.addChallengeInstance(chalIns);
         serviceEntity.update(chal);
+        
+        interactiveUtil.interactiveThrowChallenge(userId, chalIns);
     }
 
     public void setModelForAcceptChallengeDefinition(HttpServletRequest request, User user, Model model, int chalId) {

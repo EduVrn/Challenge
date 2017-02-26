@@ -9,23 +9,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
-
-
-
-
-/*import org.apache.commons.collections.DefaultMapEntry;
-import org.apache.commons.collections.MultiHashMap;
-
-import org.apache.commons.collections.MultiMap;*/
-
-
 import org.apache.commons.collections4.keyvalue.DefaultMapEntry;
 import org.apache.commons.collections4.MapIterator;
 import org.apache.commons.collections4.MultiMap;
 import org.apache.commons.collections4.map.MultiValueMap;
-
-
-
 import org.hibernate.HibernateException;
 import org.hibernate.collection.internal.PersistentMap;
 import org.hibernate.engine.spi.SessionImplementor;
@@ -36,8 +23,8 @@ import com.google.common.collect.ListMultimap;
 
 import challenge.dbside.models.dbentity.DBSource;
 
-@SuppressWarnings( "unchecked" )
-//@SuppressWarnings("serial")
+//@SuppressWarnings( "unchecked" )
+@SuppressWarnings("serial")
 public class PersistentMultiMap extends PersistentMap implements MultiMap {
 
 	public PersistentMultiMap(SessionImplementor session, MultiMap map) {
@@ -47,18 +34,6 @@ public class PersistentMultiMap extends PersistentMap implements MultiMap {
     public PersistentMultiMap(SessionImplementor session) {
         super(session);
     }
-
-    
-    /*public Object remove(Object key, Object item) {
-        Object old = isPutQueueEnabled() ? readElementByIndex(key) : UNKNOWN;
-        if (old == UNKNOWN) {
-            write();
-            return ((MultiMap) map).remove(key, item);
-        } else {
-            queueOperation(new RemoveItem(key, item));
-            return old;
-        }
-    }*/
 
     private class RemoveItem implements DelayedOperation {
 
@@ -157,8 +132,9 @@ public class PersistentMultiMap extends PersistentMap implements MultiMap {
     @Override
     public boolean equalsSnapshot(CollectionPersister persister) throws HibernateException {
         Map sn = (Map) getSnapshot();
-        if (sn.size() != map.size())
+        if (sn.size() != map.size()) {
             return false;
+        }
         Type elemType = persister.getElementType();
         for (Iterator i = sn.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();
@@ -193,13 +169,15 @@ public class PersistentMultiMap extends PersistentMap implements MultiMap {
             Collection oldState = (Collection) entry.getValue();
             Collection newState = (Collection) map.get(entry.getKey());
             if(newState == null) {
-            	newState = (Collection)new ArrayList();
+            	newState = new ArrayList();
             }
-            
+            String n = newState.getClass().getName();
             for (Iterator j = oldState.iterator(); j.hasNext();) {
                 Object element = j.next();
                 if (!(newState.contains(element))) {
-                    result.add(((DBSource)element).getId());
+                	Integer id = ((DBSource)element).getId(); 
+                	
+                    result.add(id);
                 }
             }
         }
@@ -238,9 +216,15 @@ public class PersistentMultiMap extends PersistentMap implements MultiMap {
 	}
 
 	@Override
-	public boolean removeMapping(Object arg0, Object arg1) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean removeMapping(Object key, Object item) {
+    	Object old = isPutQueueEnabled() ? readElementByIndex(key) : UNKNOWN;
+        if (old == UNKNOWN) {
+            write();
+            boolean flag = ((MultiMap) map).removeMapping(key, item);
+            return flag;
+        } else {
+            queueOperation(new RemoveItem(key, item));
+            return true;
+        }
 	}
-
 }

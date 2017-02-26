@@ -1,5 +1,6 @@
 package challenge.dbside.models;
 
+import challenge.Application;
 import challenge.dbside.models.common.IdAttrGet;
 import challenge.dbside.models.dbentity.DBSource;
 import challenge.dbside.models.ini.TypeEntity;
@@ -20,8 +21,13 @@ import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ChallengeDefinition extends BaseEntity implements Commentable {
 
+	private static final Logger logger = LoggerFactory.getLogger(ChallengeDefinition.class);
+	
     public ChallengeDefinition() {
         super(ChallengeDefinition.class.getSimpleName());
         if (getRating() == null) {
@@ -77,7 +83,7 @@ public class ChallengeDefinition extends BaseEntity implements Commentable {
             Date result = df.parse(ddt);
             return result;
         } catch (Exception ex) {
-            ex.printStackTrace();
+        	logger.error(ex.getMessage());
             return (new Date(0));
             //new Date() == current date,
             //return (new Date());

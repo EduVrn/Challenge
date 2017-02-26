@@ -9,11 +9,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import challenge.dbside.ini.InitialLoader;
 import challenge.webside.imagesstorage.ImageStoreService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Configuration
 @EnableAutoConfiguration
@@ -21,7 +21,9 @@ import challenge.webside.imagesstorage.ImageStoreService;
 public class Application extends SpringBootServletInitializer {
 
 	private static InitialLoader initiator;
-
+	private static final Logger logger =
+			LoggerFactory.getLogger(Application.class);
+	
 	@Autowired
 	public void setSomeThing(InitialLoader someThing) {
 		Application.initiator = someThing;
@@ -34,12 +36,15 @@ public class Application extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
 		ApplicationContext ctx = SpringApplication.run(Application.class, args);
+		
 		try {
 			ImageStoreService.login();
 		} catch (Exception ex) {
-			Logger.getLogger(Application.class.getName()).log(Level.SEVERE, null, ex);
+			logger.debug("Error create ImageStoreService", ex);
 		}
+		
 		initiator.initial();
+		logger.info("successfully start");
 	}
 
 }
