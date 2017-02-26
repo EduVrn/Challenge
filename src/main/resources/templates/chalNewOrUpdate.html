@@ -18,6 +18,7 @@
             <div class="inner-container container">
                 <form   th:action="@{information}" th:object="${challenge}" method="post">
                     <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrf-token"/>
+                    <input type="hidden" id="image-size-error" th:value="#{imageSizeError}" />                  
                     <div style="margin-top: 40px; " class="row">
                         <div class="section-header col-md-12">
                         </div> 
@@ -60,7 +61,6 @@
                                         <p class="image-name" style="display: inline-block;" th:utext="${imageName}"/>
                                         <p style="display: inline-block; color: black;" th:text="#{maxSizeHint}" />
                                         <input id="image-name" type="hidden" th:value="${imageName}"  name="image-name" />
-                                        <input type="hidden" id="image-size-error" th:value="#{imageSizeError}" />
                                         <input type="hidden" th:value="${image64}"  name="image" />
                                     </div>
                                     <div class="chal-photo col-md-12"> 

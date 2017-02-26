@@ -65,9 +65,15 @@
                     </div> 
                     <hr style="margin-bottom: 5px;" class="hr_divider"/>
                     <div>
-
-                        <div class="col-md-3 col-sm-4 col-xs-6"><i class="glyphicon glyphicon-calendar"> </i><span th:text="${#dates.format(challenge.getDate(), 'dd/MM/yyyy HH:mm')}" >July 14, 2014</span></div>
-                        <div class="col-md-2 col-sm-3 col-xs-6"><a href="#"><i class="glyphicon glyphicon-user"> </i><span th:text="${isChalDef} ? ${challenge.getCreator().getName()} : ${challenge.getAcceptor().getName()}" >Admin</span></a></div>
+                        <div class="col-md-3 col-sm-4 col-xs-6"><i class="glyphicon glyphicon-calendar"> </i><span th:text="${#dates.format(challenge.getDate(), 'dd/MM/yyyy HH:mm')}" /></div>
+                        <div class="col-md-2 col-sm-3 col-xs-6">
+                            <form action="/profile">
+                                <input type="hidden" name="id" th:value="${isChalDef} ? ${challenge.getCreator().getId()} : ${challenge.getAcceptor().getId()}" />
+                                <a onclick="this.parentNode.submit()"><i class="glyphicon glyphicon-user"></i>
+                                    <span th:text="${isChalDef} ? ${challenge.getCreator().getName()} : ${challenge.getAcceptor().getName()}" />
+                                </a>
+                            </form>
+                        </div>
                         <div class="col-sm-4 col-xs-6" th:if="${isChalDef}">
                             <form th:each="tag : ${challenge.getTags()}" action="/tags/find" style="display: inline-block">
                                 <span class="label label-default tag-link" 
@@ -131,7 +137,7 @@
                     <div class="row">
                         <div class="main-column">
                             <div>
-                                <h3 style="margin-bottom: 5px;" th:text="#{newCommentLabel}">Новый комментарий</h3>
+                                <h3 style="margin-bottom: 5px;" th:text="#{newCommentLabel}"/>
                             </div> 
                             <form th:object="${comment}" th:action="${challenge instanceof T(challenge.dbside.models.ChallengeDefinition)} ? @{/newcomment} : @{/newinscomment}" method="post">
                                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
@@ -160,7 +166,7 @@
             </div> 
         </div>
         <script th:replace="fragments/commonDependencies :: commonJS" th:remove="tag"/>
-        <script src="js/csslayoutextenders/chalShowLayout.js"></script>
+        <script src="../js/csslayoutextenders/chalShowLayout.js"></script>
         <script type="text/javascript" src="../js/moment-with-locales.min.js"></script>
         <script type="text/javascript" src="../js/moment.js"></script>
         <script src="../js/bootstrap-datetimepicker.min.js"></script>

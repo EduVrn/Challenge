@@ -9,12 +9,12 @@
     <body>
         <th:block th:fragment="stepAddAndShow">
             <h2 th:if="${!isChalDef}" th:text="#{chalStepsLabel}" /> 
-            <div auth:can="EDIT_CHALLENGE" th:if="${!isChalDef}" class="new_step">
+            <div auth:can="ADD_STEPS" th:if="${!isChalDef}" class="new_step">
                 <small>
                     <a name="step-link" th:text="#{newStepForChallenge}"></a>
                 </small>
             </div>
-            <div name="stepform" auth:can="EDIT_CHALLENGE" th:if="${!isChalDef}" class="step_div" th:id="step_div" th:style="${showStepForm} ? 'display: block;' : 'display: none;'">  
+            <div name="stepform" auth:can="ADD_STEPS" th:if="${!isChalDef}" class="step_div" th:id="step_div" th:style="${showStepForm} ? 'display: block;' : 'display: none;'">  
                 <form th:action="@{newstep}" th:object="${step}" method="post" style="margin-bottom: 40px;">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                     <input type='hidden' th:value='${challenge.getId()}' name='id'/>                       
@@ -26,8 +26,7 @@
                     <div class="alert alert-danger col-md-12" th:if="${#fields.hasErrors('message')}">
                         <p  th:errors="*{message}">Name Error</p>    
                     </div>
-                    <label th:text="#{imageLabel}" class="col-md-2 control-label" />
-                    <div  class="chal-photo col-md-10">
+                    <div>
                         <input type="button" th:value="#{uploadImageButton}" id="upload-file-btn" class="btn btn-default" />
                         <input type="file" name="pic" accept="image/*" id="input-file" style="display: none;"/>
                         <p class="image-name" style="display: inline-block;" th:utext="${imageName}"/>
