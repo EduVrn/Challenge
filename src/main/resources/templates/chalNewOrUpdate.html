@@ -85,8 +85,7 @@
                                     <div class="chal-photo col-md-10">
                                         <select name="tags" class="selectpicker" th:title="#{selectTitle}" multiple="" style="display: none;">
                                             <th:block th:each="tag : ${tags}">
-                                                <option th:if="${challenge.getTags().contains(tag)}" selected="selected" th:value="${tag.getId()}" th:text="${tag.getName()}"/>
-                                                <option th:unless="${challenge.getTags().contains(tag)}" th:value="${tag.getId()}" th:text="${tag.getName()}"/>
+                                                <option th:selected="${selectedTags.contains(tag)}" th:value="${tag.getId()}" th:text="${tag.getName()}"/>
                                             </th:block>
                                         </select>
                                     </div>
@@ -113,5 +112,3 @@
         <script src="../js/dateAndImageHelper.js"></script>
     </body>
 </html>
-
-

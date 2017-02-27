@@ -6,7 +6,6 @@ import challenge.dbside.models.ChallengeStep;
 import challenge.dbside.models.Image;
 import challenge.dbside.models.Tag;
 import challenge.dbside.models.User;
-import challenge.dbside.models.common.IdAttrGet;
 import challenge.dbside.models.status.ChallengeDefinitionStatus;
 import challenge.dbside.models.status.ChallengeStatus;
 import challenge.dbside.services.ini.MediaService;
@@ -130,6 +129,7 @@ public class ChallengeDefinitionUtil {
         model.addAttribute("challenge", chalDefNew);
         List<Tag> tags = serviceEntity.getAll(Tag.class);
         model.addAttribute("tags", tags);
+        model.addAttribute("selectedTags", new ArrayList<>());
     }
 
     public void setModelForNewOrUpdatedChalShow(ChallengeDefinition challenge, HttpServletRequest request,
@@ -153,13 +153,13 @@ public class ChallengeDefinitionUtil {
                     serviceEntity.update(oldImage);
                 }
             }
-            List<Tag> tags = chalToUpdate.getTags();
-            chalToUpdate.removeAllTags();
-            serviceEntity.update(chalToUpdate);
-            for (Tag t : tags) {
-                t.removeChallenge(chalToUpdate);
-                serviceEntity.update(t);
-            }
+//            List<Tag> tags = chalToUpdate.getTags();
+//            chalToUpdate.removeAllTags();
+//            serviceEntity.update(chalToUpdate);
+//            for (Tag t : tags) {
+//                t.removeChallenge(chalToUpdate);
+//                serviceEntity.update(t);
+//            }
         } else {
             challenge.setStatus(ChallengeDefinitionStatus.CREATED);
             challenge.setCreator(curDBUser);
@@ -209,16 +209,26 @@ public class ChallengeDefinitionUtil {
         model.addAttribute("listOfAcceptors", listOfAcceptors);
         model.addAttribute("userProfile", currentUser);
         model.addAttribute("tags", serviceEntity.getAll(Tag.class));
+        model.addAttribute("selectedTags", challenge.getTags());
         commentUtil.setModelForComments(challenge.getComments(), request, currentUser, model);
     }
 
-    public void setModelForBadDateNewChal(ChallengeDefinition challenge, HttpServletRequest request, Principal currentUser, Model model, String image, String imageName) {
+    public void setModelForBadDateNewChal(ChallengeDefinition challenge, HttpServletRequest request, 
+            Principal currentUser, Model model, String image, String imageName, List<Integer> selectedTags) {
         if (challenge.getId() == null) {
             challenge.setDate(new Date());
         }
         model.addAttribute("challenge", challenge);
         model.addAttribute("image64", image);
         model.addAttribute("imageName", imageName);
+        model.addAttribute("tags", serviceEntity.getAll(Tag.class));
+        List<Tag> tags = new ArrayList<>();
+        if (selectedTags != null) {
+            for (Integer tagId : selectedTags) {
+                tags.add((Tag) serviceEntity.findById(tagId, Tag.class));
+            }
+        }
+        model.addAttribute("selectedTags", tags);
     }
 
     public void setModelForMain(HttpServletRequest request, Principal currentUser, Model model) {

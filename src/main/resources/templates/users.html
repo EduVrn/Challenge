@@ -47,7 +47,7 @@
                                             <input type="hidden" name="id" th:value="${user.getId()}" />
                                             <h3><a th:text="${user.getName()}" class="name" onclick="this.parentNode.parentNode.submit();" /></h3>
                                         </form>
-                                        <div class="pull-right">
+                                        <div class="right-button">
                                             <form th:unless="${curUser.getFriends().contains(user)}" method="GET" action="/addFriend">
                                                 <input type="hidden" name="id" th:value="${user.getId()}" />
                                                 <input type="submit" class="btn btn-default" th:value="#{addFriendButton}" />
@@ -56,7 +56,6 @@
                                                 <span class="label label-info" th:text="#{friendLabel}" />
                                             </h3>
                                         </div>
-                                        <div class="break" style="width: 100%; margin: 20px;"></div>
                                     </li>
                                 </ul>
                             </div>
@@ -73,4 +72,3 @@
         <script src="js/ajaxSearch.js"></script>
     </body>
 </html>
-

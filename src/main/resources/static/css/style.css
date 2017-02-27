@@ -353,10 +353,10 @@ textarea {
     position: relative;
     width: 400px;
     opacity: 1;
-    border: 1px solid gray;
     border-radius: 3px;
     background-color: white;
     margin-bottom: 7px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 
 li {
@@ -421,7 +421,9 @@ label {
     .showOnMobile{
         display: -webkit-inline-box;
     }
-
+    .right-button {
+        float: none !important;
+    }
 }
 
 @media screen and (min-width: 768px) and (max-width: 991px) {
@@ -533,6 +535,10 @@ label {
 
 .notify_hide {
     display: none;
+}
+
+.right-button {
+    float: right;
 }
 
 span.tag-link {

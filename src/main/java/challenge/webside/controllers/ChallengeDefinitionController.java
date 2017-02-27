@@ -90,7 +90,7 @@ public class ChallengeDefinitionController {
         User user = util.getSignedUpUser(request, currentUser);
         if (bindingResult.hasFieldErrors()) {
             util.setModel(request, currentUser, model);
-            challengeDefUtil.setModelForBadDateNewChal(challenge, request, currentUser, model, img, imgName);
+            challengeDefUtil.setModelForBadDateNewChal(challenge, request, currentUser, model, img, imgName, selectedTags);
             model.addAttribute(bindingResult.getAllErrors());
             return "chalNewOrUpdate";
         } else {
