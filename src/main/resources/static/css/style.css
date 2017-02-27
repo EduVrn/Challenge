@@ -433,6 +433,9 @@ label {
         position:fixed;
         width:350px;
     }
+    .not_display_on_sm{
+        display:none;
+    }
 }
 
 @media screen and (min-width: 992px) and (max-width: 1199px) {
@@ -523,6 +526,13 @@ label {
 
 .bindButton {
     margin-top:5px; 
+}
+.vote_hide {
+    display: none;
+}
+
+.notify_hide {
+    display: none;
 }
 
 span.tag-link {
