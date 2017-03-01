@@ -35,7 +35,7 @@
                                     <div class="main-challenge-body">
                                         <form name="submitForm" id="challenge_form" method="GET" action="/challenge/information">
                                             <input type="hidden" name="id" th:value="${mainChallenge.getId()}"/>
-                                            <h2 class="chal-title" ><a onclick="document.getElementById('challenge_form').submit();"  th:text="${mainChallenge.getName()}"></a></h2>
+                                            <h2 style="margin-bottom:0px;" class="chal-title" ><a onclick="document.getElementById('challenge_form').submit();"  th:text="${mainChallenge.getName()}"></a></h2>
                                         </form>                                        
                                         <form th:each="tag : ${mainChallenge.getTags()}" action="/tags/find" style="display: inline-block">
                                             <span class="label label-default tag-link" 
@@ -43,9 +43,9 @@
                                                   onclick="this.parentNode.submit()"/>
                                             <input type="hidden" th:value="${tag.getId()}" name="id"/>
                                         </form>
-                                        <br />
+                                        <br/>
                                         <span class="chal-meta" th:text="${#dates.format(mainChallenge.date, 'dd/MM/yyyy HH:mm')}"></span>
-                                        <h4  class="cut-text ellipsis desc" th:text="${mainChallenge.getDescription()}"></h4>
+                                        <h4 style="margin-top:0px;" class="cut-text ellipsis desc" th:text="${mainChallenge.getDescription()}"></h4>
                                     </div>
                                 </div> 
                             </div> 
@@ -57,6 +57,7 @@
                 </div>
             </div>
         </div> 
+
         <div th:replace="fragments/customModal::modalBody"/>
         <script th:replace="fragments/commonDependencies :: commonJS" th:remove="tag"/>
         <script src="../js/csslayoutextenders/mainPageLayout.js"></script>

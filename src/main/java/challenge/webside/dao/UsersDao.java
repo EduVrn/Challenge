@@ -61,7 +61,7 @@ public class UsersDao {
     }
 
     public List<UserProfile> getUserProfiles(final int userDbId) {
-    	return jdbcTemplate.query("select * from UserProfile where userEntityId = ?",
+        return jdbcTemplate.query("select * from UserProfile where userEntityId = ?",
                 new RowMapper<UserProfile>() {
             public UserProfile mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return new UserProfile(
@@ -100,7 +100,7 @@ public class UsersDao {
         List<UserProfile> profiles = getUserProfiles(userDbId);
         Map<String, String> result = new HashMap<>();
         for (UserProfile userProfile : profiles) {
-            result.put(getUserConnection(userProfile.getUserId()).getProviderId(), (Strings.isNullOrEmpty(userProfile.getName()) || userProfile.getName().equals("null")) ? userProfile.getUsername() : userProfile.getName() );
+            result.put(getUserConnection(userProfile.getUserId()).getProviderId(), (Strings.isNullOrEmpty(userProfile.getName()) || userProfile.getName().equals("null")) ? userProfile.getUsername() : userProfile.getName());
         }
         return result;
     }
@@ -114,11 +114,12 @@ public class UsersDao {
         profilePic.setIsMain(Boolean.TRUE);
         serviceEntity.save(profilePic);
         try {
-            ImageStoreService.saveImage(new File("src/main/resources/static/images/AvaDefault.jpg"), profilePic);
+            profilePic.setImageRef(ImageStoreService.getDEFAULT_USER_IMAGE_ROUTE());
             serviceEntity.update(profilePic);
         } catch (Exception ex) {
             Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         user.addImage(profilePic);
         serviceEntity.update(user);
 
@@ -134,14 +135,14 @@ public class UsersDao {
                 profile.getUsername(),
                 profile.getUser().getId());
 
-//        List<User> list = serviceEntity.getAll(User.class);
-//        for (User fr : list) {
-//            user.addFriend(fr);
-//            fr.addFriend(user);
-//            serviceEntity.update(fr);
-//        }
-//
-//        serviceEntity.update(user);
+        List<User> list = serviceEntity.getAll(User.class);
+        for (User fr : list) {
+            user.addFriend(fr);
+            fr.addFriend(user);
+            serviceEntity.update(fr);
+        }
+
+        serviceEntity.update(user);
     }
 
     public void bindUser(Connection<?> connection, WebRequest request) {

@@ -1,13 +1,17 @@
 //show notifications popup
 var showingNotifications = false;
-$('#notification').click(function () {
+$('.notification').click(function () {
     showingNotifications = !showingNotifications;
     if (showingNotifications) {
         $('#chal-notification').show();
+        var height = $('.notification-borders').eq(1).outerHeight(true)
+                + $('.notification-borders').eq(2).outerHeight(true) + 40;
+        $('.chal-notification-wrap ').outerHeight(height);
     } else {
-        $('#chal-notification').hide();
+        $('#chal-notification').fadeOut("slow");
     }
 });
+
 
 //send challengeId from challenge-form  to friends-form
 $("input[name='throw']").click(function () {
@@ -50,9 +54,8 @@ $('.media-body small a').on('click', function () {
     showingReplyForm = !showingReplyForm;
     if (showingReplyForm) {
         children[children.length - 2].style.display = "block";
-    }
-    else {
-    	children[children.length - 2].style.display = "none";
+    } else {
+        children[children.length - 2].style.display = "none";
     }
 });
 

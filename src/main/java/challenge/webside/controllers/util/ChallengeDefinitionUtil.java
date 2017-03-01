@@ -48,7 +48,7 @@ public class ChallengeDefinitionUtil {
 
     @Autowired
     private InteractiveUtil interactiveUtil;
-    
+
     public List<ChallengeDefinition> filterChallenges(String filter, int userId) {
         User user = (User) serviceEntity.findById(userId, User.class);
 
@@ -99,7 +99,7 @@ public class ChallengeDefinitionUtil {
 
         chal.addChallengeInstance(chalIns);
         serviceEntity.update(chal);
-        
+
         interactiveUtil.interactiveThrowChallenge(userId, chalIns);
     }
 
@@ -177,24 +177,33 @@ public class ChallengeDefinitionUtil {
             }
         }
         //need to update or create image
-        if (!image.isEmpty() && !StringUtils.isNumeric(image)) {
-            String base64Image = image.split(",")[1];
-            byte[] array = Base64.decodeBase64(base64Image);
-            Image imageEntity = new Image();
-            imageEntity.setIsMain(Boolean.TRUE);
-            serviceEntity.save(imageEntity);
-            try {
-                ImageStoreService.saveImage(array, imageEntity);
-                serviceEntity.update(imageEntity);
-            } catch (Exception ex) {
-                Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            challenge.addImage(imageEntity);
+        if (image.isEmpty()) {
+            Image img = new Image();
+            img.setIsMain(Boolean.TRUE);
+            img.setImageRef(ImageStoreService.getDEFAULT_IMAGE_ROUTE());
+            serviceEntity.save(img);
+            challenge.addImage(img);
             serviceEntity.update(challenge);
-        } else if (StringUtils.isNumeric(image)) {
-            Image newMainImage = (Image) serviceEntity.findById(Integer.valueOf(image), Image.class);
-            newMainImage.setIsMain(Boolean.TRUE);
-            serviceEntity.update(newMainImage);
+        } else {
+            if (!image.isEmpty() && !StringUtils.isNumeric(image)) {
+                String base64Image = image.split(",")[1];
+                byte[] array = Base64.decodeBase64(base64Image);
+                Image imageEntity = new Image();
+                imageEntity.setIsMain(Boolean.TRUE);
+                serviceEntity.save(imageEntity);
+                try {
+                    ImageStoreService.saveImage(array, imageEntity);
+                    serviceEntity.update(imageEntity);
+                } catch (Exception ex) {
+                    Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                challenge.addImage(imageEntity);
+                serviceEntity.update(challenge);
+            } else if (StringUtils.isNumeric(image)) {
+                Image newMainImage = (Image) serviceEntity.findById(Integer.valueOf(image), Image.class);
+                newMainImage.setIsMain(Boolean.TRUE);
+                serviceEntity.update(newMainImage);
+            }
         }
         model.addAttribute("challenge", challenge);
         model.addAttribute("listOfAcceptors", challenge.getAllAcceptors());
@@ -214,7 +223,7 @@ public class ChallengeDefinitionUtil {
         commentUtil.setModelForComments(challenge.getComments(), request, currentUser, model);
     }
 
-    public void setModelForBadDateNewChal(ChallengeDefinition challenge, HttpServletRequest request, 
+    public void setModelForBadDateNewChal(ChallengeDefinition challenge, HttpServletRequest request,
             Principal currentUser, Model model, String image, String imageName, List<Integer> selectedTags) {
         if (challenge.getId() == null) {
             challenge.setDate(new Date());

@@ -12,9 +12,9 @@
         <script src="../js/jquery.min.js"></script>
 
         <tr th:if="${currentUserConnection != null}">
-			<script src="../js/Interactive/enable/likeEnable.js"></script>
-			<script src="../js/Interactive/enable/commentEnable.js"></script>
-		</tr>
+            <script src="../js/Interactive/enable/likeEnable.js"></script>
+            <script src="../js/Interactive/enable/commentEnable.js"></script>
+        </tr>
 
         <link rel="stylesheet" href="../css/style.css"/>
     </head>
@@ -23,7 +23,7 @@
         <div class="content-wrapper" th:with="isChalDef = ${challenge instanceof T(challenge.dbside.models.ChallengeDefinition)}">
             <div class="inner-container container">
                 <div class="chalShowChallenge" 
-                th:classappend="${challenge instanceof T(challenge.dbside.models.ChallengeDefinition)} ? ChallengeDefinitionType : ( ${challenge instanceof T(challenge.dbside.models.ChallengeInstance)} ? ChallengeInstanceType : _empty )">
+                     th:classappend="${challenge instanceof T(challenge.dbside.models.ChallengeDefinition)} ? ChallengeDefinitionType : ( ${challenge instanceof T(challenge.dbside.models.ChallengeInstance)} ? ChallengeInstanceType : _empty )">
                     <div style="margin-top: 80px; " class="row">
                         <div class="section-header main-column">
                             <input id="mainObjectId" type="hidden" th:value="${challenge.getId()}" name="id"/>
@@ -69,7 +69,9 @@
                     </div> 
                     <hr style="margin-bottom: 5px;" class="hr_divider"/>
                     <div>
-                        <div class="col-md-3 col-sm-4 col-xs-6"><i class="glyphicon glyphicon-calendar"> </i><span th:text="${#dates.format(challenge.getDate(), 'dd/MM/yyyy HH:mm')}" /></div>
+                        <div class="col-md-3 col-sm-4 col-xs-6"><i class="glyphicon glyphicon-calendar"> </i>
+                            <span th:text="${#dates.format(challenge.getDate(), 'dd/MM/yyyy HH:mm')}" />
+                        </div>
                         <div class="col-md-2 col-sm-3 col-xs-6">
                             <form action="/profile">
                                 <input type="hidden" name="id" th:value="${isChalDef} ? ${challenge.getCreator().getId()} : ${challenge.getAcceptor().getId()}" />
@@ -102,8 +104,8 @@
                             <div th:each="acceptor : ${listOfAcceptors}" >
                                 <div class="col-lg-2 col-md-2 col-sm-4 col-xs-4">
                                     <div>
-                                        <div>
-                                            <img th:src="${currentUserConnection.imageUrl}" class="img-rounded img-responsive" />
+                                        <div style="max-width: 50px;max-height:50px;">
+                                            <img  th:src="${acceptor.getMainImageEntity().getBase64()}" class="img-rounded img-responsive" />
                                         </div>
                                         <span class="chal-meta" th:text="${acceptor.getName()}"></span>
                                     </div>
@@ -157,12 +159,12 @@
                                 <h3 th:text="#{commentsCount} + ' (' + ${commentsCount} + ')'"></h3>
                             </div>
                             <div class="comments-list"> 
-    	                        <li style="margin-left: -40px; display: none;" id="templateComment">
-	                                <li th:replace="fragments/modelElementsViews/comment :: subcomment(comment =${hiddenComment}, depth=0)" />
-                            	</li>
-                            	<ul style="margin-left: -40px;" th:each="comment : ${comments}" class="media">
-                                	<li th:replace="fragments/modelElementsViews/comment :: subcomment(comment =${comment}, depth=0)"/>                                 
-                            	</ul>
+                                <li style="margin-left: -40px; display: none;" id="templateComment">
+                                    <li th:replace="fragments/modelElementsViews/comment :: subcomment(comment =${hiddenComment}, depth=0)" />
+                                </li>
+                                <ul style="margin-left: -40px;" th:each="comment : ${comments}" class="media">
+                                    <li th:replace="fragments/modelElementsViews/comment :: subcomment(comment =${comment}, depth=0)"/>                                 
+                                </ul>
                             </div>
                         </div>
                     </div>

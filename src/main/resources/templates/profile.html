@@ -11,10 +11,10 @@
         <div th:replace="fragments/header::userInfo" />
         <div th:replace="fragments/util/loader::loader"/>
         <div class="container">
-            <div class="page-header">
+            <div style="margin-top: 40px;" >
                 <h1 class="" th:text="${userProfile.getName()}+' ('+${userProfile.getRating()}+')'" style='display: inline-block;'/>   
 
-                <form style="margin-top: 40px;" class=" navbar-right" auth:can="CREATE_CHALLENGE" 
+                <form style="margin-top: 30px;" class=" navbar-right" auth:can="CREATE_CHALLENGE" 
                       name="newCallenge" th:id="newChallenge"
                       method="GET" action="challenge/new">
                     <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> 
@@ -22,7 +22,7 @@
                            th:value="#{createNewChallengeFromProfileButton}" />
                 </form>
             </div>
-
+            <hr style="margin-bottom: 5px;" class="hr_divider"/>
             <div class="row" >
                 <!-- left side -->
                 <div  class="parentForAff col-md-4 col-sm-6 col-xs-12">     
@@ -67,7 +67,7 @@
                                 <input auth:can="THROW_CHALLENGE_FOR_USER"
                                        name="throw" type="submit" data-target="#modal-challenges" 
                                        data-toggle="modal" class="underAvatarButton" th:value="#{profileThrowChallengeButton}" />
-                                <form auth:can="ADD_FRIEND" method="GET" action="/addFriend">
+                                <form auth:can="ADD_FRIEND" method="GET" action="/sendFriendRequest">
                                     <input type="hidden" name="id" th:value="${userProfile.getId()}" />
                                     <input type="submit" class="underAvatarButton" th:value="#{addFriendButton}" />
                                 </form>

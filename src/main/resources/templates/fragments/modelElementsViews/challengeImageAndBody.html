@@ -21,7 +21,6 @@
                               onclick="this.parentNode.submit()"/>
                         <input type="hidden" th:value="${tag.getId()}" name="id"/>
                     </form>
-                    <br />
                     <span class="chal-meta" th:text="${#dates.format(challenge.date, 'yyyy/MM/dd HH:mm')}"></span>
                     <h4 class="cut-text ellipsis desc" th:text="${challenge.getDescription()}"></h4>
                 </div>
@@ -33,10 +32,11 @@
                 <div class="chal-body">
                     <form name="submitForm" th:id="'challenge_form'+${challenge.Id}"  method="GET" action="challengeins/information">
                         <input type="hidden" name="id" th:value="${challenge.getId()}"/>
-                        <h2 class="chal-title"><a  th:onclick="'document.getElementById(\'challenge_form'+${challenge.getId()}+'\').submit();'" th:text="${challenge.getName()}"></a></h2>
+                        <h2 style="margin-bottom:0px;" class="chal-title"><a  th:onclick="'document.getElementById(\'challenge_form'+${challenge.getId()}+'\').submit();'" th:text="${challenge.getName()}"></a></h2>
                     </form>
+                    <br/>
                     <span class="chal-meta" th:text="${#dates.format(challenge.date, 'yyyy/MM/dd HH:mm')}"></span>
-                    <h4 class="cut-text ellipsis desc" th:text="${challenge.getDescription()}"></h4>
+                    <h4 style="margin-top:0px;" class="cut-text ellipsis desc" th:text="${challenge.getDescription()}"></h4>
                 </div>
             </th:block>
         </th:block>

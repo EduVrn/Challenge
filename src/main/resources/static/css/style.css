@@ -339,17 +339,29 @@ textarea {
 }
 
 #chal-notification {
+    right:10px;
     z-index: 50;
     width: 400px;
     top: 60px;
     display: none;
     opacity: 1;
     position: fixed;
+    animation: fade 1s;
+}
+@keyframes fade {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
 }
 
 .chal-notification-wrap {
     padding: 10px;
-    overflow: visible;
+    overflow: auto;
+    max-height:300px;
     position: relative;
     width: 400px;
     opacity: 1;
@@ -463,7 +475,6 @@ label {
         display:block !important;
     }
 
-
     .embedenceNoShift{
         margin-left:-40px; 
     }
@@ -473,6 +484,11 @@ label {
 
     .showOnMobile{
         display: none;
+    }
+
+    .notify-button{
+        margin-top:7px;
+        margin-right:0px;
     }
 }
 
@@ -484,6 +500,9 @@ label {
         margin-top: 0.05em;
         color: rgba(105,167,249,1);
         margin-left: 0.12em;
+    }
+    .notify-button{
+        margin-right:30px;
     }
 
 }
@@ -553,4 +572,16 @@ span.tag-link {
 {
     margin-top: 5px; 
     margin-left: -15px;
+}
+
+.menu-half {
+    display: inline-block !important;
+
+}
+.notification-borders{
+    padding-left: 10px;
+    padding-bottom: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 5px;
 }

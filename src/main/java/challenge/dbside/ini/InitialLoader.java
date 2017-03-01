@@ -202,6 +202,12 @@ public class InitialLoader {
     }
 
     public void init(int countOfUsers, int countOfChalDefs, int countOfInstanses, int countOfComments, int countOfEmbedence) {
+        try {
+            ImageStoreService.saveDefaultImage(new File("src/main/resources/static/images/photo_not_available.jpg"));
+            ImageStoreService.saveDefaultUserImage(new File("src/main/resources/static/images/user_photo_not_available.jpg"));
+        } catch (Exception ex) {
+            Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
+        }
         List<String> images = new ArrayList<>();
         images.add("src/main/resources/static/images/firstExampleChallenge.jpg");
         images.add("src/main/resources/static/images/secondExampleTask.png");
