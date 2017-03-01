@@ -1,6 +1,5 @@
 package challenge.dbside.models;
 
-import challenge.Application;
 import challenge.dbside.models.common.IdAttrGet;
 import challenge.dbside.models.dbentity.DBSource;
 import challenge.dbside.models.ini.TypeEntity;
@@ -26,8 +25,8 @@ import org.slf4j.LoggerFactory;
 
 public class ChallengeDefinition extends BaseEntity implements Commentable {
 
-	private static final Logger logger = LoggerFactory.getLogger(ChallengeDefinition.class);
-	
+    private static final Logger logger = LoggerFactory.getLogger(ChallengeDefinition.class);
+
     public ChallengeDefinition() {
         super(ChallengeDefinition.class.getSimpleName());
         if (getRating() == null) {
@@ -83,7 +82,7 @@ public class ChallengeDefinition extends BaseEntity implements Commentable {
             Date result = df.parse(ddt);
             return result;
         } catch (Exception ex) {
-        	logger.error(ex.getMessage());
+            logger.error(ex.getMessage());
             return (new Date(0));
             //new Date() == current date,
             //return (new Date());
@@ -154,11 +153,11 @@ public class ChallengeDefinition extends BaseEntity implements Commentable {
         Integer curRate = getRating();
         getDataSource().getAttributes().get(IdAttrGet.IdRating()).setIntValue(curRate += rating);
     }
-    
+
     public void addTag(Tag tag) {
         getDataSource().getRel().put(IdAttrGet.refChallengeDefTag(), tag.getDataSource());
     }
-    
+
     public List<Tag> getTags() {
         List<DBSource> list = (List<DBSource>) getDataSource().getRel().get(IdAttrGet.refChallengeDefTag());
         List<Tag> tags = new ArrayList<>();
@@ -169,7 +168,7 @@ public class ChallengeDefinition extends BaseEntity implements Commentable {
         }
         return tags;
     }
-    
+
     public void removeAllTags() {
         List<DBSource> list = (List<DBSource>) getDataSource().getRel().get(IdAttrGet.refChallengeDefTag());
         if (list != null) {
@@ -178,7 +177,7 @@ public class ChallengeDefinition extends BaseEntity implements Commentable {
             }
         }
     }
-    
+
     public static final Comparator<ChallengeDefinition> COMPARE_BY_RATING = (ChallengeDefinition left, ChallengeDefinition right)
             -> Integer.signum(right.getRating() - left.getRating());
 

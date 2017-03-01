@@ -164,16 +164,26 @@ sendComment: function(obj) {
 	}
 },
 changeContentNotification: function(cont, obj) {
-	$(cont).find("#message-content").text(obj.body);
-	$(cont).find("#message-header").text(obj.description);
-	
-	var accept = $(cont).find("form[action='/accept']");
-	accept.attr("id", "decline_form" + obj.mainObjectId);
-	accept.find("#message-id").val(obj.mainObjectId);
-	
-	var decline = $(cont).find("form[action='/decline']");
-	decline.attr("id", "decline_form" + obj.mainObjectId);
-	accept.find("#message-id").val(obj.mainObjectId);
+        $(cont).find('#message-content').text(obj.body);
+        if (obj.description != null) {
+            $(cont).find("#message-header").text(obj.description);
+        }
+        $(cont).find('#redirect-form input[name="id"]').val(obj.targetId);
+        $(cont).find('#accept-form input[name="id"]').val(obj.targetId);
+        $(cont).find('#decline-form input[name="id"]').val(obj.targetId);
+            
+        if (obj.typeNotification == "FriendRequest") {
+            $(cont).find('#redirect-form').attr("action", "/profile");
+            $(cont).find('#accept-form').attr("action", "/addFriend");
+            $(cont).find('#decline-form').attr("action", "/removeRequest");
+            $(cont).find("#message-part-2").text(" " + $('#friend-notification-msg').val());
+        } else {
+            $(cont).find('#message-part-1').text(obj.extraInfo + " " + $('#chal-notification-msg').val() + " ");
+            $(cont).find('#accept-form').attr("action", "/accept");
+            $(cont).find('#decline-form').attr("action", "/decline");
+            $(cont).find('#redirect-form').attr("action", "/challengeins/information");
+        }      
+        
 },
 
 changeContentComment: function(cont, obj) {	

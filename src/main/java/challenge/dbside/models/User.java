@@ -38,6 +38,25 @@ public class User extends BaseEntity implements Commentable {
     public void addFriend(User user) {
         getDataSource().getRel().put(IdAttrGet.refFriend(), user.getDataSource());
     }
+    
+    public void addIncomingFriendRequest(User userWhichMakesRequest) {
+        getDataSource().getRel().put(IdAttrGet.refFriendRequest(), userWhichMakesRequest.getDataSource());
+    }
+    
+    public List<User> getIncomingFriendRequests() {
+        List<User> friendsRequests = new ArrayList<>();
+        List<DBSource> list = (List<DBSource>) getDataSource().getRel().get(IdAttrGet.refFriendRequest());
+        if (list != null) {
+            list.forEach((userDB) -> {
+                friendsRequests.add(new User(userDB));
+            });
+        }
+        return friendsRequests;
+    }
+    
+    public void addOutgoingFriendRequest(User requestedUser) {
+        getDataSource().getBackRel().put(IdAttrGet.refFriendRequest(), requestedUser.getDataSource());
+    }
 
     public String getName() {
         return getDataSource().getAttributes().get(IdAttrGet.IdName()).getValue();

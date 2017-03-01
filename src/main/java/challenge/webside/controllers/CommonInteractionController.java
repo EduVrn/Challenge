@@ -86,6 +86,9 @@ public class CommonInteractionController {
         Comment comment = (Comment) serviceEntity.findById(message.getIdOwner(), Comment.class);
         
         boolean voteFor = message.getChangeVote() == 1 ? true : false;
+        List<User> lVUp   = comment.getVotesFor();
+        List<User> lVDown = comment.getVotesAgainst();
+        
         if (voteFor) {
             if (comment.getVotesAgainst().contains(user)) {
                 comment.rmVoteAgainst(user);
@@ -243,6 +246,8 @@ public class CommonInteractionController {
                     nameAndImage.setName(user.getName());
                     nameAndImage.setImage(user.getMainImageEntity().getBase64());
                     nameAndImage.setIsFriend(currentUser.getFriends().contains(user));
+                    nameAndImage.setIsSubscriber(currentUser.getIncomingFriendRequests().contains(user));
+                    nameAndImage.setIsSubscripted(user.getIncomingFriendRequests().contains(currentUser));
                     usersAjax.put(user.getId(), nameAndImage);
                 }
                 result.setCode("200");

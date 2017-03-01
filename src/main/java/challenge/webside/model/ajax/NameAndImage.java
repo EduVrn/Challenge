@@ -7,6 +7,10 @@ public class NameAndImage {
     private String image;
     
     private boolean isFriend;
+    
+    private boolean isSubscriber;
+    
+    private boolean isSubscripted;
 
     public String getName() {
         return name;
@@ -32,9 +36,25 @@ public class NameAndImage {
         this.isFriend = isFriend;
     }
 
+    public boolean getIsSubscriber() {
+        return isSubscriber;
+    }
+
+    public void setIsSubscriber(boolean isSubscriber) {
+        this.isSubscriber = isSubscriber;
+    }
+
+    public boolean isIsSubscripted() {
+        return isSubscripted;
+    }
+
+    public void setIsSubscripted(boolean isSubscripted) {
+        this.isSubscripted = isSubscripted;
+    }
+
     @Override
     public String toString() {
-        return "NameAndImage{" + "name=" + name + ", image=" + image + ", isFriend=" + isFriend + '}';
+        return "NameAndImage{" + "name=" + name + ", image=" + image + ", isFriend=" + isFriend + ", isSubscriber=" + isSubscriber + ", isSubscripted=" + isSubscripted + '}';
     }
-    
+
 }

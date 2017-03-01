@@ -52,6 +52,10 @@ public class IdAttrGet {
     static public Integer refFriend() {
         return ContextType.getInstance().getTypeAttribute("friends").getId();
     }
+    
+    static public Integer refFriendRequest() {
+        return ContextType.getInstance().getTypeAttribute("friendRequest").getId();
+    }
 
     static public Integer refSubscriber() {
         return ContextType.getInstance().getTypeAttribute("subscriber").getId();

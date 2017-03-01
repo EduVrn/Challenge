@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<!-- add status="rm" to remove attribute or "alter" -->
+
+<dbstructure info="db version 6">
+    <attributes>
+        <attribute id="21" name="friendRequest" type="REF" />
+    </attributes>
+    <entities>
+        <entity status="alter" name="User" type="USER">
+            <attribute ref="friendRequest" />
+        </entity>
+    </entities>
+</dbstructure>

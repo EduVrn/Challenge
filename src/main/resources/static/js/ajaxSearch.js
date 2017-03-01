@@ -166,7 +166,7 @@ function displayUsers(data) {
         $formProfile.append($h3);
 
         var $rightDiv = $('<div />', {
-            "class": "pull-right"
+            "class": "right-button"
         });
         if (value.isFriend) {
             var $friendLabel = $('<h3 />');
@@ -177,32 +177,47 @@ function displayUsers(data) {
             $friendLabel.append($span);
             $rightDiv.append($friendLabel);
         } else {
-            var $formFriend = $('<form />', {
-                "method": "GET",
-                "action": "/addFriend"
-            });
-            var $friendId = $('<input />', {
-                "type": "hidden",
-                "value": key,
-                "name": "id"
-            });
-            var $submit = $('<input />', {
-                "type": "submit",
-                "class": "btn btn-default",
-                "value": $('#add-friend-text').val()
-            });
-            $formFriend.append($friendId);
-            $formFriend.append($submit);
-            $rightDiv.append($formFriend);
+            if (!value.isSubscriber && !value.isSubscripted) {
+                var $formFriend = $('<form />', {
+                    "method": "GET",
+                    "action": "/addFriend"
+                });
+                var $friendId = $('<input />', {
+                    "type": "hidden",
+                    "value": key,
+                    "name": "id"
+                });
+                var $submit = $('<input />', {
+                    "type": "submit",
+                    "class": "btn btn-default",
+                    "value": $('#add-friend-text').val()
+                });
+                $formFriend.append($friendId);
+                $formFriend.append($submit);
+                $rightDiv.append($formFriend);
+            } else {
+                if (value.isSubscriber) {
+                    var $subscriberLabel = $('<h3 />');
+                    var $span = $('<span />', {
+                        "class": "label label-info",
+                        "text": $('#sent-you-request-label').val()
+                    });
+                    $subscriberLabel.append($span);
+                    $rightDiv.append($subscriberLabel);
+                } else if (value.isSubscripted) {
+                    var $subscriptedLabel = $('<h3 />');
+                    var $span = $('<span />', {
+                        "class": "label label-info",
+                        "text": $('#friend-request-label').val()
+                    });
+                    $subscriptedLabel.append($span);
+                    $rightDiv.append($subscriptedLabel);
+                }
+            }
         }
-        var $break = $('<div />', {
-            "style": "width: 100%; margin: 20px;"
-        });
-
         $li.append($image);
         $li.append($formProfile);
         $li.append($rightDiv);
-        $li.append($break);
         $list.append($li);
     });
 }

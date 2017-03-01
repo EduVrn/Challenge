@@ -1,8 +1,8 @@
 //show notifications popup
-var showing = false;
+var showingNotifications = false;
 $('#notification').click(function () {
-    showing = !showing;
-    if (showing) {
+    showingNotifications = !showingNotifications;
+    if (showingNotifications) {
         $('#chal-notification').show();
     } else {
         $('#chal-notification').hide();

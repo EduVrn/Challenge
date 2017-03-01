@@ -75,6 +75,7 @@ public class ChallengeDefinitionUtil {
         ChallengeInstance chalIns = new ChallengeInstance();
         chalIns.setName(chal.getName());
         chalIns.setDate(chal.getDate());
+        chalIns.setChallengeRoot(chal);
         chalIns.setClosingDate(chal.getDate());
         chalIns.addImage(img);
         chalIns.setStatus(ChallengeStatus.AWAITING);

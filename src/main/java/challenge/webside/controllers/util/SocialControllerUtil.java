@@ -102,6 +102,8 @@ public class SocialControllerUtil {
         if (profile != null) {
             List<ChallengeInstance> challengeList = ((User) serviceEntity.findById(profile.getUserEntityId(), User.class)).getChallengeRequests();
             model.addAttribute("challengeRequests", challengeList);
+            List<User> friendRequests = ((User) serviceEntity.findById(profile.getUserEntityId(), User.class)).getIncomingFriendRequests();
+            model.addAttribute("friendRequests", friendRequests);
         }
     }
 

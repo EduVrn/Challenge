@@ -359,6 +359,10 @@ textarea {
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 
+.chal-notification-wrap .chal-meta {
+    font-size: 14px;
+}
+
 li {
     list-style-type: none;
 }

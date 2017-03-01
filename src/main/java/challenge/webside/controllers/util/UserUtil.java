@@ -38,6 +38,9 @@ public class UserUtil {
     @Autowired
     private UsersDao usersDao;
 
+    @Autowired
+    private InteractiveUtil interactiveUtil;
+    
     public void setProfileShow(int userDBId, HttpServletRequest request, UserProfile userProfile, User user, Model model) {
         User userWhichProfileRequested = (User) serviceEntity.findById(userDBId, User.class);
         User signedUpUser = (User) serviceEntity.findById(userProfile.getUserEntityId(), User.class);
@@ -146,17 +149,31 @@ public class UserUtil {
         model.addAttribute("showingAllUsers", true);
     }
 
-    public void setModelForAddFriend(HttpServletRequest request, User user, Model model, int friendId) {
+    public void setModelForFriendRequest(HttpServletRequest request, User user, Model model, int friendId) {
         User friend = (User) serviceEntity.findById(friendId, User.class);
-        friend.addFriend(user);
+        friend.addIncomingFriendRequest(user);
         serviceEntity.update(friend);
-        user.addFriend(friend);
+        user.addOutgoingFriendRequest(friend);
         serviceEntity.update(user);
+        interactiveUtil.interactiveFriendRequest(friend.getId(), user);
     }
 
     public void setModelForEditProfile(int userId, HttpServletRequest request, Principal currentUser, Model model) {
         User user = (User) serviceEntity.findById(userId, User.class);
         model.addAttribute("userProfile", user);
         model.addAttribute("mapOfNetworks", usersDao.getListOfNetworks(userId));
+    }
+    
+    public void removeFriendRequest(int friendId, User user) {
+        //delete from table relationship
+    }
+    
+    public void addFriend(int friendId, User user) {
+        removeFriendRequest(friendId, user);
+        User friend = (User) serviceEntity.findById(friendId, User.class);
+        friend.addFriend(user);
+        serviceEntity.update(friend);
+        user.addFriend(friend);
+        serviceEntity.update(user);
     }
 }

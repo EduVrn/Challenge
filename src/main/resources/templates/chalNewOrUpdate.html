@@ -8,7 +8,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <script src="../js/jquery.min.js"></script>
         <link th:replace="fragments/commonDependencies :: commonDependencies" th:remove="tag"/>
-        <link rel="stylesheet" href="../css/style.css" />
         <link rel="stylesheet" href="../css/bootstrap-datetimepicker.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css" />
     </head>
@@ -83,7 +82,7 @@
                                     </div>
                                     <label th:text="#{menuTags}" class="col-md-2 control-label" />
                                     <div class="chal-photo col-md-10">
-                                        <select name="tags" class="selectpicker" th:title="#{selectTitle}" multiple="" style="display: none;">
+                                        <select name="tags" class="selectpicker" th:title="#{selectTitle}" multiple="" style="display: none;" data-max-options="3">
                                             <th:block th:each="tag : ${tags}">
                                                 <option th:selected="${selectedTags.contains(tag)}" th:value="${tag.getId()}" th:text="${tag.getName()}"/>
                                             </th:block>

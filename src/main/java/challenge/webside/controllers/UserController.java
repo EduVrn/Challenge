@@ -30,11 +30,25 @@ public class UserController {
         return "users";
     }
 
-    @RequestMapping("addFriend")
-    public String addFriend(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int friendId) {
+    @RequestMapping("sendFriendRequest")
+    public String sendFriendRequest(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int friendId) {
         util.setModel(request, currentUser, model);
         User user = util.getSignedUpUser(request, currentUser);
-        userUtil.setModelForAddFriend(request, user, model, friendId);
+        userUtil.setModelForFriendRequest(request, user, model, friendId);
+        return ControllerUtil.getPreviousPageByRequest(request).orElse("/");
+    }
+    
+    @RequestMapping("addFriend")
+    public String addFriend(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int friendId) {
+        User user = util.getSignedUpUser(request, currentUser);
+        userUtil.addFriend(friendId, user);
+        return ControllerUtil.getPreviousPageByRequest(request).orElse("/");
+    }
+    
+    @RequestMapping("removeRequest")
+    public String removeFriendRequest(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int friendId) {
+        User user = util.getSignedUpUser(request, currentUser);
+        userUtil.removeFriendRequest(friendId, user);
         return ControllerUtil.getPreviousPageByRequest(request).orElse("/");
     }
 
