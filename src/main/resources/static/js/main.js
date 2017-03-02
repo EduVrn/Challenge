@@ -1,11 +1,40 @@
+function setRightBorderOfNotificationWindow() {
+    var distanseFromRightSide = 10;
+    var notification = $('.notification:visible');
+    if ($(window).width() > 991) {
+        distanseFromRightSide = $(window).width() - (notification.offset().left + notification.width()) - $('#chal-notification').width();
+    } else
+    {
+        if ($(window).width() > 768) {
+            distanseFromRightSide = $(window).width() - notification.offset().left
+                    - notification.outerWidth()
+                    - notification.width();
+        }
+    }
+    $('.chal-notification-wrap ').css('right', distanseFromRightSide);
+}
+
+(function ($) {
+    $(window).on("load", function () {
+        $(".chal-notification-wrap").mCustomScrollbar();
+    });
+})(jQuery);
+
+$(window).resize(function () {
+    setRightBorderOfNotificationWindow();
+});
+
 //show notifications popup
 var showingNotifications = false;
 $('.notification').click(function () {
     showingNotifications = !showingNotifications;
     if (showingNotifications) {
         $('#chal-notification').show();
-        var height = $('.notification-borders').eq(1).outerHeight(true)
-                + $('.notification-borders').eq(2).outerHeight(true) + 40;
+        setRightBorderOfNotificationWindow();
+        var firstNotifyHeight = $('.notification-borders').eq(1).outerHeight(true);
+        var secondNotifyHeight = $('.notification-borders').eq(2).outerHeight(true);
+        var height = (firstNotifyHeight > 0 ? (firstNotifyHeight + 18) : 0) +
+                (secondNotifyHeight > 0 ? (secondNotifyHeight + 8) : 0);
         $('.chal-notification-wrap ').outerHeight(height);
     } else {
         $('#chal-notification').fadeOut("slow");

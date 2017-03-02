@@ -65,7 +65,7 @@ var Interactive = {
         var template = $("#notification-candidate").clone();
         template.removeAttr("id");
 
-        var storage = $('.chal-notification-wrap');
+        var storage = $('.mCSB_container');
         template.prependTo(storage);
         this.changeContentNotification(template, obj);
         console.log("/user/exchange/notification");
