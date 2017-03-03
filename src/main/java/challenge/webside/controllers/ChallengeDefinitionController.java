@@ -46,7 +46,6 @@ public class ChallengeDefinitionController {
     @Autowired
     private ChallengeDefinitionUtil challengeDefUtil;
 
-    
     @RequestMapping(value = "challenge/information", method = GET, produces = "text/plain;charset=UTF-8")
     public String show(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int id) {
         util.setModel(request, currentUser, model);
@@ -81,11 +80,11 @@ public class ChallengeDefinitionController {
     }
 
     @RequestMapping(value = "challenge/information", method = POST, produces = "text/plain;charset=UTF-8")
-    public String saveOrUpdateChallenge(HttpServletRequest request, Principal currentUser, Model model, 
-            @Valid @ModelAttribute("challenge") ChallengeDefinition challenge, BindingResult bindingResult, 
-            RedirectAttributes redirectAttributes, @RequestParam("image") String img, 
+    public String saveOrUpdateChallenge(HttpServletRequest request, Principal currentUser, Model model,
+            @Valid @ModelAttribute("challenge") ChallengeDefinition challenge, BindingResult bindingResult,
+            RedirectAttributes redirectAttributes, @RequestParam("image") String img,
             @RequestParam(required = false, value = "image-name") String imgName,
-            @RequestParam(value="tags", required=false) List<Integer> selectedTags) {
+            @RequestParam(value = "tags", required = false) List<Integer> selectedTags) {
         UserProfile userProfile = util.getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName());
         User user = util.getSignedUpUser(request, currentUser);
         if (bindingResult.hasFieldErrors()) {
@@ -117,10 +116,10 @@ public class ChallengeDefinitionController {
             @RequestParam("id-checked") List<Integer> selectedFriendsIds,
             @RequestParam("chal-id") int chalId,
             @RequestParam("challenge-info") String chalInfo) {
-    	
+
         for (Integer id : selectedFriendsIds) {
             challengeDefUtil.throwChallenge(id, chalId, chalInfo);
-            
+
         }
         return ControllerUtil.getPreviousPageByRequest(request).orElse("/");
     }
@@ -131,13 +130,23 @@ public class ChallengeDefinitionController {
             @RequestParam("id-checked") List<Integer> selectedChallengesIds,
             @RequestParam("user-id") int friendId,
             @RequestParam("challenge-info") List<String> messages) {
-    	
+
         for (int i = 0; i < selectedChallengesIds.size(); i++) {
             challengeDefUtil.throwChallenge(friendId, selectedChallengesIds.get(i), messages.get(i));
-            
+
         }
         return ControllerUtil.getPreviousPageByRequest(request).orElse("/");
     }
+
+    @RequestMapping(value = "/acceptors", method = GET, produces = "text/plain;charset=UTF-8")
+    public String selectAcceptors(HttpServletRequest request, Principal currentUser,
+            Model model,
+            @RequestParam("id") int challengeId) {
+        util.setModel(request, currentUser, model);
+        challengeDefUtil.setModelForShowAcceptors(request, currentUser, model, challengeId);
+        return "listSomething";
+    }
+    
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {

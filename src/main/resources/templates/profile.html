@@ -77,7 +77,36 @@
 
                 </div>
                 <!-- right side -->
+
                 <div class=" col-md-8 col-lg-8 col-sm-6 col-xs-12">
+                    <div auth:can="EDIT_PROFILE" th:if="${possibleFriends.size()>0}" class="chalShowChallenge" style="padding-left: 0px;padding-right: 0px;padding-bottom: 0px;">
+                        <div class="row">
+                            <div class="row" style="margin-left: 5px;margin-right: 0px;">
+                                <h3 class="col-lg-8 col-md-8 col-sm-9 col-xs-9" style="margin-top: 5px; margin-bottom: 5px;" th:text="#{possibleFriendsLabelShow}" />
+                                <form  th:if="${possibleFriendsExtendence}" th:id="'show_all_possibleFriends'" method="GET" action="/possibleFriends">
+                                    <input type="hidden" id="chal-id" name="id" th:value="${userProfile.getId()}" />
+                                    <div style="margin-top:13px;margin-right: 20px;cursor: pointer;" class="pull-right"> 
+                                        <i class="glyphicon glyphicon-new-window"> </i>
+                                        <span style="cursor: pointer"  onclick="this.parentNode.parentNode.submit()" th:text="#{showAllAcceptorsLabel}"></span>
+                                    </div>
+                                </form>
+                            </div>
+                            <div th:each="possibleFriend : ${possibleFriends}" >
+                                <div class="col-lg-2 col-md-2 col-sm-4 col-xs-4">
+                                    <div>
+                                        <div style="max-width: 50px;max-height:50px;  margin-left: auto;                                             margin-right: auto;">
+                                            <form action="/profile">
+                                                <img style="cursor: pointer" onclick="this.parentNode.submit()" th:src="${possibleFriend.getMainImageEntity().getBase64()}" class="img-rounded img-responsive" />
+                                                <input type="hidden" th:value="${possibleFriend.getId()}" name="id"/>
+                                            </form>
+                                        </div>
+                                        <span  class="text-center chal-meta" th:text="${possibleFriend.getName()}"></span>                                      
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="chalShowChallenge" style="padding-left: 0px;padding-right: 0px;padding-bottom: 0px;">
                         <div class="panel-group" id="accordion">
                             <!-- 1 панель -->

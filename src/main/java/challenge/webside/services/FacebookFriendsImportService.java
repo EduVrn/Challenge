@@ -28,8 +28,6 @@ public class FacebookFriendsImportService implements FriendsImportService {
     @Qualifier("storageServiceUser")
     private MediaService serviceEntity;
 
-    private List<User> friends;
-
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -39,27 +37,25 @@ public class FacebookFriendsImportService implements FriendsImportService {
 
     @Override
     public List<User> importFriends(UserConnection connection) {
-        if (friends == null) {
-            Connection<Facebook> conn = connectionRepository.findPrimaryConnection(Facebook.class);
-            Facebook facebook = conn != null
-                    ? conn.getApi()
-                    : new FacebookTemplate(connection.getAccessToken());
-            PagedList<Reference> facebookFriends = facebook.friendOperations().getFriends();
-            friends = new ArrayList<>();
-            for (Reference profile : facebookFriends) {
-                Integer id;
-                try {
-                    id = jdbcTemplate.queryForObject("SELECT userentityid FROM userprofile p "
-                            + "JOIN userconnection c ON p.userid = c.userid WHERE c.providerid = ? "
-                            + "AND c.provideruserid = ?",
-                            new Object[]{connection.getProviderId(), profile.getId()}, Integer.class);
-                } catch (EmptyResultDataAccessException e) {
-                    id = null;
-                }
-                if (id != null) {
-                    User user = (User) serviceEntity.findById(id, User.class);
-                    friends.add(user);
-                }
+        List<User> friends = new ArrayList<>();
+        Connection<Facebook> conn = connectionRepository.findPrimaryConnection(Facebook.class);
+        Facebook facebook = conn != null
+                ? conn.getApi()
+                : new FacebookTemplate(connection.getAccessToken());
+        PagedList<Reference> facebookFriends = facebook.friendOperations().getFriends();
+        for (Reference profile : facebookFriends) {
+            Integer id;
+            try {
+                id = jdbcTemplate.queryForObject("SELECT userentityid FROM userprofile p "
+                        + "JOIN userconnection c ON p.userid = c.userid WHERE c.providerid = ? "
+                        + "AND c.provideruserid = ?",
+                        new Object[]{connection.getProviderId(), profile.getId()}, Integer.class);
+            } catch (EmptyResultDataAccessException e) {
+                id = null;
+            }
+            if (id != null) {
+                User user = (User) serviceEntity.findById(id, User.class);
+                friends.add(user);
             }
         }
         return friends;

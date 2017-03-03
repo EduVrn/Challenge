@@ -18,10 +18,12 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
@@ -206,21 +208,34 @@ public class ChallengeDefinitionUtil {
             }
         }
         model.addAttribute("challenge", challenge);
-        model.addAttribute("listOfAcceptors", challenge.getAllAcceptors());
+        setModelForAcceptors(challenge, model);
         commentUtil.setModelForComments(challenge.getComments(), request, currentUser, model);
     }
 
-    public void setModelForChallengeShow(int id, HttpServletRequest request, User currentUser, Model model) {
+    private void setModelForAcceptors(ChallengeDefinition challenge, Model model) {
+        List acceptors = new ArrayList<>(new HashSet<>(challenge.getAllAcceptors()));
+        int acceptorsOnPage = 6;
+        model.addAttribute("listOfAcceptors", acceptors.size() > acceptorsOnPage ? acceptors.subList(0, acceptorsOnPage) : acceptors.subList(0, acceptors.size()));
+        //acceptors.size() > acceptorsOnPage
+        model.addAttribute("showAcceptorsExtendenceButton", true);
+    }
 
+    public void setModelForChallengeShow(int id, HttpServletRequest request, User currentUser, Model model) {
         ChallengeDefinition challenge = (ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class);
-        List<User> listOfAcceptors = ((ChallengeDefinition) serviceEntity.findById(id, ChallengeDefinition.class)).getAllAcceptors();
         dialect.setActions(actionsProvider.getActionsForChallengeDefinition(currentUser, challenge));
         model.addAttribute("challenge", challenge);
-        model.addAttribute("listOfAcceptors", listOfAcceptors);
+        setModelForAcceptors(challenge, model);
         model.addAttribute("userProfile", currentUser);
         model.addAttribute("tags", serviceEntity.getAll(Tag.class));
         model.addAttribute("selectedTags", challenge.getTags());
         commentUtil.setModelForComments(challenge.getComments(), request, currentUser, model);
+    }
+
+    public void setModelForShowAcceptors(HttpServletRequest request, Principal currentUser, Model model, int challengeId) {
+        ChallengeDefinition challenge = (ChallengeDefinition) serviceEntity.findById(challengeId, ChallengeDefinition.class);
+        model.addAttribute("listSomething", new ArrayList<>(new HashSet<>(challenge.getAllAcceptors())));
+        model.addAttribute("idParent", challengeId);
+        model.addAttribute("handler", "profile");
     }
 
     public void setModelForBadDateNewChal(ChallengeDefinition challenge, HttpServletRequest request,

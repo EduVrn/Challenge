@@ -1,6 +1,7 @@
 package challenge.dbside.models;
 
 import challenge.dbside.models.dbentity.DBSource;
+import java.util.Objects;
 
 public class BaseEntity {
 
@@ -45,5 +46,12 @@ public class BaseEntity {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + Objects.hashCode(this.dataSource);
+        return hash;
     }
 }

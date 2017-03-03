@@ -1,6 +1,5 @@
 package challenge.webside.controllers;
 
-import challenge.Application;
 import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.Comment;
@@ -12,7 +11,6 @@ import challenge.webside.controllers.util.TagsUtil;
 import challenge.webside.controllers.util.UserUtil;
 import challenge.webside.dao.UsersDao;
 import challenge.webside.interactive.InteractiveRepository;
-import challenge.webside.interactive.model.ActiveUser;
 import challenge.webside.interactive.model.InteractiveComment;
 import challenge.webside.interactive.model.InteractiveVote;
 import challenge.webside.model.UserProfile;

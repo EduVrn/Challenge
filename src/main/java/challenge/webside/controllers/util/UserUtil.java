@@ -7,6 +7,7 @@ import challenge.webside.authorization.UserActionsProvider;
 import challenge.webside.authorization.thymeleaf.AuthorizationDialect;
 import challenge.webside.dao.UsersDao;
 import challenge.webside.imagesstorage.ImageStoreService;
+import challenge.webside.model.UserConnection;
 import challenge.webside.model.UserProfile;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ import org.springframework.ui.Model;
 
 @Component
 public class UserUtil {
+
+    @Autowired
+    private SocialControllerUtil util;
 
     @Autowired
     @Qualifier("storageServiceUser")
@@ -40,7 +45,7 @@ public class UserUtil {
 
     @Autowired
     private InteractiveUtil interactiveUtil;
-    
+
     public void setProfileShow(int userDBId, HttpServletRequest request, UserProfile userProfile, User user, Model model) {
         User userWhichProfileRequested = (User) serviceEntity.findById(userDBId, User.class);
         User signedUpUser = (User) serviceEntity.findById(userProfile.getUserEntityId(), User.class);
@@ -50,11 +55,18 @@ public class UserUtil {
         model.addAttribute("currentDBUser", user);
         model.addAttribute("listOfAccepted", userWhichProfileRequested.getAcceptedChallenges());
         model.addAttribute("listOfSubscripted", userWhichProfileRequested.getSubscriptions());
+        //  util.getCurrentProviderPossibleFriends(request, userProfile.getUserId())
+        List<User> possibleFriends = util.getCurrentProviderPossibleFriends(request, userProfile.getUserId());
+        //List<User> possibleFriends = user.getFriends();
+        possibleFriends.removeAll(user.getFriends());
+        int countOfUsersToDisplay = 2;
+        model.addAttribute("possibleFriends", possibleFriends);
+        model.addAttribute("possibleFriendsExtendence", possibleFriends != null ? possibleFriends.size() > countOfUsersToDisplay : false);
         dialect.setActions(actionsProvider.getActionsForProfile(signedUpUser, userWhichProfileRequested));
         model.addAttribute("friends", signedUpUser.getFriends());
         model.addAttribute("mapOfNetworks", usersDao.getListOfNetworks(userDBId));
     }
-    
+
     public List<User> filterUsers(String filter) {
         List<User> allUsers = serviceEntity.getAll(User.class);
         List<User> filteredUsers = new ArrayList<>();
@@ -86,20 +98,18 @@ public class UserUtil {
         model.addAttribute("listSomething", user.getFriends());
         model.addAttribute("idParent", userId);
         model.addAttribute("handler", "profile");
-
     }
 
     public List<User> filterFriends(String filter, int userId) {
         User user = (User) serviceEntity.findById(userId, User.class);
-
         List<User> allFriends = user.getFriends();
         List<User> filteredFriends = new ArrayList<>();
-        for (User friend : allFriends) {
+        allFriends.forEach((friend) -> {
             String name = friend.getName();
             if (name.toLowerCase().startsWith(filter.toLowerCase())) {
                 filteredFriends.add(friend);
             }
-        }
+        });
         return filteredFriends;
     }
 
@@ -163,11 +173,11 @@ public class UserUtil {
         model.addAttribute("userProfile", user);
         model.addAttribute("mapOfNetworks", usersDao.getListOfNetworks(userId));
     }
-    
+
     public void removeFriendRequest(int friendId, User user) {
         //delete from table relationship
     }
-    
+
     public void addFriend(int friendId, User user) {
         removeFriendRequest(friendId, user);
         User friend = (User) serviceEntity.findById(friendId, User.class);
@@ -176,4 +186,5 @@ public class UserUtil {
         user.addFriend(friend);
         serviceEntity.update(user);
     }
+
 }

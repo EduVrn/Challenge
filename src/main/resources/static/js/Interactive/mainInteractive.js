@@ -68,14 +68,13 @@ var Interactive = {
         var storage = $('.mCSB_container');
         template.prependTo(storage);
         this.changeContentNotification(template, obj);
+        
         console.log("/user/exchange/notification");
         $('.badge-notify').each(function () {
             $(this).text(+$(this).text() + 1);
             $(this).removeClass("notify_hide");
         });
-        var height = $('.notification-borders').eq(1).outerHeight(true)
-                + $('.notification-borders').eq(2).outerHeight(true) + 37;
-        $('.chal-notification-wrap ').outerHeight(height);
+        setHeightOfNotificationWindow();
     },
     likeHandler: function (resp) {
         var obj = JSON.parse(resp.body);

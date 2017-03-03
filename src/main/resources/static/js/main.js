@@ -14,6 +14,14 @@ function setRightBorderOfNotificationWindow() {
     $('.chal-notification-wrap ').css('right', distanseFromRightSide);
 }
 
+function setHeightOfNotificationWindow() {
+    var firstNotifyHeight = $('.notification-borders').eq(1).outerHeight(true);
+    var secondNotifyHeight = $('.notification-borders').eq(2).outerHeight(true);
+    var height = (firstNotifyHeight > 0 ? (firstNotifyHeight + 18) : 0) +
+            (secondNotifyHeight > 0 ? (secondNotifyHeight + 8) : 0);
+    $('.chal-notification-wrap ').outerHeight(height);
+}
+
 (function ($) {
     $(window).on("load", function () {
         $(".chal-notification-wrap").mCustomScrollbar();
@@ -26,16 +34,13 @@ $(window).resize(function () {
 
 //show notifications popup
 var showingNotifications = false;
+
 $('.notification').click(function () {
     showingNotifications = !showingNotifications;
     if (showingNotifications) {
         $('#chal-notification').show();
         setRightBorderOfNotificationWindow();
-        var firstNotifyHeight = $('.notification-borders').eq(1).outerHeight(true);
-        var secondNotifyHeight = $('.notification-borders').eq(2).outerHeight(true);
-        var height = (firstNotifyHeight > 0 ? (firstNotifyHeight + 18) : 0) +
-                (secondNotifyHeight > 0 ? (secondNotifyHeight + 8) : 0);
-        $('.chal-notification-wrap ').outerHeight(height);
+        setHeightOfNotificationWindow();
     } else {
         $('#chal-notification').fadeOut("slow");
     }

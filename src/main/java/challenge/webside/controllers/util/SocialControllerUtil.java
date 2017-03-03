@@ -66,28 +66,6 @@ public class SocialControllerUtil {
             profile = getUserProfile(session, userId);
             // Compile the best display name from the connection and the profile
             displayName = getDisplayName(connection, profile);
-            User user = getSignedUpUser(request, currentUser);
-            List<User> friends = null;
-            switch (connection.getProviderId().toLowerCase()) {
-                case "twitter":
-                    friends = twitter.importFriends(connection);
-                    break;
-                case "github":
-                    friends = github.importFriends(connection);
-                    break;
-                case "facebook":
-                    friends = facebook.importFriends(connection);
-                    break;
-                case "vkontakte":
-                    friends = vk.importFriends(connection);
-                    break;
-            }
-            if (friends != null) {
-                for (User friend : friends) {
-                    user.addFriend(friend);
-                }
-                serviceEntity.update(user);
-            }
         }
 
         Throwable exception = (Throwable) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
@@ -109,7 +87,6 @@ public class SocialControllerUtil {
 
     public UserProfile getUserProfile(HttpSession session, String userId) {
         UserProfile profile = (UserProfile) session.getAttribute(USER_PROFILE);
-
         // Reload from persistence storage if not set or invalid (i.e. no valid userId)
         if (profile == null || !userId.equals(profile.getUserId())) {
             profile = usersDao.getUserProfile(userId);
@@ -121,7 +98,6 @@ public class SocialControllerUtil {
     public UserConnection getUserConnection(HttpSession session, String userId) {
         UserConnection connection;
         connection = (UserConnection) session.getAttribute(USER_CONNECTION);
-
         // Reload from persistence storage if not set or invalid (i.e. no valid userId)
         if (connection == null || !userId.equals(connection.getUserId())) {
             connection = usersDao.getUserConnection(userId);
@@ -142,5 +118,29 @@ public class SocialControllerUtil {
         User user = (User) serviceEntity.findById(getUserProfile(request.getSession(),
                 currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
         return user;
+    }
+
+    public List<User> getCurrentProviderPossibleFriends(HttpServletRequest request, String userId) {
+        HttpSession session = request.getSession();
+        UserConnection connection = null;
+        List<User> friends = null;
+        if (userId != null) {
+            connection = getUserConnection(session, userId);
+            switch (connection.getProviderId().toLowerCase()) {
+                case "twitter":
+                    friends = twitter.importFriends(connection);
+                    break;
+                case "github":
+                    friends = github.importFriends(connection);
+                    break;
+                case "facebook":
+                    friends = facebook.importFriends(connection);
+                    break;
+                case "vkontakte":
+                    friends = vk.importFriends(connection);
+                    break;
+            }
+        }
+        return friends;
     }
 }

@@ -32,8 +32,6 @@ public class TwitterFriendsImportService implements FriendsImportService {
     @Qualifier("storageServiceUser")
     private MediaService serviceEntity;
 
-    private List<User> friends;
-
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -43,29 +41,27 @@ public class TwitterFriendsImportService implements FriendsImportService {
 
     @Override
     public List<User> importFriends(UserConnection connection) {
-        if (friends == null) {
-            Connection<Twitter> conn = connectionRepository.findPrimaryConnection(Twitter.class);
-            Twitter twitter = conn != null
-                    ? conn.getApi()
-                    : new TwitterTemplate(
-                            environment.getProperty("twitter.consumerKey"),
-                            environment.getProperty("twitter.consumerSecret"));
-            CursoredList<TwitterProfile> twitterFriends = twitter.friendOperations().getFriends();
-            friends = new ArrayList<>();
-            for (TwitterProfile profile : twitterFriends) {
-                Integer id;
-                try {
-                    id = jdbcTemplate.queryForObject("SELECT userentityid FROM userprofile p "
-                            + "JOIN userconnection c ON p.userid = c.userid WHERE c.providerid = ? "
-                            + "AND p.username = ?",
-                            new Object[]{connection.getProviderId(), profile.getScreenName()}, Integer.class);
-                } catch (EmptyResultDataAccessException e) {
-                    id = null;
-                }
-                if (id != null) {
-                    User user = (User) serviceEntity.findById(id, User.class);
-                    friends.add(user);
-                }
+        List<User> friends = new ArrayList<>();
+        Connection<Twitter> conn = connectionRepository.findPrimaryConnection(Twitter.class);
+        Twitter twitter = conn != null
+                ? conn.getApi()
+                : new TwitterTemplate(
+                        environment.getProperty("twitter.consumerKey"),
+                        environment.getProperty("twitter.consumerSecret"));
+        CursoredList<TwitterProfile> twitterFriends = twitter.friendOperations().getFriends();
+        for (TwitterProfile profile : twitterFriends) {
+            Integer id;
+            try {
+                id = jdbcTemplate.queryForObject("SELECT userentityid FROM userprofile p "
+                        + "JOIN userconnection c ON p.userid = c.userid WHERE c.providerid = ? "
+                        + "AND p.username = ?",
+                        new Object[]{connection.getProviderId(), profile.getScreenName()}, Integer.class);
+            } catch (EmptyResultDataAccessException e) {
+                id = null;
+            }
+            if (id != null) {
+                User user = (User) serviceEntity.findById(id, User.class);
+                friends.add(user);
             }
         }
         return friends;

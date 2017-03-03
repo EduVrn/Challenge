@@ -17,45 +17,45 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class UserController {
 
     @Autowired
-    private SocialControllerUtil util;
+    private SocialControllerUtil socialUtil;
 
     @Autowired
     private UserUtil userUtil;
 
     @RequestMapping("users")
     public String users(HttpServletRequest request, Principal currentUser, Model model) {
-        util.setModel(request, currentUser, model);
-        User user = util.getSignedUpUser(request, currentUser);
+        socialUtil.setModel(request, currentUser, model);
+        User user = socialUtil.getSignedUpUser(request, currentUser);
         userUtil.setModelForUsers(request, user, model);
         return "users";
     }
 
     @RequestMapping("sendFriendRequest")
     public String sendFriendRequest(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int friendId) {
-        util.setModel(request, currentUser, model);
-        User user = util.getSignedUpUser(request, currentUser);
+        socialUtil.setModel(request, currentUser, model);
+        User user = socialUtil.getSignedUpUser(request, currentUser);
         userUtil.setModelForFriendRequest(request, user, model, friendId);
         return ControllerUtil.getPreviousPageByRequest(request).orElse("/");
     }
     
     @RequestMapping("addFriend")
     public String addFriend(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int friendId) {
-        User user = util.getSignedUpUser(request, currentUser);
+        User user = socialUtil.getSignedUpUser(request, currentUser);
         userUtil.addFriend(friendId, user);
         return ControllerUtil.getPreviousPageByRequest(request).orElse("/");
     }
     
     @RequestMapping("removeRequest")
     public String removeFriendRequest(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int friendId) {
-        User user = util.getSignedUpUser(request, currentUser);
+        User user = socialUtil.getSignedUpUser(request, currentUser);
         userUtil.removeFriendRequest(friendId, user);
         return ControllerUtil.getPreviousPageByRequest(request).orElse("/");
     }
 
     @RequestMapping(value = "users/notFriends", method = GET)
     public String getNotFriends(HttpServletRequest request, Principal currentUser, Model model) {
-        util.setModel(request, currentUser, model);
-        User user = util.getSignedUpUser(request, currentUser);
+        socialUtil.setModel(request, currentUser, model);
+        User user = socialUtil.getSignedUpUser(request, currentUser);
         userUtil.setModelForShowNotFriends(request, user, model);
         return "users";
     }
@@ -64,8 +64,17 @@ public class UserController {
     public String selectUserFriends(HttpServletRequest request, Principal currentUser,
             Model model,
             @RequestParam("id") int userId) {
-        util.setModel(request, currentUser, model);
+        socialUtil.setModel(request, currentUser, model);
         userUtil.setModelForShowFriends(request, currentUser, model, userId);
+        return "listSomething";
+    }
+    
+    @RequestMapping(value = "/possibleFriends", method = GET, produces = "text/plain;charset=UTF-8")
+    public String selectUserPossibleFriends(HttpServletRequest request, Principal currentUser,
+            Model model,
+            @RequestParam("id") String userId) {
+        socialUtil.setModel(request, currentUser, model);
+        socialUtil.getCurrentProviderPossibleFriends(request, currentUser.getName());
         return "listSomething";
     }
 }

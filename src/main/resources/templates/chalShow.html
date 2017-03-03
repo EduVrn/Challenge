@@ -19,7 +19,9 @@
         <link rel="stylesheet" href="../css/style.css"/>
     </head>
     <body>
+
         <div th:replace="fragments/header :: userInfo"/>
+        <div th:replace="fragments/util/loader::loader"/>
         <div class="content-wrapper" th:with="isChalDef = ${challenge instanceof T(challenge.dbside.models.ChallengeDefinition)}">
             <div class="inner-container container">
                 <div class="chalShowChallenge" 
@@ -72,7 +74,7 @@
                         <div class="col-md-3 col-sm-4 col-xs-6"><i class="glyphicon glyphicon-calendar"> </i>
                             <span th:text="${#dates.format(challenge.getDate(), 'dd/MM/yyyy HH:mm')}" />
                         </div>
-                        <div class="col-md-2 col-sm-3 col-xs-6">
+                        <div class="col-md-3 col-sm-3 col-xs-6">
                             <form action="/profile">
                                 <input type="hidden" name="id" th:value="${isChalDef} ? ${challenge.getCreator().getId()} : ${challenge.getAcceptor().getId()}" />
                                 <a onclick="this.parentNode.submit()"><i class="glyphicon glyphicon-user"></i>
@@ -99,15 +101,28 @@
                         <div class="box-content chal_column">
                             <h4 class="col-md-12"  th:text="${challenge.getDescription()}"/>
                         </div>
-                        <div style="margin-top: 20px;" class="chal_column"  th:if="${isChalDef}">
-                            <h3 style="margin-top: 5px; margin-bottom: 5px;" th:text="#{acceptorsLabelShow}" />
+                        <div style="margin-top: 10px;" class="chal_column"  th:if="${isChalDef}">
+                            <div class="row">
+                                <h3 class="col-lg-8 col-md-8 col-sm-9 col-xs-9" style="margin-top: 5px; margin-bottom: 5px;" th:text="#{acceptorsLabelShow}" />
+                                <form  th:if="${showAcceptorsExtendenceButton}" th:id="'show_all_acceptors'" method="GET" action="/acceptors">
+                                    <input type="hidden" id="chal-id" name="id" th:value="${challenge.getId()}" />
+                                    <div style="margin-top:13px;" class="pull-right"> 
+                                        <i class="glyphicon glyphicon-new-window"> </i>
+                                        <span style="cursor: pointer"  onclick="this.parentNode.parentNode.submit()" th:text="#{showAllAcceptorsLabel}"></span>
+                                    </div>
+                                </form>
+                            </div>
                             <div th:each="acceptor : ${listOfAcceptors}" >
                                 <div class="col-lg-2 col-md-2 col-sm-4 col-xs-4">
                                     <div>
-                                        <div style="max-width: 50px;max-height:50px;">
-                                            <img  th:src="${acceptor.getMainImageEntity().getBase64()}" class="img-rounded img-responsive" />
+                                        <div style="max-width: 50px;max-height:50px;  margin-left: auto;                                             margin-right: auto;">
+                                            <form action="/profile">
+                                                <img style="cursor: pointer" onclick="this.parentNode.submit()" th:src="${acceptor.getMainImageEntity().getBase64()}" class="img-rounded img-responsive" />
+                                                <input type="hidden" th:value="${acceptor.getId()}" name="id"/>
+                                            </form>
                                         </div>
-                                        <span class="chal-meta" th:text="${acceptor.getName()}"></span>
+                                        <span  class="text-center chal-meta" th:text="${acceptor.getName()}"></span>                                      
+
                                     </div>
                                 </div>
                             </div>

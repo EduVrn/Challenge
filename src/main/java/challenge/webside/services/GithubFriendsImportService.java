@@ -28,8 +28,6 @@ public class GithubFriendsImportService implements FriendsImportService {
     @Qualifier("storageServiceUser")
     private MediaService serviceEntity;
 
-    private List<User> friends;
-
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -39,28 +37,26 @@ public class GithubFriendsImportService implements FriendsImportService {
 
     @Override
     public List<User> importFriends(UserConnection connection) {
-        if (friends == null) {
-            Connection<GitHub> conn = connectionRepository.findPrimaryConnection(GitHub.class);
-            GitHub github = conn != null
-                    ? conn.getApi()
-                    : new GitHubTemplate(connection.getAccessToken());
-            GitHubUserProfile userProfile = github.userOperations().getUserProfile();
-            List<GitHubUser> githubFriends = github.userOperations().getFollowing(userProfile.getUsername());
-            friends = new ArrayList<>();
-            for (GitHubUser profile : githubFriends) {
-                Integer id;
-                try {
-                    id = jdbcTemplate.queryForObject("SELECT userentityid FROM userprofile p "
-                            + "JOIN userconnection c ON p.userid = c.userid WHERE c.providerid = ? "
-                            + "AND p.username = ?",
-                            new Object[]{connection.getProviderId(), profile.getLogin()}, Integer.class);
-                } catch (EmptyResultDataAccessException e) {
-                    id = null;
-                }
-                if (id != null) {
-                    User user = (User) serviceEntity.findById(id, User.class);
-                    friends.add(user);
-                }
+        List<User> friends = new ArrayList<>();
+        Connection<GitHub> conn = connectionRepository.findPrimaryConnection(GitHub.class);
+        GitHub github = conn != null
+                ? conn.getApi()
+                : new GitHubTemplate(connection.getAccessToken());
+        GitHubUserProfile userProfile = github.userOperations().getUserProfile();
+        List<GitHubUser> githubFriends = github.userOperations().getFollowing(userProfile.getUsername());
+        for (GitHubUser profile : githubFriends) {
+            Integer id;
+            try {
+                id = jdbcTemplate.queryForObject("SELECT userentityid FROM userprofile p "
+                        + "JOIN userconnection c ON p.userid = c.userid WHERE c.providerid = ? "
+                        + "AND p.username = ?",
+                        new Object[]{connection.getProviderId(), profile.getLogin()}, Integer.class);
+            } catch (EmptyResultDataAccessException e) {
+                id = null;
+            }
+            if (id != null) {
+                User user = (User) serviceEntity.findById(id, User.class);
+                friends.add(user);
             }
         }
         return friends;
