@@ -134,14 +134,14 @@ public class UsersDao {
                 profile.getUsername(),
                 profile.getUser().getId());
 
-        List<User> list = serviceEntity.getAll(User.class);
-        for (User fr : list) {
-            user.addFriend(fr);
-            fr.addFriend(user);
-            serviceEntity.update(fr);
-        }
-
-        serviceEntity.update(user);
+//        List<User> list = serviceEntity.getAll(User.class);
+//        for (User fr : list) {
+//            user.addFriend(fr);
+//            fr.addFriend(user);
+//            serviceEntity.update(fr);
+//        }
+//
+//        serviceEntity.update(user);
     }
 
     public void bindUser(Connection<?> connection, WebRequest request) {

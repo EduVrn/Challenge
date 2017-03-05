@@ -38,7 +38,6 @@ public class ChallengeDefinition extends BaseEntity implements Commentable {
 
     public List<User> getAllAcceptors() {
         List<User> acceptors = new ArrayList<>();
-
         Set<DBSource> children = (Set<DBSource>) getDataSource().getChildren();
         if (children != null) {
             children.forEach((chalInsDB) -> {

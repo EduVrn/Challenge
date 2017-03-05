@@ -101,7 +101,7 @@
                         <div class="box-content chal_column">
                             <h4 class="col-md-12"  th:text="${challenge.getDescription()}"/>
                         </div>
-                        <div style="margin-top: 10px;" class="chal_column"  th:if="${isChalDef}">
+                        <div style="margin-top: 10px;" class="chal_column"  th:if="${isChalDef and listOfAcceptors.size() gt 0}">
                             <div class="row">
                                 <h3 class="col-lg-8 col-md-8 col-sm-9 col-xs-9" style="margin-top: 5px; margin-bottom: 5px;" th:text="#{acceptorsLabelShow}" />
                                 <form  th:if="${showAcceptorsExtendenceButton}" th:id="'show_all_acceptors'" method="GET" action="/acceptors">

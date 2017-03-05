@@ -201,8 +201,7 @@ public class ChallengeDefinitionUtil {
         List acceptors = new ArrayList<>(new HashSet<>(challenge.getAllAcceptors()));
         int acceptorsOnPage = 6;
         model.addAttribute("listOfAcceptors", acceptors.size() > acceptorsOnPage ? acceptors.subList(0, acceptorsOnPage) : acceptors.subList(0, acceptors.size()));
-        //acceptors.size() > acceptorsOnPage
-        model.addAttribute("showAcceptorsExtendenceButton", true);
+        model.addAttribute("showAcceptorsExtendenceButton", acceptors.size() > acceptorsOnPage);
     }
 
     public void setModelForChallengeShow(int id, HttpServletRequest request, User currentUser, Model model) {
