@@ -116,10 +116,9 @@ public class ChallengeDefinitionController {
             @RequestParam("id-checked") List<Integer> selectedFriendsIds,
             @RequestParam("chal-id") int chalId,
             @RequestParam("challenge-info") String chalInfo) {
-
+        User currentDBUser = util.getSignedUpUser(request, currentUser);
         for (Integer id : selectedFriendsIds) {
-            challengeDefUtil.throwChallenge(id, chalId, chalInfo);
-
+            challengeDefUtil.throwChallenge(id, currentDBUser, chalId, chalInfo);
         }
         return ControllerUtil.getPreviousPageByRequest(request).orElse("/");
     }
@@ -131,9 +130,10 @@ public class ChallengeDefinitionController {
             @RequestParam("user-id") int friendId,
             @RequestParam("challenge-info") List<String> messages) {
 
+        User currentDBUser = util.getSignedUpUser(request, currentUser);
         for (int i = 0; i < selectedChallengesIds.size(); i++) {
-            challengeDefUtil.throwChallenge(friendId, selectedChallengesIds.get(i), messages.get(i));
-
+            String message = messages.get(i).trim().isEmpty() ? null : messages.get(i);
+            challengeDefUtil.throwChallenge(friendId, currentDBUser, selectedChallengesIds.get(i), message);
         }
         return ControllerUtil.getPreviousPageByRequest(request).orElse("/");
     }
@@ -146,7 +146,6 @@ public class ChallengeDefinitionController {
         challengeDefUtil.setModelForShowAcceptors(request, currentUser, model, challengeId);
         return "listSomething";
     }
-    
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {

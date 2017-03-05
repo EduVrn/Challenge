@@ -21,7 +21,7 @@
                               onclick="this.parentNode.submit()"/>
                         <input type="hidden" th:value="${tag.getId()}" name="id"/>
                     </form>
-                    <span class="chal-meta" th:text="${#dates.format(challenge.date, 'yyyy/MM/dd HH:mm')}"></span>
+                    <span style="display: block;" class="chal-meta" th:text="${#dates.format(challenge.date, 'yyyy/MM/dd HH:mm')}"></span>
                     <h4 class="cut-text ellipsis desc" th:text="${challenge.getDescription()}"></h4>
                 </div>
             </th:block>

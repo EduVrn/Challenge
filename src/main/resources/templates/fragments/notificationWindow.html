@@ -37,52 +37,43 @@
 
             <div id="chal-notification" style="display: none;">
                 <div class="chal-notification-wrap ">
-                    <div th:each="challenge : ${challengeRequests}" class="notification-borders" style="
-                         box-shadow: 0 0 10px #337ab7;">
-                        <span class="chal-meta" th:text="${challenge.getMessage()}"
-                              style="color: red;"></span>
-                        <span class="chal-meta" style="display: inline-block" 
-                              th:text="${challenge.getChallengeRoot().getCreator().getName()} + ' ' + #{chalRequestNotification} + ' '"/>
-                        <form style="display: inline-block" action="/challengeins/information" method="GET">
-                            <input type="hidden" name="id" th:value="${challenge.getId()}" />
-                            <a class="chal-meta" onclick="this.parentNode.submit()"
-                               th:text="${challenge.getName()}"></a>
-                        </form>
-                        <br />
-                        <form method="GET" action="/accept" style="display: inline-block;">
+                    <div th:each="request : ${requests}" class="notification-borders" 
+                         style="box-shadow: 0 0 10px #337ab7;">
+                        <div th:if="${request.getSubject() != null}">
+                            <span class="chal-meta" th:text="${request.getMessage()}"
+                                  style="color: red;"></span>
+                            <span class="chal-meta" style="display: inline-block" 
+                                  th:text="${request.getSubject().getCreator().getName()} + ' ' + #{chalRequestNotification} + ' '"/>
+                            <form style="display: inline-block" action="/challenge/information" method="GET">
+                                <input type="hidden" name="id" th:value="${request.getSubject().getId()}" />
+                                <a class="chal-meta" onclick="this.parentNode.submit()"
+                                   th:text="${request.getSubject().getName()}"></a>
+                            </form>
+                            <br />
+                        </div>
+                        <th:block th:if="${request.getSubject() == null}">
+                            <form action="/profile" style="display: inline-block">
+                                <input type="hidden" th:value="${request.getSender().getId()}" name="id"/>
+                                <a class="chal-meta" th:text="${request.getSender().getName()}" onclick="this.parentNode.submit()"/>
+                            </form>
+                            <span class="chal-meta" style="display: inline-block"
+                                  th:text="#{requestNotificationText}" />
+                            <br />
+                        </th:block>
+                        <form method="GET" th:action="${request.getSubject() != null} ? '/accept' : '/addFriend'" style="display: inline-block;">
                             <input type="hidden" name="id"
-                                   th:value="${challenge.getId()}" /> <input type="submit"
+                                   th:value="${request.getId()}" />
+                            <input type="submit"
                                    class="btn btn-success" th:value="#{acceptChalButton}" />
                         </form>
-                        <form method="GET" action="/decline" style="display: inline-block;">
+                        <form method="GET" th:action="${request.getSubject() != null} ? '/decline' : '/removeRequest'" style="display: inline-block;">
                             <input type="hidden" name="id"
-                                   th:value="${challenge.getId()}" /> <input type="submit"
+                                   th:value="${request.getId()}" />
+                            <input type="submit"
                                    class="btn btn-danger" th:value="#{declineChalButton}" />
                         </form>
                     </div>
 
-                    <div th:each="friend : ${friendRequests}" class="notification-borders" style="
-                         box-shadow: 0 0 10px salmon;">
-                        <form action="/profile" style="display: inline-block">
-                            <input type="hidden" th:value="${friend.getId()}" name="id"/>
-                            <a class="chal-meta" th:text="${friend.getName()}" onclick="this.parentNode.submit()"/>
-                        </form>
-                        <span class="chal-meta" style="display: inline-block"
-                              th:text="#{requestNotificationText}" />
-                        <br />
-                        <form method="GET" action="/addFriend" style="display: inline-block;">
-                            <input type="hidden" name="id"
-                                   th:value="${friend.getId()}" /> 
-                            <input type="submit"
-                                   class="btn btn-success" th:value="#{acceptChalButton}" />
-                        </form>
-                        <form action="/removeRequest" style="display: inline-block;">
-                            <input type="hidden" name="id"
-                                   th:value="${friend.getId()}" /> 
-                            <input type="submit"
-                                   class="btn btn-danger" th:value="#{declineChalButton}" />
-                        </form>
-                    </div>
                 </div>
             </div>
 

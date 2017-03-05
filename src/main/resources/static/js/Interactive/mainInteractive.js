@@ -167,8 +167,8 @@ var Interactive = {
             $(cont).find("#message-header").text(obj.description);
         }
         $(cont).find('#redirect-form input[name="id"]').val(obj.targetId);
-        $(cont).find('#accept-form input[name="id"]').val(obj.targetId);
-        $(cont).find('#decline-form input[name="id"]').val(obj.targetId);
+        $(cont).find('#accept-form input[name="id"]').val(obj.requestId);
+        $(cont).find('#decline-form input[name="id"]').val(obj.requestId);
 
         if (obj.typeNotification == "FriendRequest") {
             $(cont).find('#redirect-form').attr("action", "/profile");
@@ -179,7 +179,7 @@ var Interactive = {
             $(cont).find('#message-part-1').text(obj.extraInfo + " " + $('#chal-notification-msg').val() + " ");
             $(cont).find('#accept-form').attr("action", "/accept");
             $(cont).find('#decline-form').attr("action", "/decline");
-            $(cont).find('#redirect-form').attr("action", "/challengeins/information");
+            $(cont).find('#redirect-form').attr("action", "/challenge/information");
         }
 
     },

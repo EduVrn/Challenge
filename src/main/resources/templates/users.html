@@ -49,17 +49,17 @@
                                             <h3><a th:text="${user.getName()}" class="name" onclick="this.parentNode.parentNode.submit();" /></h3>
                                         </form>
                                         <div class="right-button">
-                                            <form th:if="${!curUser.getFriends().contains(user) and !curUser.getIncomingFriendRequests().contains(user) and !user.getIncomingFriendRequests().contains(curUser)}" method="GET" action="/sendFriendRequest">
+                                            <form th:if="${!curUser.getFriends().contains(user) and !curUser.getIncomingFriendRequestSenders().contains(user) and !user.getIncomingFriendRequestSenders().contains(curUser)}" method="GET" action="/sendFriendRequest">
                                                 <input type="hidden" name="id" th:value="${user.getId()}" />
                                                 <input type="submit" class="btn btn-default" th:value="#{addFriendButton}" />
                                             </form>
                                             <h3 th:if="${curUser.getFriends().contains(user)}">
                                                 <span class="label label-info" th:text="#{friendLabel}" />
                                             </h3>
-                                            <h3 th:if="${user.getIncomingFriendRequests().contains(curUser)}">
+                                            <h3 th:if="${user.getIncomingFriendRequestSenders().contains(curUser)}">
                                                 <span class="label label-info" th:text="#{outgoingRequestLabel}" />
                                             </h3>
-                                            <h3 th:if="${curUser.getIncomingFriendRequests().contains(user)}">
+                                            <h3 th:if="${curUser.getIncomingFriendRequestSenders().contains(user)}">
                                                 <span class="label label-info" th:text="#{incomingRequestLabel}" />
                                             </h3>
                                         </div>

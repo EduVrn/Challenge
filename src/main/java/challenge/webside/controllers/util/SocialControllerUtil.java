@@ -1,6 +1,6 @@
 package challenge.webside.controllers.util;
 
-import challenge.dbside.models.ChallengeInstance;
+import challenge.dbside.models.Request;
 import challenge.dbside.models.User;
 import challenge.webside.dao.UsersDao;
 import challenge.webside.model.UserConnection;
@@ -18,6 +18,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
 import challenge.dbside.services.ini.MediaService;
 import challenge.webside.services.FriendsImportService;
+import java.util.Collections;
 
 @Component
 public class SocialControllerUtil {
@@ -78,10 +79,10 @@ public class SocialControllerUtil {
         //TODO:bike:-)
         model.addAttribute("foto", "AvaDefault.jpg");
         if (profile != null) {
-            List<ChallengeInstance> challengeList = ((User) serviceEntity.findById(profile.getUserEntityId(), User.class)).getChallengeRequests();
-            model.addAttribute("challengeRequests", challengeList);
-            List<User> friendRequests = ((User) serviceEntity.findById(profile.getUserEntityId(), User.class)).getIncomingFriendRequests();
-            model.addAttribute("friendRequests", friendRequests);
+            User user = ((User) serviceEntity.findById(profile.getUserEntityId(), User.class));
+            List<Request> requests = user.getIncomingRequests();
+            Collections.sort(requests, Request.COMPARE_BY_DATE);
+            model.addAttribute("requests", requests);
         }
     }
 

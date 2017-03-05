@@ -52,10 +52,6 @@ public class IdAttrGet {
     static public Integer refFriend() {
         return ContextType.getInstance().getTypeAttribute("friends").getId();
     }
-    
-    static public Integer refFriendRequest() {
-        return ContextType.getInstance().getTypeAttribute("friendRequest").getId();
-    }
 
     static public Integer refSubscriber() {
         return ContextType.getInstance().getTypeAttribute("subscriber").getId();
@@ -68,6 +64,7 @@ public class IdAttrGet {
     static public Integer refVoteAgainst() {
         return ContextType.getInstance().getTypeAttribute("voteAgainst").getId();
     }
+
     static public Integer refVoteForComment() {
         return ContextType.getInstance().getTypeAttribute("voteForComment").getId();
     }
@@ -79,9 +76,21 @@ public class IdAttrGet {
     static public Integer refAutorCom() {
         return ContextType.getInstance().getTypeAttribute("autorComment").getId();
     }
-    
+
     static public Integer refChallengeDefTag() {
         return ContextType.getInstance().getTypeAttribute("challengeDefinitionTag").getId();
+    }
+
+    static public Integer refRequestSender() {
+        return ContextType.getInstance().getTypeAttribute("requestSender").getId();
+    }
+
+    static public Integer refRequestReceiver() {
+        return ContextType.getInstance().getTypeAttribute("requestReceiver").getId();
+    }
+
+    static public Integer refRequestSubject() {
+        return ContextType.getInstance().getTypeAttribute("requestSubject").getId();
     }
 
 }

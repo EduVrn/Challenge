@@ -16,9 +16,9 @@ and open the template in the editor.
             <button class="btn btn-default notification">
                 <span class="glyphicon glyphicon-bell"></span>
             </button>
-            <span th:classappend="${challengeRequests.size() + friendRequests.size() > 0} ? _empty : notify_hide"
+            <span th:classappend="${requests.size() > 0} ? _empty : notify_hide"
                   class="badge badge-notify"
-                  th:text="${challengeRequests.size() + friendRequests.size()}"></span>
+                  th:text="${requests.size()}"></span>
         </th:block>
     </body>
 </html>

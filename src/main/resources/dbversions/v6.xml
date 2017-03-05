@@ -4,11 +4,18 @@
 
 <dbstructure info="db version 6">
     <attributes>
-        <attribute id="21" name="friendRequest" type="REF" />
+        <attribute id="21" name="requestSender" type="REF" />
+        <attribute id="22" name="requestReceiver" type="REF" />
+        <attribute id="23" name="requestSubject" type="REF" />
     </attributes>
     <entities>
-        <entity status="alter" name="User" type="USER">
-            <attribute ref="friendRequest" />
+        <entity name="Request" type="REQUEST">
+            <attribute ref="date"/>
+            <attribute ref="message" />
+            <!-- ref -->
+            <attribute ref="requestSender" />
+            <attribute ref="requestReceiver" />
+            <attribute ref="requestSubject" />
         </entity>
     </entities>
 </dbstructure>

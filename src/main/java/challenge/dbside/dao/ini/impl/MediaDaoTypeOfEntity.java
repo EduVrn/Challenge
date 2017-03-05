@@ -38,5 +38,5 @@ public class MediaDaoTypeOfEntity implements MediaDao<TypeOfEntity> {
     public TypeOfEntity findById(Object id, Class<TypeOfEntity> classType) {
         return em.find(classType, id);
     }
-    
+
 }

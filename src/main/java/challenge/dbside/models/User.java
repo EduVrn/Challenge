@@ -39,23 +39,31 @@ public class User extends BaseEntity implements Commentable {
         getDataSource().getRel().put(IdAttrGet.refFriend(), user.getDataSource());
     }
     
-    public void addIncomingFriendRequest(User userWhichMakesRequest) {
-        getDataSource().getRel().put(IdAttrGet.refFriendRequest(), userWhichMakesRequest.getDataSource());
-    }
-    
-    public List<User> getIncomingFriendRequests() {
+    public List<User> getIncomingFriendRequestSenders() {
         List<User> friendsRequests = new ArrayList<>();
-        List<DBSource> list = (List<DBSource>) getDataSource().getRel().get(IdAttrGet.refFriendRequest());
+        List<DBSource> list = (List<DBSource>) getDataSource().getBackRel().get(IdAttrGet.refRequestReceiver());
         if (list != null) {
             list.forEach((userDB) -> {
-                friendsRequests.add(new User(userDB));
+                friendsRequests.add(new Request(userDB).getSender());
             });
         }
         return friendsRequests;
     }
     
-    public void addOutgoingFriendRequest(User requestedUser) {
-        getDataSource().getBackRel().put(IdAttrGet.refFriendRequest(), requestedUser.getDataSource());
+    public void removeFriendRequest(Request request) {
+        getDataSource().getBackRel().removeMapping(IdAttrGet.refRequestReceiver(), request.getDataSource());
+        request.getDataSource().getRel().removeMapping(IdAttrGet.refRequestReceiver(), getDataSource());
+    }
+    
+    public List<Request> getIncomingRequests() {
+        List<Request> requests = new ArrayList<>();
+        List<DBSource> list = (List<DBSource>) getDataSource().getBackRel().get(IdAttrGet.refRequestReceiver());
+        if (list != null) {
+            list.forEach((userDB) -> {
+                requests.add(new Request(userDB));
+            });
+        } 
+        return requests;
     }
 
     public String getName() {

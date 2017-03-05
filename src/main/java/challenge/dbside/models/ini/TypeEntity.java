@@ -7,7 +7,8 @@ public enum TypeEntity {
     COMMENT(4),
     IMAGE(5),
     CHALLENGE_STEP(6),
-    TAG(7);
+    TAG(7),
+    REQUEST(8);
 
     private final int value;
 

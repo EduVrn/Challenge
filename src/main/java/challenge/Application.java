@@ -20,31 +20,30 @@ import org.slf4j.LoggerFactory;
 @ComponentScan
 public class Application extends SpringBootServletInitializer {
 
-	private static InitialLoader initiator;
-	private static final Logger logger =
-			LoggerFactory.getLogger(Application.class);
-	
-	@Autowired
-	public void setSomeThing(InitialLoader someThing) {
-		Application.initiator = someThing;
-	}
+    private static InitialLoader initiator;
+    private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(Application.class);
-	}
+    @Autowired
+    public void setSomeThing(InitialLoader someThing) {
+        Application.initiator = someThing;
+    }
 
-	public static void main(String[] args) {
-		ApplicationContext ctx = SpringApplication.run(Application.class, args);
-		
-		try {
-			ImageStoreService.login();
-		} catch (Exception ex) {
-			logger.debug("Error create ImageStoreService", ex);
-		}
-		
-		initiator.initial();
-		logger.info("successfully start");
-	}
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(Application.class);
+    }
+
+    public static void main(String[] args) {
+        ApplicationContext ctx = SpringApplication.run(Application.class, args);
+
+        try {
+            ImageStoreService.login();
+        } catch (Exception ex) {
+            logger.debug("Error create ImageStoreService", ex);
+        }
+
+        initiator.initial();
+        logger.info("successfully start");
+    }
 
 }

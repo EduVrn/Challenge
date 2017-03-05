@@ -1,6 +1,7 @@
 package challenge.dbside.models;
 
 import challenge.dbside.models.common.IdAttrGet;
+import challenge.dbside.models.dbentity.Attribute;
 import challenge.dbside.models.dbentity.DBSource;
 import challenge.dbside.models.ini.TypeEntity;
 import challenge.dbside.models.status.ChallengeDefinitionStatus;
@@ -29,27 +30,23 @@ public class ChallengeDefinition extends BaseEntity implements Commentable {
 
     public ChallengeDefinition() {
         super(ChallengeDefinition.class.getSimpleName());
-        if (getRating() == null) {
-            setRating(0);
-        }
     }
 
     public ChallengeDefinition(DBSource dataSource) {
         super(dataSource);
-        if (getRating() == null) {
-            setRating(0);
-        }
     }
 
     public List<User> getAllAcceptors() {
         List<User> acceptors = new ArrayList<>();
 
         Set<DBSource> children = (Set<DBSource>) getDataSource().getChildren();
-        children.forEach((chalInsDB) -> {
-            if (chalInsDB.getEntityType() == TypeEntity.CHALLENGE_INSTANCE.getValue()) {
-                acceptors.add(new ChallengeInstance(chalInsDB).getAcceptor());
-            }
-        });
+        if (children != null) {
+            children.forEach((chalInsDB) -> {
+                if (chalInsDB.getEntityType() == TypeEntity.CHALLENGE_INSTANCE.getValue()) {
+                    acceptors.add(new ChallengeInstance(chalInsDB).getAcceptor());
+                }
+            });
+        }
         return acceptors;
     }
 
@@ -172,9 +169,7 @@ public class ChallengeDefinition extends BaseEntity implements Commentable {
     public void removeAllTags() {
         List<DBSource> list = (List<DBSource>) getDataSource().getRel().get(IdAttrGet.refChallengeDefTag());
         if (list != null) {
-            for (DBSource ds : list) {
-                getDataSource().getRel().removeMapping(IdAttrGet.refChallengeDefTag(), ds);
-            }
+            getDataSource().getRel().remove(IdAttrGet.refChallengeDefTag());
         }
     }
 

@@ -1,22 +1,23 @@
 package challenge.webside.controllers.util;
 
 import challenge.dbside.models.Image;
+import challenge.dbside.models.Request;
 import challenge.dbside.models.User;
 import challenge.dbside.services.ini.MediaService;
+import challenge.dbside.services.ini.impl.MediaServiceEntity;
 import challenge.webside.authorization.UserActionsProvider;
 import challenge.webside.authorization.thymeleaf.AuthorizationDialect;
 import challenge.webside.dao.UsersDao;
 import challenge.webside.imagesstorage.ImageStoreService;
-import challenge.webside.model.UserConnection;
 import challenge.webside.model.UserProfile;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,11 +162,15 @@ public class UserUtil {
 
     public void setModelForFriendRequest(HttpServletRequest request, User user, Model model, int friendId) {
         User friend = (User) serviceEntity.findById(friendId, User.class);
-        friend.addIncomingFriendRequest(user);
-        serviceEntity.update(friend);
-        user.addOutgoingFriendRequest(friend);
-        serviceEntity.update(user);
-        interactiveUtil.interactiveFriendRequest(friend.getId(), user);
+        
+        Request friendRequest = new Request();
+        friendRequest.setDate(new Date());
+        serviceEntity.save(friendRequest);
+        friendRequest.setSender(user);
+        friendRequest.setReceiver(friend);
+        serviceEntity.update(friendRequest);
+
+        interactiveUtil.interactiveFriendRequest(friend.getId(), friendRequest);
     }
 
     public void setModelForEditProfile(int userId, HttpServletRequest request, Principal currentUser, Model model) {
@@ -174,16 +179,22 @@ public class UserUtil {
         model.addAttribute("mapOfNetworks", usersDao.getListOfNetworks(userId));
     }
 
-    public void removeFriendRequest(int friendId, User user) {
-        //delete from table relationship
+    public User removeFriendRequest(int requestId, User currentUser) {
+        Request request = (Request)serviceEntity.findById(requestId, Request.class);
+        currentUser.removeFriendRequest(request);
+        User sender = request.getSender();
+        request.removeSender(sender);
+        serviceEntity.update(request);
+        serviceEntity.update(currentUser);
+        serviceEntity.update(sender);
+        serviceEntity.delete(request);
+        return sender;
     }
 
-    public void addFriend(int friendId, User user) {
-        removeFriendRequest(friendId, user);
-        User friend = (User) serviceEntity.findById(friendId, User.class);
-        friend.addFriend(user);
-        serviceEntity.update(friend);
-        user.addFriend(friend);
+    public void addFriend(int requestId, User user) {
+        User sender = removeFriendRequest(requestId, user);
+        usersDao.addRelation(sender.getId(), user.getId(), 10);
+        user.addFriend(sender);
         serviceEntity.update(user);
     }
 

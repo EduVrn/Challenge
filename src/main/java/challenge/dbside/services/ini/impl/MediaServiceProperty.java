@@ -11,39 +11,37 @@ import challenge.dbside.property.PropertyDB;
 import challenge.dbside.services.ini.MediaService;
 
 @Service("storageServiceProperty")
-public class MediaServiceProperty implements MediaService<PropertyDB>{
-	
-	@Autowired
+public class MediaServiceProperty implements MediaService<PropertyDB> {
+
+    @Autowired
     private MediaDaoProperty dao;
-	
-	@Override
-	@Transactional
-	public void save(PropertyDB entity) {
-		dao.save(entity);
-	}
 
-	@Override
-	public List<PropertyDB> getAll(Class<PropertyDB> classType) {
-		return dao.getAll(classType);		
-	}
+    @Override
+    @Transactional
+    public void save(PropertyDB entity) {
+        dao.save(entity);
+    }
 
-	@Override
-	@Transactional
-	public void update(PropertyDB entity) {
-		dao.update(entity);
-	}
+    @Override
+    public List<PropertyDB> getAll(Class<PropertyDB> classType) {
+        return dao.getAll(classType);
+    }
 
-	@Override
-	@Transactional
-	public void delete(PropertyDB entity) {
-		dao.delete(entity);
-	}
+    @Override
+    @Transactional
+    public void update(PropertyDB entity) {
+        dao.update(entity);
+    }
 
-	@Override
-	public PropertyDB findById(Object id, Class<PropertyDB> classType) {
-		return dao.findById(id, classType);
-	}
+    @Override
+    @Transactional
+    public void delete(PropertyDB entity) {
+        dao.delete(entity);
+    }
 
-	
-	
+    @Override
+    public PropertyDB findById(Object id, Class<PropertyDB> classType) {
+        return dao.findById(id, classType);
+    }
+
 }

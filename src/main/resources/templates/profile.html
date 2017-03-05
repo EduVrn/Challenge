@@ -148,12 +148,11 @@
                                     <div class="panel-body">
                                         <h2 class="text-center" th:text="#{listOfUnacceptedChalsTitle}"></h2>
                                         <div class="text-center chalList">
-                                            <div th:each="challenge : ${challengeRequests}" class="elementOfListInProfile">
-                                                <span class="chal-meta" th:text="${challenge.getMessage()}" style="color: red; font-size: 18px;"/>
-                                                <div th:replace="fragments/challengeViews/acceptedChallenge::acceptedChallenge(challenge=${challenge})" th:remove="tag"/>
+                                            <div th:each="challenge : ${requests}" class="elementOfListInProfile">
+                                                <div th:if="challenge.getSubject() != null}" th:replace="fragments/challengeViews/acceptedChallenge::acceptedChallenge(challenge=${challenge})" th:remove="tag"/>
                                             </div>
                                         </div>
-                                        <h4 th:if="${challengeRequests.size() == 0}" th:text="#{noNewChallengesMsg}"></h4>
+                                        <h4 th:if="${requests.size() == 0}" th:text="#{noNewChallengesMsg}"></h4>
                                     </div>
                                 </div>
                             </div>

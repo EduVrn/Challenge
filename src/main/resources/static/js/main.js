@@ -139,3 +139,11 @@ $(document).on('change', 'input[type="file"]', function () {
         reader.readAsDataURL(file);
     }
 });
+
+$('#challenges-form').submit(function () {
+    $('.list-group-item div input[name="challenge-info"]').each(function () {
+        if (!$(this).val()) {
+            $(this).val(" ");
+        }
+    });
+});

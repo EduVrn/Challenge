@@ -7,11 +7,12 @@ public class InteractiveNotification extends BaseMessage {
     String body;
     Integer targetId;
     String extraInfo;
+    Integer requestId;
 
     public InteractiveNotification(Integer userId) {
         super(userId);
     }
-
+    
     public String getTypeNotification() {
         return typeNotification;
     }
@@ -50,6 +51,14 @@ public class InteractiveNotification extends BaseMessage {
 
     public void setExtraInfo(String extraInfo) {
         this.extraInfo = extraInfo;
+    }
+
+    public Integer getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(Integer requestId) {
+        this.requestId = requestId;
     }
 
 }

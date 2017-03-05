@@ -3,6 +3,7 @@ package challenge.webside.controllers;
 import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.Comment;
+import challenge.dbside.models.Request;
 import challenge.dbside.models.Tag;
 import challenge.dbside.models.User;
 import challenge.dbside.services.ini.MediaService;
@@ -79,7 +80,6 @@ public class CommonInteractionController {
         
         //typeMain
         //ChallengeDefinition chal = (ChallengeDefinition) serviceEntity.findById(message.getMainObjectId(), ChallengeDefinition.class);
-        
         
         Comment comment = (Comment) serviceEntity.findById(message.getIdOwner(), Comment.class);
         
@@ -244,8 +244,8 @@ public class CommonInteractionController {
                     nameAndImage.setName(user.getName());
                     nameAndImage.setImage(user.getMainImageEntity().getBase64());
                     nameAndImage.setIsFriend(currentUser.getFriends().contains(user));
-                    nameAndImage.setIsSubscriber(currentUser.getIncomingFriendRequests().contains(user));
-                    nameAndImage.setIsSubscripted(user.getIncomingFriendRequests().contains(currentUser));
+                    nameAndImage.setIsSubscriber(currentUser.getIncomingFriendRequestSenders().contains(user));
+                    nameAndImage.setIsSubscripted(user.getIncomingFriendRequestSenders().contains(currentUser));
                     usersAjax.put(user.getId(), nameAndImage);
                 }
                 result.setCode("200");

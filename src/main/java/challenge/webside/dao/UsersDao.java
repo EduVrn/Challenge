@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import challenge.dbside.services.ini.MediaService;
 import challenge.webside.imagesstorage.ImageStoreService;
 import com.google.common.base.Strings;
-import java.io.File;
 import java.util.HashMap;
 
 import java.util.List;
@@ -135,14 +134,14 @@ public class UsersDao {
                 profile.getUsername(),
                 profile.getUser().getId());
 
-//        List<User> list = serviceEntity.getAll(User.class);
-//        for (User fr : list) {
-//            user.addFriend(fr);
-//            fr.addFriend(user);
-//            serviceEntity.update(fr);
-//        }
-//
-//        serviceEntity.update(user);
+        List<User> list = serviceEntity.getAll(User.class);
+        for (User fr : list) {
+            user.addFriend(fr);
+            fr.addFriend(user);
+            serviceEntity.update(fr);
+        }
+
+        serviceEntity.update(user);
     }
 
     public void bindUser(Connection<?> connection, WebRequest request) {
@@ -171,5 +170,14 @@ public class UsersDao {
             }
         }
     }
+    
+    public void deleteRelation(int entityId, int entityVal, int attributeId) {
+        jdbcTemplate.update("delete from relationship where entity_id = ? and entity_val = ? and attribute_id = ? ", 
+                entityId, entityVal, attributeId);
+    }
 
+    public void addRelation(int entityId, int entityVal, int attributeId) {
+        jdbcTemplate.update("insert into relationship values(?,?,?) ", 
+                entityId, entityVal, attributeId);
+    }
 }

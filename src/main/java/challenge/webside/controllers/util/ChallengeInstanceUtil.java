@@ -4,8 +4,8 @@ import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.ChallengeStep;
 import challenge.dbside.models.Image;
+import challenge.dbside.models.Request;
 import challenge.dbside.models.User;
-import challenge.dbside.models.dbentity.DBSource;
 import challenge.dbside.models.status.ChallengeStatus;
 import challenge.dbside.services.ini.MediaService;
 import challenge.webside.authorization.UserActionsProvider;
@@ -104,18 +104,47 @@ public class ChallengeInstanceUtil {
         serviceEntity.update(challengeToClose);
     }
 
-    public void setModelForAcceptOrDeclineChallenge(HttpServletRequest request, User user, Model model, int chalId, boolean accept) {
-        ChallengeInstance chalToAccept = (ChallengeInstance) serviceEntity.findById(chalId, ChallengeInstance.class);
-
+    public void setModelForAcceptOrDeclineChallenge(HttpServletRequest request, User user, Model model, int requestId, boolean accept) {
+        Request challengeRequest = (Request) serviceEntity.findById(requestId, Request.class);
         if (accept) {
-            user.acceptChallenge(chalToAccept);
-        } else {
-            for (DBSource childDB : chalToAccept.getDataSource().getChildren()) {
-                serviceEntity.delete(new Image(childDB));
-            }
-            serviceEntity.delete(chalToAccept);
+
+            ChallengeDefinition chal = challengeRequest.getSubject();
+
+            Image img = new Image();
+            img.setIsMain(true);
+            img.setImageRef(chal.getMainImageEntity().getImageRef());
+            serviceEntity.save(img);
+
+            ChallengeInstance chalIns = new ChallengeInstance();
+            chalIns.setName(chal.getName());
+            chalIns.setDate(chal.getDate());
+            chalIns.setChallengeRoot(chal);
+            chalIns.setClosingDate(chal.getDate());
+            chalIns.addImage(img);
+            chalIns.setStatus(ChallengeStatus.ACCEPTED);
+            chalIns.setDescription(chal.getDescription());
+            chalIns.setAcceptor(user);
+
+            ChallengeStep step = new ChallengeStep();
+            step.setDate(chalIns.getDate());
+            step.setMessage(chalIns.getDescription());
+            step.setName(chalIns.getName());
+            Image stepImg = new Image();
+            stepImg.setIsMain(true);
+            stepImg.setImageRef(chal.getMainImageEntity().getImageRef());
+            serviceEntity.save(stepImg);
+            step.addImage(stepImg);
+            serviceEntity.save(step);
+
+            chalIns.addStep(step);
+            serviceEntity.save(chalIns);
+
+            chal.addChallengeInstance(chalIns);
+            serviceEntity.update(chal);
+            user.acceptChallenge(chalIns);
+            serviceEntity.update(user);
         }
-        serviceEntity.update(user);
+        serviceEntity.delete(challengeRequest);
         dialect.setActions(actionsProvider.getActionsForProfile(user, user));
     }
 

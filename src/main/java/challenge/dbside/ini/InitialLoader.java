@@ -234,6 +234,7 @@ public class InitialLoader {
             serviceEntityInit.update(userToCreate);
             for (int k = 0; k < countOfChalDefs; k++) {
                 ChallengeDefinition chalToCreate = new ChallengeDefinition();
+                chalToCreate.setRating(0);
                 chalToCreate.setName(generateRandomWords(1)[0] + "-challenge");
                 chalToCreate.setStatus(ChallengeDefinitionStatus.CREATED);
                 StringBuilder text = new StringBuilder();

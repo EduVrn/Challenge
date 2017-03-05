@@ -13,7 +13,7 @@ and open the template in the editor.
     <body>
         <div  th:fragment="acceptedChallenge(challenge)" style="border-width: 5" class="panel panel-default">
             <div class="box-content panel-body ">
-                <div th:replace="fragments/modelElementsViews/challengeImageAndBody :: challengePanel(${challenge})" th:remove="tag"  />            
+                <div th:replace="fragments/modelElementsViews/challengeImageAndBody :: challengePanel(${challenge.getSubject()})" th:remove="tag"  />            
                 <!--submit acceptance button-->
                 <form name="submitForm" th:id="'accept_form'+${challenge.Id}"
                       method="GET" action="accept" style="display: inline-block;">

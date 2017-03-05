@@ -40,5 +40,5 @@ public class MediaServiceTypeOfEntity implements MediaService<TypeOfEntity> {
     @Override
     public TypeOfEntity findById(Object id, Class<TypeOfEntity> classType) {
         return dao.findById(id, classType);
-    }    
+    }
 }

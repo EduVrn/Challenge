@@ -4,11 +4,13 @@ import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.ChallengeStep;
 import challenge.dbside.models.Image;
+import challenge.dbside.models.Request;
 import challenge.dbside.models.Tag;
 import challenge.dbside.models.User;
 import challenge.dbside.models.status.ChallengeDefinitionStatus;
 import challenge.dbside.models.status.ChallengeStatus;
 import challenge.dbside.services.ini.MediaService;
+import challenge.dbside.services.ini.impl.MediaServiceEntity;
 import challenge.webside.authorization.UserActionsProvider;
 import challenge.webside.authorization.thymeleaf.AuthorizationDialect;
 import challenge.webside.dao.UsersDao;
@@ -23,7 +25,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
@@ -51,6 +52,9 @@ public class ChallengeDefinitionUtil {
     @Autowired
     private InteractiveUtil interactiveUtil;
 
+    @Autowired
+    private UsersDao usersDao;
+
     public List<ChallengeDefinition> filterChallenges(String filter, int userId) {
         User user = (User) serviceEntity.findById(userId, User.class);
 
@@ -65,44 +69,22 @@ public class ChallengeDefinitionUtil {
         return filteredChallenges;
     }
 
-    public void throwChallenge(int userId, int challengeId, String message) {
+    public void throwChallenge(int userId, User currentUser, int challengeId, String message) {
         ChallengeDefinition chal = (ChallengeDefinition) serviceEntity.findById(challengeId, ChallengeDefinition.class);
         User user = (User) serviceEntity.findById(userId, User.class);
 
-        Image img = new Image();
-        img.setIsMain(true);
-        img.setImageRef(chal.getMainImageEntity().getImageRef());
-        serviceEntity.save(img);
+        Request challengeRequest = new Request();
+        challengeRequest.setDate(new Date());
+        if (message != null) {
+            challengeRequest.setMessage(message);
+        }
+        serviceEntity.save(challengeRequest);
+        challengeRequest.setSender(currentUser);
+        challengeRequest.setReceiver(user);
+        challengeRequest.setSubject(chal);
+        serviceEntity.update(challengeRequest);
 
-        ChallengeInstance chalIns = new ChallengeInstance();
-        chalIns.setName(chal.getName());
-        chalIns.setDate(chal.getDate());
-        chalIns.setChallengeRoot(chal);
-        chalIns.setClosingDate(chal.getDate());
-        chalIns.addImage(img);
-        chalIns.setStatus(ChallengeStatus.AWAITING);
-        chalIns.setMessage(message);
-        chalIns.setDescription(chal.getDescription());
-        chalIns.setAcceptor(user);
-
-        ChallengeStep step = new ChallengeStep();
-        step.setDate(chalIns.getDate());
-        step.setMessage(chalIns.getDescription());
-        step.setName(chalIns.getName());
-        Image stepImg = new Image();
-        stepImg.setIsMain(true);
-        stepImg.setImageRef(chal.getMainImageEntity().getImageRef());
-        serviceEntity.save(stepImg);
-        step.addImage(stepImg);
-        serviceEntity.save(step);
-
-        chalIns.addStep(step);
-        serviceEntity.save(chalIns);
-
-        chal.addChallengeInstance(chalIns);
-        serviceEntity.update(chal);
-
-        interactiveUtil.interactiveThrowChallenge(userId, chalIns);
+        interactiveUtil.interactiveThrowChallenge(userId, challengeRequest);
     }
 
     public void setModelForAcceptChallengeDefinition(HttpServletRequest request, User user, Model model, int chalId) {
@@ -128,6 +110,7 @@ public class ChallengeDefinitionUtil {
 
     public void setModelForNewChallenge(HttpServletRequest request, Principal currentUser, Model model) {
         ChallengeDefinition chalDefNew = new ChallengeDefinition();
+        chalDefNew.setRating(0);
         chalDefNew.setDate(new Date());
         model.addAttribute("challenge", chalDefNew);
         List<Tag> tags = serviceEntity.getAll(Tag.class);
@@ -156,16 +139,18 @@ public class ChallengeDefinitionUtil {
                     serviceEntity.update(oldImage);
                 }
             }
-//            List<Tag> tags = chalToUpdate.getTags();
-//            chalToUpdate.removeAllTags();
-//            serviceEntity.update(chalToUpdate);
-//            for (Tag t : tags) {
-//                t.removeChallenge(chalToUpdate);
-//                serviceEntity.update(t);
-//            }
+            List<Tag> tags = chalToUpdate.getTags();
+            chalToUpdate.removeAllTags();
+            serviceEntity.update(chalToUpdate);
+            for (Tag t : tags) {
+                usersDao.deleteRelation(chalToUpdate.getId(), t.getId(), 20);
+                t.removeChallenge(chalToUpdate);
+                serviceEntity.update(t);
+            }
         } else {
             challenge.setStatus(ChallengeDefinitionStatus.CREATED);
             challenge.setCreator(curDBUser);
+            challenge.setRating(0);
             serviceEntity.save(challenge);
         }
 
@@ -180,32 +165,32 @@ public class ChallengeDefinitionUtil {
         }
         //need to update or create image
         if (image.isEmpty()) {
-            Image img = new Image();
-            img.setIsMain(Boolean.TRUE);
-            img.setImageRef(ImageStoreService.getDEFAULT_IMAGE_ROUTE());
-            serviceEntity.save(img);
-            challenge.addImage(img);
-            serviceEntity.update(challenge);
-        } else {
-            if (!image.isEmpty() && !StringUtils.isNumeric(image)) {
-                String base64Image = image.split(",")[1];
-                byte[] array = Base64.decodeBase64(base64Image);
-                Image imageEntity = new Image();
-                imageEntity.setIsMain(Boolean.TRUE);
-                serviceEntity.save(imageEntity);
-                try {
-                    ImageStoreService.saveImage(array, imageEntity);
-                    serviceEntity.update(imageEntity);
-                } catch (Exception ex) {
-                    Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                challenge.addImage(imageEntity);
+            if (challenge.getMainImageEntity().getId() == null) {
+                Image img = new Image();
+                img.setIsMain(Boolean.TRUE);
+                img.setImageRef(ImageStoreService.getDEFAULT_IMAGE_ROUTE());
+                serviceEntity.save(img);
+                challenge.addImage(img);
                 serviceEntity.update(challenge);
-            } else if (StringUtils.isNumeric(image)) {
-                Image newMainImage = (Image) serviceEntity.findById(Integer.valueOf(image), Image.class);
-                newMainImage.setIsMain(Boolean.TRUE);
-                serviceEntity.update(newMainImage);
             }
+        } else if (!image.isEmpty() && !StringUtils.isNumeric(image)) {
+            String base64Image = image.split(",")[1];
+            byte[] array = Base64.decodeBase64(base64Image);
+            Image imageEntity = new Image();
+            imageEntity.setIsMain(Boolean.TRUE);
+            serviceEntity.save(imageEntity);
+            try {
+                ImageStoreService.saveImage(array, imageEntity);
+                serviceEntity.update(imageEntity);
+            } catch (Exception ex) {
+                Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            challenge.addImage(imageEntity);
+            serviceEntity.update(challenge);
+        } else if (StringUtils.isNumeric(image)) {
+            Image newMainImage = (Image) serviceEntity.findById(Integer.valueOf(image), Image.class);
+            newMainImage.setIsMain(Boolean.TRUE);
+            serviceEntity.update(newMainImage);
         }
         model.addAttribute("challenge", challenge);
         setModelForAcceptors(challenge, model);
