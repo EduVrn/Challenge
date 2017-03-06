@@ -2,7 +2,6 @@ package challenge.webside.controllers.util;
 
 import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.ChallengeInstance;
-import challenge.dbside.models.ChallengeStep;
 import challenge.dbside.models.Image;
 import challenge.dbside.models.Request;
 import challenge.dbside.models.Tag;
@@ -10,7 +9,6 @@ import challenge.dbside.models.User;
 import challenge.dbside.models.status.ChallengeDefinitionStatus;
 import challenge.dbside.models.status.ChallengeStatus;
 import challenge.dbside.services.ini.MediaService;
-import challenge.dbside.services.ini.impl.MediaServiceEntity;
 import challenge.webside.authorization.UserActionsProvider;
 import challenge.webside.authorization.thymeleaf.AuthorizationDialect;
 import challenge.webside.dao.UsersDao;

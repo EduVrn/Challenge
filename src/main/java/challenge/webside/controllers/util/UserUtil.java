@@ -188,6 +188,8 @@ public class UserUtil {
         serviceEntity.update(currentUser);
         serviceEntity.update(sender);
         serviceEntity.delete(request);
+        usersDao.deleteRelation(requestId, sender.getId(), 21);
+        usersDao.deleteRelation(requestId, currentUser.getId(), 22);
         return sender;
     }
 

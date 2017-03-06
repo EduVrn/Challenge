@@ -40,13 +40,22 @@ $(window).resize(function () {
 //show notifications popup
 var showingNotifications = false;
 
-$('.notification').click(function () {
+$(document).on('click', '.notification', function () {
     showingNotifications = !showingNotifications;
     if (showingNotifications) {
         $('#chal-notification').show();
         setRightBorderOfNotificationWindow();
         setHeightOfNotificationWindow();
+        $overlay = $('<div />', {
+            "class": "overlay"
+        });
+        $('body').append($overlay);
+        if ($(window).width() < 768) {
+            $('body').css('overflow-y', 'hidden');
+        }
     } else {
+        $('.overlay').remove();
+        $('body').css('overflow-y', 'scroll');
         $('#chal-notification').fadeOut("slow");
     }
 });

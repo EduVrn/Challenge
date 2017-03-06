@@ -486,6 +486,9 @@ label {
         margin-top:7px;
         margin-right:0px;
     }
+    .overlay {
+        background-color: rgba(0,0,0,0) !important;
+    }
 }
 
 @media (max-width: 767px) {
@@ -595,4 +598,14 @@ span.tag-link {
 
 .modal_top_padding{
     margin-top:70px;
+}
+
+.overlay{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  background-color: rgba(0,0,0,0.5);
 }
