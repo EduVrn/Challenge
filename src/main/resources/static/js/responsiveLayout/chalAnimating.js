@@ -65,12 +65,13 @@
 
 }));
 $('#accordion').on('show.bs.collapse', function (e) {
-    $(".loader").delay(0).fadeIn(0);
+   $(".chal-loader").delay(0).fadeIn(0);
 });
+
 
 $('#accordion').on('shown.bs.collapse', function (e) {
     $(".chalList").isotope('layout'); 
-    $(".loader").delay(300).fadeOut("slow");
+    $(".chal-loader").delay(300).fadeOut("slow");
 });
 
 

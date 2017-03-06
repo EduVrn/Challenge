@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
     <head>
+        <link rel="stylesheet" href="css/pageLoader.css" />
         <title th:text="#{profilePageTitle}"></title>
         <script src="js/jquery.min.js"></script>  
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link th:replace="fragments/commonDependencies :: commonDependencies" th:remove="tag"/>
-        <link rel="stylesheet" href="css/pageLoader.css" />
         <link rel="stylesheet" href="../css/footer.css" />
     </head>
     <body>
         <div th:replace="fragments/header::userInfo" />
         <div th:replace="fragments/util/loader::loader"/>
+
         <div class="container">
             <div style="margin-top: 40px;" >
                 <h1 class="" th:text="${userProfile.getName()}+' ('+${userProfile.getRating()}+')'" style='display: inline-block;'/>   
@@ -40,7 +41,6 @@
                                         }
                                     });
                                 </script>
-
                                 <div id="myModal" class="modal fade">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
@@ -75,7 +75,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <!-- right side -->
 
@@ -102,16 +101,17 @@
                                             </form>
                                         </div>
                                         <span  class="text-center chal-meta" th:text="${possibleFriend.getName()}"></span>                                      
-
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="chalShowChallenge" style="padding-left: 0px;padding-right: 0px;padding-bottom: 0px;">
+
                         <div class="panel-group" id="accordion">
                             <!-- 1 панель -->
                             <div class="panel panel-default">
+
                                 <!-- Заголовок 1 панели -->
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
@@ -119,12 +119,13 @@
                                     </h4>
                                 </div>
                                 <div id="collapseOne" class="panel-collapse collapse in">
+
                                     <!-- Содержимое 1 панели -->
                                     <div class="panel-body">
                                         <h2 class="text-center" th:text="#{listOfAcceptedChalsTitle}"></h2>
                                         <div class="text-center chalList">
-
                                             <div th:each="challenge : ${listOfAccepted}" class="elementOfListInProfile">
+                                                <div th:replace="fragments/util/loader::chal-loader"/>
                                                 <div style="border-width: 5" class="panel panel-default">
                                                     <div class="box-content panel-body ">
                                                         <div th:replace="fragments/modelElementsViews/challengeImageAndBody :: challengePanel(${challenge})" th:remove="tag"  /> 
@@ -150,6 +151,7 @@
                                         <h2 class="text-center" th:text="#{listOfUnacceptedChalsTitle}"></h2>
                                         <div class="text-center chalList">
                                             <div th:each="challenge : ${requests}" class="elementOfListInProfile">
+                                                <div th:replace="fragments/util/loader::chal-loader"/>
                                                 <div th:if="challenge.getSubject() != null}" th:replace="fragments/challengeViews/acceptedChallenge::acceptedChallenge(challenge=${challenge})" th:remove="tag"/>
                                             </div>
                                         </div>
@@ -162,16 +164,16 @@
                                 <!-- Заголовок 3 панели -->
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
-                                        <a data-toggle="collapse" data-parent="#accordion" th:text="#{listOfCreatedChalsTitle}" href="#collapseThree"></a>
+                                        <a  data-toggle="collapse" data-parent="#accordion" th:text="#{listOfCreatedChalsTitle}" href="#collapseThree"></a>
                                     </h4>
                                 </div>
                                 <!-- Содержимое 3 панели -->
-
                                 <div id="collapseThree" class="panel-collapse collapse">
                                     <div class="panel-body">
                                         <h2 class="text-center" th:text="#{listOfCreatedChalsTitle}"></h2>
                                         <div class="text-center chalList">
                                             <div th:each="challenge : ${listOfDefined}" class="elementOfListInProfile">
+                                                <div th:replace="fragments/util/loader::chal-loader"/>
                                                 <div th:replace="fragments/challengeViews/createdChallenge::createdChallenge(challenge=${challenge})" th:remove="tag"/>
                                             </div>
                                         </div>
@@ -193,6 +195,7 @@
                                         <h2 class="text-center" th:text="#{listOfSubscriptionChalsTitle} "></h2>                                           
                                         <div class="text-center chalList">
                                             <div th:each="challenge : ${listOfSubscripted}" class="elementOfListInProfile">
+                                                <div th:replace="fragments/util/loader::chal-loader"/>
                                                 <th:block th:unless="${isChalDef}">
                                                     <h3 th:if="${challenge.getStatus() ==
                                                         T(challenge.dbside.models.status.ChallengeStatus).PUT_TO_VOTE}"

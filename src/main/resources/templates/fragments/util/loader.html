@@ -6,16 +6,23 @@
         <meta charset="UTF-8"/>
     </head>
     <body>
-        <div th:fragment="loader" class="loader">
+        <div th:fragment="loader" class="off loader">
             <script>
                 jQuery(window).load(function () {
-                    $(".loader").delay(300).fadeOut("slow");
-                });</script>
-            <div class="loader-centered">
-                <div class="square first"></div>
-                <div class="square1 second"></div>
-                <div class="square2 third"></div>
-            </div>
+                    $(".off").delay(300).fadeOut("slow");
+                });
+            </script>
+            <div th:replace="fragments/util/loader :: inner"/>
+        </div>
+            
+        <div th:fragment="chal-loader" class="chal-loader loader">   
+            <div th:replace="fragments/util/loader :: inner"/>
+        </div>
+            
+        <div th:fragment="inner" class="loader-centered">
+            <div class="square first"></div>
+            <div class="square1 second"></div>
+            <div class="square2 third"></div>
         </div>
     </body>
 </html>

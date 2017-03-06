@@ -3,9 +3,6 @@
     width: 30%; 
 }
 
-/*.btn{
-   // width: 100%;
-}*/
 body,
 html {
     background-color: #f5f4f4;
@@ -341,7 +338,6 @@ textarea {
 #chal-notification {
     right:10px;
     z-index: 50;
-    width: 400px;
     top: 60px;
     display: none;
     opacity: 1;
@@ -595,4 +591,8 @@ span.tag-link {
 }
 .mCSB_scrollTools .mCSB_draggerRail {
     width: 7px !important;
+}
+
+.modal_top_padding{
+    margin-top:70px;
 }

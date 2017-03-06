@@ -1,14 +1,18 @@
 function setRightBorderOfNotificationWindow() {
-    var distanseFromRightSide = 10;
+    var distanseFromRightSide = 20;
     var notification = $('.notification:visible');
     if ($(window).width() > 991) {
         distanseFromRightSide = $(window).width() - (notification.offset().left + notification.width()) - $('#chal-notification').width();
+        $('.chal-notification-wrap ').css('width', 400);
     } else
     {
         if ($(window).width() > 768) {
+            $('.chal-notification-wrap ').css('width', 400);
             distanseFromRightSide = $(window).width() - notification.offset().left
                     - notification.outerWidth()
                     - notification.width();
+        } else {
+            $('.chal-notification-wrap ').css('width', $(window).width() * 0.7);
         }
     }
     $('.chal-notification-wrap ').css('right', distanseFromRightSide);
@@ -30,6 +34,7 @@ function setHeightOfNotificationWindow() {
 
 $(window).resize(function () {
     setRightBorderOfNotificationWindow();
+    setHeightOfNotificationWindow();
 });
 
 //show notifications popup
