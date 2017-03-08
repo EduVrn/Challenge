@@ -7,12 +7,10 @@ var Interactive = {
     username: null,
     mainObjectId: null,
     typeMainObject: null,
-
     connect: function () {
         var socket = new SockJS('/ws');
         this.stompClient = Stomp.over(socket);
         this.mainObjectId = $("#mainObjectId").first().val();
-
         if ($(".ChallengeDefinitionType").length >= 1) {
             Interactive.typeMainObject = "ChallengeDefinitionType";
         } else if ($(".ChallengeInstanceType").length >= 1) {
@@ -34,7 +32,6 @@ var Interactive = {
         }, function (frame) {
             console.log('Connected: ' + frame);
             Interactive.username = frame.headers['user-name'];
-
             if (interactiveNotification === true) {
                 console.log("subscribe to /user/exchange/notification");
                 Interactive.stompClient.subscribe("/user/exchange/notification", function (resp) {
@@ -64,11 +61,9 @@ var Interactive = {
         }
         var template = $("#notification-candidate").clone();
         template.removeAttr("id");
-
         var storage = $('.mCSB_container');
         template.prependTo(storage);
         this.changeContentNotification(template, obj);
-        
         console.log("/user/exchange/notification");
         $('.badge-notify').each(function () {
             $(this).text(+$(this).text() + 1);
@@ -104,22 +99,31 @@ var Interactive = {
     },
     commentHandler: function (resp) {
         var obj = JSON.parse(resp.body);
-
         if (obj.status === 'SUCCESS') {
             console.log("get info: " + obj);
-        }
-        var template = $("#templateComment").clone();
-        template.removeAttr("style");
-        template.removeAttr("id");
-        var storage = null;
+            var storage = null;
+            var template = null;
+            if (obj.idParent == null) {
+                template = $("#templateMainComment").clone();
+                template.find("#templateComment").removeAttr("style");
+                template.find("#templateComment").removeAttr("id");
+                template.removeAttr("style");
+                template.removeAttr("id");
+                storage = $(".comments-list");
+            } else {
+                template = $("#templateComment").clone();
+                template.removeAttr("style");
+                template.removeAttr("id");
+                template.addClass("subcommentList");
+                template.addClass("withShift");
+                storage = $(".comments-list").find("ul[id=" + obj.idParent + "]");
+            }
 
-        if (obj.idParent == null) {
-            storage = $(".comments-list");
-        } else {
-            storage = $(".comments-list").find("ul[id=" + obj.idParent + "]");
+            template.prependTo(storage);
+            this.changeContentComment(template, obj);
+            var commentCounter = $("#commentCounter");
+            commentCounter.text(+commentCounter.text() + 1);
         }
-        template.prependTo(storage);
-        this.changeContentComment(template, obj);
     },
     sendLike: function (obj) {
         var destination = "/app/interactive.like." + this.username;
@@ -136,29 +140,30 @@ var Interactive = {
                     'changeVote': changeVote,
                     'typeMain': this.typeMainObject}));
     },
-
     sendComment: function (obj) {
         var destination = "/app/interactive.comment." + this.username;
         var parent = $(obj).parent();
         var messageInp = parent.find("input[type=text]").first();
-        var idParent = null;
+        if (messageInp.val().trim().length < 3 || messageInp.val().length > 250) {
+            $(obj).parent().find(".commentError").show("slow");
+        } else {
+            $(obj).parent().find(".commentError").hide("slow");
+            var idParent = null;
+            if (parent.find("input[name=idMainObject]").first().size() !== 1) {
+                idParent = parent.find("input[name=id]").first().val();
+            }
 
-        if (parent.find("input[name=idMainObject]").first().size() !== 1) {
-            idParent = parent.find("input[name=id]").first().val();
-        }
-
-        ObjSaved = JSON.stringify({
-            'idParent': idParent,
-            'mainObjectId': this.mainObjectId,
-            'messageContent': messageInp.val(),
-            'typeMain': this.typeMainObject});
-
-        this.stompClient.send(destination, {},
-                ObjSaved);
-
-        messageInp.val("");
-        if (idParent != null) {
-            $('.last-div#reply' + idParent).hide();
+            ObjSaved = JSON.stringify({
+                'idParent': idParent,
+                'mainObjectId': this.mainObjectId,
+                'messageContent': messageInp.val(),
+                'typeMain': this.typeMainObject});
+            this.stompClient.send(destination, {},
+                    ObjSaved);
+            messageInp.val("");
+            if (idParent != null) {
+                $('.last-div#reply' + idParent).hide();
+            }
         }
     },
     changeContentNotification: function (cont, obj) {
@@ -169,7 +174,6 @@ var Interactive = {
         $(cont).find('#redirect-form input[name="id"]').val(obj.targetId);
         $(cont).find('#accept-form input[name="id"]').val(obj.requestId);
         $(cont).find('#decline-form input[name="id"]').val(obj.requestId);
-
         if (obj.typeNotification == "FriendRequest") {
             $(cont).find('#redirect-form').attr("action", "/profile");
             $(cont).find('#accept-form').attr("action", "/addFriend");
@@ -183,11 +187,9 @@ var Interactive = {
         }
 
     },
-
     changeContentComment: function (cont, obj) {
         var mediaBody = $(cont).find("div[class='media-body']").first();
         $(cont).find("ul").attr("id", obj.messageId);
-
         $(mediaBody).find("form[action='/profile']")
                 .attr("id", "comment_form" + obj.messageId);
         $(mediaBody).find("form[action='/profile']")
@@ -195,6 +197,10 @@ var Interactive = {
                 .attr("value", obj.userId);
         $(mediaBody).find("form[action='/profile']")
                 .find("a").text(obj.userName);
+        if (obj.toWhom != null) {
+            $(mediaBody).find("form[action='/profile']")
+                    .find("small").text('To ' + obj.toWhom).addClass("embedenceShowToWhom");
+        }
         //onclick, username
 
         $(mediaBody).find("p").first().text(obj.messageContent)
@@ -202,7 +208,6 @@ var Interactive = {
         var lastDiv = $(cont).find("div[class='last-div']").first();
         $(lastDiv).attr("id", "reply" + obj.messageId);
         $(lastDiv).find("input[name='id']").attr("value", obj.messageId);
-
         $(lastDiv).find("form").submit(function (event) {
             Interactive.sendComment(event.target);
             return false;
@@ -210,15 +215,12 @@ var Interactive = {
         $(mediaBody).find("small").find("a").click(function () {
             $(lastDiv).toggle();
         });
-
         var newreplyForm = $(lastDiv).find("form[action='/newreply']").first()
 
         //newreplyForm.find("input[name='_csrf']").val(username);
         newreplyForm.find("input[name='id']").first().val(obj.messageId);
-
         var voteFor = $(mediaBody).find("form[action='/comment/voteFor']");
         var voteAgainst = $(mediaBody).find("form[action='/comment/voteAgainst']");
-
         voteFor.find("input[name='id']").attr("value", obj.messageId);
         voteFor.find(".vote-value").attr("id", obj.messageId);
         voteFor.find(".send-vote").click(function (event) {
@@ -232,7 +234,6 @@ var Interactive = {
             return false;
         });
     },
-
     disconnect: function () {
         if (Interactive.stompClient != null) {
             Interactive.stompClient.disconnect(function () {

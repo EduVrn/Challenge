@@ -222,9 +222,6 @@ public class ChallengeDefinitionUtil {
 
     public void setModelForBadDateNewChal(ChallengeDefinition challenge, HttpServletRequest request,
             Principal currentUser, Model model, String image, String imageName, List<Integer> selectedTags) {
-        if (challenge.getId() == null) {
-            challenge.setDate(new Date());
-        }
         model.addAttribute("challenge", challenge);
         model.addAttribute("image64", image);
         model.addAttribute("imageName", imageName);

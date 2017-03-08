@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class Comment extends BaseEntity implements Commentable { //TODO: add implements Commentable ???
 
@@ -26,6 +28,8 @@ public class Comment extends BaseEntity implements Commentable { //TODO: add imp
         getDataSource().getRel().put(IdAttrGet.refAutorCom(), author.getDataSource());
     }
 
+    @NotNull
+    @Size(min = 5, max = 250, message = "{error.comment.length}")
     public String getMessage() {
         return getDataSource().getAttributes().get(IdAttrGet.IdMessage()).getValue();
     }
@@ -94,12 +98,12 @@ public class Comment extends BaseEntity implements Commentable { //TODO: add imp
     }
 
     public boolean rmVoteFor(User voter) {
-    	boolean b = getDataSource().getRel().removeMapping(IdAttrGet.refVoteForComment(), voter.getDataSource()); 
+        boolean b = getDataSource().getRel().removeMapping(IdAttrGet.refVoteForComment(), voter.getDataSource());
         return b;
     }
 
     public boolean rmVoteAgainst(User voter) {
-    	return getDataSource().getRel().removeMapping(IdAttrGet.refVoteAgainstComment(), voter.getDataSource());
+        return getDataSource().getRel().removeMapping(IdAttrGet.refVoteAgainstComment(), voter.getDataSource());
     }
 
     public static final Comparator<Comment> COMPARE_BY_DATE = (Comment leftToCompare, Comment rightToCompare)

@@ -8,4 +8,10 @@ $(document).ready(function () {
     $(".elementOfListInProfile").addClass("challenge col-lg-4 col-md-6 col-sm-12 col-xs-12");
     $(".userLists").addClass("col-md-8 col-sm-6 col-xs-12");
 });
-
+(function ($) {
+    $(window).on("load", function () {
+        var t = setTimeout(function () {
+            $("#collapseOne").collapse('show');
+        }, 700);
+    });
+})(jQuery);

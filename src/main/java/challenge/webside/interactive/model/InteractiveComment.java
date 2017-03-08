@@ -6,6 +6,7 @@ public class InteractiveComment extends BaseMessage {
     Integer messageId;
     String userName;
     String messageContent;
+    private String toWhom;
 
     public Integer getIdParent() {
         return idParent;
@@ -37,6 +38,14 @@ public class InteractiveComment extends BaseMessage {
 
     public void setMessageContent(String messageContent) {
         this.messageContent = messageContent;
+    }
+
+    public String getToWhom() {
+        return toWhom;
+    }
+
+    public void setToWhom(String toWhom) {
+        this.toWhom = toWhom;
     }
 
 }

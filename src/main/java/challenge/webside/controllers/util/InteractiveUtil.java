@@ -4,9 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
-import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.Request;
-import challenge.dbside.models.User;
 import challenge.webside.interactive.InteractiveRepository;
 import challenge.webside.interactive.model.InteractiveNotification;
 

@@ -18,6 +18,7 @@ import challenge.webside.model.UserProfile;
 import challenge.webside.model.ajax.AjaxResponseBody;
 import challenge.webside.model.ajax.SearchCriteria;
 import challenge.webside.model.ajax.NameAndImage;
+import com.google.common.base.Strings;
 import java.security.Principal;
 import java.util.Date;
 import java.util.HashMap;
@@ -65,28 +66,26 @@ public class CommonInteractionController {
 
     @Autowired
     private UserUtil userUtil;
-    
+
     @Autowired
     private TagsUtil tagsUtil;
 
-	private static final Logger logger =
-			LoggerFactory.getLogger(CommonInteractionController.class);
-    
-    
+    private static final Logger logger
+            = LoggerFactory.getLogger(CommonInteractionController.class);
+
     @MessageMapping("/interactive.like.{username}")
     public void like(@Payload InteractiveVote message, @DestinationVariable("username") String username, Principal principal) {
         UserProfile userProf = usersDao.getUserProfile(principal.getName());
         User user = (User) serviceEntity.findById(userProf.getUserEntityId(), User.class);
-        
+
         //typeMain
         //ChallengeDefinition chal = (ChallengeDefinition) serviceEntity.findById(message.getMainObjectId(), ChallengeDefinition.class);
-        
         Comment comment = (Comment) serviceEntity.findById(message.getIdOwner(), Comment.class);
-        
+
         boolean voteFor = message.getChangeVote() == 1 ? true : false;
-        List<User> lVUp   = comment.getVotesFor();
+        List<User> lVUp = comment.getVotesFor();
         List<User> lVDown = comment.getVotesAgainst();
-        
+
         if (voteFor) {
             if (comment.getVotesAgainst().contains(user)) {
                 comment.rmVoteAgainst(user);
@@ -122,50 +121,51 @@ public class CommonInteractionController {
 
     @MessageMapping("/interactive.comment.{username}")
     public void interactiveComment(@Payload InteractiveComment message, @DestinationVariable("username") String username, Principal principal) {
-    	Integer mainObjectId = message.getMainObjectId();
-		UserProfile userProf = usersDao.getUserProfile(principal.getName());
-		User user = (User) serviceEntity.findById(userProf.getUserEntityId(), User.class);
-		
-		Comment newComment = new Comment();
-		newComment.setDate(new Date());
-		newComment.setMessage(message.getMessageContent());
-		newComment.setAuthor(user);
-		serviceEntity.save(newComment);
-		Integer id = message.getIdParent();
-		if (id != null) {
-			Comment parentComment = (Comment) serviceEntity.findById(id, Comment.class);
-			parentComment.addComment(newComment);
-			serviceEntity.update(parentComment);
-		} else {
-			if(message.getTypeMain().equals("ChallengeDefinitionType")) {
-				ChallengeDefinition chal = (ChallengeDefinition) serviceEntity.findById(mainObjectId, ChallengeDefinition.class);
-				chal.addComment(newComment);
-				serviceEntity.update(chal);
-			}
-			else if(message.getTypeMain().equals("ChallengeInstanceType")) {
-				ChallengeInstance chal = (ChallengeInstance) serviceEntity.findById(mainObjectId, ChallengeInstance.class);
-				chal.addComment(newComment);
-				serviceEntity.update(chal);
-			}
-			else {
-				logger.error("unknown typeMain: " + message.getTypeMain());
-				return;
-			}
-		}
-		
-		message.setStatus("SUCCESS");
-		message.setUserName(user.getName());
-		message.setMessageId(newComment.getId());
-		message.setDate(newComment.getDate());
-		message.setUserId(user.getId());
-				
-		Set<String> candidates = commonInteractiveHandler.getCommonConnection4Object(mainObjectId);
+        Integer mainObjectId = message.getMainObjectId();
+        if (Strings.isNullOrEmpty(message.getMessageContent()) || message.getMessageContent().trim().length()>250) {
+           message.setStatus("FAIL");
+        } else {
+            UserProfile userProf = usersDao.getUserProfile(principal.getName());
+            User user = (User) serviceEntity.findById(userProf.getUserEntityId(), User.class);
+
+            Comment newComment = new Comment();
+            newComment.setDate(new Date());
+            newComment.setMessage(message.getMessageContent());
+            newComment.setAuthor(user);
+            serviceEntity.save(newComment);
+            Integer id = message.getIdParent();
+            if (id != null) {
+                Comment parentComment = (Comment) serviceEntity.findById(id, Comment.class);
+                parentComment.addComment(newComment);
+                serviceEntity.update(parentComment);
+                message.setToWhom(parentComment.getAuthor().getName());
+            } else {
+                if (message.getTypeMain().equals("ChallengeDefinitionType")) {
+                    ChallengeDefinition chal = (ChallengeDefinition) serviceEntity.findById(mainObjectId, ChallengeDefinition.class);
+                    chal.addComment(newComment);
+                    serviceEntity.update(chal);
+                } else if (message.getTypeMain().equals("ChallengeInstanceType")) {
+                    ChallengeInstance chal = (ChallengeInstance) serviceEntity.findById(mainObjectId, ChallengeInstance.class);
+                    chal.addComment(newComment);
+                    serviceEntity.update(chal);
+                } else {
+                    logger.error("unknown typeMain: " + message.getTypeMain());
+                    return;
+                }
+            }
+
+            message.setStatus("SUCCESS");
+            message.setUserName(user.getName());
+            message.setMessageId(newComment.getId());
+            message.setDate(newComment.getDate());
+            message.setUserId(user.getId());
+        }
+        Set<String> candidates = commonInteractiveHandler.getCommonConnection4Object(mainObjectId);
         for (String resp : candidates) {
             template.convertAndSend("/user/" + resp + "/exchange/comment", message);
         }
     }
-    
-    
+
     @RequestMapping(value = "/getFriends", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
@@ -261,7 +261,7 @@ public class CommonInteractionController {
         }
         return result;
     }
-    
+
     @RequestMapping(value = "/getTags", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
