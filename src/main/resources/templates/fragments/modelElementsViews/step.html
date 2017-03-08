@@ -35,11 +35,13 @@
                         <input type="hidden" id="image-size-error" th:value="#{imageSizeError}" />
                         <input type="hidden" th:value="${image64}"  name="image" />
                     </div>
-                    <div class="input-group date col-md-12" id="datetimepicker1">
-                        <input type="text" placeholder="dd/MM/yyyy HH:mm" pattern="^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[0-2])\/\d\d\d\d (00|0[0-9]|1[0-9]|2[0-3]):([0-9]|[0-5][0-9])$" th:field="*{date}" class="form-control" />
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                        </span>
+                    <div class="form-group">
+                        <div class="input-group date" id="datetimepicker1">
+                            <input type="text" placeholder="dd/MM/yyyy HH:mm" pattern="^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[0-2])\/\d\d\d\d (00|0[0-9]|1[0-9]|2[0-3]):([0-9]|[0-5][0-9])$" th:field="*{date}" class="form-control" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
                     </div>
                     <div class="alert alert-danger" th:if="${dateError}">
                         <p  th:text="#{dateStepErrorMessage}">Date Error</p>    

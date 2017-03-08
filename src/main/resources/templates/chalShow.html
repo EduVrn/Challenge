@@ -8,6 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link th:replace="fragments/commonDependencies :: commonDependencies" th:remove="tag"/>
         <link rel="stylesheet" href="../css/pageLoader.css"/>
+        <link rel="stylesheet" href="../css/bootstrap-datetimepicker.css" />
         <script src="../js/jquery.min.js"></script>
         <tr th:if="${currentUserConnection != null}">
             <script src="../js/Interactive/enable/likeEnable.js"></script>
@@ -16,7 +17,6 @@
         <link rel="stylesheet" href="../css/style.css"/>
     </head>
     <body>
-
         <div th:replace="fragments/header :: userInfo"/>
         <div th:replace="fragments/util/loader::loader"/>
         <div class="content-wrapper" th:with="isChalDef = ${challenge instanceof T(challenge.dbside.models.ChallengeDefinition)}">
@@ -35,19 +35,19 @@
                                 </a>
                             </form>
                             <form auth:can="CLOSE_CHALLENGE"
-                                  style="display: inline-block; float: right;" action="close">
+                                  style="margin-top:8px; display: inline-block; float: right;" action="close">
                                 <input type='hidden' th:value='${challenge.getId()}' name='id'/>
                                 <input type='submit' class="btn btn-success" th:value="#{closeChallenge}" />                            
                             </form>
                             <form auth:can="SUBSCRIBE_CHALLENGE"
-                                  style="display: inline-block; float: right;" action="subscribe">
+                                  style=" margin-top:8px; display: inline-block; float: right;" action="subscribe">
                                 <input type='hidden' th:value='${challenge.getId()}' name='id'/>
                                 <input type='submit' class="btn btn-success" th:value="#{subscribeChallenge}" />                            
                             </form>
                             <th:block th:unless="${isChalDef}">
                                 <h2 th:if="${challenge.getStatus() ==
                                     T(challenge.dbside.models.status.ChallengeStatus).PUT_TO_VOTE}"
-                                    style="display: inline-block; float: right;">
+                                    style="margin-top:8px; display: inline-block; float: right;">
                                     <span class="label label-info"
                                           th:text="#{putToVoteLabel}" />
                                 </h2>
