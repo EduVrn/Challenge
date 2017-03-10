@@ -1,4 +1,4 @@
-function setRightBorderOfNotificationWindow() {
+ function setRightBorderOfNotificationWindow() {
     var distanseFromRightSide = 20;
     var notification = $('.notification:visible');
     if ($(window).width() > 991) {
