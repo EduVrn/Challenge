@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
@@ -82,6 +83,7 @@ public class UserUtil {
     public void setModelForShowNotFriends(HttpServletRequest request, User currentUser, Model model) {
         List<User> allUsers = serviceEntity.getAll(User.class);
         List<User> friends = currentUser.getFriends();
+        allUsers.remove(currentUser);
         List<User> filteredUsers = new ArrayList<>();
         for (User user : allUsers) {
             if (!friends.contains(user)) {
@@ -153,6 +155,7 @@ public class UserUtil {
 
     public void setModelForUsers(HttpServletRequest request, User currentUser, Model model) {
         List<User> users = serviceEntity.getAll(User.class);
+        users.remove(currentUser);
         Collections.sort(users, User.COMPARE_BY_RATING);
         model.addAttribute("curUser", currentUser);
         model.addAttribute("users", users);
@@ -161,15 +164,16 @@ public class UserUtil {
 
     public void setModelForFriendRequest(HttpServletRequest request, User user, Model model, int friendId) {
         User friend = (User) serviceEntity.findById(friendId, User.class);
+        if (!Objects.equals(user.getId(), friend.getId())) {
+            Request friendRequest = new Request();
+            friendRequest.setDate(new Date());
+            serviceEntity.save(friendRequest);
+            friendRequest.setSender(user);
+            friendRequest.setReceiver(friend);
+            serviceEntity.update(friendRequest);
 
-        Request friendRequest = new Request();
-        friendRequest.setDate(new Date());
-        serviceEntity.save(friendRequest);
-        friendRequest.setSender(user);
-        friendRequest.setReceiver(friend);
-        serviceEntity.update(friendRequest);
-
-        interactiveUtil.interactiveFriendRequest(friend.getId(), friendRequest);
+            interactiveUtil.interactiveFriendRequest(friend.getId(), friendRequest);
+        }
     }
 
     public void setModelForEditProfile(int userId, HttpServletRequest request, Principal currentUser, Model model) {

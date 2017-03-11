@@ -25,7 +25,6 @@
                         </ul>
                     </div>
                     <div  th:replace="fragments/notificationWindow :: window" th:remove="tag"/>
-
                     <div class="collapse navbar-collapse "> 
                         <ul class="nav navbar-nav navbar-left">
                             <li>
@@ -80,6 +79,12 @@
                                 <form style="margin-top: 7px; margin-left: 5px;" th:unless="${currentUserConnection == null}" class="navbar-right" name="profileForm" th:id="'profile'"  method="GET" action="../profile">
                                     <input type="hidden" name="id" th:value="${currentUserProfile.getUserEntityId()}"/>
                                     <button class="btn btn-default" onclick="document.getElementById('profile').submit();"  ><span class="glyphicon glyphicon-user"></span><a /></button>
+                                </form>
+                            </li>
+                            <li class="menu-half">
+                                <form style="margin-top: 7px; margin-left: 5px;" th:unless="${currentUserConnection == null}" class="navbar-right" th:id="'new_challenge'"  method="GET" action="challenge/new">
+                                     <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> 
+                                    <button class="btn btn-default" onclick="document.getParent().submit();"  ><span class="glyphicon glyphicon-plus"></span><a /></button>
                                 </form>
                             </li>
                             <li class="menu-half">

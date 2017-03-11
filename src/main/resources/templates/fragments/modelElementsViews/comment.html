@@ -29,14 +29,14 @@
                 <div  style="margin-top: 15px;">
                     <form method="GET" th:action="@{/comment/voteFor}" style='display: inline-block;'>
                         <input type="hidden" th:value="${comment.getId()}" name="id"/>
-                        <span th:classappend="${#lists.contains(comment.getVotesFor(), userProfile)} ? vote_hide: _empty" style="text-align: center; font-size: 14" class="glyphicon glyphicon-thumbs-up send-vote " />
+                        <span style="cursor: pointer" th:classappend="${#lists.contains(comment.getVotesFor(), userProfile)} ? vote_hide: _empty" style="text-align: center; font-size: 14" class="glyphicon glyphicon-thumbs-up send-vote " />
                         <span th:id="${comment.getId()}" style="display: inline-block; font-size: 14px;" class="badge vote-value vote-thumbs-up" th:text="${comment.getVotesFor().size()}"/>
                     </form>
                     <form method="GET" th:action="@{/comment/voteAgainst}" style='display: inline-block; margin-left: 30px;'>
                         <input type="hidden" th:value="${comment.getId()}" name="id"/>                          
                         <span th:id="${comment.getId()}" style="display: inline-block; font-size: 14px;" class="badge vote-value vote-thumbs-down" th:text="${comment.getVotesAgainst().size()}"/> 
                         <!-- span th:unless="${#lists.contains(comment.getVotesAgainst(), userProfile)}" style="text-align: center; font-size: 14" class="glyphicon glyphicon-thumbs-down send-vote"/-->
-                        <span th:classappend="${#lists.contains(comment.getVotesAgainst(), userProfile)} ? vote_hide : _empty" style="text-align: center; font-size: 14" class="glyphicon glyphicon-thumbs-down send-vote"/>
+                        <span style="cursor: pointer" th:classappend="${#lists.contains(comment.getVotesAgainst(), userProfile)} ? vote_hide : _empty" style="text-align: center; font-size: 14" class="glyphicon glyphicon-thumbs-down send-vote"/>
                     </form>
                 </div>
             </div>

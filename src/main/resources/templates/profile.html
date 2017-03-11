@@ -15,13 +15,6 @@
         <div class="container">
             <div style="margin-top: 40px;" >
                 <h1 class="" th:text="${userProfile.getName()}+' ('+${userProfile.getRating()}+')'" style='display: inline-block;'/>   
-                <form style="margin-top: 30px;" class=" navbar-right" auth:can="CREATE_CHALLENGE" 
-                      name="newCallenge" th:id="newChallenge"
-                      method="GET" action="challenge/new">
-                    <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> 
-                    <input class="btn btn-default text-center" type="submit" name="submit3"
-                           th:value="#{createNewChallengeFromProfileButton}" />
-                </form>
             </div>
             <hr style="margin-bottom: 20px;" class="hr_divider"/>
             <div class="row" >
@@ -115,11 +108,10 @@
                                 <!-- Заголовок 1 панели -->
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
-                                        <a data-toggle="collapse" data-parent="#accordion" th:text="#{listOfAcceptedChalsTitle}" href="#collapseOne"></a>
+                                        <a class="firstCollapsable" data-toggle="collapse" data-parent="#accordion" th:text="#{listOfAcceptedChalsTitle}" href="#collapseOne"></a>
                                     </h4>
                                 </div>
                                 <div id="collapseOne" class="panel-collapse collapse">
-
                                     <!-- Содержимое 1 панели -->
                                     <div class="panel-body">
                                         <h2 class="text-center" th:text="#{listOfAcceptedChalsTitle}"></h2>

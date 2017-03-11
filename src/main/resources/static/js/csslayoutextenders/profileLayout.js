@@ -14,7 +14,7 @@ $(document).ready(function () {
             $('.fixed_profile_info').css('position', 'initial');
         }
         var t = setTimeout(function () {
-            $("#collapseOne").collapse('show');
+           $(".firstCollapsable").click();
         }, 700);
     });
     $(window).on("resize", function () {

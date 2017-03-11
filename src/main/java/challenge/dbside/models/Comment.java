@@ -108,5 +108,4 @@ public class Comment extends BaseEntity implements Commentable { //TODO: add imp
 
     public static final Comparator<Comment> COMPARE_BY_DATE = (Comment leftToCompare, Comment rightToCompare)
             -> rightToCompare.getDate().compareTo(leftToCompare.getDate());
-
 }
