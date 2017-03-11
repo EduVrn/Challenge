@@ -44,7 +44,10 @@ public class User extends BaseEntity implements Commentable {
         List<DBSource> list = (List<DBSource>) getDataSource().getBackRel().get(IdAttrGet.refRequestReceiver());
         if (list != null) {
             list.forEach((userDB) -> {
-                friendsRequests.add(new Request(userDB).getSender());
+                Request request = new Request(userDB);
+                if (request.getSubject() == null) {
+                    friendsRequests.add(new Request(userDB).getSender());
+                }
             });
         }
         return friendsRequests;

@@ -53,11 +53,6 @@ public class UserActionsProvider {
                 case ACCEPTED:
                     actions.add(Action.CLOSE_CHALLENGE);
                     break;
-//                case COMPLETED:
-//                case FAILED:
-//                case PUT_TO_VOTE:
-//                    actions.add(Action.WATCH_VOTES);
-//                    break;
                 default:
                     break;
             }

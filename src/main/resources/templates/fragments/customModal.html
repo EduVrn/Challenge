@@ -13,10 +13,13 @@ and open the template in the editor.
     </head>
     <body>
         <div th:fragment="modalBody" id="myCustomModal" class="modal" >
+            <input type="hidden" th:value="#{newChallengeRequest}" id="challenge-request" />
+            <input type="hidden" th:value="#{newFriendRequest}" id="friend-request" />
+            
             <div id ="myCustomContent" class="custom-modal-content">
                 <div class="custom-modal-header">
                     <span class="custom-close">&times;</span>
-                    <h2 id="modalHeaderText">Warning!</h2>
+                    <h3 id="modalHeaderText">Warning!</h3>
                 </div>
                 <div class="custom-modal-body">
                     <p id="modalBodyText">Warning!</p>

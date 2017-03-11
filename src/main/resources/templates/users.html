@@ -37,10 +37,6 @@
                                 <a th:text="#{showNotFriendsLink}" onclick="this.parentNode.submit();"/>
                             </form>
                             <input type="hidden" th:value="${curUser.getId()}" id="user-id" />
-                            <input type="hidden" th:value="#{addFriendButton}" id="add-friend-text" />
-                            <input type="hidden" th:value="#{friendLabel}" id="friend-label" />
-                            <input type="hidden" th:value="#{friendRequestLabel}" id="friend-request-label" />
-                            <input type="hidden" th:value="#{sentYouRequestLabel}" id="sent-you-request-label" />
                             <div class="list-content">
                                 <ul id="list-users" class="list-group">
                                     <li th:each="user : ${users}" class="list-group-item text-left">
@@ -49,7 +45,7 @@
                                             <input type="hidden" name="id" th:value="${user.getId()}" />
                                             <h3><a th:text="${user.getName()}" class="name" onclick="this.parentNode.parentNode.submit();" /></h3>
                                         </form>
-                                        <div class="right-button">
+                                        <div class="right-button" th:if="${!curUser.equals(user)}">
                                             <form th:if="${!curUser.getFriends().contains(user) and !curUser.getIncomingFriendRequestSenders().contains(user) and !user.getIncomingFriendRequestSenders().contains(curUser)}" method="GET" action="/sendFriendRequest">
                                                 <input type="hidden" name="id" th:value="${user.getId()}" />
                                                 <input type="submit" class="btn btn-default" th:value="#{addFriendButton}" />
@@ -72,7 +68,8 @@
                 </div>
             </div>
         </div>
-
+        <div th:replace="fragments/customModal::modalBody" />
+        
         <script th:replace="fragments/commonDependencies :: commonJS" th:remove="tag"/>
         <script src="../js/csslayoutextenders/mainPageLayout.js"></script>
         <script src="../js/responsiveLayout/plugins.js"></script>

@@ -5,36 +5,34 @@ import javax.persistence.*;
 @Entity
 @Table(name = "property")
 public class PropertyDB {
-	
-	@Id
-	private String name;
-	
-	
-	private String value;
 
-	
-	public PropertyDB() {
-		
-	}
+    @Id
+    private String name;
 
-	public PropertyDB(String name, String value) {
-		this.name = name;
-		this.value = value;
-	}
-	
-	public String getName() {
-		return name;
-	}
+    private String value;
 
-	public void setName(String nameProperty) {
-		this.name = nameProperty;
-	}
+    public PropertyDB() {
 
-	public String getValue() {
-		return value;
-	}
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public PropertyDB(String name, String value) {
+        this.name = name;
+        this.value = value;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String nameProperty) {
+        this.name = nameProperty;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 }

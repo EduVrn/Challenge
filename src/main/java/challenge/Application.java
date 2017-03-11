@@ -24,8 +24,8 @@ public class Application extends SpringBootServletInitializer {
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
     @Autowired
-    public void setSomeThing(InitialLoader someThing) {
-        Application.initiator = someThing;
+    public void setInitialLoader(InitialLoader initiator) {
+        Application.initiator = initiator;
     }
 
     @Override

@@ -4,7 +4,6 @@ import challenge.dbside.models.Image;
 import challenge.dbside.models.Request;
 import challenge.dbside.models.User;
 import challenge.dbside.services.ini.MediaService;
-import challenge.dbside.services.ini.impl.MediaServiceEntity;
 import challenge.webside.authorization.UserActionsProvider;
 import challenge.webside.authorization.thymeleaf.AuthorizationDialect;
 import challenge.webside.dao.UsersDao;
@@ -162,7 +161,7 @@ public class UserUtil {
 
     public void setModelForFriendRequest(HttpServletRequest request, User user, Model model, int friendId) {
         User friend = (User) serviceEntity.findById(friendId, User.class);
-        
+
         Request friendRequest = new Request();
         friendRequest.setDate(new Date());
         serviceEntity.save(friendRequest);
@@ -180,21 +179,21 @@ public class UserUtil {
     }
 
     public User removeFriendRequest(int requestId, User currentUser) {
-        Request request = (Request)serviceEntity.findById(requestId, Request.class);
+        Request request = (Request) serviceEntity.findById(requestId, Request.class);
         currentUser.removeFriendRequest(request);
         User sender = request.getSender();
         request.removeSender(sender);
-        serviceEntity.update(request);
         serviceEntity.update(currentUser);
         serviceEntity.update(sender);
-        serviceEntity.delete(request);
         usersDao.deleteRelation(requestId, sender.getId(), 21);
         usersDao.deleteRelation(requestId, currentUser.getId(), 22);
+        serviceEntity.delete(request);
         return sender;
     }
 
     public void addFriend(int requestId, User user) {
         User sender = removeFriendRequest(requestId, user);
+        sender.addFriend(user);
         usersDao.addRelation(sender.getId(), user.getId(), 10);
         user.addFriend(sender);
         serviceEntity.update(user);

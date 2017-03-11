@@ -1,11 +1,10 @@
- function setRightBorderOfNotificationWindow() {
+function setRightBorderOfNotificationWindow() {
     var distanseFromRightSide = 20;
     var notification = $('.notification:visible');
     if ($(window).width() > 991) {
         distanseFromRightSide = $(window).width() - (notification.offset().left + notification.width()) - $('#chal-notification').width();
         $('.chal-notification-wrap ').css('width', 400);
-    } else
-    {
+    } else {
         if ($(window).width() > 768) {
             $('.chal-notification-wrap ').css('width', 400);
             distanseFromRightSide = $(window).width() - notification.offset().left
@@ -46,12 +45,14 @@ $(document).on('click', '.notification', function () {
         $('#chal-notification').show();
         setRightBorderOfNotificationWindow();
         setHeightOfNotificationWindow();
-        $overlay = $('<div />', {
-            "class": "overlay"
-        });
-        $('body').append($overlay);
-        if ($(window).width() < 768) {
-            $('body').css('overflow-y', 'hidden');
+        if (!$('.badge.badge-notify.notify_hide').length) {
+            $overlay = $('<div />', {
+                "class": "overlay"
+            });
+            $('body').append($overlay);
+            if ($(window).width() < 768) {
+                $('body').css('overflow-y', 'hidden');
+            }
         }
     } else {
         $('.overlay').remove();

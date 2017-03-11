@@ -16,30 +16,30 @@ import challenge.webside.interactive.InteractiveRepository;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
-	@Override
-	public void configureMessageBroker(MessageBrokerRegistry config) {
-		config.enableSimpleBroker("/topic", "/queue", "/exchange")
-		.setTaskScheduler(new DefaultManagedTaskScheduler())
-		.setHeartbeatValue(new long[]{0, 20 * 1000});
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        config.enableSimpleBroker("/topic", "/queue", "/exchange")
+                .setTaskScheduler(new DefaultManagedTaskScheduler())
+                .setHeartbeatValue(new long[]{0, 20 * 1000});
 
-		config.setApplicationDestinationPrefixes("/app");
-	}
+        config.setApplicationDestinationPrefixes("/app");
+    }
 
-	@Override
-	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/ws").withSockJS();
-	}
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/ws").withSockJS();
+    }
 
-	
-	@Bean
-	public InteractiveEventListener interactiveEventListener(SimpMessagingTemplate messagingTemplate) {
-		InteractiveEventListener listener = new InteractiveEventListener(messagingTemplate, interactiveRepository());
-		
-		return listener;
-	}
-	
-	@Bean InteractiveRepository interactiveRepository() {
-		return new InteractiveRepository();
-	}
+    @Bean
+    public InteractiveEventListener interactiveEventListener(SimpMessagingTemplate messagingTemplate) {
+        InteractiveEventListener listener = new InteractiveEventListener(messagingTemplate, interactiveRepository());
+
+        return listener;
+    }
+
+    @Bean
+    InteractiveRepository interactiveRepository() {
+        return new InteractiveRepository();
+    }
 
 }

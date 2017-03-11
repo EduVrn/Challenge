@@ -17,7 +17,7 @@
                 <form name="submitForm" th:id="'comment_form'+${comment.getId()}"  method="GET" action="/profile">
                     <input type="hidden" name="id" th:value="${comment.getAuthor().getId()}"/>
                     <h4 class="media-heading user_name" th:with="isHaveParentComment = ${comment?.getParentComment()?.getAuthor()?.getName()!=null}">
-                        <a  th:onclick="'document.getElementById(\'comment_form'+${comment.getId()}+'\').submit();'"
+                        <a onclick="this.parentNode.parentNode.submit();"
                             th:text="${comment.getAuthor().getName()}"></a>
                         <small class="showOnMobile" th:classappend="${depth>3} ? embedenceShowToWhom : noEmbedence"  th:text="${isHaveParentComment} ? 'To '+ ${comment?.getParentComment()?.getAuthor()?.getName()} : ''"></small>
                     </h4>
@@ -29,7 +29,6 @@
                 <div  style="margin-top: 15px;">
                     <form method="GET" th:action="@{/comment/voteFor}" style='display: inline-block;'>
                         <input type="hidden" th:value="${comment.getId()}" name="id"/>
-                        <!-- span th:unless="${#lists.contains(comment.getVotesFor(), userProfile)}" style="text-align: center; font-size: 14" class="glyphicon glyphicon-thumbs-up send-vote " /-->
                         <span th:classappend="${#lists.contains(comment.getVotesFor(), userProfile)} ? vote_hide: _empty" style="text-align: center; font-size: 14" class="glyphicon glyphicon-thumbs-up send-vote " />
                         <span th:id="${comment.getId()}" style="display: inline-block; font-size: 14px;" class="badge vote-value vote-thumbs-up" th:text="${comment.getVotesFor().size()}"/>
                     </form>

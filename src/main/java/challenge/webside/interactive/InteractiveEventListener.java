@@ -1,7 +1,5 @@
 package challenge.webside.interactive;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +10,6 @@ import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import challenge.webside.dao.UsersDao;
-import challenge.webside.model.UserProfile;
 
 public class InteractiveEventListener {
 

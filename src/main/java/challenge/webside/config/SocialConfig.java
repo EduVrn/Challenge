@@ -5,7 +5,6 @@ import challenge.webside.config.interceptors.FacebookAfterConnectInterceptor;
 import challenge.webside.config.interceptors.TwitterAfterConnectInterceptor;
 import challenge.webside.config.interceptors.VkontakteAfterConnectInterceptor;
 import org.springframework.social.github.connect.GitHubConnectionFactory;
-import org.springframework.social.twitter.connect.TwitterConnectionFactory;
 import challenge.webside.dao.UsersDao;
 import challenge.webside.services.AccountConnectionSignUpService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,6 @@ import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.web.ConnectController;
-import org.springframework.social.facebook.connect.FacebookConnectionFactory;
 import org.springframework.social.vkontakte.connect.VKontakteConnectionFactory;
 
 @Configuration

@@ -28,34 +28,31 @@ public class TypeOfEntity {
     public TypeOfEntity() {
         listAttributes = new ArrayList<TypeOfAttribute>();
     }
-    
+
     public TypeOfEntity(String nameTypeEntity, int type_of_id) {
         this.nameTypeEntity = nameTypeEntity;
         listAttributes = new ArrayList<TypeOfAttribute>();
         this.typeEntityID = type_of_id;
     }
-    
+
     public void add(TypeOfAttribute type) {
         listAttributes.add(type);
     }
-    
-    
+
     public void removeAttr(String nameAttr) {
-    	for(Iterator<TypeOfAttribute> itr = listAttributes.listIterator();
-    			itr.hasNext();) {
-    		TypeOfAttribute t = itr.next();
-    		if(t.getName().equals(nameAttr)) {
-    			itr.remove();
-    			break;
-    		}    		
-    	}
+        for (Iterator<TypeOfAttribute> itr = listAttributes.listIterator();
+                itr.hasNext();) {
+            TypeOfAttribute t = itr.next();
+            if (t.getName().equals(nameAttr)) {
+                itr.remove();
+                break;
+            }
+        }
     }
 
     public List<TypeOfAttribute> getAttributes() {
         return listAttributes;
     }
-
-
 
     public int getTypeEntityID() {
         return typeEntityID;

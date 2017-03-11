@@ -66,8 +66,7 @@ public class CommentController {
     @RequestMapping(value = "/newreply", method = POST, produces = "text/plain;charset=UTF-8")
     public String newReply(@RequestParam("id") int id, HttpServletRequest request,
             Principal currentUser, Model model,
-            @ModelAttribute Comment comment
-    ) {
+            @ModelAttribute Comment comment) {
         util.setModel(request, currentUser, model);
         UserProfile userProfile = util.getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName());
         commentUtil.addNewReply(id, request, userProfile, model, comment);

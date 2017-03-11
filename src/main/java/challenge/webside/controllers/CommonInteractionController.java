@@ -3,7 +3,6 @@ package challenge.webside.controllers;
 import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.Comment;
-import challenge.dbside.models.Request;
 import challenge.dbside.models.Tag;
 import challenge.dbside.models.User;
 import challenge.dbside.services.ini.MediaService;

@@ -27,7 +27,7 @@ import challenge.dbside.models.dbentity.DBSource;
 @SuppressWarnings("serial")
 public class PersistentMultiMap extends PersistentMap implements MultiMap {
 
-	public PersistentMultiMap(SessionImplementor session, MultiMap map) {
+    public PersistentMultiMap(SessionImplementor session, MultiMap map) {
         super(session, map);
     }
 
@@ -86,7 +86,7 @@ public class PersistentMultiMap extends PersistentMap implements MultiMap {
             if (key == null) {
                 throw new NoSuchElementException();
             } else {
-            	
+
                 DefaultMapEntry result = new DefaultMapEntry(key, current.next());
                 if (!current.hasNext()) {
                     move();
@@ -116,7 +116,7 @@ public class PersistentMultiMap extends PersistentMap implements MultiMap {
     @Override
     public Serializable getSnapshot(CollectionPersister persister) throws HibernateException {
 
-    	MultiValueMap clonedMap = new MultiValueMap();
+        MultiValueMap clonedMap = new MultiValueMap();
         Iterator iter = map.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry e = (Map.Entry) iter.next();
@@ -168,15 +168,15 @@ public class PersistentMultiMap extends PersistentMap implements MultiMap {
             Map.Entry entry = (Entry) i.next();
             Collection oldState = (Collection) entry.getValue();
             Collection newState = (Collection) map.get(entry.getKey());
-            if(newState == null) {
-            	newState = new ArrayList();
+            if (newState == null) {
+                newState = new ArrayList();
             }
             String n = newState.getClass().getName();
             for (Iterator j = oldState.iterator(); j.hasNext();) {
                 Object element = j.next();
                 if (!(newState.contains(element))) {
-                	Integer id = ((DBSource)element).getId(); 
-                	
+                    Integer id = ((DBSource) element).getId();
+
                     result.add(id);
                 }
             }
@@ -209,15 +209,15 @@ public class PersistentMultiMap extends PersistentMap implements MultiMap {
         return false;
     }
 
-	@Override
-	public MapIterator mapIterator() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public MapIterator mapIterator() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public boolean removeMapping(Object key, Object item) {
-    	Object old = isPutQueueEnabled() ? readElementByIndex(key) : UNKNOWN;
+    @Override
+    public boolean removeMapping(Object key, Object item) {
+        Object old = isPutQueueEnabled() ? readElementByIndex(key) : UNKNOWN;
         if (old == UNKNOWN) {
             write();
             boolean flag = ((MultiMap) map).removeMapping(key, item);
@@ -226,5 +226,5 @@ public class PersistentMultiMap extends PersistentMap implements MultiMap {
             queueOperation(new RemoveItem(key, item));
             return true;
         }
-	}
+    }
 }

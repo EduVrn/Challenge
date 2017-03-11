@@ -25,17 +25,17 @@ public class VoteUtil {
     @Autowired
     private ChallengeInstanceUtil challengeInsUtil;
 
-	private static final Logger logger = LoggerFactory.getLogger(VoteUtil.class);
-    
+    private static final Logger logger = LoggerFactory.getLogger(VoteUtil.class);
+
     public void setModelForCommentVote(HttpServletRequest request, User user, Model model, int commentId, boolean voteFor) {
         Comment comment = (Comment) serviceEntity.findById(commentId, Comment.class);
 
         if (voteFor) {
             if (comment.getVotesAgainst().contains(user)) {
-            	boolean isSuccess = comment.rmVoteAgainst(user);
-            	if(isSuccess) {
-            		logger.info("remove comment VoteAgainst for comment " + comment.getId());
-            	}
+                boolean isSuccess = comment.rmVoteAgainst(user);
+                if (isSuccess) {
+                    logger.info("remove comment VoteAgainst for comment " + comment.getId());
+                }
             }
             comment.addVoteFor(user);
             serviceEntity.update(comment);
@@ -44,15 +44,15 @@ public class VoteUtil {
             serviceEntity.update(author);
         } else {
             if (comment.getVotesFor().contains(user)) {
-            	boolean isSuccess = comment.rmVoteFor(user);
-            	if(isSuccess) {
-            		logger.info("remove comment VoteFor for comment " + comment.getId() 
-            			+ " user: " + user.getId());
-            	}
+                boolean isSuccess = comment.rmVoteFor(user);
+                if (isSuccess) {
+                    logger.info("remove comment VoteFor for comment " + comment.getId()
+                            + " user: " + user.getId());
+                }
             }
             serviceEntity.update(comment);
             Comment comment1 = (Comment) serviceEntity.findById(commentId, Comment.class);
-            
+
             comment.addVoteAgainst(user);
             serviceEntity.update(comment);
             User author = comment.getAuthor();
@@ -63,19 +63,6 @@ public class VoteUtil {
 
     public void setModelForVote(HttpServletRequest request, User user, Model model, int chalId, boolean voteFor) {
         ChallengeInstance challenge = (ChallengeInstance) serviceEntity.findById(chalId, ChallengeInstance.class);
-        if (challenge.getVotesFor().contains(user)) {
-        	boolean isSuccess = challenge.rmVoteFor(user);
-        	if(isSuccess) {
-        		
-        	}
-        	
-            return;
-        }
-        else if(challenge.getVotesAgainst().contains(user)) {
-        	
-        	
-        	
-        }
         
         challengeInsUtil.checkAndUpdateIfOutdated(challenge);
         if (challenge.getStatus() != ChallengeStatus.PUT_TO_VOTE) {

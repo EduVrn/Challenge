@@ -2,12 +2,10 @@ package challenge.webside.controllers.util;
 
 import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.ChallengeInstance;
-import challenge.dbside.models.ChallengeStep;
 import challenge.dbside.models.Comment;
 import challenge.dbside.models.User;
 import challenge.dbside.services.ini.MediaService;
 import challenge.webside.model.UserProfile;
-import java.security.Principal;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;

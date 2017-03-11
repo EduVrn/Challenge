@@ -51,7 +51,7 @@ var Interactive = {
                 });
             }
         }, function (error) {
-            alert("CONNECTION ERROR: " + error);
+            console.log('ERROR: ' + error);
         });
     },
     notificationHandler: function (resp) {
@@ -63,6 +63,11 @@ var Interactive = {
         template.removeAttr("id");
         var storage = $('.mCSB_container');
         template.prependTo(storage);
+        if (obj.typeNotification == "ChallengeInstance") {
+            showModal(obj.body, $("#challenge-request").val(), "green");
+        } else {
+            showModal(obj.body + " " + $('#friend-notification-msg').val(), $("#friend-request").val(), "green");
+        }
         this.changeContentNotification(template, obj);
         console.log("/user/exchange/notification");
         $('.badge-notify').each(function () {
@@ -85,15 +90,14 @@ var Interactive = {
                 up.text(+up.text() + 1);
                 up.parent().find('.glyphicon-thumbs-up').addClass('vote_hide');
                 break;
-            case - 2:
+            case -2:
                 up.text(+up.text() - 1);
                 up.parent().find('.glyphicon-thumbs-up').removeClass('vote_hide');
-            case - 1:
+            case -1:
                 down.text(+down.text() + 1);
                 down.parent().find('.glyphicon-thumbs-down').addClass('vote_hide');
                 break;
             default:
-                alert('error');
                 break;
         }
     },
@@ -120,6 +124,9 @@ var Interactive = {
             }
 
             template.prependTo(storage);
+            if ($('#current-user-id').val() != obj.userId) {
+                showModal(obj.userName + ": \"" + obj.messageContent + "\"", $('#new-comment-header').val(), "blue");
+            }
             this.changeContentComment(template, obj);
             var commentCounter = $("#commentCounter");
             commentCounter.text(+commentCounter.text() + 1);
@@ -237,7 +244,6 @@ var Interactive = {
     disconnect: function () {
         if (Interactive.stompClient != null) {
             Interactive.stompClient.disconnect(function () {
-                alert("disconnect success");
             });
         }
         console.log("Disconnected");

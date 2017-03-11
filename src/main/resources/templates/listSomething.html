@@ -39,6 +39,8 @@
                 </div>
             </div>
         </div>
+        <div th:replace="fragments/customModal::modalBody" />
+            
         <script th:replace="fragments/commonDependencies :: commonJS" th:remove="tag"/>
         <script src="js/csslayoutextenders/listLayout.js"></script>
         <script src="js/responsiveLayout/plugins.js"></script>

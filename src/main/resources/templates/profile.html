@@ -237,8 +237,9 @@
         <div th:replace="fragments/modals/friendsmodal::friendsmodal" />
         <!--modal for challenges-->
         <div th:replace="fragments/modals/challengesmodal::challengesmodal" />
-        <script th:replace="fragments/commonDependencies :: commonJS" th:remove="tag"/>
+        <div th:replace="fragments/customModal::modalBody" />
 
+        <script th:replace="fragments/commonDependencies :: commonJS" th:remove="tag"/>
         <script src="js/csslayoutextenders/profileLayout.js"></script>
         <script src="js/csslayoutextenders/langSwitcherLayout.js"></script>
         <script src="js/responsiveLayout/plugins.js"></script>
