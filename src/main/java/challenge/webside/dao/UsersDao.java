@@ -44,7 +44,7 @@ public class UsersDao {
     }
 
     public UserProfile getUserProfile(final String userId) {
-        return jdbcTemplate.queryForObject("select * from UserProfile where userId = ?",
+        return userId == null ? null : jdbcTemplate.queryForObject("select * from UserProfile where userId = ?",
                 new RowMapper<UserProfile>() {
             public UserProfile mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return new UserProfile(

@@ -116,9 +116,14 @@ public class SocialControllerUtil {
     }
 
     public User getSignedUpUser(HttpServletRequest request, Principal currentUser) {
-        User user = (User) serviceEntity.findById(getUserProfile(request.getSession(),
-                currentUser == null ? null : currentUser.getName()).getUserEntityId(), User.class);
-        return user;
+        UserProfile userProfile = getUserProfile(request.getSession(),
+                currentUser == null ? null : currentUser.getName());
+        if (userProfile != null) {
+            User user = (User) serviceEntity.findById(userProfile.getUserEntityId(), User.class);
+            return user;
+        } else {
+            return null;
+        }
     }
 
     public List<User> getCurrentProviderPossibleFriends(HttpServletRequest request, String userId) {

@@ -62,17 +62,27 @@ public class CommentUtil {
     private void sortCommentsByDate(List<Comment> comments) {
         Collections.sort(comments, Comment.COMPARE_BY_DATE);
         for (Comment comm : comments) {
-            if ( !comm.getComments().isEmpty())
+            if (!comm.getComments().isEmpty()) {
                 sortCommentsByDate(comm.getComments());
+            }
         }
 
     }
 
     public void setModelForComments(List<Comment> comments, HttpServletRequest request, User currentUser, Model model) {
-        Comment comment = new Comment();
-        comment.setDate(new Date());
-        comment.setAuthor(currentUser);
-        model.addAttribute("comment", comment);
+        if (currentUser != null) {
+            Comment comment = new Comment();
+            comment.setDate(new Date());
+            comment.setAuthor(currentUser);
+            model.addAttribute("comment", comment);
+            Comment hiddenComment = new Comment();
+            hiddenComment.setId(-1);
+            hiddenComment.setMessage("hidden Comment");
+            hiddenComment.setDate(new Date());
+            hiddenComment.setAuthor(comment.getAuthor());
+
+            model.addAttribute("hiddenComment", hiddenComment);
+        }
         int commentsCount = 0;
 
         for (Comment comm : comments) {
@@ -80,13 +90,7 @@ public class CommentUtil {
             commentsCount += comm.getSubCommentsCount();
         }
         sortCommentsByDate(comments);
-        Comment hiddenComment = new Comment();
-        hiddenComment.setId(-1);
-        hiddenComment.setMessage("hidden Comment");
-        hiddenComment.setDate(new Date());
-        hiddenComment.setAuthor(comment.getAuthor());
 
-        model.addAttribute("hiddenComment", hiddenComment);
         model.addAttribute("commentsCount", commentsCount);
         model.addAttribute("comments", comments);
     }

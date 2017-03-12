@@ -147,7 +147,7 @@
                     </div>
                     <link th:replace="fragments/modelElementsViews/step :: stepAddAndShow " th:remove="tag"/>
                 </div>
-                <div class="chalShowChallenge">
+                <div class="chalShowChallenge" th:unless="${currentUserConnection == null}">
                     <div class="row">
                         <div class="main-column">
                             <div>
@@ -173,12 +173,13 @@
                 <div class="chalShowChallenge">
                     <div class="row">
                         <div class="main-column">
-                            <input type="hidden" id="current-user-id" th:value="${userProfile.getId()}" />
+                            <input th:if="${userProfile!=null}"  type="hidden" id="current-user-id" th:value="${userProfile.getId()}" />
                             <div>
                                 <h3 style="display: inline-flex;" th:text="#{commentsCount}+': '"></h3><h3 style="display: inline;" id="commentCounter" th:text="${commentsCount}"></h3>
                             </div>
                             <div class="comments-list">
-                                <ul class="comments_left_shift media" id="templateMainComment" style="display: none;">
+                                <ul th:if="${userProfile!=null}" class="comments_left_shift media" id="templateMainComment" style="display: none;">
+
                                     <li style="display: none;" id="templateComment">
                                         <li  th:replace="fragments/modelElementsViews/comment :: subcomment(comment =${hiddenComment}, depth=0)" />
                                     </li>
@@ -195,7 +196,7 @@
             </div> 
         </div>
         <div th:replace="fragments/customModal::modalBody" />
-            
+
         <script th:replace="fragments/commonDependencies :: commonJS" th:remove="tag"/>
         <script src="../js/csslayoutextenders/chalShowLayout.js"></script>
         <script type="text/javascript" src="../js/moment-with-locales.min.js"></script>

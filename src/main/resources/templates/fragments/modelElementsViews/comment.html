@@ -23,7 +23,7 @@
                     </h4>
                 </form>
                 <p th:text="${comment.getMessage()}" style="color: black;"></p>
-                <small>
+                <small th:if="${userProfile!=null}">
                     <a name="reply-link" th:text="#{commentReply}"></a>
                 </small>
                 <div  style="margin-top: 15px;">
@@ -41,7 +41,7 @@
                 </div>
             </div>
             <!--reply form-->
-            <div class="last-div" th:id="'reply'+${comment.getId()}" style="display: none;">  
+            <div th:if="${userProfile!=null}" class="last-div" th:id="'reply'+${comment.getId()}" style="display: none;">  
                 <form th:action="@{/newreply}" class="send-comment" th:object="${comment}" method="post" style="margin-bottom: 40px;">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                     <input type="hidden" name="id" th:value="${comment.getId()}"/>

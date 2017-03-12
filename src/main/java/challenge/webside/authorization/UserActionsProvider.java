@@ -24,10 +24,10 @@ public class UserActionsProvider {
             actions.add(Action.EDIT_PROFILE);
         } else {
             actions.add(Action.THROW_CHALLENGE_FOR_USER);
-            if (!userWhichMakesRequest.getFriends().contains(userWhoseProfileRequested) &&
-                !userWhoseProfileRequested.getIncomingFriendRequestSenders().contains(userWhichMakesRequest) &&
-                !userWhichMakesRequest.getIncomingFriendRequestSenders().contains(userWhoseProfileRequested)) {
-                    actions.add(Action.ADD_FRIEND);
+            if (!userWhichMakesRequest.getFriends().contains(userWhoseProfileRequested)
+                    && !userWhoseProfileRequested.getIncomingFriendRequestSenders().contains(userWhichMakesRequest)
+                    && !userWhichMakesRequest.getIncomingFriendRequestSenders().contains(userWhoseProfileRequested)) {
+                actions.add(Action.ADD_FRIEND);
             }
         }
         return actions;
@@ -35,10 +35,12 @@ public class UserActionsProvider {
 
     public Set<Action> getActionsForChallengeDefinition(User user, ChallengeDefinition challenge) {
         Set<Action> actions = new HashSet<>();
-        actions.add(Action.ACCEPT_CHALLENGE_DEF);
-        if (user.getId().equals(challenge.getCreator().getId())) {
-            actions.add(Action.EDIT_CHALLENGE);
-            actions.add(Action.DELETE_CHALLENGE);
+        if (user != null) {
+            actions.add(Action.ACCEPT_CHALLENGE_DEF);
+            if (user.getId().equals(challenge.getCreator().getId())) {
+                actions.add(Action.EDIT_CHALLENGE);
+                actions.add(Action.DELETE_CHALLENGE);
+            }
         }
         return actions;
     }
