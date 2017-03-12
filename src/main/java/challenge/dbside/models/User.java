@@ -5,7 +5,7 @@ import java.util.*;
 import challenge.dbside.models.common.IdAttrGet;
 import challenge.dbside.models.dbentity.DBSource;
 import challenge.dbside.models.ini.TypeEntity;
-import challenge.dbside.models.status.ChallengeStatus;
+import challenge.dbside.models.status.ChallengeInstanceStatus;
 
 public class User extends BaseEntity implements Commentable {
 
@@ -105,7 +105,7 @@ public class User extends BaseEntity implements Commentable {
             list.forEach((chalInsDB) -> {
                 ChallengeInstance ch = new ChallengeInstance(chalInsDB);
                 //TODO: optimize it (checked ChallengeStatus without creation new object)
-                if (ch.getStatus() != ChallengeStatus.AWAITING) {
+                if (ch.getStatus() != ChallengeInstanceStatus.AWAITING) {
                     accepted.add(ch);
                 }
             });
@@ -121,7 +121,7 @@ public class User extends BaseEntity implements Commentable {
             list.forEach((chalInsDB) -> {
                 ChallengeInstance ch = new ChallengeInstance(chalInsDB);
                 //TODO: optimize it (checked ChallengeStatus without creation new object)
-                if (ch.getStatus() == ChallengeStatus.AWAITING) {
+                if (ch.getStatus() == ChallengeInstanceStatus.AWAITING) {
                     requests.add(ch);
                 }
             });
@@ -133,7 +133,7 @@ public class User extends BaseEntity implements Commentable {
         List<ChallengeInstance> challengesToVote = new ArrayList<>();
         List<ChallengeInstance> subscriptions = getSubscriptions();
         for (ChallengeInstance challenge : subscriptions) {
-            if (challenge.getStatus() == ChallengeStatus.PUT_TO_VOTE) {
+            if (challenge.getStatus() == ChallengeInstanceStatus.PUT_TO_VOTE) {
                 challengesToVote.add(challenge);
             }
         }
@@ -144,7 +144,7 @@ public class User extends BaseEntity implements Commentable {
         List<ChallengeInstance> requests = getChallengeRequests();
 
         if (requests.contains(chal)) {
-            chal.setStatus(ChallengeStatus.ACCEPTED);
+            chal.setStatus(ChallengeInstanceStatus.ACCEPTED);
             chal.setAcceptor(this);
         }
     }

@@ -3,7 +3,7 @@ package challenge.webside.authorization;
 import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.User;
-import challenge.dbside.models.status.ChallengeStatus;
+import challenge.dbside.models.status.ChallengeInstanceStatus;
 import java.util.HashSet;
 import java.util.Set;
 import org.springframework.security.access.AccessDeniedException;
@@ -46,7 +46,7 @@ public class UserActionsProvider {
     public Set<Action> getActionsForChallengeInstance(User user, ChallengeInstance challenge) {
         Set<Action> actions = new HashSet<>();
         if (user.getId().equals(challenge.getAcceptor().getId())) {
-            if (challenge.getStatus() == ChallengeStatus.ACCEPTED) {
+            if (challenge.getStatus() == ChallengeInstanceStatus.ACCEPTED) {
                 actions.add(Action.ADD_STEPS);
             }
             switch (challenge.getStatus()) {
@@ -58,13 +58,13 @@ public class UserActionsProvider {
             }
         }
         if (user.getSubscriptions().contains(challenge)) {
-            if (challenge.getStatus() == ChallengeStatus.PUT_TO_VOTE) {
+            if (challenge.getStatus() == ChallengeInstanceStatus.PUT_TO_VOTE) {
                 if (challenge.getVotesFor().contains(user) || challenge.getVotesAgainst().contains(user)) {
                     actions.add(Action.WATCH_VOTES);
                 } else {
                     actions.add(Action.VOTE_FOR_CHALLENGE);
                 }
-            } else if (challenge.getStatus() == ChallengeStatus.COMPLETED || challenge.getStatus() == ChallengeStatus.FAILED) {
+            } else if (challenge.getStatus() == ChallengeInstanceStatus.COMPLETED || challenge.getStatus() == ChallengeInstanceStatus.FAILED) {
                 actions.add(Action.WATCH_VOTES);
             }
         } else {

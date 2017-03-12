@@ -1,11 +1,11 @@
 package challenge.webside.controllers.util;
 
-import challenge.Application;
 import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.Comment;
 import challenge.dbside.models.User;
-import challenge.dbside.models.status.ChallengeStatus;
+import challenge.dbside.models.status.ChallengeInstanceStatus;
 import challenge.dbside.services.ini.MediaService;
+import challenge.webside.dao.UsersDao;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -21,6 +21,9 @@ public class VoteUtil {
     @Autowired
     @Qualifier("storageServiceUser")
     private MediaService serviceEntity;
+    
+    @Autowired
+    private UsersDao usersDao;
 
     @Autowired
     private ChallengeInstanceUtil challengeInsUtil;
@@ -32,9 +35,9 @@ public class VoteUtil {
 
         if (voteFor) {
             if (comment.getVotesAgainst().contains(user)) {
-                boolean isSuccess = comment.rmVoteAgainst(user);
-                if (isSuccess) {
+                if (comment.rmVoteAgainst(user)) {
                     logger.info("remove comment VoteAgainst for comment " + comment.getId());
+                    usersDao.deleteRelation(commentId, user.getId(), 19);
                 }
             }
             comment.addVoteFor(user);
@@ -44,15 +47,14 @@ public class VoteUtil {
             serviceEntity.update(author);
         } else {
             if (comment.getVotesFor().contains(user)) {
-                boolean isSuccess = comment.rmVoteFor(user);
-                if (isSuccess) {
+                if (comment.rmVoteFor(user)) {
                     logger.info("remove comment VoteFor for comment " + comment.getId()
                             + " user: " + user.getId());
+                    usersDao.deleteRelation(commentId, user.getId(), 18);
                 }
             }
             serviceEntity.update(comment);
-            Comment comment1 = (Comment) serviceEntity.findById(commentId, Comment.class);
-
+            
             comment.addVoteAgainst(user);
             serviceEntity.update(comment);
             User author = comment.getAuthor();
@@ -65,7 +67,7 @@ public class VoteUtil {
         ChallengeInstance challenge = (ChallengeInstance) serviceEntity.findById(chalId, ChallengeInstance.class);
         
         challengeInsUtil.checkAndUpdateIfOutdated(challenge);
-        if (challenge.getStatus() != ChallengeStatus.PUT_TO_VOTE) {
+        if (challenge.getStatus() != ChallengeInstanceStatus.PUT_TO_VOTE) {
             return;
         }
         if (voteFor) {

@@ -190,19 +190,19 @@
                                                 <div th:replace="fragments/util/loader::chal-loader"/>
                                                 <th:block th:unless="${isChalDef}">
                                                     <h3 th:if="${challenge.getStatus() ==
-                                                        T(challenge.dbside.models.status.ChallengeStatus).PUT_TO_VOTE}"
+                                                        T(challenge.dbside.models.status.ChallengeInstanceStatus).PUT_TO_VOTE}"
                                                         style="display: inline-block; float: right;">
                                                         <span class="label label-info"
                                                               th:text="#{putToVoteLabel}" />
                                                     </h3>
                                                     <h3 th:if="${challenge.getStatus() ==
-                                                        T(challenge.dbside.models.status.ChallengeStatus).COMPLETED}"
+                                                        T(challenge.dbside.models.status.ChallengeInstanceStatus).COMPLETED}"
                                                         style="display: inline-block; float: right;">
                                                         <span class="label label-success"
                                                               th:text="#{competedChallengeLabel}" />
                                                     </h3>
                                                     <h3 th:if="${challenge.getStatus() ==
-                                                        T(challenge.dbside.models.status.ChallengeStatus).FAILED}"
+                                                        T(challenge.dbside.models.status.ChallengeInstanceStatus).FAILED}"
                                                         style="display: inline-block; float: right;">
                                                         <span class="label label-danger"
                                                               th:text="#{failedChallengeLabel}" />

@@ -3,7 +3,7 @@ package challenge.dbside.models;
 import challenge.dbside.models.common.IdAttrGet;
 import challenge.dbside.models.dbentity.DBSource;
 import challenge.dbside.models.ini.TypeEntity;
-import challenge.dbside.models.status.ChallengeStatus;
+import challenge.dbside.models.status.ChallengeInstanceStatus;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -107,11 +107,11 @@ public class ChallengeInstance extends BaseEntity implements Commentable {
     	return getDataSource().getRel().removeMapping(IdAttrGet.refVoteAgainst(), voter.getDataSource());
     }
     
-    public ChallengeStatus getStatus() {
-        return ChallengeStatus.valueOf(getDataSource().getAttributes().get(IdAttrGet.IdChalStat()).getValue());
+    public ChallengeInstanceStatus getStatus() {
+        return ChallengeInstanceStatus.valueOf(getDataSource().getAttributes().get(IdAttrGet.IdChalStat()).getValue());
     }
 
-    public void setStatus(ChallengeStatus status) {
+    public void setStatus(ChallengeInstanceStatus status) {
         getDataSource().getAttributes().get(IdAttrGet.IdChalStat()).setValue(status.name());
     }
 

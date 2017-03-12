@@ -7,7 +7,7 @@ import challenge.dbside.models.Request;
 import challenge.dbside.models.Tag;
 import challenge.dbside.models.User;
 import challenge.dbside.models.status.ChallengeDefinitionStatus;
-import challenge.dbside.models.status.ChallengeStatus;
+import challenge.dbside.models.status.ChallengeInstanceStatus;
 import challenge.dbside.services.ini.MediaService;
 import challenge.webside.authorization.UserActionsProvider;
 import challenge.webside.authorization.thymeleaf.AuthorizationDialect;
@@ -95,7 +95,7 @@ public class ChallengeDefinitionUtil {
             serviceEntity.save(image);
 
             ChallengeInstance chalInstance = new ChallengeInstance(chalToAccept);
-            chalInstance.setStatus(ChallengeStatus.ACCEPTED);
+            chalInstance.setStatus(ChallengeInstanceStatus.ACCEPTED);
             chalInstance.addImage(image);
             chalInstance.setAcceptor(user);
             serviceEntity.save(chalInstance);

@@ -25,7 +25,7 @@ import challenge.dbside.models.User;
 import challenge.dbside.models.ini.TypeOfAttribute;
 import challenge.dbside.models.ini.TypeOfEntity;
 import challenge.dbside.models.status.ChallengeDefinitionStatus;
-import challenge.dbside.models.status.ChallengeStatus;
+import challenge.dbside.models.status.ChallengeInstanceStatus;
 import challenge.dbside.property.PropertyDB;
 import challenge.dbside.services.ini.MediaService;
 import challenge.webside.imagesstorage.ImageStoreService;
@@ -268,7 +268,7 @@ public class InitialLoader {
                 for (int m = 0; m < countOfInstanses; m++) {
                     ChallengeInstance chalInstance = new ChallengeInstance();
                     chalInstance.setName(generateRandomWords(1)[0] + "-instance");
-                    chalInstance.setStatus(ChallengeStatus.AWAITING);
+                    chalInstance.setStatus(ChallengeInstanceStatus.AWAITING);
 
                     chalInstance.setDescription("After (may be)");
                     chalInstance.setDate(new Date());
@@ -355,7 +355,7 @@ public class InitialLoader {
 
         ChallengeInstance chalInstance1 = new ChallengeInstance();
         chalInstance1.setName("I can made it");
-        chalInstance1.setStatus(ChallengeStatus.AWAITING);
+        chalInstance1.setStatus(ChallengeInstanceStatus.AWAITING);
         chalInstance1.setAcceptor(user1);
         chalInstance1.setDescription("After (may be)");
         Image imageForChalInstance1 = new Image();
@@ -374,7 +374,7 @@ public class InitialLoader {
 
         ChallengeInstance chalInstance2 = new ChallengeInstance();
         chalInstance2.setName("Ou ");
-        chalInstance2.setStatus(ChallengeStatus.AWAITING);
+        chalInstance2.setStatus(ChallengeInstanceStatus.AWAITING);
         chalInstance2.setAcceptor(user1);
         chalInstance2.setDescription("After (may be)");
         Image imageForChalInstance2 = new Image();

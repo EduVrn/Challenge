@@ -51,7 +51,7 @@ var Interactive = {
                 });
             }
         }, function (error) {
-            console.log('ERROR: ' + error);
+            showModal(error, "Connection error", "red");
         });
     },
     notificationHandler: function (resp) {

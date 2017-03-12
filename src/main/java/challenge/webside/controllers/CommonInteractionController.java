@@ -34,7 +34,6 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,9 +57,6 @@ public class CommonInteractionController {
     private SimpMessagingTemplate template;
 
     @Autowired
-    private SessionRegistry sessionRegistry;
-
-    @Autowired
     private ChallengeDefinitionUtil challengeDefUtil;
 
     @Autowired
@@ -77,17 +73,14 @@ public class CommonInteractionController {
         UserProfile userProf = usersDao.getUserProfile(principal.getName());
         User user = (User) serviceEntity.findById(userProf.getUserEntityId(), User.class);
 
-        //typeMain
-        //ChallengeDefinition chal = (ChallengeDefinition) serviceEntity.findById(message.getMainObjectId(), ChallengeDefinition.class);
         Comment comment = (Comment) serviceEntity.findById(message.getIdOwner(), Comment.class);
 
-        boolean voteFor = message.getChangeVote() == 1 ? true : false;
-        List<User> lVUp = comment.getVotesFor();
-        List<User> lVDown = comment.getVotesAgainst();
-
+        boolean voteFor = message.getChangeVote() == 1;
+        
         if (voteFor) {
             if (comment.getVotesAgainst().contains(user)) {
                 comment.rmVoteAgainst(user);
+                usersDao.deleteRelation(comment.getId(), user.getId(), 19);
                 //remove in web
                 message.setChangeVote(2);
             } else {
@@ -102,6 +95,7 @@ public class CommonInteractionController {
         } else {
             if (comment.getVotesFor().contains(user)) {
                 comment.rmVoteFor(user);
+                usersDao.deleteRelation(comment.getId(), user.getId(), 18);
                 message.setChangeVote(-2);
             } else {
                 message.setChangeVote(-1);

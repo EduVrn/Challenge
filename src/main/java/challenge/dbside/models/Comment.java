@@ -98,8 +98,7 @@ public class Comment extends BaseEntity implements Commentable { //TODO: add imp
     }
 
     public boolean rmVoteFor(User voter) {
-        boolean b = getDataSource().getRel().removeMapping(IdAttrGet.refVoteForComment(), voter.getDataSource());
-        return b;
+        return getDataSource().getRel().removeMapping(IdAttrGet.refVoteForComment(), voter.getDataSource());
     }
 
     public boolean rmVoteAgainst(User voter) {

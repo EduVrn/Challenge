@@ -6,7 +6,7 @@ import challenge.dbside.models.ChallengeStep;
 import challenge.dbside.models.Image;
 import challenge.dbside.models.Request;
 import challenge.dbside.models.User;
-import challenge.dbside.models.status.ChallengeStatus;
+import challenge.dbside.models.status.ChallengeInstanceStatus;
 import challenge.dbside.services.ini.MediaService;
 import challenge.webside.authorization.UserActionsProvider;
 import challenge.webside.authorization.thymeleaf.AuthorizationDialect;
@@ -99,7 +99,7 @@ public class ChallengeInstanceUtil {
 
     public void setModelForCloseChallenge(HttpServletRequest request, Principal currentUser, Model model, int chalId) {
         ChallengeInstance challengeToClose = (ChallengeInstance) serviceEntity.findById(chalId, ChallengeInstance.class);
-        challengeToClose.setStatus(ChallengeStatus.PUT_TO_VOTE);
+        challengeToClose.setStatus(ChallengeInstanceStatus.PUT_TO_VOTE);
         challengeToClose.setClosingDate(new Date());
         serviceEntity.update(challengeToClose);
     }
@@ -121,7 +121,7 @@ public class ChallengeInstanceUtil {
             chalIns.setChallengeRoot(chal);
             chalIns.setClosingDate(chal.getDate());
             chalIns.addImage(img);
-            chalIns.setStatus(ChallengeStatus.ACCEPTED);
+            chalIns.setStatus(ChallengeInstanceStatus.ACCEPTED);
             chalIns.setDescription(chal.getDescription());
             chalIns.setAcceptor(user);
 
@@ -171,10 +171,10 @@ public class ChallengeInstanceUtil {
         long diffInMillies = currentDate.getTime() - closingDate.getTime();
         long diff = TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS);
         synchronized (challenge) {
-            if (diff >= 5 && challenge.getStatus() == ChallengeStatus.PUT_TO_VOTE) {
+            if (diff >= 5 && challenge.getStatus() == ChallengeInstanceStatus.PUT_TO_VOTE) {
                 int votesFor = challenge.getVotesFor().size();
                 int votesAgainst = challenge.getVotesAgainst().size();
-                challenge.setStatus(votesFor > votesAgainst ? ChallengeStatus.COMPLETED : ChallengeStatus.FAILED);
+                challenge.setStatus(votesFor > votesAgainst ? ChallengeInstanceStatus.COMPLETED : ChallengeInstanceStatus.FAILED);
                 serviceEntity.update(challenge);
                 User authorUser = challenge.getAcceptor();
                 authorUser.addRating(votesFor - votesAgainst);
@@ -182,8 +182,8 @@ public class ChallengeInstanceUtil {
                 ChallengeDefinition challengeDef = challenge.getChallengeRoot();
                 challengeDef.addRating(votesFor - votesAgainst);
                 serviceEntity.update(challengeDef);
-            } else if (currentDate.compareTo(challenge.getDate()) >= 0 && challenge.getStatus() == ChallengeStatus.ACCEPTED) {
-                challenge.setStatus(ChallengeStatus.PUT_TO_VOTE);
+            } else if (currentDate.compareTo(challenge.getDate()) >= 0 && challenge.getStatus() == ChallengeInstanceStatus.ACCEPTED) {
+                challenge.setStatus(ChallengeInstanceStatus.PUT_TO_VOTE);
                 challenge.setClosingDate(new Date());
                 serviceEntity.update(challenge);
             }
