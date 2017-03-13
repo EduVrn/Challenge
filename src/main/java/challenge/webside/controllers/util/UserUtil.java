@@ -68,8 +68,9 @@ public class UserUtil {
         model.addAttribute("mapOfNetworks", usersDao.getListOfNetworks(userDBId));
     }
 
-    public List<User> filterUsers(String filter) {
+    public List<User> filterUsers(String filter, User currentUser) {
         List<User> allUsers = serviceEntity.getAll(User.class);
+        allUsers.remove(currentUser);
         List<User> filteredUsers = new ArrayList<>();
         for (User user : allUsers) {
             String name = user.getName();
@@ -82,6 +83,7 @@ public class UserUtil {
 
     public void setModelForShowNotFriends(HttpServletRequest request, User currentUser, Model model) {
         List<User> allUsers = serviceEntity.getAll(User.class);
+        allUsers.remove(currentUser);
         List<User> friends = currentUser.getFriends();
         allUsers.remove(currentUser);
         List<User> filteredUsers = new ArrayList<>();

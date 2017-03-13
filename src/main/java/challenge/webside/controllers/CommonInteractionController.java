@@ -77,6 +77,10 @@ public class CommonInteractionController {
 
         boolean voteFor = message.getChangeVote() == 1;
         
+        if (comment.getAuthor().equals(user)) {
+            return;
+        }
+        
         if (voteFor) {
             if (comment.getVotesAgainst().contains(user)) {
                 comment.rmVoteAgainst(user);
@@ -225,11 +229,12 @@ public class CommonInteractionController {
     AjaxResponseBody searchUsers(@RequestBody SearchCriteria search) {
 
         AjaxResponseBody result = new AjaxResponseBody();
-
+        
         if (search != null) {
-            List<User> filteredUsers = userUtil.filterUsers(search.getFilter());
-
+            
             User currentUser = (User) serviceEntity.findById(search.getUserId(), User.class);
+            List<User> filteredUsers = userUtil.filterUsers(search.getFilter(), currentUser);
+
             if (filteredUsers.size() > 0) {
                 Map<Integer, NameAndImage> usersAjax = new HashMap<>();
                 for (User user : filteredUsers) {

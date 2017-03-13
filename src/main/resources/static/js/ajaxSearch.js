@@ -180,7 +180,7 @@ function displayUsers(data) {
             if (!value.isSubscriber && !value.isSubscripted) {
                 var $formFriend = $('<form />', {
                     "method": "GET",
-                    "action": "/addFriend"
+                    "action": "/sendFriendRequest"
                 });
                 var $friendId = $('<input />', {
                     "type": "hidden",
@@ -200,7 +200,7 @@ function displayUsers(data) {
                     var $subscriberLabel = $('<h3 />');
                     var $span = $('<span />', {
                         "class": "label label-info",
-                        "text": $('#sent-you-request-label').val()
+                        "text": $('#incoming-request-label').val()
                     });
                     $subscriberLabel.append($span);
                     $rightDiv.append($subscriberLabel);
@@ -208,7 +208,7 @@ function displayUsers(data) {
                     var $subscriptedLabel = $('<h3 />');
                     var $span = $('<span />', {
                         "class": "label label-info",
-                        "text": $('#friend-request-label').val()
+                        "text": $('#outgoing-request-label').val()
                     });
                     $subscriptedLabel.append($span);
                     $rightDiv.append($subscriptedLabel);

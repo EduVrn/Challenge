@@ -23,6 +23,10 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="chalShowChallenge" style="padding-top: 20px;">
+                            <input type="hidden" id="add-friend-text" th:value="#{addFriendButton}" />
+                            <input type="hidden" id="friend-label" th:value="#{friendLabel}" />
+                            <input type="hidden" id="incoming-request-label" th:value="#{incomingRequestLabel}" />
+                            <input type="hidden" id="outgoing-request-label" th:value="#{outgoingRequestLabel}" />
                             <form class="input-group">
                                 <input type="hidden" id="csrf-token" name="_csrf" th:value="${_csrf.token}" />
                                 <span class="input-group-addon">

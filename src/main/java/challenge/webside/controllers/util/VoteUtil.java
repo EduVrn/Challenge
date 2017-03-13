@@ -33,6 +33,10 @@ public class VoteUtil {
     public void setModelForCommentVote(HttpServletRequest request, User user, Model model, int commentId, boolean voteFor) {
         Comment comment = (Comment) serviceEntity.findById(commentId, Comment.class);
 
+        if (comment.getAuthor().equals(user)) {
+            return;
+        }
+        
         if (voteFor) {
             if (comment.getVotesAgainst().contains(user)) {
                 if (comment.rmVoteAgainst(user)) {
