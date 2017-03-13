@@ -1,7 +1,6 @@
 package challenge.dbside.models;
 
 import challenge.dbside.models.common.IdAttrGet;
-import challenge.dbside.models.dbentity.Attribute;
 import challenge.dbside.models.dbentity.DBSource;
 import challenge.dbside.models.ini.TypeEntity;
 import challenge.dbside.models.status.ChallengeDefinitionStatus;
@@ -20,6 +19,7 @@ import javax.validation.constraints.Future;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.hibernate.validator.constraints.NotBlank;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,23 +50,25 @@ public class ChallengeDefinition extends BaseEntity implements Commentable {
     }
 
     @NotNull
+    @NotBlank(message = "{error.name.length}")
     @Size(min = 5, max = 40, message = "{error.name.length}")
     public String getName() {
         return getDataSource().getAttributes().get(IdAttrGet.IdName()).getValue();
     }
 
     public void setName(String name) {
-        getDataSource().getAttributes().get(IdAttrGet.IdName()).setValue(name);
+        getDataSource().getAttributes().get(IdAttrGet.IdName()).setValue(name.trim());
     }
 
     @NotNull
+    @NotBlank(message = "{error.name.length}")
     @Size(min = 5, max = 250, message = "{error.description.length}")
     public String getDescription() {
         return getDataSource().getAttributes().get(IdAttrGet.IdDescr()).getValue();
     }
 
     public void setDescription(String description) {
-        getDataSource().getAttributes().get(IdAttrGet.IdDescr()).setValue(description);
+        getDataSource().getAttributes().get(IdAttrGet.IdDescr()).setValue(description.trim());
     }
 
     @NotNull

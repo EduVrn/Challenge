@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.hibernate.validator.constraints.NotBlank;
 
 public class Comment extends BaseEntity implements Commentable { //TODO: add implements Commentable ???
 
@@ -29,13 +30,14 @@ public class Comment extends BaseEntity implements Commentable { //TODO: add imp
     }
 
     @NotNull
+    @NotBlank
     @Size(min = 5, max = 250, message = "{error.comment.length}")
     public String getMessage() {
         return getDataSource().getAttributes().get(IdAttrGet.IdMessage()).getValue();
     }
 
     public void setMessage(String msg) {
-        getDataSource().getAttributes().get(IdAttrGet.IdMessage()).setValue(msg);
+        getDataSource().getAttributes().get(IdAttrGet.IdMessage()).setValue(msg.trim());
     }
 
     public Date getDate() {

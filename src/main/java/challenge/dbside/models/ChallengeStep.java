@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.hibernate.validator.constraints.NotBlank;
 
 public class ChallengeStep extends BaseEntity implements Commentable {
 
@@ -22,23 +23,25 @@ public class ChallengeStep extends BaseEntity implements Commentable {
     }
 
     @NotNull
+    @NotBlank(message = "{error.name.length}")
     @Size(min = 5, max = 40, message = "{error.name.length}")
     public String getName() {
         return getDataSource().getAttributes().get(IdAttrGet.IdName()).getValue();
     }
 
     public void setName(String name) {
-        getDataSource().getAttributes().get(IdAttrGet.IdName()).setValue(name);
+        getDataSource().getAttributes().get(IdAttrGet.IdName()).setValue(name.trim());
     }
 
     @NotNull
+    @NotBlank(message = "{error.name.length}")
     @Size(min = 5, max = 250, message = "{error.description.length}")
     public String getMessage() {
         return getDataSource().getAttributes().get(IdAttrGet.IdMessage()).getValue();
     }
 
     public void setMessage(String msg) {
-        getDataSource().getAttributes().get(IdAttrGet.IdMessage()).setValue(msg);
+        getDataSource().getAttributes().get(IdAttrGet.IdMessage()).setValue(msg.trim());
     }
 
     public void setInstance(ChallengeInstance challengeInstance) {
@@ -84,7 +87,7 @@ public class ChallengeStep extends BaseEntity implements Commentable {
     public void addImage(Image image) {
         getDataSource().getChildren().add(image.getDataSource());
     }
-    
+
     public static final Comparator<ChallengeStep> COMPARE_BY_DATE = (ChallengeStep leftToCompare, ChallengeStep rightToCompare)
             -> leftToCompare.getDate().compareTo(rightToCompare.getDate());
 
