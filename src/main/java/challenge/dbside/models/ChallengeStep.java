@@ -23,7 +23,7 @@ public class ChallengeStep extends BaseEntity implements Commentable {
     }
 
     @NotNull
-    @NotBlank(message = "{error.name.length}")
+    @NotBlank(message = "{error.name.blank}")
     @Size(min = 5, max = 40, message = "{error.name.length}")
     public String getName() {
         return getDataSource().getAttributes().get(IdAttrGet.IdName()).getValue();
@@ -34,7 +34,7 @@ public class ChallengeStep extends BaseEntity implements Commentable {
     }
 
     @NotNull
-    @NotBlank(message = "{error.name.length}")
+    @NotBlank(message = "{error.name.blank}")
     @Size(min = 5, max = 250, message = "{error.description.length}")
     public String getMessage() {
         return getDataSource().getAttributes().get(IdAttrGet.IdMessage()).getValue();
