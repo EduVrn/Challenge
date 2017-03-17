@@ -13,6 +13,7 @@
     </head>
     <body>
         <div th:replace="fragments/header :: userInfo"/>
+        <div th:replace="fragments/util/loader::loader"/>
         <div class="content-wrapper">
             <div class="inner-container container">
                 <form   th:action="@{information}" th:object="${challenge}" method="post">

@@ -68,7 +68,7 @@ public class SocialConfig implements SocialConfigurer {
 
     @Override
     public UsersConnectionRepository getUsersConnectionRepository(ConnectionFactoryLocator connectionFactoryLocator) {
-        JdbcUsersConnectionRepository repository = new JdbcUsersConnectionRepository(dataSource, connectionFactoryLocator, Encryptors.noOpText());
+        JdbcUsersConnectionRepository repository = new JdbcUsersConnectionRepository(dataSource, connectionFactoryLocator, Encryptors.text("70617373776f72640d0a", "6e657473616c740d0a"));
         repository.setConnectionSignUp(new AccountConnectionSignUpService(usersDao));
         return repository;
     }

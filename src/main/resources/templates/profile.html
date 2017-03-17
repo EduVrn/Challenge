@@ -11,7 +11,6 @@
     <body>
         <div th:replace="fragments/header::userInfo" />
         <div th:replace="fragments/util/loader::loader"/>
-
         <div class="container">
             <div style="margin-top: 40px;" >
                 <h1 class="" th:text="${userProfile.getName()}+' ('+${userProfile.getRating()}+')'" style='display: inline-block;'/>   

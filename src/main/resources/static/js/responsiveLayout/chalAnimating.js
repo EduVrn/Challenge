@@ -83,7 +83,7 @@ $(window).load(function () {
             itemSelector: ".challenge",
             animationEngine: "jquery",
             layoutMode: 'masonry',
-            transitionDuration: '0.0s',
+            transitionDuration: '1.0s',
             masonry: {
                 columnWidth: 1
             }
@@ -92,10 +92,6 @@ $(window).load(function () {
     r.imagesLoaded().progress(function () {
         isotopeInit();
     });
-//    r.isotope('on', 'layoutComplete', onLayout);
-
-
-    //isotopeInit();
 });
 
 

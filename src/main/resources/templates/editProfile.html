@@ -43,7 +43,7 @@
                                 </div> 
                                 <div> 
                                     <input class="btn btn-default text-center" type="submit" name="k" th:value="#{updateButton}" style="float: right;"/>
-                                    <input class="btn btn-default" onclick="javascript:history.back()"  th:value="#{backButton}"  style="float: left;"/>
+                                    <input class="btn btn-default col-xs-3" onclick="javascript:history.back()"  th:value="#{backButton}"  style="float: left;"/>
                                 </div>
                             </div>
                         </div>
@@ -72,7 +72,6 @@
 
         <div th:replace="fragments/modals/userImagesModal::userimagesmodal" />
         <div th:replace="fragments/customModal::modalBody" />
-
         <script th:replace="fragments/commonDependencies :: commonJS" th:remove="tag"/>
         <script src="../js/csslayoutextenders/profileEditLayout.js"></script>
         <script src="../js/csslayoutextenders/langSwitcherLayout.js"></script>
