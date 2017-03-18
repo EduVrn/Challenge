@@ -1,5 +1,6 @@
 package challenge.webside.controllers.util;
 
+import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.Image;
 import challenge.dbside.models.Request;
 import challenge.dbside.models.User;
@@ -56,9 +57,15 @@ public class UserUtil {
         model.addAttribute("currentDBUser", user);
         model.addAttribute("listOfAccepted", userWhichProfileRequested.getAcceptedChallenges());
         model.addAttribute("listOfSubscripted", userWhichProfileRequested.getSubscriptions());
-        //  util.getCurrentProviderPossibleFriends(request, userProfile.getUserId())
+        List<Request> requests = userWhichProfileRequested.getIncomingRequests();
+        List<ChallengeDefinition> unacceptedChallenges = new ArrayList<>();
+        requests.forEach((r) -> {
+            if (r.getSubject() != null) {
+                unacceptedChallenges.add(r.getSubject());
+            }
+        });
+        model.addAttribute("listOfUnaccepted", unacceptedChallenges);
         List<User> possibleFriends = util.getCurrentProviderPossibleFriends(request, userProfile.getUserId());
-        //List<User> possibleFriends = user.getFriends();
         possibleFriends.removeAll(user.getFriends());
         int countOfUsersToDisplay = 2;
         model.addAttribute("possibleFriends", possibleFriends);

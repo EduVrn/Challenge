@@ -7,7 +7,7 @@
     </head>
     <body>
         <th:block th:fragment="challengePanel(challenge)" >
-            <th:block th:if='${challenge.class.name == "challenge.dbside.models.ChallengeDefinition"}'>
+            <th:block th:if='${challenge instanceof T(challenge.dbside.models.ChallengeDefinition)}'>
                 <div class="chal-photo-main-page"> 
                     <img class="img-rounded" th:src="${challenge.getMainImageEntity().getBase64()}" alt=""/> 
                 </div>

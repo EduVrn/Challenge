@@ -119,7 +119,6 @@ public class ChallengeInstanceUtil {
             chalIns.setName(chal.getName());
             chalIns.setDate(chal.getDate());
             chalIns.setChallengeRoot(chal);
-            chalIns.setClosingDate(chal.getDate());
             chalIns.addImage(img);
             chalIns.setStatus(ChallengeInstanceStatus.ACCEPTED);
             chalIns.setDescription(chal.getDescription());

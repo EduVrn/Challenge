@@ -83,9 +83,9 @@ public class ChallengeInstance extends BaseEntity implements Commentable {
     public void addVoteFor(User voter) {
         getDataSource().getRel().put(IdAttrGet.refVoteFor(), voter.getDataSource());
     }
-    
+
     public boolean rmVoteFor(User voter) {
-    	return getDataSource().getRel().removeMapping(IdAttrGet.refVoteFor(), voter.getDataSource());
+        return getDataSource().getRel().removeMapping(IdAttrGet.refVoteFor(), voter.getDataSource());
     }
 
     public List<User> getVotesAgainst() {
@@ -104,9 +104,9 @@ public class ChallengeInstance extends BaseEntity implements Commentable {
     }
 
     public boolean rmVoteAgainst(User voter) {
-    	return getDataSource().getRel().removeMapping(IdAttrGet.refVoteAgainst(), voter.getDataSource());
+        return getDataSource().getRel().removeMapping(IdAttrGet.refVoteAgainst(), voter.getDataSource());
     }
-    
+
     public ChallengeInstanceStatus getStatus() {
         return ChallengeInstanceStatus.valueOf(getDataSource().getAttributes().get(IdAttrGet.IdChalStat()).getValue());
     }
@@ -132,8 +132,6 @@ public class ChallengeInstance extends BaseEntity implements Commentable {
         } catch (Exception ex) {
             ex.printStackTrace();
             return (new Date(0));
-            //new Date() == current date,
-            //return (new Date());
         }
     }
 
@@ -203,7 +201,6 @@ public class ChallengeInstance extends BaseEntity implements Commentable {
             Date result = df.parse(ddt);
             return result;
         } catch (Exception ex) {
-            ex.printStackTrace();
             return (new Date());
         }
     }
