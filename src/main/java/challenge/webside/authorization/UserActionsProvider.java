@@ -40,6 +40,7 @@ public class UserActionsProvider {
             if (user.getId().equals(challenge.getCreator().getId())) {
                 actions.add(Action.EDIT_CHALLENGE);
                 actions.add(Action.DELETE_CHALLENGE);
+                actions.add(Action.THROW_CHALLENGE_DEF);
             }
         }
         return actions;

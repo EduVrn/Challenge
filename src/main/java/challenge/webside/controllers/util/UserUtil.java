@@ -67,7 +67,7 @@ public class UserUtil {
         model.addAttribute("listOfUnaccepted", unacceptedChallenges);
         List<User> possibleFriends = util.getCurrentProviderPossibleFriends(request, userProfile.getUserId());
         possibleFriends.removeAll(user.getFriends());
-        int countOfUsersToDisplay = 2;
+        int countOfUsersToDisplay = 6;
         model.addAttribute("possibleFriends", possibleFriends);
         model.addAttribute("possibleFriendsExtendence", possibleFriends != null ? possibleFriends.size() > countOfUsersToDisplay : false);
         dialect.setActions(actionsProvider.getActionsForProfile(signedUpUser, userWhichProfileRequested));

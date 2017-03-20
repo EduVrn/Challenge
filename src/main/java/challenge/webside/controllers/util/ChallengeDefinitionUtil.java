@@ -100,22 +100,22 @@ public class ChallengeDefinitionUtil {
             chalIns.setDate(chalToAccept.getDate());
             chalIns.setChallengeRoot(chalToAccept);
             serviceEntity.save(chalIns);
-            
+
             chalToAccept.setStatus(ChallengeDefinitionStatus.ACCEPTED);
             chalToAccept.addChallengeInstance(chalIns);
             serviceEntity.update(chalToAccept);
-            
+
             chalIns.addImage(img);
             chalIns.setStatus(ChallengeInstanceStatus.ACCEPTED);
             chalIns.setDescription(chalToAccept.getDescription());
             chalIns.setAcceptor(user);
-            
+
             ChallengeStep step = new ChallengeStep();
             step.setDate(chalIns.getDate());
             step.setMessage(chalIns.getDescription());
             step.setName(chalIns.getName());
             serviceEntity.save(step);
-            
+
             chalIns.addStep(step);
             serviceEntity.update(chalIns);
 
@@ -233,6 +233,9 @@ public class ChallengeDefinitionUtil {
         dialect.setActions(actionsProvider.getActionsForChallengeDefinition(currentUser, challenge));
         model.addAttribute("challenge", challenge);
         setModelForAcceptors(challenge, model);
+        if (currentUser != null) {
+            model.addAttribute("friends", currentUser.getFriends());
+        }
         model.addAttribute("userProfile", currentUser);
         model.addAttribute("tags", serviceEntity.getAll(Tag.class));
         model.addAttribute("selectedTags", challenge.getTags());

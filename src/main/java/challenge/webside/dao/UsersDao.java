@@ -95,18 +95,22 @@ public class UsersDao {
         }, userId);
     }
 
+    public boolean checkIfNameIsNull(UserProfile userProfile) {
+        return Strings.isNullOrEmpty(userProfile.getName().trim()) || userProfile.getName().toLowerCase().equals("null");
+    }
+
     public Map<String, String> getListOfNetworks(final int userDbId) {
         List<UserProfile> profiles = getUserProfiles(userDbId);
         Map<String, String> result = new HashMap<>();
         for (UserProfile userProfile : profiles) {
-            result.put(getUserConnection(userProfile.getUserId()).getProviderId(), (Strings.isNullOrEmpty(userProfile.getName()) || userProfile.getName().equals("null")) ? userProfile.getUsername() : userProfile.getName());
+            result.put(getUserConnection(userProfile.getUserId()).getProviderId(), checkIfNameIsNull(userProfile) ? userProfile.getUsername() : userProfile.getName());
         }
         return result;
     }
 
     public void createUser(String userId, UserProfile profile) {
         User user = new User();
-        user.setName(profile.getName());
+        user.setName( checkIfNameIsNull(profile) ? profile.getUsername() : profile.getName());
         user.setRating(0);
         serviceEntity.save(user);
         Image profilePic = new Image();
@@ -170,14 +174,14 @@ public class UsersDao {
             }
         }
     }
-    
+
     public void deleteRelation(int entityId, int entityVal, int attributeId) {
-        jdbcTemplate.update("delete from relationship where entity_id = ? and entity_val = ? and attribute_id = ? ", 
+        jdbcTemplate.update("delete from relationship where entity_id = ? and entity_val = ? and attribute_id = ? ",
                 entityId, entityVal, attributeId);
     }
 
     public void addRelation(int entityId, int entityVal, int attributeId) {
-        jdbcTemplate.update("insert into relationship values(?,?,?) ", 
+        jdbcTemplate.update("insert into relationship values(?,?,?) ",
                 entityId, entityVal, attributeId);
     }
 }
