@@ -19,7 +19,7 @@ import org.springframework.ui.Model;
 public class CommentUtil {
 
     @Autowired
-    @Qualifier("storageServiceUser")
+    @Qualifier("EAVStorageServiceUser")
     private MediaService serviceEntity;
 
     public void addNewReply(int id, HttpServletRequest request, UserProfile currentUser, Model model, Comment comment) {

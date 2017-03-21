@@ -34,14 +34,18 @@ repositories {
 
 task getDeps(type: Copy) {
     from sourceSets.main.runtimeClasspath
-    into 'runtime/'
+    into 'runtime/hibernate-core-4.3.11.Final.jar'
 }
 
 dependencies {
     compile('org.springframework.boot:spring-boot-starter')
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-actuator")
-    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    
+    compile("org.springframework.boot:spring-boot-starter-data-jpa") {
+    	//exclude group: 'org.hibernate', module: 'hibernate-core'
+    }
+    
     compile("org.springframework.boot:spring-boot-starter-security")
     compile("org.springframework.boot:spring-boot-starter-thymeleaf")
     compile("org.springframework.boot:spring-boot-starter-websocket")
@@ -89,8 +93,9 @@ dependencies {
 	compile 'org.slf4j:slf4j-api:1.7.5'
 	compile 'org.slf4j:slf4j-log4j12:1.7.5'
 	// https://mvnrepository.com/artifact/org.hibernate/hibernate-core
-compile group: 'org.hibernate', name: 'hibernate-core', version: '4.3.5.Final'
-	
+
+	//compile name: 'hibernate-core-4.3.11.Final.jar'	
+	compile files('lib/4.3.11.Final/hibernate-core-4.3.11.Final.jar')
 }
 
 mainClassName = 'challenge.Application'

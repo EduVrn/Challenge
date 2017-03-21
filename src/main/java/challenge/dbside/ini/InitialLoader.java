@@ -2,6 +2,7 @@ package challenge.dbside.ini;
 
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
@@ -15,7 +16,6 @@ import java.util.List;
 import java.util.Random;
 
 import challenge.common.AccessProp;
-import challenge.dbside.dbconfig.ParserDBConfiguration;
 import challenge.dbside.models.ChallengeDefinition;
 import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.Comment;
@@ -36,15 +36,7 @@ import java.util.logging.Level;
 public class InitialLoader {
 
     @Autowired
-    @Qualifier("storageServiceTypeOfAttribute")
-    private MediaService serviceAttr;
-
-    @Autowired
-    @Qualifier("storageServiceTypeOfEntity")
-    private MediaService serviceEntity;
-
-    @Autowired
-    @Qualifier("storageServiceUser")
+    @Qualifier("EAVStorageServiceUser")
     private MediaService serviceEntityInit;
 
     @Autowired
@@ -58,33 +50,25 @@ public class InitialLoader {
         if (version == null) {
             iniFlag = true;
             version = new PropertyDB("version", "0");
+            init(1, 2, 2, 4, 7);
+            serviceProperty.save(version);
         }
         Integer nVersion = Integer.valueOf(version.getValue());
 
-        try {
-            nVersion = createContext(nVersion);
-            if (version.getValue().equals("0")) {
-                version.setValue(nVersion.toString());
-                serviceProperty.save(version);
-            } else {
-                version.setValue(nVersion.toString());
-                serviceProperty.update(version);
-            }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        // usersCount, user's chaldefsCount,instancesCount, CommentsCount, Comment'sEmbedenceCount
         //init(5, 2,2, 4, 3);
-        if (iniFlag == true) {
-            init(1, 2, 2, 4, 7);
-        }
+        List<User> users = serviceEntityInit.getAll(User.class);
+    	User user1 = (User) serviceEntityInit.findById(users.get(0).getId(), User.class); 
+    	
+    	List<ChallengeDefinition> challenges = serviceEntityInit.getAll(ChallengeDefinition.class);
+    	List<ChallengeInstance> instances = serviceEntityInit.getAll(ChallengeInstance.class);
+    	List<Comment> comments = serviceEntityInit.getAll(Comment.class);
     }
 
     private Integer createContext(Integer versionDB) throws Exception {
         Integer versionApp = Integer.valueOf(AccessProp.getProperties().getCurrentVersionDB());
 
-        ParserDBConfiguration p = new ParserDBConfiguration();
+        //ParserDBConfiguration p = new ParserDBConfiguration();
+        /*
         if (versionDB > 0) {
             ContextType contextType = ContextType.getInstance();
 
@@ -135,16 +119,7 @@ public class InitialLoader {
 
         for (TypeOfEntity t : (List<TypeOfEntity>) serviceEntity.getAll(TypeOfEntity.class)) {
             ContextType.getInstance().add(t);
-        }
-
-        /*for(TypeOfAttribute t : ContextType.getInstance().getAvailableAttributes()) {
-    		
-    		serviceAttr.save(t);
-    	}
-    	
-    	for(TypeOfEntity t : ContextType.getInstance().getAvailableEntities()) {
-    		serviceEntity.save(t);
-    	}*/
+        }*/
         return versionApp;
     }
 
@@ -243,7 +218,8 @@ public class InitialLoader {
                 }
                 text.append(".");
                 chalToCreate.setDescription(text.toString());
-                chalToCreate.setDate(new Date());
+                chalToCreate.setDate( DateUtils.addMonths(new Date(), 1));
+                
                 chalToCreate.setCreator(userToCreate);
                 serviceEntityInit.save(chalToCreate);
                 for (int m = 0; m < countOfComments; m++) {
@@ -263,15 +239,13 @@ public class InitialLoader {
                 }
                 chalToCreate.addImage(pic);
                 serviceEntityInit.update(chalToCreate);
-                userToCreate.addChallenge(chalToCreate);
-                serviceEntityInit.update(userToCreate);
                 for (int m = 0; m < countOfInstanses; m++) {
                     ChallengeInstance chalInstance = new ChallengeInstance();
                     chalInstance.setName(generateRandomWords(1)[0] + "-instance");
                     chalInstance.setStatus(ChallengeInstanceStatus.AWAITING);
 
                     chalInstance.setDescription("After (may be)");
-                    chalInstance.setDate(new Date());
+                    chalInstance.setDate(DateUtils.addMonths(new Date(), 1));
                     serviceEntityInit.save(chalInstance);
 
                     Image picForInstance = new Image();
@@ -286,8 +260,8 @@ public class InitialLoader {
                     }
                     chalInstance.addImage(picForInstance);
                     serviceEntityInit.update(chalInstance);
-                    chalToCreate.addChallengeInstance(chalInstance);
-                    serviceEntityInit.update(chalToCreate);
+                    //chalToCreate.addChallengeInstance(chalInstance);
+                    //serviceEntityInit.update(chalToCreate);
                     User user = (User) serviceEntityInit.getAll(User.class).get(new Random().nextInt(serviceEntityInit.getAll(User.class).size()));
                     chalInstance.setAcceptor(user);
                     serviceEntityInit.update(chalInstance);

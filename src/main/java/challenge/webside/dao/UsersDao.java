@@ -33,7 +33,7 @@ import org.springframework.web.context.request.WebRequest;
 public class UsersDao {
 
     @Autowired
-    @Qualifier("storageServiceUser")
+    @Qualifier("EAVStorageServiceUser")
     private MediaService serviceEntity;
 
     private JdbcTemplate jdbcTemplate;
@@ -172,12 +172,14 @@ public class UsersDao {
     }
     
     public void deleteRelation(int entityId, int entityVal, int attributeId) {
-        jdbcTemplate.update("delete from relationship where entity_id = ? and entity_val = ? and attribute_id = ? ", 
-                entityId, entityVal, attributeId);
+        throw new RuntimeException("not supported");
+    	/*jdbcTemplate.update("delete from relationship where entity_id = ? and entity_val = ? and attribute_id = ? ", 
+                entityId, entityVal, attributeId);*/
     }
 
     public void addRelation(int entityId, int entityVal, int attributeId) {
-        jdbcTemplate.update("insert into relationship values(?,?,?) ", 
-                entityId, entityVal, attributeId);
+    	throw new RuntimeException("not supported");
+        /*jdbcTemplate.update("insert into relationship values(?,?,?) ", 
+                entityId, entityVal, attributeId);*/
     }
 }

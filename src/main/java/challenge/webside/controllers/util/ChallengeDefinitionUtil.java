@@ -36,7 +36,7 @@ import org.springframework.ui.Model;
 public class ChallengeDefinitionUtil {
 
     @Autowired
-    @Qualifier("storageServiceUser")
+    @Qualifier("EAVStorageServiceUser")
     private MediaService serviceEntity;
 
     @Autowired

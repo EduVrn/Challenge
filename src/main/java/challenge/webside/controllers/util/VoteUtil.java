@@ -19,7 +19,7 @@ import org.springframework.ui.Model;
 public class VoteUtil {
 
     @Autowired
-    @Qualifier("storageServiceUser")
+    @Qualifier("EAVStorageServiceUser")
     private MediaService serviceEntity;
     
     @Autowired

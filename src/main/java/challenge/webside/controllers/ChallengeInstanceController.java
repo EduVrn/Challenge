@@ -34,7 +34,7 @@ public class ChallengeInstanceController {
     private SocialControllerUtil util;
 
     @Autowired
-    @Qualifier("storageServiceUser")
+    @Qualifier("EAVStorageServiceUser")
     private MediaService serviceEntity;
     @Autowired
     private ChallengeInstanceUtil challengeInsUtil;

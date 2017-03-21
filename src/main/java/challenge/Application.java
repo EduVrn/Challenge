@@ -35,7 +35,7 @@ public class Application extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
         ApplicationContext ctx = SpringApplication.run(Application.class, args);
-
+//SessionFactoryImpl
         try {
             ImageStoreService.login();
         } catch (Exception ex) {

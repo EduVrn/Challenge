@@ -33,7 +33,7 @@ public class UserUtil {
     private SocialControllerUtil util;
 
     @Autowired
-    @Qualifier("storageServiceUser")
+    @Qualifier("EAVStorageServiceUser")
     private MediaService serviceEntity;
 
     @Autowired

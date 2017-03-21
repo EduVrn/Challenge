@@ -25,7 +25,7 @@ public class FacebookFriendsImportService implements FriendsImportService {
     private ConnectionRepository connectionRepository;
 
     @Autowired
-    @Qualifier("storageServiceUser")
+    @Qualifier("EAVStorageServiceUser")
     private MediaService serviceEntity;
 
     private JdbcTemplate jdbcTemplate;

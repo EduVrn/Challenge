@@ -29,7 +29,7 @@ public class TwitterFriendsImportService implements FriendsImportService {
     private Environment environment;
 
     @Autowired
-    @Qualifier("storageServiceUser")
+    @Qualifier("EAVStorageServiceUser")
     private MediaService serviceEntity;
 
     private JdbcTemplate jdbcTemplate;

@@ -1,6 +1,5 @@
 package challenge.webside.imagesstorage;
 
-import challenge.dbside.models.Image;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -16,6 +15,8 @@ import javax.jcr.RepositoryException;
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.core.TransientRepository;
 import org.springframework.stereotype.Component;
+
+import challenge.dbside.models.Image;
 
 @Component
 public class ImageStoreService {

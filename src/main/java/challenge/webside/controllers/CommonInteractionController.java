@@ -50,7 +50,7 @@ public class CommonInteractionController {
     private UsersDao usersDao;
 
     @Autowired
-    @Qualifier("storageServiceUser")
+    @Qualifier("EAVStorageServiceUser")
     private MediaService serviceEntity;
 
     @Autowired

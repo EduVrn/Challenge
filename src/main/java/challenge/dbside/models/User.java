@@ -1,241 +1,223 @@
 package challenge.dbside.models;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
-import challenge.dbside.models.common.IdAttrGet;
-import challenge.dbside.models.dbentity.DBSource;
-import challenge.dbside.models.ini.TypeEntity;
-import challenge.dbside.models.status.ChallengeInstanceStatus;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
-public class User extends BaseEntity implements Commentable {
+import org.hibernate.annotations.Persister;
+import org.hibernate.eav.EAVEntity;
+import org.hibernate.eav.EAVGlobalContext;
 
-    public User() {
-        super(User.class.getSimpleName());
+import challenge.dbside.eav.EAVPersister;
+import challenge.dbside.eav.collection.EAVCollectionPersister;
+
+@Entity
+@EAVEntity
+@Persister(impl=EAVPersister.class)
+public class User extends BaseEntity {
+
+	public User() {
+    	super(EAVGlobalContext.getTypeOfEntity(User.class.getSimpleName().toLowerCase()).getId());
+    	
+    	backCreators = new ArrayList();
+    	images = new ArrayList();
+    	acceptedChallenges = new ArrayList();
+    	friends = new ArrayList();
+    	backSubscribers = new ArrayList();
+    	backRequestReceiver = new ArrayList();
+    	votesAgainst = new ArrayList();
+    	votesFor = new ArrayList();
     }
+	
+	private String name;
+	private Integer rating;
+	//TODO change it (change mapping many-to-many to one-to-many
+	
+	@ManyToMany(cascade=CascadeType.REMOVE, fetch=FetchType.EAGER)
+	@JoinTable(name="eav_relationship",
+			joinColumns = @JoinColumn(name = "entity_id2", referencedColumnName = "entity_id"),            
+			inverseJoinColumns = @JoinColumn(name = "entity_id1", referencedColumnName = "entity_id")
+					)
+	@Persister(impl=EAVCollectionPersister.class)
+	private List<ChallengeDefinition> backCreators;
+	
+	@ManyToMany(cascade=CascadeType.REMOVE, fetch=FetchType.EAGER)
+	@JoinTable(name="eav_relationship",
+			joinColumns = @JoinColumn(name = "entity_id1", referencedColumnName = "entity_id"),            
+			inverseJoinColumns = @JoinColumn(name = "entity_id2", referencedColumnName = "entity_id")
+					)
+	@Persister(impl=EAVCollectionPersister.class)
+	private List<Image> images;
+	
+	@ManyToMany(cascade=CascadeType.REMOVE, fetch=FetchType.EAGER)
+	@JoinTable(name="eav_relationship",
+			joinColumns = @JoinColumn(name = "entity_id1", referencedColumnName = "entity_id"),            
+			inverseJoinColumns = @JoinColumn(name = "entity_id2", referencedColumnName = "entity_id")
+					)
+	@Persister(impl=EAVCollectionPersister.class)
+	private List<ChallengeInstance> acceptedChallenges;
 
-    public User(DBSource dataSource) {
-        super(dataSource);
-    }
+	//TODO change friendsLeft and friendsRight, getFriends = friendsLeft + friendsRight
+	@ManyToMany(cascade=CascadeType.REMOVE, fetch=FetchType.EAGER)
+	@JoinTable(name="eav_relationship",
+			joinColumns = @JoinColumn(name = "entity_id1", referencedColumnName = "entity_id"),            
+			inverseJoinColumns = @JoinColumn(name = "entity_id2", referencedColumnName = "entity_id")
+					)
+	@Persister(impl=EAVCollectionPersister.class)
+	private List<User> friends; 
 
-    public void setFriends(List<User> users) {
-        getDataSource().getRel().remove(IdAttrGet.refFriend());
-        users.forEach((user) -> {
-            getDataSource().getRel().put(IdAttrGet.refFriend(), user.getDataSource());
-        });
-    }
+	@ManyToMany(cascade=CascadeType.REMOVE, fetch=FetchType.EAGER)
+	@JoinTable(name="eav_relationship",
+			joinColumns = @JoinColumn(name = "entity_id2", referencedColumnName = "entity_id"),            
+			inverseJoinColumns = @JoinColumn(name = "entity_id1", referencedColumnName = "entity_id")
+					)
+	@Persister(impl=EAVCollectionPersister.class)
+	private List<ChallengeInstance> backSubscribers;
 
-    public List<User> getFriends() {
-        List<User> friends = new ArrayList<>();
-        List<DBSource> list = (List<DBSource>) getDataSource().getRel().get(IdAttrGet.refFriend());
-        if (list != null) {
-            list.forEach((userDB) -> {
-                friends.add(new User(userDB));
-            });
-        }
-        return friends;
-    }
+	@ManyToMany(cascade=CascadeType.REMOVE, fetch=FetchType.EAGER)
+	@JoinTable(name="eav_relationship",
+			joinColumns = @JoinColumn(name = "entity_id2", referencedColumnName = "entity_id"),            
+			inverseJoinColumns = @JoinColumn(name = "entity_id1", referencedColumnName = "entity_id")
+					)
+	@Persister(impl=EAVCollectionPersister.class)
+	private List<Request> backRequestReceiver;
 
-    public void addFriend(User user) {
-        getDataSource().getRel().put(IdAttrGet.refFriend(), user.getDataSource());
-    }
-    
-    public List<User> getIncomingFriendRequestSenders() {
-        List<User> friendsRequests = new ArrayList<>();
-        List<DBSource> list = (List<DBSource>) getDataSource().getBackRel().get(IdAttrGet.refRequestReceiver());
-        if (list != null) {
-            list.forEach((userDB) -> {
-                Request request = new Request(userDB);
-                if (request.getSubject() == null) {
-                    friendsRequests.add(new Request(userDB).getSender());
-                }
-            });
-        }
-        return friendsRequests;
-    }
-    
-    public void removeFriendRequest(Request request) {
-        getDataSource().getBackRel().removeMapping(IdAttrGet.refRequestReceiver(), request.getDataSource());
-        request.getDataSource().getRel().removeMapping(IdAttrGet.refRequestReceiver(), getDataSource());
-    }
-    
-    public List<Request> getIncomingRequests() {
-        List<Request> requests = new ArrayList<>();
-        List<DBSource> list = (List<DBSource>) getDataSource().getBackRel().get(IdAttrGet.refRequestReceiver());
-        if (list != null) {
-            list.forEach((userDB) -> {
-                requests.add(new Request(userDB));
-            });
-        } 
-        return requests;
-    }
-
-    public String getName() {
-        return getDataSource().getAttributes().get(IdAttrGet.IdName()).getValue();
-    }
-
-    public void setName(String name) {
-        getDataSource().getAttributes().get(IdAttrGet.IdName()).setValue(name);
-    }
-
-    public void addChallenge(ChallengeDefinition chal) {
-        getDataSource().addChild(chal.getDataSource());
-    }
-
-    public List<ChallengeDefinition> getChallenges() {
-        List<ChallengeDefinition> createdChallenges = new ArrayList<>();
-
-        Set<DBSource> set = (Set<DBSource>) getDataSource().getChildren();
-        set.forEach((createdChalDB) -> {
-            if (createdChalDB.getEntityType() == TypeEntity.CHALLENGE_DEFINITION.getValue()) {
-                createdChallenges.add(new ChallengeDefinition(createdChalDB));
-            }
-        });
-        return createdChallenges;
-    }
-
-    public void addAcceptedChallenge(ChallengeInstance chal) {
-        getDataSource().getRel().put(IdAttrGet.refAcChalIns(), chal.getDataSource());
-    }
-
-    public List<ChallengeInstance> getAcceptedChallenges() {
-        List<ChallengeInstance> accepted = new ArrayList<>();
-
-        List<DBSource> list = (List<DBSource>) getDataSource().getRel().get(IdAttrGet.refAcChalIns());
-        if (list != null) {
-            list.forEach((chalInsDB) -> {
-                ChallengeInstance ch = new ChallengeInstance(chalInsDB);
-                //TODO: optimize it (checked ChallengeStatus without creation new object)
-                if (ch.getStatus() != ChallengeInstanceStatus.AWAITING) {
-                    accepted.add(ch);
-                }
-            });
-        }
-        return accepted;
-    }
-
-    public List<ChallengeInstance> getChallengeRequests() {
-        List<ChallengeInstance> requests = new ArrayList<>();
-
-        List<DBSource> list = (List<DBSource>) getDataSource().getRel().get(IdAttrGet.refAcChalIns());
-        if (list != null) {
-            list.forEach((chalInsDB) -> {
-                ChallengeInstance ch = new ChallengeInstance(chalInsDB);
-                //TODO: optimize it (checked ChallengeStatus without creation new object)
-                if (ch.getStatus() == ChallengeInstanceStatus.AWAITING) {
-                    requests.add(ch);
-                }
-            });
-        }
-        return requests;
-    }
-
-    public List<ChallengeInstance> getChallengesToVote() {
-        List<ChallengeInstance> challengesToVote = new ArrayList<>();
-        List<ChallengeInstance> subscriptions = getSubscriptions();
-        for (ChallengeInstance challenge : subscriptions) {
-            if (challenge.getStatus() == ChallengeInstanceStatus.PUT_TO_VOTE) {
-                challengesToVote.add(challenge);
-            }
-        }
-        return challengesToVote;
-    }
-
-    public void acceptChallenge(ChallengeInstance chal) {
-        List<ChallengeInstance> requests = getChallengeRequests();
-
-        if (requests.contains(chal)) {
-            chal.setStatus(ChallengeInstanceStatus.ACCEPTED);
-            chal.setAcceptor(this);
-        }
-    }
-
-    public void declineChallenge(ChallengeInstance chal) {
-        List<ChallengeInstance> requests = getChallengeRequests();
-        if (requests.contains(chal)) {
-            getDataSource().getRel().remove(IdAttrGet.refAcChalIns());
-        }
-    }
-
-    @Override
-    public String toString() {
-        String entityInfo = super.toString();
-        StringBuilder info = new StringBuilder();
-        info.append(entityInfo);
-        return info.toString();
-    }
-
-    public List<Image> getImageEntities() {
-        List<Image> images = new ArrayList<>();
-        Set<DBSource> children = (Set<DBSource>) getDataSource().getChildren();
-        children.forEach((childDB) -> {
-            if (childDB.getEntityType() == TypeEntity.IMAGE.getValue()) {
-                images.add(new Image(childDB));
-            }
-        });
-        return images;
-    }
-
-    public Image getMainImageEntity() {
-        Set<DBSource> children = (Set<DBSource>) getDataSource().getChildren();
-        for (DBSource childDB : children) {
-            if (childDB.getEntityType() == TypeEntity.IMAGE.getValue()) {
-                Image currentImage = new Image(childDB);
-                if (currentImage.isMain()) {
-                    return currentImage;
-                }
-            }
-        }
-        return new Image();
-    }
-
-    public void addImage(Image image) {
-        getDataSource().addChild(image.getDataSource());
-    }
-
-    public List<ChallengeInstance> getSubscriptions() {
-        List<DBSource> list = (List<DBSource>) getDataSource().getBackRel().get(IdAttrGet.refSubscriber());
-        List<ChallengeInstance> subscriptions = new ArrayList<>();
-        if (list != null) {
-            list.forEach((ds) -> {
-                subscriptions.add(new ChallengeInstance(ds));
-            });
-        }
-        return subscriptions;
-    }
-
-    public void addSubscription(ChallengeInstance subscriptions) {
-        getDataSource().getBackRel().put(IdAttrGet.refSubscriber(), subscriptions.getDataSource());
-    }
-
-    public void addVoteFor(ChallengeInstance challenge) {
-        getDataSource().getRel().put(IdAttrGet.refVoteFor(), challenge.getDataSource());
-    }
-
-    public void addVoteAgainst(ChallengeInstance challenge) {
-        getDataSource().getRel().put(IdAttrGet.refVoteAgainst(), challenge.getDataSource());
-    }
-
-    public void addVoteForComment(Comment comment) {
-        getDataSource().getBackRel().put(IdAttrGet.refVoteForComment(), comment.getDataSource());
-    }
-
-    public void addVoteAgainstComment(Comment comment) {
-        getDataSource().getBackRel().put(IdAttrGet.refVoteAgainstComment(), comment.getDataSource());
-    }
-
-    public Integer getRating() {
-        return getDataSource().getAttributes().get(IdAttrGet.IdRating()).getIntValue();
-    }
-
-    public void setRating(Integer rating) {
-        getDataSource().getAttributes().get(IdAttrGet.IdRating()).setIntValue(rating);
-    }
-
-    public void addRating(Integer rating) {
-        Integer curRate = getRating();
-        getDataSource().getAttributes().get(IdAttrGet.IdRating()).setIntValue(curRate += rating);
-    }
-
+	@ManyToMany(cascade=CascadeType.REMOVE, fetch=FetchType.EAGER)
+	@JoinTable(name="eav_relationship",
+			joinColumns = @JoinColumn(name = "entity_id1", referencedColumnName = "entity_id"),            
+			inverseJoinColumns = @JoinColumn(name = "entity_id2", referencedColumnName = "entity_id")
+					)
+	@Persister(impl=EAVCollectionPersister.class)
+	private List<ChallengeInstance> votesFor;
+	
+	
+	@ManyToMany(cascade=CascadeType.REMOVE, fetch=FetchType.EAGER)
+	@JoinTable(name="eav_relationship",
+			joinColumns = @JoinColumn(name = "entity_id1", referencedColumnName = "entity_id"),            
+			inverseJoinColumns = @JoinColumn(name = "entity_id2", referencedColumnName = "entity_id")
+					)
+	@Persister(impl=EAVCollectionPersister.class)
+	private List<ChallengeInstance> votesAgainst;
+	
+	public List<ChallengeInstance> getVotesFor() {
+		return votesFor;
+	}
+	public void setVotesFor(List<ChallengeInstance> votesFor) {
+		this.votesFor = votesFor;
+	}
+	public List<ChallengeInstance> getVotesAgainst() {
+		return votesAgainst;
+	}
+	public void setVotesAgainst(List<ChallengeInstance> votesAgainst) {
+		this.votesAgainst = votesAgainst;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public Integer getRating() {
+		return rating;
+	}
+	public void setRating(Integer rating) {
+		this.rating = rating;
+	}
+	public List<ChallengeDefinition> getBackCreators() {
+		return backCreators;
+	}
+	public void setBackCreators(List<ChallengeDefinition> backCreators) {
+		this.backCreators = backCreators;
+	}
+	public List<Image> getImages() {
+		return images;
+	}
+	public void setImages(List<Image> images) {
+		this.images = images;
+	}
+	public List<ChallengeInstance> getAcceptedChallenges() {
+		return acceptedChallenges;
+	}
+	public void setAcceptedChallenges(List<ChallengeInstance> acceptedChallenges) {
+		this.acceptedChallenges = acceptedChallenges;
+	}
+	public List<User> getFriends() {
+		return friends;
+	}
+	public void setFriends(List<User> friends) {
+		this.friends = friends;
+	}
+	public List<ChallengeInstance> getBackSubscribers() {
+		return backSubscribers;
+	}
+	public void setBackSubscribers(List<ChallengeInstance> backSubscribers) {
+		this.backSubscribers = backSubscribers;
+	}
+	public List<Request> getBackRequestReceiver() {
+		return backRequestReceiver;
+	}
+	public void setBackRequestReceiver(List<Request> backRequestReceiver) {
+		this.backRequestReceiver = backRequestReceiver;
+	}
+	
+	
+	public void addVoteFor(ChallengeInstance challenge) {
+		votesFor.add(challenge);
+	}
+	public void addVoteAgainst(ChallengeInstance challenge) {
+		votesAgainst.add(challenge);
+	}
+	public void addFriend(User user) {
+		friends.add(user);
+	}
+	public void removeFriendRequest(Request request) {
+		backRequestReceiver.remove(request);
+		request.removeReceiver(this);
+	}
+	public List<Request> getIncomingRequests() {
+		return backRequestReceiver;
+	}
+	public void acceptChallenge(ChallengeInstance chal) {
+		acceptedChallenges.add(chal);
+	}
+	public void addSubscription(ChallengeInstance chal) {
+		backSubscribers.add(chal);
+	}
+	public List<ChallengeDefinition> getChallenges() {
+		return backCreators;
+	}
+	public Image getMainImageEntity() {
+		for(Image img : images) {
+			if(img.getIsMain()) {
+				return img;
+			}
+		}
+		//TODO it possible?
+		return new Image();
+	}
+	public void addRating(Integer addPart) {
+		rating += addPart;
+	}
+	public void addImage(Image img) {
+		images.add(img);
+	}
+	public List<ChallengeInstance> getSubscriptions() {
+		return getBackSubscribers();
+	}
+	public List<Request> getIncomingFriendRequestSenders() {
+		return getBackRequestReceiver();
+	}
+	public void addChallenge(ChallengeDefinition chal) {
+		this.backCreators.add(chal);
+	}
+	
     public static final Comparator<User> COMPARE_BY_RATING = (User left, User right)
             -> Integer.signum(right.getRating() - left.getRating());
 }

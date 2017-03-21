@@ -1,94 +1,101 @@
 package challenge.dbside.models;
 
-import challenge.dbside.models.common.IdAttrGet;
-import challenge.dbside.models.dbentity.DBSource;
-import challenge.dbside.models.ini.TypeEntity;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
+import java.util.Locale;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.Persister;
+import org.hibernate.eav.EAVEntity;
+import org.hibernate.eav.EAVGlobalContext;
 import org.hibernate.validator.constraints.NotBlank;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ChallengeStep extends BaseEntity implements Commentable {
+import challenge.dbside.eav.EAVPersister;
+import challenge.dbside.eav.collection.EAVCollectionPersister;
 
-    public ChallengeStep() {
-        super(ChallengeStep.class.getSimpleName());
-    }
-
-    public ChallengeStep(DBSource dataSource) {
-        super(dataSource);
-    }
-
+@Entity
+@EAVEntity
+@Persister(impl=EAVPersister.class)
+public class ChallengeStep  extends BaseEntity {
+	private static final Logger logger = LoggerFactory.getLogger(ChallengeStep.class);
+	public ChallengeStep() {
+		super(EAVGlobalContext.getTypeOfEntity(ChallengeStep.class.getSimpleName().toLowerCase()).getId());
+		images = new ArrayList();
+	}
+	
+	private String name;
+	private String message;
+	private String date;
+	
+	@ManyToMany(cascade=CascadeType.REMOVE, fetch=FetchType.EAGER)
+	@JoinTable(name="eav_relationship",
+			joinColumns = @JoinColumn(name = "entity_id1", referencedColumnName = "entity_id"),            
+			inverseJoinColumns = @JoinColumn(name = "entity_id2", referencedColumnName = "entity_id")
+					)
+	@Persister(impl=EAVCollectionPersister.class)
+	private List<Image> images;
+	
     @NotNull
     @NotBlank(message = "{error.name.blank}")
     @Size(min = 5, max = 40, message = "{error.name.length}")
-    public String getName() {
-        return getDataSource().getAttributes().get(IdAttrGet.IdName()).getValue();
-    }
-
-    public void setName(String name) {
-        getDataSource().getAttributes().get(IdAttrGet.IdName()).setValue(name.trim());
-    }
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name.trim();
+	}
 
     @NotNull
     @NotBlank(message = "{error.name.blank}")
     @Size(min = 5, max = 250, message = "{error.description.length}")
-    public String getMessage() {
-        return getDataSource().getAttributes().get(IdAttrGet.IdMessage()).getValue();
-    }
-
-    public void setMessage(String msg) {
-        getDataSource().getAttributes().get(IdAttrGet.IdMessage()).setValue(msg.trim());
-    }
-
-    public void setInstance(ChallengeInstance challengeInstance) {
-        getDataSource().setParent(challengeInstance.getDataSource());
-    }
-
-    public ChallengeInstance getInstance() {
-        return new ChallengeInstance(getDataSource().getParent());
-    }
-
-    public Date getDate() {
-        return (Date) getDataSource().getAttributes().get(IdAttrGet.IdDate()).getDateValue();
-    }
-
-    public void setDate(Date date) {
-        getDataSource().getAttributes().get(IdAttrGet.IdDate()).setDateValue(date);
-    }
-
-    public Image getMainImageEntity() {
-        Set<DBSource> children = (Set<DBSource>) getDataSource().getChildren();
-        for (DBSource childDB : children) {
-            if (childDB.getEntityType() == TypeEntity.IMAGE.getValue()) {
-                Image currentImage = new Image(childDB);
-                if (currentImage.isMain()) {
-                    return currentImage;
-                }
-            }
-        }
-        return new Image();
-    }
-
-    public List<Image> getImageEntities() {
-        List<Image> images = new ArrayList<>();
-        Set<DBSource> children = (Set<DBSource>) getDataSource().getChildren();
-        children.forEach((childDB) -> {
-            if (childDB.getEntityType() == TypeEntity.IMAGE.getValue()) {
-                images.add(new Image(childDB));
-            }
-        });
-        return images;
-    }
-
-    public void addImage(Image image) {
-        getDataSource().getChildren().add(image.getDataSource());
-    }
-
-    public static final Comparator<ChallengeStep> COMPARE_BY_DATE = (ChallengeStep leftToCompare, ChallengeStep rightToCompare)
+	public String getMessage() {
+		return message.trim();
+	}
+	public void setMessage(String message) {
+		this.message = message.trim();
+	}
+    @NotNull
+    @Future(message = "{error.date}")
+	public Date getDate() {
+		try {
+			DateFormat df = new SimpleDateFormat("EEE MMM dd kk:mm:ss z yyyy", Locale.ENGLISH);
+			String ddt = this.date;
+			Date result = df.parse(ddt);
+			return result;
+		} catch (Exception ex) {
+			logger.error("null data" + ex.getMessage());
+			return (new Date(0));
+		}
+	}
+	public void setDate(Date date) {
+		this.date = date.toString();
+	}
+	public List<Image> getImages() {
+		return images;
+	}
+	public void setImages(List<Image> images) {
+		this.images = images;
+	}
+	
+	public void addImage(Image img) {
+		images.add(img);
+	}
+	
+	public static final Comparator<ChallengeStep> COMPARE_BY_DATE = (ChallengeStep leftToCompare, ChallengeStep rightToCompare)
             -> leftToCompare.getDate().compareTo(rightToCompare.getDate());
-
 }

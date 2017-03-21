@@ -1,57 +1,81 @@
 package challenge.dbside.models;
 
-import challenge.dbside.models.dbentity.DBSource;
-import java.util.Objects;
+import java.util.HashSet;
+import java.util.Set;
 
-public class BaseEntity {
+import javax.persistence.*;
+import org.hibernate.annotations.DiscriminatorFormula;
+import org.hibernate.eav.EAVEntity;
+import org.springframework.data.jpa.domain.AbstractPersistable;
 
-    private DBSource dataSource;
+@Entity
+@Table(name = "eav_entities")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE) 
+//@DiscriminatorColumn(name="type_of_entity")
+public abstract class BaseEntity {
 
-    public BaseEntity() {
-    }
+	public BaseEntity() {
 
-    public Integer getId() {
-        return dataSource.getId();
-    }
+	}
 
-    public void setId(Integer id) {
-        dataSource.setId(id);
-    }
+	public BaseEntity(Integer type_of_entity) {
+		this.type_of_entity = type_of_entity;
+	}
 
-    public DBSource getDataSource() {
-        return dataSource;
-    }
+	@Id
+	//@GeneratedValue
+	@Column(name = "entity_id", insertable = true, updatable = false)
+	private Integer id;
 
-    public BaseEntity(String nameClass) {
-        dataSource = new DBSource(nameClass);
-    }
 
-    public BaseEntity(DBSource dt) {
-        dataSource = dt;
-    }
+	private Integer type_of_entity;
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        BaseEntity other = (BaseEntity) obj;
-        if (!this.getId().equals(other.getId())) {
-            return false;
-        }
-        return true;
-    }
+	public Integer getType_of_entity() {
+		return type_of_entity;
+	}
 
+	public void setType_of_entity(Integer type_of_entity) {
+		this.type_of_entity = type_of_entity;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final BaseEntity other = (BaseEntity) obj;
+		if (!this.id.equals(other.id)) {
+			return false;
+		}
+		return true;
+	}
+	
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 29 * hash + Objects.hashCode(this.dataSource);
+        Integer id = this.getId() != null ? this.getId().hashCode() : 0;
+        hash = 29 * hash + id;
         return hash;
     }
+    
+    public String toString() {
+    	return this.getId().toString();
+    }
+    
+    
 }

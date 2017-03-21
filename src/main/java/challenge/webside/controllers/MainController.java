@@ -54,7 +54,7 @@ public class MainController {
     private UsersDao usersDao;
 
     @Autowired
-    @Qualifier("storageServiceUser")
+    @Qualifier("EAVStorageServiceUser")
     private MediaService serviceEntity;
 
     @Autowired

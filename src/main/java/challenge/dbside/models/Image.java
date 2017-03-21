@@ -1,37 +1,41 @@
 package challenge.dbside.models;
 
-import challenge.dbside.models.common.IdAttrGet;
-import challenge.dbside.models.dbentity.DBSource;
-import challenge.webside.imagesstorage.ImageStoreService;
-import org.apache.commons.codec.binary.Base64;
+import javax.persistence.*;
 
+import org.apache.commons.codec.binary.Base64;
+import org.hibernate.annotations.Persister;
+import org.hibernate.eav.EAVEntity;
+import org.hibernate.eav.EAVGlobalContext;
+
+import challenge.dbside.eav.EAVPersister;
+import challenge.webside.imagesstorage.ImageStoreService;
+
+@Entity
+@EAVEntity
+@Persister(impl=EAVPersister.class)
 public class Image extends BaseEntity {
 
-    public Image() {
-        super(Image.class.getSimpleName());
-    }
-
-    public Image(DBSource dataSource) {
-        super(dataSource);
-    }
-
-    public void setImageRef(String imageRef) {
-        getDataSource().getAttributes().get(IdAttrGet.IdImgRef()).setValue(imageRef);
-    }
-
-    public String getImageRef() {
-        return getDataSource().getAttributes().get(IdAttrGet.IdImgRef()).getValue();
-    }
-
-    public Boolean isMain() {
-        return getDataSource().getAttributes().get(IdAttrGet.IdIsMain()).getBooleanValue();
-    }
-
-    public void setIsMain(Boolean isMain) {
-        getDataSource().getAttributes().get(IdAttrGet.IdIsMain()).setBooleanValue(isMain);
-    }
-
-    public String getBase64() {
+	public Image() {
+		super(EAVGlobalContext.getTypeOfEntity(Image.class.getSimpleName().toLowerCase()).getId());
+	}
+	
+	private String imageRef;
+	private Integer isMain;
+	
+	public String getImageRef() {
+		return imageRef;
+	}
+	public void setImageRef(String imageRef) {
+		this.imageRef = imageRef;
+	}
+	public Boolean getIsMain() {
+		return isMain == 1 ? true : false;
+	}
+	public void setIsMain(Boolean isMain) {
+		this.isMain = isMain == true ? 1 : 0;
+	}
+	
+	public String getBase64() {
         String encoded;
         try {
             encoded = "data:image/jpg;base64," + Base64.encodeBase64String(ImageStoreService.restoreImage(this));
@@ -40,4 +44,5 @@ public class Image extends BaseEntity {
         }
         return encoded;
     }
+	
 }

@@ -16,7 +16,7 @@ import org.springframework.ui.Model;
 public class TagsUtil {
     
     @Autowired
-    @Qualifier("storageServiceUser")
+    @Qualifier("EAVStorageServiceUser")
     private MediaService serviceEntity;
 
     public List<Tag> filterTags(String filter) {
