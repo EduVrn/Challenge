@@ -170,16 +170,16 @@ public class UsersDao {
             }
         }
     }
-    
+    /*
     public void deleteRelation(int entityId, int entityVal, int attributeId) {
         throw new RuntimeException("not supported");
-    	/*jdbcTemplate.update("delete from relationship where entity_id = ? and entity_val = ? and attribute_id = ? ", 
-                entityId, entityVal, attributeId);*/
-    }
+    	jdbcTemplate.update("delete from relationship where entity_id = ? and entity_val = ? and attribute_id = ? ", 
+                entityId, entityVal, attributeId);
+    }*/
 
-    public void addRelation(int entityId, int entityVal, int attributeId) {
+    /*public void addRelation(int entityId, int entityVal, int attributeId) {
     	throw new RuntimeException("not supported");
-        /*jdbcTemplate.update("insert into relationship values(?,?,?) ", 
-                entityId, entityVal, attributeId);*/
-    }
+        jdbcTemplate.update("insert into relationship values(?,?,?) ", 
+                entityId, entityVal, attributeId);
+    }*/
 }

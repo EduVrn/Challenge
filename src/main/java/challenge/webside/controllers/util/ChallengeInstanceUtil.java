@@ -106,10 +106,9 @@ public class ChallengeInstanceUtil {
 
     public void setModelForAcceptOrDeclineChallenge(HttpServletRequest request, User user, Model model, int requestId, boolean accept) {
         Request challengeRequest = (Request) serviceEntity.findById(requestId, Request.class);
-        if (accept) {
+        ChallengeDefinition chal = challengeRequest.getSubject();
 
-            ChallengeDefinition chal = challengeRequest.getSubject();
-
+        if (accept) {    
             Image img = new Image();
             img.setIsMain(true);
             img.setImageRef(chal.getMainImageEntity().getImageRef());
@@ -138,12 +137,20 @@ public class ChallengeInstanceUtil {
             chalIns.addStep(step);
             serviceEntity.save(chalIns);
 
-            chal.addChallengeInstance(chalIns);
-            serviceEntity.update(chal);
-            user.acceptChallenge(chalIns);
-            serviceEntity.update(user);
+//            chal.addChallengeInstance(chalIns);
+//            serviceEntity.update(chal);
+//            user.acceptChallenge(chalIns);
+//            serviceEntity.update(user);
         }
+        challengeRequest.removeReceiver(user);
+        challengeRequest.removeSubject(chal);
+        User sender = challengeRequest.getSender();
+        challengeRequest.removeSender(sender);
+        /*serviceEntity.update(sender);*/
+        
+        serviceEntity.update(challengeRequest);
         serviceEntity.delete(challengeRequest);
+        
         dialect.setActions(actionsProvider.getActionsForProfile(user, user));
     }
 

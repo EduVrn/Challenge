@@ -41,7 +41,7 @@ public class VoteUtil {
             if (comment.getVotesAgainst().contains(user)) {
                 if (comment.rmVoteAgainst(user)) {
                     logger.info("remove comment VoteAgainst for comment " + comment.getId());
-                    usersDao.deleteRelation(commentId, user.getId(), 19);
+                    //usersDao.deleteRelation(commentId, user.getId(), 19);
                 }
             }
             comment.addVoteFor(user);
@@ -54,7 +54,7 @@ public class VoteUtil {
                 if (comment.rmVoteFor(user)) {
                     logger.info("remove comment VoteFor for comment " + comment.getId()
                             + " user: " + user.getId());
-                    usersDao.deleteRelation(commentId, user.getId(), 18);
+                    //usersDao.deleteRelation(commentId, user.getId(), 18);
                 }
             }
             serviceEntity.update(comment);

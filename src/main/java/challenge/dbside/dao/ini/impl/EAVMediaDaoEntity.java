@@ -15,58 +15,63 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import challenge.dbside.dao.ini.MediaDao;
 import challenge.dbside.models.BaseEntity;
-
+import org.hibernate.Session;
 
 @Repository("EAVDAOEntity")
 public class EAVMediaDaoEntity<E extends BaseEntity> implements MediaDao<E> {
 
-	@Autowired
-	private SessionFactory sessionFactory;
-	
+    @Autowired
+    private SessionFactory sessionFactory;
+
     private PlatformTransactionManager transactionManager;
 
     public void setTransactionManager(PlatformTransactionManager transactionManager) {
     }
 
     public Integer getNextId() {
-    	SQLQuery q = sessionFactory.getCurrentSession().createSQLQuery("select nextval('serial') as val");
-    	q.getQueryReturns();
-    	return ((BigInteger)q.list().get(0)).intValue();
+        SQLQuery q = sessionFactory.getCurrentSession().createSQLQuery("select nextval('serial') as val");
+        q.getQueryReturns();
+        return ((BigInteger) q.list().get(0)).intValue();
     }
 
-	@Override
-	public void save(E entity) {
-		Integer id = getNextId();
+    @Override
+    public void save(E entity) {
+        Integer id = getNextId();
         entity.setId(id);
-        
+
         sessionFactory.getCurrentSession().save(entity);
-	}
+    }
 
-	@Override
-	public List<E> getAll(Class<E> classType) {
-		List<E> list = sessionFactory.getCurrentSession().createCriteria(classType).list();
-		Set setUniqueRes = new LinkedHashSet(list);
-		List<E> uniqueList = new ArrayList<E>();
-		uniqueList.addAll(setUniqueRes);
-		return uniqueList;
-	}
+    @Override
+    public List<E> getAll(Class<E> classType) {
+        List<E> list = sessionFactory.getCurrentSession().createCriteria(classType).list();
+        Set setUniqueRes = new LinkedHashSet(list);
+        List<E> uniqueList = new ArrayList<E>();
+        uniqueList.addAll(setUniqueRes);
+        return uniqueList;
+    }
 
-	@Override
-	public void delete(E entity) {
-		sessionFactory.getCurrentSession().delete(entity);
-	}
+    //TODO see it
+    @Override
+    public void delete(E entity) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        String sql = String.format("delete from eav_entities where entity_id = %s", entity.getId());
+        session.createSQLQuery(sql).executeUpdate();
+        session.getTransaction().commit();
+    }
 
-	@Override
-	public void update(E entity) {
-		sessionFactory.getCurrentSession().update(entity);
-	}
+    @Override
+    public void update(E entity) {
+        sessionFactory.getCurrentSession().update(entity);
+    }
 
-	//TODO change it to EAVBaseEntity ??
-	@Override
-	public E findById(Object id, Class<E> classType) {
-		Object obj = sessionFactory.getCurrentSession().get(classType, (Serializable) id);
-		
-		return (E) obj; 
-	}
-	
+    //TODO change it to EAVBaseEntity ??
+    @Override
+    public E findById(Object id, Class<E> classType) {
+        Object obj = sessionFactory.getCurrentSession().get(classType, (Serializable) id);
+
+        return (E) obj;
+    }
+
 }

@@ -87,7 +87,7 @@ public class ChallengeDefinitionController {
             @RequestParam(value = "tags", required = false) List<Integer> selectedTags) {
         UserProfile userProfile = util.getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName());
         User user = util.getSignedUpUser(request, currentUser);
-        if (bindingResult.hasFieldErrors()) {
+        if (bindingResult.hasFieldErrors() && !challenge.getTags().isEmpty()) {
             util.setModel(request, currentUser, model);
             challengeDefUtil.setModelForBadDateNewChal(challenge, request, currentUser, model, img, imgName, selectedTags);
             model.addAttribute(bindingResult.getAllErrors());

@@ -98,7 +98,7 @@ public class ChallengeDefinitionUtil {
             ChallengeInstance chalIns = new ChallengeInstance();
             chalIns.setName(chalToAccept.getName());
             chalIns.setDate(chalToAccept.getDate());
-            chalIns.setChallengeRoot(chalToAccept);
+            chalIns.setDescription(chalToAccept.getDescription());
             serviceEntity.save(chalIns);
             
             chalToAccept.setStatus(ChallengeDefinitionStatus.ACCEPTED);
@@ -125,9 +125,6 @@ public class ChallengeDefinitionUtil {
             serviceEntity.save(stepImg);
             step.addImage(stepImg);
             serviceEntity.update(step);
-
-            user.acceptChallenge(chalIns);
-            serviceEntity.update(user);
         }
         dialect.setActions(actionsProvider.getActionsForProfile(user, user));
     }
@@ -167,7 +164,7 @@ public class ChallengeDefinitionUtil {
             chalToUpdate.removeAllTags();
             serviceEntity.update(chalToUpdate);
             for (Tag t : tags) {
-                usersDao.deleteRelation(chalToUpdate.getId(), t.getId(), 20);
+                //usersDao.deleteRelation(chalToUpdate.getId(), t.getId(), 20);
                 t.removeChallenge(chalToUpdate);
                 serviceEntity.update(t);
             }

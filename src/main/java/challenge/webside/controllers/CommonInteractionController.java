@@ -84,7 +84,7 @@ public class CommonInteractionController {
         if (voteFor) {
             if (comment.getVotesAgainst().contains(user)) {
                 comment.rmVoteAgainst(user);
-                usersDao.deleteRelation(comment.getId(), user.getId(), 19);
+                //usersDao.deleteRelation(comment.getId(), user.getId(), 19);
                 //remove in web
                 message.setChangeVote(2);
             } else {
@@ -99,7 +99,7 @@ public class CommonInteractionController {
         } else {
             if (comment.getVotesFor().contains(user)) {
                 comment.rmVoteFor(user);
-                usersDao.deleteRelation(comment.getId(), user.getId(), 18);
+                //usersDao.deleteRelation(comment.getId(), user.getId(), 18);
                 message.setChangeVote(-2);
             } else {
                 message.setChangeVote(-1);
