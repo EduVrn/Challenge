@@ -45,28 +45,29 @@ public class ChallengeInstanceUtil {
 
     public void setModelForNewStepForChallenge(HttpServletRequest request, Principal currentUser, Model model, ChallengeStep step, String image, int chalId) {
         ChallengeInstance currentChallenge = (ChallengeInstance) serviceEntity.findById(chalId, ChallengeInstance.class);
-        serviceEntity.save(step);
         //need to update or create image
-        if (!image.isEmpty() && !StringUtils.isNumeric(image)) {
+        Image img;
+        if (image.isEmpty()) {
+            img = new Image();
+            img.setIsMain(Boolean.TRUE);
+            img.setImageRef(ImageStoreService.getDEFAULT_IMAGE_ROUTE());
+            serviceEntity.save(img);
+        } else {
             String base64Image = image.split(",")[1];
             byte[] array = Base64.decodeBase64(base64Image);
-            Image imageEntity = new Image();
-            imageEntity.setIsMain(Boolean.TRUE);
-            serviceEntity.save(imageEntity);
+            img = new Image();
+            img.setIsMain(Boolean.TRUE);
+            serviceEntity.save(img);
             try {
-                ImageStoreService.saveImage(array, imageEntity);
-                serviceEntity.update(imageEntity);
+                ImageStoreService.saveImage(array, img);
+                serviceEntity.update(img);
             } catch (Exception ex) {
                 Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
             }
-            step.addImage(imageEntity);
-            serviceEntity.update(step);
-        } else if (StringUtils.isNumeric(image)) {
-            Image newMainImage = (Image) serviceEntity.findById(Integer.valueOf(image), Image.class);
-            newMainImage.setIsMain(Boolean.TRUE);
-            serviceEntity.update(newMainImage);
         }
 
+        step.addImage(img);
+        serviceEntity.save(step);
         currentChallenge.addStep(step);
         serviceEntity.update(currentChallenge);
     }
