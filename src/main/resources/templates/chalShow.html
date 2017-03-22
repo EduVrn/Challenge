@@ -34,6 +34,18 @@
                                     <span class="glyphicon glyphicon-wrench" style="font-size: 30px;" />
                                 </a>
                             </form>
+                            <form th:if="${isChalDef}" class="pull-right" name="submitForm" th:id="'accept_def_form'+${challenge.Id}" method="GET"
+                                  action="/acceptDefinition" style="display: inline-block;">
+                                <input type="hidden" name="id" th:value="${challenge.getId()}" />
+                                <input
+                                    th:unless="${challenge.getStatus() == T(challenge.dbside.models.status.ChallengeDefinitionStatus).ACCEPTED}"
+                                    id="accept-def" style="margin-top:8px;margin-right: 5px;" type="submit" class="btn btn-success pull-right"
+                                    th:value="#{profileAcceptChalButton}"/>
+                            </form>
+                            <input type="hidden" name="id" th:value="${challenge.getId()}" />
+                            <input auth:can="THROW_CHALLENGE_DEF" name="throw" type="submit" data-target="#modal-friends" 
+                                   data-toggle="modal" style="margin-top:8px; margin-right:5px;" class="btn btn-success pull-right"
+                                   th:value="#{profileThrowChalButton}" />
                             <form auth:can="CLOSE_CHALLENGE"
                                   style="margin-top:8px; display: inline-block; float: right;" action="close">
                                 <input type='hidden' th:value='${challenge.getId()}' name='id'/>
@@ -196,6 +208,8 @@
             </div> 
         </div>
         <div th:replace="fragments/customModal::modalBody" />
+        <!--modal for friends-->
+        <div th:replace="fragments/modals/friendsmodal::friendsmodal" />
 
         <script th:replace="fragments/commonDependencies :: commonJS" th:remove="tag"/>
         <script src="../js/csslayoutextenders/chalShowLayout.js"></script>

@@ -138,7 +138,7 @@ public class ChallengeDefinitionController {
         for (Integer id : selectedFriendsIds) {
             challengeDefUtil.throwChallenge(id, currentDBUser, chalId, chalInfo);
         }
-        return ControllerUtil.getPreviousPageByRequest(request).orElse("/");
+        return ControllerUtil.getPreviousPageByRequest(request).orElse("main");
     }
 
     @RequestMapping(value = "/challengesForFriend", method = GET)

@@ -162,3 +162,8 @@ $('#challenges-form').submit(function () {
         }
     });
 });
+
+$('.glyphicon.send-vote').on('click', function () {
+    $(this).removeClass('_empty');
+    $(this).addClass('vote_hide');
+});

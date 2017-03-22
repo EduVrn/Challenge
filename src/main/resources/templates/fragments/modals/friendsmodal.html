@@ -25,7 +25,7 @@ and open the template in the editor.
                             <input type="hidden" id="csrf-token" name="_csrf" th:value="${_csrf.token}" />
                             <input type="text" id="filter-friends" th:placeholder="#{friendsFilter}" style="width: 100%;"/>
                         </form>
-                        <form method="GET" action="friendsForChallenge" id="friends-form">
+                        <form method="GET" action="/friendsForChallenge" id="friends-form">
                             <div class="well" style="max-height: 300px; overflow: auto;">
                                 <ul id="friends-list" class="list-group checked-list-box">
                                     <li class="list-group-item" th:each="friend : ${friends}">
