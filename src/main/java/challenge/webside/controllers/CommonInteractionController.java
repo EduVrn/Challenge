@@ -72,15 +72,17 @@ public class CommonInteractionController {
     public void like(@Payload InteractiveVote message, @DestinationVariable("username") String username, Principal principal) {
         UserProfile userProf = usersDao.getUserProfile(principal.getName());
         User user = (User) serviceEntity.findById(userProf.getUserEntityId(), User.class);
-
+        if (user == null) {
+            return;
+        }
         Comment comment = (Comment) serviceEntity.findById(message.getIdOwner(), Comment.class);
 
         boolean voteFor = message.getChangeVote() == 1;
-        
+
         if (comment.getAuthor().equals(user)) {
             return;
         }
-        
+        message.setUserId(user.getId());
         if (voteFor) {
             if (comment.getVotesAgainst().contains(user)) {
                 comment.rmVoteAgainst(user);
@@ -104,6 +106,7 @@ public class CommonInteractionController {
             } else {
                 message.setChangeVote(-1);
             }
+
             comment.addVoteAgainst(user);
             serviceEntity.update(comment);
             User author = comment.getAuthor();
@@ -119,8 +122,8 @@ public class CommonInteractionController {
     @MessageMapping("/interactive.comment.{username}")
     public void interactiveComment(@Payload InteractiveComment message, @DestinationVariable("username") String username, Principal principal) {
         Integer mainObjectId = message.getMainObjectId();
-        if (Strings.isNullOrEmpty(message.getMessageContent()) || message.getMessageContent().trim().length()>250) {
-           message.setStatus("FAIL");
+        if (Strings.isNullOrEmpty(message.getMessageContent()) || message.getMessageContent().trim().length() > 250) {
+            message.setStatus("FAIL");
         } else {
             UserProfile userProf = usersDao.getUserProfile(principal.getName());
             User user = (User) serviceEntity.findById(userProf.getUserEntityId(), User.class);
@@ -230,9 +233,9 @@ public class CommonInteractionController {
     AjaxResponseBody searchUsers(@RequestBody SearchCriteria search) {
 
         AjaxResponseBody result = new AjaxResponseBody();
-        
+
         if (search != null) {
-            
+
             User currentUser = (User) serviceEntity.findById(search.getUserId(), User.class);
             List<User> filteredUsers = userUtil.filterUsers(search.getFilter(), currentUser);
 

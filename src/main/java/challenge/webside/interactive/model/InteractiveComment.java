@@ -7,6 +7,7 @@ public class InteractiveComment extends BaseMessage {
     String userName;
     private String avatarImage64;
     String messageContent;
+    private Integer authorId;
     private String toWhom;
 
     public Integer getIdParent() {
@@ -57,4 +58,11 @@ public class InteractiveComment extends BaseMessage {
         this.avatarImage64 = avatarImage;
     }
 
+    public Integer getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(Integer authorId) {
+        this.authorId = authorId;
+    }
 }

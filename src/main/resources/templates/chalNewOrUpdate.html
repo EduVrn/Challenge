@@ -94,7 +94,7 @@
                             <div th:switch="*{id}"> 
                                 <input th:case="null" class="btn btn-default text-center" type="submit" name="k" th:value="#{createNewButton}" style="float: right;"/>
                                 <input th:case="*" class="btn btn-default text-center" type="submit" name="k" th:value="#{updateButton}" style="float: right;"/>
-                                <input class="btn btn-default" onclick="javascript:history.back()"  th:value="#{backButton}"  style="float: left;"/>
+                                <input type="button" class="btn btn-default" onclick="javascript:history.back()"  th:value="#{backButton}"  style="float: left;"/>        
                             </div>
                         </div> 
                     </div>
