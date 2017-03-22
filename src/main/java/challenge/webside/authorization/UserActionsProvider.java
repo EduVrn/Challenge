@@ -5,6 +5,7 @@ import challenge.dbside.models.ChallengeInstance;
 import challenge.dbside.models.User;
 import challenge.dbside.models.status.ChallengeInstanceStatus;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
@@ -14,7 +15,6 @@ public class UserActionsProvider {
 
     public Set<Action> getActionsForProfile(User userWhichMakesRequest, User userWhoseProfileRequested) {
         Set<Action> actions = new HashSet<>();
-        actions.add(Action.ACCEPT_CHALLENGE_DEF);
         if (userWhichMakesRequest.getId().equals(userWhoseProfileRequested.getId())) {
             actions.add(Action.EDIT_CHALLENGE);
             actions.add(Action.CREATE_CHALLENGE);
@@ -36,7 +36,17 @@ public class UserActionsProvider {
     public Set<Action> getActionsForChallengeDefinition(User user, ChallengeDefinition challenge) {
         Set<Action> actions = new HashSet<>();
         if (user != null) {
-            actions.add(Action.ACCEPT_CHALLENGE_DEF);
+            boolean canAccept = true;
+            List<ChallengeInstance> instances = challenge.getChallengeInstances();
+            for (ChallengeInstance chal : instances) {
+                if (chal.getAcceptor().equals(user) && chal.getStatus() == ChallengeInstanceStatus.ACCEPTED) {
+                    canAccept = false;
+                    break;
+                }
+            }
+            if (canAccept) {
+                actions.add(Action.ACCEPT_CHALLENGE_DEF);
+            }
             if (user.getId().equals(challenge.getCreator().getId())) {
                 actions.add(Action.EDIT_CHALLENGE);
                 actions.add(Action.DELETE_CHALLENGE);

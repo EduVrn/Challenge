@@ -118,7 +118,7 @@ public class Request extends BaseEntity {
     }
 
     public ChallengeDefinition getSubject() {
-        return (subjects.size() == 0 ) ? null : subjects.get(0);
+        return (subjects.size() == 0) ? null : subjects.get(0);
     }
 
     public void setSender(User sender) {
@@ -129,7 +129,7 @@ public class Request extends BaseEntity {
     public User getSender() {
         return backSenders.get(0);
     }
-    
+
     public void removeSubject(ChallengeDefinition chal) {
         subjects.remove(chal);
     }

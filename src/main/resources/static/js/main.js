@@ -167,3 +167,14 @@ $('.glyphicon.send-vote').on('click', function () {
     $(this).removeClass('_empty');
     $(this).addClass('vote_hide');
 });
+
+$(document).on('click', '.btn.notification-button', function() {
+    $(this).attr('disabled', 'disabled');
+    $neighbourButton = $(this).hasClass('btn-success') ? $(this).parent().next() : $(this).parent().prev();
+    if ($(this).hasClass('btn-success')) {
+        $neighbourButton.find('.btn.notification-button').attr('disabled', 'disabled');
+    } else {
+        $neighbourButton.find('.btn.notification-button').attr('disabled', 'disabled');
+    }
+    $(this).parent().submit();
+});

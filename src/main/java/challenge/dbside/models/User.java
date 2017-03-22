@@ -17,6 +17,7 @@ import org.hibernate.eav.EAVGlobalContext;
 
 import challenge.dbside.eav.EAVPersister;
 import challenge.dbside.eav.collection.EAVCollectionPersister;
+import challenge.dbside.models.status.ChallengeInstanceStatus;
 
 @Entity
 @EAVEntity
@@ -241,15 +242,27 @@ public class User extends BaseEntity {
     }
 
     public List<User> getIncomingFriendRequestSenders() {
-    	List<User> friendsRequests = new ArrayList();
-    	for(Request req : getBackReceivers()) {
-    		friendsRequests.add(req.getSender());
-    	}
+        List<User> friendsRequests = new ArrayList();
+        for (Request req : getBackReceivers()) {
+            if (req.getSubject() == null) {
+                friendsRequests.add(req.getSender());
+            }
+        }
         return friendsRequests;
     }
 
     public void addChallenge(ChallengeDefinition chal) {
         this.backCreators.add(chal);
+    }
+
+    public boolean canAccept(ChallengeDefinition chal) {
+        List<ChallengeInstance> instances = chal.getChallengeInstances();
+        for (ChallengeInstance instance : instances) {
+            if (instance.getAcceptor().equals(this) && instance.getStatus() == ChallengeInstanceStatus.ACCEPTED) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static final Comparator<User> COMPARE_BY_RATING = (User left, User right)

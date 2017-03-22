@@ -23,11 +23,11 @@ and open the template in the editor.
                     </h2>
                 </form>
                 <div th:replace="fragments/modelElementsViews/challengeImageAndBody :: challengePanel(${challenge})" th:remove="tag"  /> 
-                <form name="submitForm" th:id="'accept_def_form'+${challenge.Id}" method="GET"
+                <form th:if="${currentDBUser.canAccept(challenge)}" 
+                      name="submitForm" th:id="'accept_def_form'+${challenge.Id}" method="GET"
                       action="acceptDefinition" style="display: inline-block;">
                     <input type="hidden" name="id" th:value="${challenge.getId()}" />
                     <input
-                        th:unless="${challenge.getStatus() == T(challenge.dbside.models.status.ChallengeDefinitionStatus).ACCEPTED}"
                         id="accept-def" type="submit" class="btn btn-success"
                         th:value="#{profileAcceptChalButton}"/>
                 </form>

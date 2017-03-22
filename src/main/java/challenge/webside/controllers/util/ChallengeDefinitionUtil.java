@@ -89,43 +89,40 @@ public class ChallengeDefinitionUtil {
     public void setModelForAcceptChallengeDefinition(HttpServletRequest request, User user, Model model, int chalId) {
 
         ChallengeDefinition chalToAccept = (ChallengeDefinition) serviceEntity.findById(chalId, ChallengeDefinition.class);
-        if (chalToAccept.getStatus() != ChallengeDefinitionStatus.ACCEPTED) {
-            Image img = new Image();
-            img.setIsMain(true);
-            img.setImageRef(chalToAccept.getMainImageEntity().getImageRef());
-            serviceEntity.save(img);
+        Image img = new Image();
+        img.setIsMain(true);
+        img.setImageRef(chalToAccept.getMainImageEntity().getImageRef());
+        serviceEntity.save(img);
 
-            ChallengeInstance chalIns = new ChallengeInstance();
-            chalIns.setName(chalToAccept.getName());
-            chalIns.setDate(chalToAccept.getDate());
-            chalIns.setDescription(chalToAccept.getDescription());
-            serviceEntity.save(chalIns);
+        ChallengeInstance chalIns = new ChallengeInstance();
+        chalIns.setName(chalToAccept.getName());
+        chalIns.setDate(chalToAccept.getDate());
+        chalIns.setDescription(chalToAccept.getDescription());
+        serviceEntity.save(chalIns);
 
-            chalToAccept.setStatus(ChallengeDefinitionStatus.ACCEPTED);
-            chalToAccept.addChallengeInstance(chalIns);
-            serviceEntity.update(chalToAccept);
+        chalToAccept.addChallengeInstance(chalIns);
+        serviceEntity.update(chalToAccept);
 
-            chalIns.addImage(img);
-            chalIns.setStatus(ChallengeInstanceStatus.ACCEPTED);
-            chalIns.setDescription(chalToAccept.getDescription());
-            chalIns.setAcceptor(user);
+        chalIns.addImage(img);
+        chalIns.setStatus(ChallengeInstanceStatus.ACCEPTED);
+        chalIns.setDescription(chalToAccept.getDescription());
+        chalIns.setAcceptor(user);
 
-            ChallengeStep step = new ChallengeStep();
-            step.setDate(chalIns.getDate());
-            step.setMessage(chalIns.getDescription());
-            step.setName(chalIns.getName());
-            serviceEntity.save(step);
+        ChallengeStep step = new ChallengeStep();
+        step.setDate(chalIns.getDate());
+        step.setMessage(chalIns.getDescription());
+        step.setName(chalIns.getName());
+        serviceEntity.save(step);
 
-            chalIns.addStep(step);
-            serviceEntity.update(chalIns);
+        chalIns.addStep(step);
+        serviceEntity.update(chalIns);
 
-            Image stepImg = new Image();
-            stepImg.setIsMain(true);
-            stepImg.setImageRef(chalToAccept.getMainImageEntity().getImageRef());
-            serviceEntity.save(stepImg);
-            step.addImage(stepImg);
-            serviceEntity.update(step);
-        }
+        Image stepImg = new Image();
+        stepImg.setIsMain(true);
+        stepImg.setImageRef(chalToAccept.getMainImageEntity().getImageRef());
+        serviceEntity.save(stepImg);
+        step.addImage(stepImg);
+        serviceEntity.update(step);
         dialect.setActions(actionsProvider.getActionsForProfile(user, user));
     }
 

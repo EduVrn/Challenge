@@ -21,12 +21,12 @@
                     <br />
                     <form id="accept-form" method="GET" style="display: inline-block;">
                         <input id="message-id" type="hidden" name="id" />
-                        <input type="submit" class="btn btn-success"
+                        <input type="submit" class="btn btn-success notification-button"
                                th:value="#{acceptChalButton}" />
                     </form>
                     <form id="decline-form" method="GET" style="display: inline-block;">
                         <input id="message-id" type="hidden" name="id" />
-                        <input type="submit" class="btn btn-danger"
+                        <input type="submit" class="btn btn-danger notification-button"
                                th:value="#{declineChalButton}" />
                     </form>
                 </div>
@@ -64,13 +64,13 @@
                             <input type="hidden" name="id"
                                    th:value="${request.getId()}" />
                             <input type="submit"
-                                   class="btn btn-success" th:value="#{acceptChalButton}" />
+                                   class="btn btn-success notification-button" th:value="#{acceptChalButton}" />
                         </form>
                         <form method="GET" th:action="${request.getSubject() != null} ? '/decline' : '/removeRequest'" style="display: inline-block;">
                             <input type="hidden" name="id"
                                    th:value="${request.getId()}" />
                             <input type="submit"
-                                   class="btn btn-danger" th:value="#{declineChalButton}" />
+                                   class="btn btn-danger notification-button" th:value="#{declineChalButton}" />
                         </form>
                     </div>
 

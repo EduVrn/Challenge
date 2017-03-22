@@ -182,9 +182,6 @@ public class UserUtil {
             serviceEntity.update(friendRequest);
 
             interactiveUtil.interactiveFriendRequest(friend.getId(), friendRequest);
-            
-            User friend2 = (User) serviceEntity.findById(friendId, User.class);
-            System.out.println("");
         }
     }
 
@@ -202,8 +199,6 @@ public class UserUtil {
         serviceEntity.update(currentUser);
         serviceEntity.update(sender);
         serviceEntity.update(request);
-//        usersDao.deleteRelation(requestId, sender.getId(), 21);
-//        usersDao.deleteRelation(requestId, currentUser.getId(), 22);
         serviceEntity.delete(request);
         return sender;
     }
@@ -212,7 +207,6 @@ public class UserUtil {
         User sender = removeFriendRequest(requestId, user);
         sender.addFriend(user);
         serviceEntity.update(sender);
-        //usersDao.addRelation(sender.getId(), user.getId(), 10);
         user.addFriend(sender);
         serviceEntity.update(user);
     }

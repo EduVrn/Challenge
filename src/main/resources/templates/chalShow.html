@@ -34,11 +34,10 @@
                                     <span class="glyphicon glyphicon-wrench" style="font-size: 30px;" />
                                 </a>
                             </form>
-                            <form th:if="${isChalDef}" class="pull-right" name="submitForm" th:id="'accept_def_form'+${challenge.Id}" method="GET"
+                            <form auth:can="ACCEPT_CHALLENGE_DEF" th:if="${isChalDef}" class="pull-right" name="submitForm" th:id="'accept_def_form'+${challenge.Id}" method="GET"
                                   action="/acceptDefinition" style="display: inline-block;">
                                 <input type="hidden" name="id" th:value="${challenge.getId()}" />
                                 <input
-                                    th:unless="${challenge.getStatus() == T(challenge.dbside.models.status.ChallengeDefinitionStatus).ACCEPTED}"
                                     id="accept-def" style="margin-top:8px;margin-right: 5px;" type="submit" class="btn btn-success pull-right"
                                     th:value="#{profileAcceptChalButton}"/>
                             </form>
