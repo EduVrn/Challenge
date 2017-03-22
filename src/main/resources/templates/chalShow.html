@@ -3,6 +3,7 @@
       xmlns:th="http://www.thymeleaf.org">
     <head>
         <title>Challenge</title>
+        <link rel="icon" type="image/png" href="images/infiLogo.png"/>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -15,12 +16,12 @@
             <script src="../js/Interactive/enable/commentEnable.js"></script>
         </tr>
         <link rel="stylesheet" href="../css/style.css"/>
-        
+
         <meta property="og:title" th:content="${challenge.getName()}" />
         <meta property="og:image" content="http://goalsinfinite.com/wp-content/uploads/2016/04/the-challenge.png" />
         <meta property="og:site_name" content="netchallenge" />
         <meta property="og:description" th:content="${challenge.getDescription()}" />
-        
+
     </head>
     <body>
         <div th:replace="fragments/header :: userInfo"/>
