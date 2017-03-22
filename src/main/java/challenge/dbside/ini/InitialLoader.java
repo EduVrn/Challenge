@@ -5,11 +5,9 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,8 +20,6 @@ import challenge.dbside.models.Comment;
 import challenge.dbside.models.Image;
 import challenge.dbside.models.Tag;
 import challenge.dbside.models.User;
-import challenge.dbside.models.ini.TypeOfAttribute;
-import challenge.dbside.models.ini.TypeOfEntity;
 import challenge.dbside.models.status.ChallengeDefinitionStatus;
 import challenge.dbside.models.status.ChallengeInstanceStatus;
 import challenge.dbside.property.PropertyDB;
@@ -57,11 +53,11 @@ public class InitialLoader {
 
         //init(5, 2,2, 4, 3);
         List<User> users = serviceEntityInit.getAll(User.class);
-    	User user1 = (User) serviceEntityInit.findById(users.get(0).getId(), User.class); 
-    	
-    	List<ChallengeDefinition> challenges = serviceEntityInit.getAll(ChallengeDefinition.class);
-    	List<ChallengeInstance> instances = serviceEntityInit.getAll(ChallengeInstance.class);
-    	List<Comment> comments = serviceEntityInit.getAll(Comment.class);
+        User user1 = (User) serviceEntityInit.findById(users.get(0).getId(), User.class);
+
+        List<ChallengeDefinition> challenges = serviceEntityInit.getAll(ChallengeDefinition.class);
+        List<ChallengeInstance> instances = serviceEntityInit.getAll(ChallengeInstance.class);
+        List<Comment> comments = serviceEntityInit.getAll(Comment.class);
     }
 
     private Integer createContext(Integer versionDB) throws Exception {
@@ -205,7 +201,7 @@ public class InitialLoader {
             picMinForUser.setIsMain(Boolean.FALSE);
             serviceEntityInit.save(picMinForUser);
             try {
-                int rand=new Random().nextInt(images.size());
+                int rand = new Random().nextInt(images.size());
                 ImageStoreService.saveMiniImage(new File(images.get(rand)), picMinForUser);
                 serviceEntityInit.update(picMinForUser);
                 ImageStoreService.saveImage(new File(images.get(rand)), picForUser);
@@ -227,8 +223,8 @@ public class InitialLoader {
                 }
                 text.append(".");
                 chalToCreate.setDescription(text.toString());
-                chalToCreate.setDate( DateUtils.addMonths(new Date(), 1));
-                
+                chalToCreate.setDate(DateUtils.addMonths(new Date(), 1));
+
                 chalToCreate.setCreator(userToCreate);
                 serviceEntityInit.save(chalToCreate);
                 for (int m = 0; m < countOfComments; m++) {

@@ -16,91 +16,91 @@ import org.hibernate.persister.entity.OuterJoinLoadable;
 
 public class BaseEAVBatchingEntityLoaderBuilder extends EAVAbstractBatchingEntityLoaderBuilder {
 
-	public static final BaseEAVBatchingEntityLoaderBuilder INSTANCE = new BaseEAVBatchingEntityLoaderBuilder();
-	
-	public BaseEAVBatchingEntityLoaderBuilder() {
-		super();
-	}
+    public static final BaseEAVBatchingEntityLoaderBuilder INSTANCE = new BaseEAVBatchingEntityLoaderBuilder();
 
-	@Override
-	protected UniqueEntityLoader buildBatchingLoader(OuterJoinLoadable persister, int batchSize, LockMode lockMode,
-			SessionFactoryImplementor factory, LoadQueryInfluencers influencers) {
-		throw new RuntimeException("not supported");
-		//return EAVEntityLoader.forEntity( persister ).withLockMode( lockMode ).withInfluencers( influencers ).byPrimaryKey();
-	}
+    public BaseEAVBatchingEntityLoaderBuilder() {
+        super();
+    }
 
-	@Override
-	protected UniqueEntityLoader buildBatchingLoader(OuterJoinLoadable persister, int batchSize,
-			LockOptions lockOptions, SessionFactoryImplementor factory, LoadQueryInfluencers influencers) {
-		throw new RuntimeException("not supported");
-	}
-	
-	
-	public static class EAVEntityBatchingEntityLoader extends BatchingEntityLoader  {
-		private final int[] batchSizes;
-		private final EntityLoader[] loaders;
+    @Override
+    protected UniqueEntityLoader buildBatchingLoader(OuterJoinLoadable persister, int batchSize, LockMode lockMode,
+            SessionFactoryImplementor factory, LoadQueryInfluencers influencers) {
+        throw new RuntimeException("not supported");
+        //return EAVEntityLoader.forEntity( persister ).withLockMode( lockMode ).withInfluencers( influencers ).byPrimaryKey();
+    }
 
-		public EAVEntityBatchingEntityLoader(
-				OuterJoinLoadable persister,
-				int maxBatchSize,
-				LockMode lockMode,
-				SessionFactoryImplementor factory,
-				LoadQueryInfluencers loadQueryInfluencers) {
-			super( persister );
-			this.batchSizes = ArrayHelper.getBatchSizes( maxBatchSize );
-			this.loaders = new EntityLoader[ batchSizes.length ];
-			final EntityLoader.Builder entityLoaderBuilder = EntityLoader.forEntity( persister )
-					.withInfluencers( loadQueryInfluencers )
-					.withLockMode( lockMode );
-			for ( int i = 0; i < batchSizes.length; i++ ) {
-				this.loaders[i] = entityLoaderBuilder.withBatchSize( batchSizes[i] ).byPrimaryKey();
-			}
-		}
+    @Override
+    protected UniqueEntityLoader buildBatchingLoader(OuterJoinLoadable persister, int batchSize,
+            LockOptions lockOptions, SessionFactoryImplementor factory, LoadQueryInfluencers influencers) {
+        throw new RuntimeException("not supported");
+    }
 
-		public EAVEntityBatchingEntityLoader(
-				OuterJoinLoadable persister,
-				int maxBatchSize,
-				LockOptions lockOptions,
-				SessionFactoryImplementor factory,
-				LoadQueryInfluencers loadQueryInfluencers) {
-			super( persister );
-			this.batchSizes = ArrayHelper.getBatchSizes( maxBatchSize );
-			this.loaders = new EntityLoader[ batchSizes.length ];
-			final EntityLoader.Builder entityLoaderBuilder = EntityLoader.forEntity( persister )
-					.withInfluencers( loadQueryInfluencers )
-					.withLockOptions( lockOptions );
-			for ( int i = 0; i < batchSizes.length; i++ ) {
-				this.loaders[i] = entityLoaderBuilder.withBatchSize( batchSizes[i] ).byPrimaryKey();
-			}
-		}
+    public static class EAVEntityBatchingEntityLoader extends BatchingEntityLoader {
 
-		public Object load(Serializable id, Object optionalObject, SessionImplementor session, LockOptions lockOptions) {
-			final Serializable[] batch = session.getPersistenceContext()
-					.getBatchFetchQueue()
-					.getEntityBatch( persister(), id, batchSizes[0], persister().getEntityMode() );
+        private final int[] batchSizes;
+        private final EntityLoader[] loaders;
 
-			for ( int i = 0; i < batchSizes.length-1; i++) {
-				final int smallBatchSize = batchSizes[i];
-				if ( batch[smallBatchSize-1] != null ) {
-					Serializable[] smallBatch = new Serializable[smallBatchSize];
-					System.arraycopy(batch, 0, smallBatch, 0, smallBatchSize);
-					// for now...
-					final List results = loaders[i].loadEntityBatch(
-							session,
-							smallBatch,
-							persister().getIdentifierType(),
-							optionalObject,
-							persister().getEntityName(),
-							id,
-							persister(),
-							lockOptions
-					);
-					//EARLY EXIT
-					return getObjectFromList( results, id, session );
-				}
-			}
-			return ( loaders[batchSizes.length-1] ).load( id, optionalObject, session, lockOptions );
-		}
-	}
-	
+        public EAVEntityBatchingEntityLoader(
+                OuterJoinLoadable persister,
+                int maxBatchSize,
+                LockMode lockMode,
+                SessionFactoryImplementor factory,
+                LoadQueryInfluencers loadQueryInfluencers) {
+            super(persister);
+            this.batchSizes = ArrayHelper.getBatchSizes(maxBatchSize);
+            this.loaders = new EntityLoader[batchSizes.length];
+            final EntityLoader.Builder entityLoaderBuilder = EntityLoader.forEntity(persister)
+                    .withInfluencers(loadQueryInfluencers)
+                    .withLockMode(lockMode);
+            for (int i = 0; i < batchSizes.length; i++) {
+                this.loaders[i] = entityLoaderBuilder.withBatchSize(batchSizes[i]).byPrimaryKey();
+            }
+        }
+
+        public EAVEntityBatchingEntityLoader(
+                OuterJoinLoadable persister,
+                int maxBatchSize,
+                LockOptions lockOptions,
+                SessionFactoryImplementor factory,
+                LoadQueryInfluencers loadQueryInfluencers) {
+            super(persister);
+            this.batchSizes = ArrayHelper.getBatchSizes(maxBatchSize);
+            this.loaders = new EntityLoader[batchSizes.length];
+            final EntityLoader.Builder entityLoaderBuilder = EntityLoader.forEntity(persister)
+                    .withInfluencers(loadQueryInfluencers)
+                    .withLockOptions(lockOptions);
+            for (int i = 0; i < batchSizes.length; i++) {
+                this.loaders[i] = entityLoaderBuilder.withBatchSize(batchSizes[i]).byPrimaryKey();
+            }
+        }
+
+        public Object load(Serializable id, Object optionalObject, SessionImplementor session, LockOptions lockOptions) {
+            final Serializable[] batch = session.getPersistenceContext()
+                    .getBatchFetchQueue()
+                    .getEntityBatch(persister(), id, batchSizes[0], persister().getEntityMode());
+
+            for (int i = 0; i < batchSizes.length - 1; i++) {
+                final int smallBatchSize = batchSizes[i];
+                if (batch[smallBatchSize - 1] != null) {
+                    Serializable[] smallBatch = new Serializable[smallBatchSize];
+                    System.arraycopy(batch, 0, smallBatch, 0, smallBatchSize);
+                    // for now...
+                    final List results = loaders[i].loadEntityBatch(
+                            session,
+                            smallBatch,
+                            persister().getIdentifierType(),
+                            optionalObject,
+                            persister().getEntityName(),
+                            id,
+                            persister(),
+                            lockOptions
+                    );
+                    //EARLY EXIT
+                    return getObjectFromList(results, id, session);
+                }
+            }
+            return (loaders[batchSizes.length - 1]).load(id, optionalObject, session, lockOptions);
+        }
+    }
+
 }

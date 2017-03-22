@@ -1,12 +1,6 @@
 package challenge.dbside.models;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.*;
-import org.hibernate.annotations.DiscriminatorFormula;
-import org.hibernate.eav.EAVEntity;
-import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @Entity
 @Table(name = "eav_entities")

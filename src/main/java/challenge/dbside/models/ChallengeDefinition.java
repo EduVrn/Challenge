@@ -37,7 +37,6 @@ public class ChallengeDefinition extends BaseEntity {
         tags = new ArrayList();
 
         creators = new ArrayList();
-        allAcceptors = new ArrayList();
         comments = new ArrayList();
         challengeInstances = new ArrayList();
     }
@@ -80,14 +79,6 @@ public class ChallengeDefinition extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "entity_id2", referencedColumnName = "entity_id")
     )
     @Persister(impl = EAVCollectionPersister.class)
-    private List<User> allAcceptors;
-
-    @ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
-    @JoinTable(name = "eav_relationship",
-            joinColumns = @JoinColumn(name = "entity_id1", referencedColumnName = "entity_id"),
-            inverseJoinColumns = @JoinColumn(name = "entity_id2", referencedColumnName = "entity_id")
-    )
-    @Persister(impl = EAVCollectionPersister.class)
     private List<Comment> comments;
 
     @ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
@@ -120,10 +111,6 @@ public class ChallengeDefinition extends BaseEntity {
             acceptors.add(instance.getAcceptor());
         });
         return acceptors;
-    }
-
-    public void setAllAcceptors(List<User> acceptors) {
-        this.allAcceptors = acceptors;
     }
 
     public List<User> getCreators() {

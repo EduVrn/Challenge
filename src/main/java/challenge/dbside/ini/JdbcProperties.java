@@ -1,7 +1,7 @@
 package challenge.dbside.ini;
 
-
 public class JdbcProperties {
+
     private String driverClassName;
     private String url;
     private String userName;

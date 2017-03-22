@@ -9,32 +9,31 @@ import org.hibernate.loader.collection.PaddedBatchingCollectionInitializerBuilde
 import org.hibernate.persister.collection.QueryableCollection;
 
 public class BatchingEAVCollectionInitializerBuilder extends BatchingCollectionInitializerBuilder {
-	
-	public static BatchingCollectionInitializerBuilder getBuilder(SessionFactoryImplementor factory) {
-		switch ( factory.getSettings().getBatchFetchStyle() ) {
-			case PADDED: {
-				return PaddedBatchingCollectionInitializerBuilder.INSTANCE;
-			}
-			case DYNAMIC: {
-				return DynamicBatchingCollectionInitializerBuilder.INSTANCE;
-			}
-			default: {
-				return org.hibernate.loader.collection.plan.LegacyBatchingCollectionInitializerBuilder.INSTANCE;
-			}
-		}
-	}
-	
-	
-	@Override
-	protected CollectionInitializer createRealBatchingCollectionInitializer(QueryableCollection persister,
-			int maxBatchSize, SessionFactoryImplementor factory, LoadQueryInfluencers influencers) {
-		throw new RuntimeException("not supported");
-	}
 
-	@Override
-	protected CollectionInitializer createRealBatchingOneToManyInitializer(QueryableCollection persister,
-			int maxBatchSize, SessionFactoryImplementor factory, LoadQueryInfluencers influencers) {
-		throw new RuntimeException("not supported");
-	}
+    public static BatchingCollectionInitializerBuilder getBuilder(SessionFactoryImplementor factory) {
+        switch (factory.getSettings().getBatchFetchStyle()) {
+            case PADDED: {
+                return PaddedBatchingCollectionInitializerBuilder.INSTANCE;
+            }
+            case DYNAMIC: {
+                return DynamicBatchingCollectionInitializerBuilder.INSTANCE;
+            }
+            default: {
+                return org.hibernate.loader.collection.plan.LegacyBatchingCollectionInitializerBuilder.INSTANCE;
+            }
+        }
+    }
+
+    @Override
+    protected CollectionInitializer createRealBatchingCollectionInitializer(QueryableCollection persister,
+            int maxBatchSize, SessionFactoryImplementor factory, LoadQueryInfluencers influencers) {
+        throw new RuntimeException("not supported");
+    }
+
+    @Override
+    protected CollectionInitializer createRealBatchingOneToManyInitializer(QueryableCollection persister,
+            int maxBatchSize, SessionFactoryImplementor factory, LoadQueryInfluencers influencers) {
+        throw new RuntimeException("not supported");
+    }
 
 }

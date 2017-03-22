@@ -14,34 +14,33 @@ import challenge.dbside.services.ini.MediaService;
 @Transactional
 public class EAVMediaServiceEntity<E extends BaseEntity> implements MediaService<E> {
 
-	@Autowired
+    @Autowired
     private EAVMediaDaoEntity dao;
-	
-	@Override
-	public void save(E entity) {
-		dao.save(entity);
-	}
 
-	@Override
-	public List<E> getAll(Class<E> classType) {
-		return dao.getAll(classType);
-	}
+    @Override
+    public void save(E entity) {
+        dao.save(entity);
+    }
 
-	@Override
-	public void update(E entity) {
-		dao.update(entity);
-	}
+    @Override
+    public List<E> getAll(Class<E> classType) {
+        return dao.getAll(classType);
+    }
 
-	@Override
-	public void delete(E entity) {
-		dao.delete(entity);
-	}
+    @Override
+    public void update(E entity) {
+        dao.update(entity);
+    }
 
-	//TODO change it to EAVBaseEntity ??
-	@Override
-	public E findById(Object id, Class<E> classType) {
-		return (E) dao.findById(id, classType);
-	}
+    @Override
+    public void delete(E entity) {
+        dao.delete(entity);
+    }
 
-	
+    //TODO change it to EAVBaseEntity ??
+    @Override
+    public E findById(Object id, Class<E> classType) {
+        return (E) dao.findById(id, classType);
+    }
+
 }

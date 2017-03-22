@@ -1,6 +1,5 @@
 package challenge.dbside.models.ini;
 
-
 //TODO: name TypeAttribute and TypeOfAttribute  ???
 public enum TypeAttribute {
     STRING(1),
