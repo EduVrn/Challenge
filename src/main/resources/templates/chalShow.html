@@ -15,6 +15,12 @@
             <script src="../js/Interactive/enable/commentEnable.js"></script>
         </tr>
         <link rel="stylesheet" href="../css/style.css"/>
+        
+        <meta property="og:title" th:content="${challenge.getName()}" />
+        <meta property="og:image" content="http://goalsinfinite.com/wp-content/uploads/2016/04/the-challenge.png" />
+        <meta property="og:site_name" content="netchallenge" />
+        <meta property="og:description" th:content="${challenge.getDescription()}" />
+        
     </head>
     <body>
         <div th:replace="fragments/header :: userInfo"/>
@@ -90,6 +96,9 @@
                                 </a>
                             </form>
                         </div>
+                        <div class="col-md-3 col-sm-2 col-xs-6">
+                            <span id="share"></span>
+                        </div>
                         <div class="col-sm-4 col-xs-6" th:if="${isChalDef}">
                             <form th:each="tag : ${challenge.getTags()}" action="/tags/find" style="display: inline-block">
                                 <span class="label label-default tag-link" 
@@ -106,7 +115,7 @@
                             <img style="width: 100%;" class="img-responsive img-rounded" th:src="${challenge.getMainImageEntity().getBase64()}"/>
                         </div>                    
                         <div class="box-content chal_column">
-                            <h4 class="col-md-12"  th:text="${challenge.getDescription()}"/>
+                            <h4 id="desc" class="col-md-12"  th:text="${challenge.getDescription()}"/>
                         </div>
                         <div style="margin-top: 10px;" class="chal_column"  th:if="${isChalDef and listOfAcceptors.size() gt 0}">
                             <div class="row">
@@ -217,5 +226,8 @@
         <script src="../js/bootstrap-datetimepicker.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
         <script src="../js/dateAndImageHelper.js"></script>
+        <script src="//yastatic.net/es5-shims/0.0.2/es5-shims.min.js"></script>
+        <script src="//yastatic.net/share2/share.js"></script>
+        <script type="text/javascript" src="../js/sharepanel.js"></script>
     </body>
 </html>
