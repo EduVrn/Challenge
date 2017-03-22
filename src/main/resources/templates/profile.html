@@ -61,7 +61,7 @@
                                        data-toggle="modal" class="underAvatarButton" th:value="#{profileThrowChallengeButton}" />
                                 <form auth:can="ADD_FRIEND" method="GET" action="/sendFriendRequest">
                                     <input type="hidden" name="id" th:value="${userProfile.getId()}" />
-                                    <input type="submit" class="underAvatarButton" th:value="#{addFriendButton}" />
+                                    <input type="submit" class="underAvatarButton add-friend-button" th:value="#{addFriendButton}" />
                                 </form>
                                 <div th:replace="fragments/util/bind::bindedSocialNetworks" th:remove="tag"/>                 
                             </div>

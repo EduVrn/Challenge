@@ -200,6 +200,14 @@ public class UserUtil {
     public void setModelForFriendRequest(HttpServletRequest request, User user, Model model, int friendId) {
         User friend = (User) serviceEntity.findById(friendId, User.class);
         if (!Objects.equals(user.getId(), friend.getId())) {
+            List<Request> allRequests = serviceEntity.getAll(Request.class);
+
+            for (Request req : allRequests) {
+                if (req.getSender().equals(friend) && req.getReceiver().equals(user)) {
+                    return;
+                }
+            }
+
             Request friendRequest = new Request();
             friendRequest.setDate(new Date());
             serviceEntity.save(friendRequest);
@@ -222,8 +230,6 @@ public class UserUtil {
         currentUser.removeFriendRequest(request);
         User sender = request.getSender();
         request.removeSender(sender);
-        serviceEntity.update(currentUser);
-        serviceEntity.update(sender);
         serviceEntity.update(request);
         serviceEntity.delete(request);
         return sender;

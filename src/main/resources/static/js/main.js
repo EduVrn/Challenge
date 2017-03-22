@@ -178,3 +178,8 @@ $(document).on('click', '.btn.notification-button', function() {
     }
     $(this).parent().submit();
 });
+
+$(document).on('click', '.add-friend-button', function() {
+    $(this).attr('disabled', 'disabled');
+    $(this).parent().submit();
+});
