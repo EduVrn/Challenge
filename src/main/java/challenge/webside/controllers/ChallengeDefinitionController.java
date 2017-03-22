@@ -87,7 +87,25 @@ public class ChallengeDefinitionController {
             @RequestParam(value = "tags", required = false) List<Integer> selectedTags) {
         UserProfile userProfile = util.getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName());
         User user = util.getSignedUpUser(request, currentUser);
-        if (bindingResult.hasFieldErrors() && !challenge.getTags().isEmpty()) {
+        boolean ignore = false;
+    	if(bindingResult.getAllErrors().size() == 0) {
+    		for(String s : bindingResult.getAllErrors().get(0).getCodes()) {
+        		if(s.contains("typeMismatch.challenge.tags")) {
+        			ignore = true;
+        			break;
+        		}
+        		else if(s.contains("typeMismatch.tags")) {
+        			ignore = true;
+        			break;
+        		}
+        		else if(s.contains("typeMismatch.java.util.List")) {
+        			ignore = true;
+        			break;
+        		}
+        	}
+    	}
+    	
+        if (bindingResult.hasFieldErrors() && !ignore) {	
             util.setModel(request, currentUser, model);
             challengeDefUtil.setModelForBadDateNewChal(challenge, request, currentUser, model, img, imgName, selectedTags);
             model.addAttribute(bindingResult.getAllErrors());

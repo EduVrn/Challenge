@@ -36,7 +36,7 @@ public class UserController {
         User user = socialUtil.getSignedUpUser(request, currentUser);
         userUtil.setModelForFriendRequest(request, user, model, friendId);
         return ControllerUtil.getPreviousPageByRequest(request).orElse("/");
-    }
+    } 
     
     @RequestMapping("addFriend")
     public String addFriend(HttpServletRequest request, Principal currentUser, Model model, @RequestParam("id") int friendId) {

@@ -182,6 +182,9 @@ public class UserUtil {
             serviceEntity.update(friendRequest);
 
             interactiveUtil.interactiveFriendRequest(friend.getId(), friendRequest);
+            
+            User friend2 = (User) serviceEntity.findById(friendId, User.class);
+            System.out.println("");
         }
     }
 

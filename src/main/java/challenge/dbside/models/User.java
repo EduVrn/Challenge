@@ -31,7 +31,7 @@ public class User extends BaseEntity {
         acceptedChallenges = new ArrayList();
         friends = new ArrayList();
         backSubscribers = new ArrayList();
-        backRequestReceiver = new ArrayList();
+        backReceivers = new ArrayList();
         votesAgainst = new ArrayList();
         votesFor = new ArrayList();
     }
@@ -87,7 +87,7 @@ public class User extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "entity_id1", referencedColumnName = "entity_id")
     )
     @Persister(impl = EAVCollectionPersister.class)
-    private List<Request> backRequestReceiver;
+    private List<Request> backReceivers;
 
     @ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JoinTable(name = "eav_relationship",
@@ -177,12 +177,12 @@ public class User extends BaseEntity {
         this.backSubscribers = backSubscribers;
     }
 
-    public List<Request> getBackRequestReceiver() {
-        return backRequestReceiver;
+    public List<Request> getBackReceivers() {
+        return backReceivers;
     }
 
-    public void setBackRequestReceiver(List<Request> backRequestReceiver) {
-        this.backRequestReceiver = backRequestReceiver;
+    public void setBackReceivers(List<Request> backRequestReceiver) {
+        this.backReceivers = backRequestReceiver;
     }
 
     public void addVoteFor(ChallengeInstance challenge) {
@@ -198,12 +198,12 @@ public class User extends BaseEntity {
     }
 
     public void removeFriendRequest(Request request) {
-        backRequestReceiver.remove(request);
+        backReceivers.remove(request);
         request.removeReceiver(this);
     }
 
     public List<Request> getIncomingRequests() {
-        return backRequestReceiver;
+        return getBackReceivers();
     }
 
     public void acceptChallenge(ChallengeInstance chal) {
@@ -215,7 +215,7 @@ public class User extends BaseEntity {
     }
 
     public List<ChallengeDefinition> getChallenges() {
-        return backCreators;
+        return getBackCreators();
     }
 
     public Image getMainImageEntity() {
@@ -240,8 +240,12 @@ public class User extends BaseEntity {
         return getBackSubscribers();
     }
 
-    public List<Request> getIncomingFriendRequestSenders() {
-        return getBackRequestReceiver();
+    public List<User> getIncomingFriendRequestSenders() {
+    	List<User> friendsRequests = new ArrayList();
+    	for(Request req : getBackReceivers()) {
+    		friendsRequests.add(req.getSender());
+    	}
+        return friendsRequests;
     }
 
     public void addChallenge(ChallengeDefinition chal) {
