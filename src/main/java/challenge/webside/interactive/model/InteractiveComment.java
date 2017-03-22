@@ -5,6 +5,7 @@ public class InteractiveComment extends BaseMessage {
     Integer idParent;
     Integer messageId;
     String userName;
+    private String avatarImage64;
     String messageContent;
     private String toWhom;
 
@@ -46,6 +47,14 @@ public class InteractiveComment extends BaseMessage {
 
     public void setToWhom(String toWhom) {
         this.toWhom = toWhom;
+    }
+
+    public String getAvatarImage() {
+        return avatarImage64;
+    }
+
+    public void setAvatarImage(String avatarImage) {
+        this.avatarImage64 = avatarImage;
     }
 
 }

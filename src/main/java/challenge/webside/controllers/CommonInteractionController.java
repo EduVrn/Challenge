@@ -156,6 +156,7 @@ public class CommonInteractionController {
             message.setMessageId(newComment.getId());
             message.setDate(newComment.getDate());
             message.setUserId(user.getId());
+            message.setAvatarImage(user.getCommentImageEntity().getBase64());
         }
         Set<String> candidates = commonInteractiveHandler.getCommonConnection4Object(mainObjectId);
         for (String resp : candidates) {

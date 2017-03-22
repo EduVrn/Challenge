@@ -196,6 +196,8 @@ var Interactive = {
     },
     changeContentComment: function (cont, obj) {
         var mediaBody = $(cont).find("div[class='media-body']").first();
+        var mediaLeft = $(cont).find("div[class='media-left']").first();
+        $(mediaLeft).find('img')[0].src=obj.avatarImage;
         $(cont).find("ul").attr("id", obj.messageId);
         $(mediaBody).find("form[action='/profile']")
                 .attr("id", "comment_form" + obj.messageId);
