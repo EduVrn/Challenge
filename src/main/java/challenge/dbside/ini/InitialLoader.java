@@ -160,19 +160,19 @@ public class InitialLoader {
 
     public void createTags() {
         Tag tag1 = new Tag();
-        tag1.setName("кот");
+        tag1.setName("преодоление");
         serviceEntityInit.save(tag1);
         Tag tag2 = new Tag();
-        tag2.setName("безысходность");
+        tag2.setName("шутка");
         serviceEntityInit.save(tag2);
         Tag tag4 = new Tag();
-        tag4.setName("ааа");
+        tag4.setName("смелость");
         serviceEntityInit.save(tag4);
         Tag tag5 = new Tag();
-        tag5.setName("ббб");
+        tag5.setName("безумие");
         serviceEntityInit.save(tag5);
         Tag tag6 = new Tag();
-        tag6.setName("другое");
+        tag6.setName("борьба");
         serviceEntityInit.save(tag6);
     }
 
@@ -198,9 +198,18 @@ public class InitialLoader {
             serviceEntityInit.save(userToCreate);
             Image picForUser = new Image();
             picForUser.setIsMain(Boolean.TRUE);
+            picForUser.setIsForComment(Boolean.FALSE);
             serviceEntityInit.save(picForUser);
+            Image picMinForUser = new Image();
+            picMinForUser.setIsForComment(Boolean.TRUE);
+            picMinForUser.setIsMain(Boolean.FALSE);
+            serviceEntityInit.save(picMinForUser);
             try {
-                ImageStoreService.saveImage(new File(images.get(new Random().nextInt(images.size()))), picForUser);
+                int rand=new Random().nextInt(images.size());
+                ImageStoreService.saveMiniImage(new File(images.get(rand)), picMinForUser);
+                serviceEntityInit.update(picMinForUser);
+                ImageStoreService.saveImage(new File(images.get(rand)), picForUser);
+                picForUser.setMinVersionId(picMinForUser.getId());
                 serviceEntityInit.update(picForUser);
             } catch (Exception ex) {
                 Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);

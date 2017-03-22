@@ -88,7 +88,7 @@
                                     <div>
                                         <div style="max-width: 50px;max-height:50px;  margin-left: auto;                                             margin-right: auto;">
                                             <form action="/profile">
-                                                <img style="cursor: pointer" onclick="this.parentNode.submit()" th:src="${possibleFriend.getMainImageEntity().getBase64()}" class="img-rounded img-responsive" />
+                                                <img style="cursor: pointer" onclick="this.parentNode.submit()" th:src="${possibleFriend.getCommentImageEntity().getBase64()}" class="img-rounded img-responsive" />
                                                 <input type="hidden" th:value="${possibleFriend.getId()}" name="id"/>
                                             </form>
                                         </div>

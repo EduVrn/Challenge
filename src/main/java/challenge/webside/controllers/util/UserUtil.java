@@ -10,6 +10,7 @@ import challenge.webside.authorization.thymeleaf.AuthorizationDialect;
 import challenge.webside.dao.UsersDao;
 import challenge.webside.imagesstorage.ImageStoreService;
 import challenge.webside.model.UserProfile;
+import java.io.File;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -137,28 +139,52 @@ public class UserUtil {
             byte[] array = Base64.decodeBase64(base64Image);
             Image imageEntity = new Image();
             imageEntity.setIsMain(Boolean.TRUE);
+            imageEntity.setIsForComment(Boolean.FALSE);
             serviceEntity.save(imageEntity);
+            Image imageMiniEntity = new Image();
+            imageMiniEntity.setIsMain(Boolean.FALSE);
+            imageMiniEntity.setIsForComment(Boolean.TRUE);
+            serviceEntity.save(imageMiniEntity);
 
             Image oldImage = user.getMainImageEntity();
             oldImage.setIsMain(Boolean.FALSE);
             serviceEntity.update(oldImage);
+            Image oldMiniImage = user.getCommentImageEntity();
+            oldMiniImage.setIsForComment(Boolean.FALSE);
+            serviceEntity.update(oldMiniImage);
 
             try {
+
+                File temp = new File("temp");
+                FileUtils.writeByteArrayToFile(temp, array);
+                ImageStoreService.saveMiniImage(temp, imageMiniEntity);
+                serviceEntity.update(imageMiniEntity);
                 ImageStoreService.saveImage(array, imageEntity);
+                imageEntity.setMinVersionId(imageMiniEntity.getId());
                 serviceEntity.update(imageEntity);
+                temp.delete();
             } catch (Exception ex) {
                 Logger.getLogger(UsersDao.class.getName()).log(Level.SEVERE, null, ex);
             }
             user.addImage(imageEntity);
+            user.addImage(imageMiniEntity);
             serviceEntity.update(user);
         } else if (StringUtils.isNumeric(image)) {
             Image oldImage = user.getMainImageEntity();
             oldImage.setIsMain(Boolean.FALSE);
             serviceEntity.update(oldImage);
+            Image oldMiniImage = user.getCommentImageEntity();
+            oldMiniImage.setIsForComment(Boolean.FALSE);
+            serviceEntity.update(oldMiniImage);
 
             Image newMainImage = (Image) serviceEntity.findById(Integer.valueOf(image), Image.class);
             newMainImage.setIsMain(Boolean.TRUE);
             serviceEntity.update(newMainImage);
+            if (newMainImage.getMinVersionId() != null) {
+                Image newMiniMainImage = (Image) serviceEntity.findById(Integer.valueOf(newMainImage.getMinVersionId()), Image.class);
+                newMiniMainImage.setIsForComment(Boolean.TRUE);
+                serviceEntity.update(newMiniMainImage);
+            }
         }
     }
 
@@ -182,7 +208,7 @@ public class UserUtil {
             serviceEntity.update(friendRequest);
 
             interactiveUtil.interactiveFriendRequest(friend.getId(), friendRequest);
-            
+
             User friend2 = (User) serviceEntity.findById(friendId, User.class);
             System.out.println("");
         }

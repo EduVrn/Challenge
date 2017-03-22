@@ -17,6 +17,12 @@ import org.apache.jackrabbit.core.TransientRepository;
 import org.springframework.stereotype.Component;
 
 import challenge.dbside.models.Image;
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
 @Component
 public class ImageStoreService {
@@ -25,6 +31,7 @@ public class ImageStoreService {
     private static Session session;
     private final static String DEFAULT_IMAGE_ROUTE = "defaultImage";
     private final static String DEFAULT_USER_IMAGE_ROUTE = "defaultUserImage";
+    private final static String MINI_DEFAULT_USER_IMAGE_ROUTE = "defaultUserImagemini";
 
     public ImageStoreService() {
         repository = new TransientRepository();
@@ -76,6 +83,11 @@ public class ImageStoreService {
         saveBareImage(imageFile, route);
         imageEntity.setImageRef(route);
     }
+    public static void saveMiniImage(File imageFile, Image imageEntity) throws Exception {
+        String route = "imagemin" + imageEntity.getId();
+        saveMiniVersion(imageFile, route);
+        imageEntity.setImageRef(route);
+    }
 
     public static void saveDefaultImage(File imageFile) throws Exception {
         saveBareImage(imageFile, DEFAULT_IMAGE_ROUTE);
@@ -83,6 +95,15 @@ public class ImageStoreService {
 
     public static void saveDefaultUserImage(File imageFile) throws Exception {
         saveBareImage(imageFile, DEFAULT_USER_IMAGE_ROUTE);
+        saveMiniVersion(imageFile, MINI_DEFAULT_USER_IMAGE_ROUTE);
+    }
+
+    public static void saveMiniVersion(File imageFile, String route) throws Exception {
+        BufferedImage tempImage = resizeImage(imageFile, 0.1);
+        File temp = new File("temp.jpg");
+        ImageIO.write(tempImage, "jpg", temp);
+        saveBareImage(temp,route);
+        temp.delete();
     }
 
     public static byte[] getDefaultImageRef() throws Exception {
@@ -123,5 +144,25 @@ public class ImageStoreService {
 
     public static String getDEFAULT_USER_IMAGE_ROUTE() {
         return DEFAULT_USER_IMAGE_ROUTE;
+    }
+
+    public static String getMINI_DEFAULT_USER_IMAGE_ROUTE() {
+        return MINI_DEFAULT_USER_IMAGE_ROUTE;
+    }
+
+    public static BufferedImage resizeImage(final File img, double coef) throws IOException {
+        java.awt.Image image = ImageIO.read(img);
+        int width=(int)(image.getWidth(null)*coef);
+        int height=(int)(image.getHeight(null)*coef);
+        final BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        final Graphics2D graphics2D = bufferedImage.createGraphics();
+        graphics2D.setComposite(AlphaComposite.Src);
+        //below three lines are for RenderingHints for better image quality at cost of higher processing time
+        graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        graphics2D.drawImage(image, 0, 0, width, height, null);
+        graphics2D.dispose();
+        return bufferedImage;
     }
 }
