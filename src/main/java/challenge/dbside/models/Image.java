@@ -22,6 +22,9 @@ public class Image extends BaseEntity {
     private String imageRef;
     private Integer isMain;
 
+    private Integer minVersionId;
+    private Integer isForComment;
+
     public String getImageRef() {
         return imageRef;
     }
@@ -38,6 +41,14 @@ public class Image extends BaseEntity {
         this.isMain = isMain ? 1 : 0;
     }
 
+    public Boolean getIsForComment() {
+        return isForComment == 1;
+    }
+
+    public void setIsForComment(Boolean isForComment) {
+        this.isForComment = isForComment ? 1 : 0;
+    }
+
     public String getBase64() {
         String encoded;
         try {
@@ -46,6 +57,14 @@ public class Image extends BaseEntity {
             encoded = "";
         }
         return encoded;
+    }
+
+    public Integer getMinVersionId() {
+        return minVersionId;
+    }
+
+    public void setMinVersionId(Integer minVersionId) {
+        this.minVersionId = minVersionId;
     }
 
 }

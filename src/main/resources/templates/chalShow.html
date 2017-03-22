@@ -124,7 +124,7 @@
                                     <div>
                                         <div style="max-width: 50px;max-height:50px;  margin-left: auto;                                             margin-right: auto;">
                                             <form action="/profile">
-                                                <img style="cursor: pointer" onclick="this.parentNode.submit()" th:src="${acceptor.getMainImageEntity().getBase64()}" class="img-rounded img-responsive" />
+                                                <img style="cursor: pointer" onclick="this.parentNode.submit()" th:src="${acceptor.getCommentImageEntity().getBase64()}" class="img-rounded img-responsive" />
                                                 <input type="hidden" th:value="${acceptor.getId()}" name="id"/>
                                             </form>
                                         </div>

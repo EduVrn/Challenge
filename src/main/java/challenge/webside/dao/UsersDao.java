@@ -115,15 +115,23 @@ public class UsersDao {
         serviceEntity.save(user);
         Image profilePic = new Image();
         profilePic.setIsMain(Boolean.TRUE);
+        profilePic.setIsForComment(Boolean.FALSE);
         serviceEntity.save(profilePic);
+        Image profileMiniPic = new Image();
+        profileMiniPic.setIsForComment(Boolean.TRUE);
+        profileMiniPic.setIsMain(Boolean.FALSE);
+        serviceEntity.save(profileMiniPic);
         try {
             profilePic.setImageRef(ImageStoreService.getDEFAULT_USER_IMAGE_ROUTE());
             serviceEntity.update(profilePic);
+            profileMiniPic.setImageRef(ImageStoreService.getMINI_DEFAULT_USER_IMAGE_ROUTE());
+            serviceEntity.update(profileMiniPic);
         } catch (Exception ex) {
             Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         user.addImage(profilePic);
+        user.addImage(profileMiniPic);
         serviceEntity.update(user);
 
         profile.setUser(user);
@@ -138,14 +146,6 @@ public class UsersDao {
                 profile.getUsername(),
                 profile.getUser().getId());
 
-//        List<User> list = serviceEntity.getAll(User.class);
-//        for (User fr : list) {
-//            user.addFriend(fr);
-//            fr.addFriend(user);
-//            serviceEntity.update(fr);
-//        }
-//
-//        serviceEntity.update(user);
     }
 
     public void bindUser(Connection<?> connection, WebRequest request) {

@@ -228,6 +228,15 @@ public class User extends BaseEntity {
         //TODO it possible?
         return new Image();
     }
+    public Image getCommentImageEntity() {
+        for (Image img : images) {
+            if (img.getIsForComment()) {
+                return img;
+            }
+        }
+        //TODO it possible?
+        return new Image();
+    }
 
     public void addRating(Integer addPart) {
         rating += addPart;
