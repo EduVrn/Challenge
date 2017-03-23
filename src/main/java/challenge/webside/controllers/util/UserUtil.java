@@ -112,6 +112,7 @@ public class UserUtil {
         model.addAttribute("listSomething", user.getFriends());
         model.addAttribute("idParent", userId);
         model.addAttribute("handler", "profile");
+        model.addAttribute("type", "friends");
     }
 
     public List<User> filterFriends(String filter, int userId) {

@@ -242,6 +242,7 @@ public class ChallengeDefinitionUtil {
         model.addAttribute("listSomething", new ArrayList<>(new HashSet<>(challenge.getAllAcceptors())));
         model.addAttribute("idParent", challengeId);
         model.addAttribute("handler", "profile");
+        model.addAttribute("type", "acceptors");
     }
 
     public void setModelForBadDateNewChal(ChallengeDefinition challenge, HttpServletRequest request,
