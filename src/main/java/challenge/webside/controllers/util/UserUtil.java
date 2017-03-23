@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -209,7 +210,7 @@ public class UserUtil {
             }
 
             Request friendRequest = new Request();
-            friendRequest.setDate(new Date());
+            friendRequest.setDate(DateUtils.addHours(new Date(), 3));
             serviceEntity.save(friendRequest);
             friendRequest.setSender(user);
             friendRequest.setReceiver(friend);

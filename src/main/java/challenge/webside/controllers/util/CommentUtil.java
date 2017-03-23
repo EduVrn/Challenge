@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -29,7 +31,7 @@ public class CommentUtil {
         Comment parentComment = (Comment) serviceEntity.findById(id, Comment.class);
 
         comment.setParentComment(parentComment);
-        comment.setDate(new Date());
+        comment.setDate(DateUtils.addHours(new Date(), 3));
         comment.setAuthor(curDBUser);
         serviceEntity.save(comment);
     }
@@ -39,7 +41,7 @@ public class CommentUtil {
                 findById(userProfile.getUserEntityId(), User.class);
 
         ChallengeDefinition currentChallenge = (ChallengeDefinition) serviceEntity.findById(chalId, ChallengeDefinition.class);
-        comment.setDate(new Date());
+        comment.setDate(DateUtils.addHours(new Date(), 3));
         comment.setAuthor(curDBUser);
         serviceEntity.save(comment);
 
@@ -52,7 +54,7 @@ public class CommentUtil {
                 findById(userProfile.getUserEntityId(), User.class);
 
         ChallengeInstance currentChallenge = (ChallengeInstance) serviceEntity.findById(chalId, ChallengeInstance.class);
-        comment.setDate(new Date());
+        comment.setDate(DateUtils.addHours(new Date(), 3));
         comment.setAuthor(curDBUser);
         serviceEntity.save(comment);
         currentChallenge.addComment(comment);
@@ -72,13 +74,13 @@ public class CommentUtil {
     public void setModelForComments(List<Comment> comments, HttpServletRequest request, User currentUser, Model model) {
         if (currentUser != null) {
             Comment comment = new Comment();
-            comment.setDate(new Date());
+            comment.setDate(DateUtils.addHours(new Date(), 3));
             comment.setAuthor(currentUser);
             model.addAttribute("comment", comment);
             Comment hiddenComment = new Comment();
             hiddenComment.setId(-1);
             hiddenComment.setMessage("hidden Comment");
-            hiddenComment.setDate(new Date());
+            hiddenComment.setDate(DateUtils.addHours(new Date(), 3));
             hiddenComment.setAuthor(comment.getAuthor());
 
             model.addAttribute("hiddenComment", hiddenComment);

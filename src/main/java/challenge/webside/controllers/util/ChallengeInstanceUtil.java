@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -79,7 +80,7 @@ public class ChallengeInstanceUtil {
         dialect.setActions(actionsProvider.getActionsForChallengeInstance(user, challenge));
         model.addAttribute("challenge", challenge);
         ChallengeStep step = new ChallengeStep();
-        step.setDate(new Date());
+        step.setDate(DateUtils.addHours(new Date(), 3));
         model.addAttribute("step", step);
         model.addAttribute("showStepForm", false);
         model.addAttribute("dateError", false);
@@ -101,7 +102,7 @@ public class ChallengeInstanceUtil {
     public void setModelForCloseChallenge(HttpServletRequest request, Principal currentUser, Model model, int chalId) {
         ChallengeInstance challengeToClose = (ChallengeInstance) serviceEntity.findById(chalId, ChallengeInstance.class);
         challengeToClose.setStatus(ChallengeInstanceStatus.PUT_TO_VOTE);
-        challengeToClose.setClosingDate(new Date());
+        challengeToClose.setClosingDate(DateUtils.addHours(new Date(), 3));
         serviceEntity.update(challengeToClose);
     }
 
@@ -174,7 +175,7 @@ public class ChallengeInstanceUtil {
 
     public void checkAndUpdateIfOutdated(ChallengeInstance challenge) {
         Date closingDate = challenge.getClosingDate();
-        Date currentDate = new Date();
+        Date currentDate = DateUtils.addHours(new Date(), 3);
         long diffInMillies = currentDate.getTime() - closingDate.getTime();
         long diff = TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS);
         synchronized (challenge) {
@@ -191,7 +192,7 @@ public class ChallengeInstanceUtil {
                 serviceEntity.update(challengeDef);
             } else if (currentDate.compareTo(challenge.getDate()) >= 0 && challenge.getStatus() == ChallengeInstanceStatus.ACCEPTED) {
                 challenge.setStatus(ChallengeInstanceStatus.PUT_TO_VOTE);
-                challenge.setClosingDate(new Date());
+                challenge.setClosingDate(DateUtils.addHours(new Date(), 3));
                 serviceEntity.update(challenge);
             }
         }
