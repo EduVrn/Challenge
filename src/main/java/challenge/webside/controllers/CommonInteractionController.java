@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,7 +130,7 @@ public class CommonInteractionController {
             User user = (User) serviceEntity.findById(userProf.getUserEntityId(), User.class);
 
             Comment newComment = new Comment();
-            newComment.setDate(new Date());
+            newComment.setDate(DateUtils.addHours(new Date(), 3));
             newComment.setMessage(message.getMessageContent());
             newComment.setAuthor(user);
             serviceEntity.save(newComment);

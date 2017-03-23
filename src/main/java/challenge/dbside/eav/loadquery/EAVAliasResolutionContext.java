@@ -29,9 +29,7 @@ public class EAVAliasResolutionContext extends AliasResolutionContextImpl {
 
     public EAVAliasResolutionContext(SessionFactoryImplementor sessionFactory, int suffixSeed) {
         super(sessionFactory);
-
         throw new RuntimeException("not supported");
-        //this.currentAliasSuffix = suffixSeed;
     }
 
     @Override

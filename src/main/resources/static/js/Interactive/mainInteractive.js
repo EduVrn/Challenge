@@ -7,6 +7,7 @@ var Interactive = {
     username: null,
     mainObjectId: null,
     typeMainObject: null,
+    alreadyTry: false,
     connect: function () {
         var socket = new SockJS('/ws');
         this.stompClient = Stomp.over(socket);
@@ -30,6 +31,7 @@ var Interactive = {
             'interactiveLike': interactiveLike,
             'interactiveComment': interactiveComment
         }, function (frame) {
+        	Interactive.alreadyTry = false;
             console.log('Connected: ' + frame);
             Interactive.username = frame.headers['user-name'];
             if (interactiveNotification === true) {
@@ -51,8 +53,21 @@ var Interactive = {
                 });
             }
         }, function (error) {
-            showModal(error, "Connection error", "red");
+        	Interactive.tryConnect();
         });
+    },
+    tryConnect: function() {
+    	if(Interactive.alreadyTry == false) {
+    		Interactive.alreadyTry = true;
+    		Interactive.connect();
+    	}
+    	else {
+    		setTimeout(function() {
+    			console.log("timeout tryConnect");
+    			Interactive.connect();
+    			//showModal(error, "Connection error", "red");
+    		}, 5000);
+    	}
     },
     notificationHandler: function (resp) {
         var obj = JSON.parse(resp.body);

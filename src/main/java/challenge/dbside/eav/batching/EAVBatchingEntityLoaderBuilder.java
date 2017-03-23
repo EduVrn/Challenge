@@ -76,14 +76,6 @@ public abstract class EAVBatchingEntityLoaderBuilder {
         return new EntityLoader(persister, lockMode, factory, influencers);
     }
 
-    /*
-	protected UniqueEntityLoader buildNonBatchingLoader(
-			OuterJoinLoadable persister,
-			LockMode lockMode,
-			SessionFactoryImplementor factory,
-			LoadQueryInfluencers influencers) {
-		return new EntityLoader( persister, lockMode, factory, influencers );
-	}*/
     protected abstract UniqueEntityLoader buildBatchingLoader(
             OuterJoinLoadable persister,
             int batchSize,

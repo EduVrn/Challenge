@@ -75,14 +75,6 @@ public class EAVCollectionLoaderQueryDetails extends AbstractCollectionLoadQuery
         }
     }
 
-    /*
-	@Override
-	protected void applyRootReturnTableFragments(SelectStatementBuilder selectStatementBuilder) {
-		selectStatementBuilder.appendFromClauseFragment(
-				getQueryableCollection().getTableName(),
-				getCollectionReferenceAliases().getCollectionTableAlias()
-		);
-	}*/
     @Override
     protected void applyRootReturnTableFragments(SelectStatementBuilder selectStatementBuilder) {
         String tablename = getQueryableCollection().getTableName();

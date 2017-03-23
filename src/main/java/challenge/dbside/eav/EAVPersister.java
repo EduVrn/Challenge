@@ -295,9 +295,6 @@ public class EAVPersister extends SingleTableEntityPersister {
 
     @Override
     public String fromJoinFragment(String alias, boolean innerJoin, boolean includeSubclasses) {
-        // NOTE : Not calling createJoin here is just a performance optimization
-
-        //return fromTableFragmentA(alias);
         return getSubclassTableSpan() == 1
                 ? ""
                 : createJoin(alias, innerJoin, includeSubclasses, Collections.<String>emptySet()).toFromFragmentString();
@@ -412,7 +409,6 @@ public class EAVPersister extends SingleTableEntityPersister {
     public String filterFragment(String alias) throws MappingException {
         String name = this.getDiscriminatorValue().toString().toLowerCase();
         String result = alias + "." + "type_of_entity = " + EAVGlobalContext.getTypeOfEntity(name).getId();
-        //String result = discriminatorFilterFragment(alias);
         if (hasWhere()) {
             result += " and " + getSQLWhereString(alias);
         }

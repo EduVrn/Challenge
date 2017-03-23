@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -73,7 +74,7 @@ public class ChallengeDefinitionUtil {
         User user = (User) serviceEntity.findById(userId, User.class);
 
         Request challengeRequest = new Request();
-        challengeRequest.setDate(new Date());
+        challengeRequest.setDate(DateUtils.addHours(new Date(), 3));
         if (message != null) {
             challengeRequest.setMessage(message);
         }
@@ -129,7 +130,7 @@ public class ChallengeDefinitionUtil {
     public void setModelForNewChallenge(HttpServletRequest request, Principal currentUser, Model model) {
         ChallengeDefinition chalDefNew = new ChallengeDefinition();
         chalDefNew.setRating(0);
-        chalDefNew.setDate(new Date());
+        chalDefNew.setDate(DateUtils.addHours(new Date(), 3));
         model.addAttribute("challenge", chalDefNew);
         List<Tag> tags = serviceEntity.getAll(Tag.class);
         model.addAttribute("tags", tags);

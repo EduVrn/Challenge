@@ -148,7 +148,7 @@ public class InitialLoader {
         }
         text.append(".");
         comment.setMessage(text.toString());
-        comment.setDate(new Date());
+        comment.setDate(DateUtils.addHours(new Date(), 3));
         comment.setAuthor(userToCreate);
         serviceEntityInit.save(comment);
         return comment;
@@ -211,6 +211,7 @@ public class InitialLoader {
                 Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
             }
             userToCreate.addImage(picForUser);
+            userToCreate.addImage(picMinForUser);
             serviceEntityInit.update(userToCreate);
             for (int k = 0; k < countOfChalDefs; k++) {
                 ChallengeDefinition chalToCreate = new ChallengeDefinition();
@@ -284,7 +285,7 @@ public class InitialLoader {
         image.setIsMain(Boolean.TRUE);
         serviceEntityInit.save(image);
         chalDef1.setStatus(ChallengeDefinitionStatus.CREATED);
-        chalDef1.setDate(new Date());
+        chalDef1.setDate(DateUtils.addHours(new Date(), 3));
         serviceEntityInit.save(chalDef1);
         chalDef1.addImage(image);
         serviceEntityInit.update(chalDef1);
@@ -316,7 +317,7 @@ public class InitialLoader {
         Image image2 = new Image();
         image2.setIsMain(Boolean.TRUE);
         serviceEntityInit.save(image2);
-        chalDef2.setDate(new Date());
+        chalDef2.setDate(DateUtils.addHours(new Date(), 3));
         chalDef2.setStatus(ChallengeDefinitionStatus.CREATED);
         serviceEntityInit.save(chalDef2);
         chalDef2.addImage(image2);
@@ -346,7 +347,7 @@ public class InitialLoader {
         } catch (Exception ex) {
             Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
-        chalInstance1.setDate(new Date());
+        chalInstance1.setDate(DateUtils.addHours(new Date(), 3));
         serviceEntityInit.save(chalInstance1);
         chalInstance1.addImage(imageForChalInstance1);
         serviceEntityInit.update(chalInstance1);
@@ -365,7 +366,7 @@ public class InitialLoader {
         } catch (Exception ex) {
             Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
-        chalInstance2.setDate(new Date());
+        chalInstance2.setDate(DateUtils.addHours(new Date(), 3));
         serviceEntityInit.save(chalInstance2);
         chalInstance2.addImage(imageForChalInstance2);
         serviceEntityInit.update(chalInstance2);

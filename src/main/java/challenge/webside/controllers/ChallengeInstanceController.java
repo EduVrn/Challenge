@@ -12,6 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -56,13 +58,13 @@ public class ChallengeInstanceController {
         ChallengeInstance challenge = (ChallengeInstance) serviceEntity.findById(id, ChallengeInstance.class);
         if (bindingResult.hasFieldErrors()
                 || challenge.getDate().before(step.getDate())
-                || step.getDate().before(new Date())) {
+                || step.getDate().before(DateUtils.addHours(new Date(), 3))) {
             util.setModel(request, currentUser, model);
             User user = util.getSignedUpUser(request, currentUser);
             challengeInsUtil.setModelForBadStepChal(id, step, request, user, model,img, imgName);
             model.addAttribute(bindingResult.getAllErrors());
             if (challenge.getDate().before(step.getDate())
-                    || step.getDate().before(new Date())) {
+                    || step.getDate().before(DateUtils.addHours(new Date(), 3))) {
                 model.addAttribute("dateError", true);
             } else {
                 model.addAttribute("dateError", false);

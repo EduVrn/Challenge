@@ -14,6 +14,8 @@ import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -64,7 +66,7 @@ public class ChallengeDefinitionController {
             actionsProvider.canUpdateChallenge(user, challengeToUpdate);
             return "chalNewOrUpdate";
         } catch (AccessDeniedException ex) {
-            model.addAttribute("timestamp", new Date());
+            model.addAttribute("timestamp", DateUtils.addHours(new Date(), 3));
             model.addAttribute("status", 403);
             model.addAttribute("error", "Access is denied");
             model.addAttribute("message", ex.getMessage());
@@ -88,10 +90,10 @@ public class ChallengeDefinitionController {
         UserProfile userProfile = util.getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName());
         User user = util.getSignedUpUser(request, currentUser);
         boolean ignore = false;
-    	if(bindingResult.getAllErrors().size() != 0) {
+    	if(bindingResult.getAllErrors().size() == 1) {
     		for(String s : bindingResult.getAllErrors().get(0).getCodes()) {
         		if(s.contains("typeMismatch.challenge.tags")) {
-        			ignore = true;
+       			ignore = true;
         			break;
         		}
         		else if(s.contains("typeMismatch.tags")) {

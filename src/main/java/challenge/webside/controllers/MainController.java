@@ -15,6 +15,7 @@ import challenge.webside.controllers.util.UserUtil;
 import challenge.webside.dao.UsersDao;
 import challenge.webside.model.UserProfile;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -99,7 +100,7 @@ public class MainController {
             actionsProvider.canEditProfile(user, profileOwner);
             return "editProfile";
         } catch (AccessDeniedException ex) {
-            model.addAttribute("timestamp", new Date());
+            model.addAttribute("timestamp", DateUtils.addHours(new Date(), 3));
             model.addAttribute("status", 403);
             model.addAttribute("error", "Access is denied");
             model.addAttribute("message", ex.getMessage());
