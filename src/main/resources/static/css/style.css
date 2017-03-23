@@ -633,3 +633,11 @@ span.tag-link {
 textarea {
     resize: none;
 }
+
+.social-underprofile-name{
+    color:cornflowerblue;
+}
+
+.header_social_button{
+    cursor:auto;
+}
