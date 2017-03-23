@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
     <head>
+        <link rel="icon" type="image/png" href="images/infiLogo.png"/>
         <link rel="stylesheet" href="css/pageLoader.css" />
         <title th:text="#{profilePageTitle}"></title>
         <script src="js/jquery.min.js"></script>  
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link th:replace="fragments/commonDependencies :: commonDependencies" th:remove="tag"/>
         <link rel="stylesheet" href="../css/footer.css" />
-        
+
         <meta property="og:title" content="Challenge" />
         <meta property="og:image" content="http://goalsinfinite.com/wp-content/uploads/2016/04/the-challenge.png" />
         <meta property="og:site_name" content="netchallenge" />
         <meta property="og:description" th:content="Challenge" />     
-        
+
     </head>
     <body>
         <div th:replace="fragments/header::userInfo" />

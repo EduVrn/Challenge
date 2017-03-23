@@ -3,6 +3,7 @@
       xmlns:th="http://www.thymeleaf.org">
     <head>
         <title>Challenge</title>
+        <link rel="icon" type="image/png" href="images/infiLogo.png"/>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -94,7 +95,7 @@
                             <div th:switch="*{id}"> 
                                 <input th:case="null" class="btn btn-default text-center" type="submit" name="k" th:value="#{createNewButton}" style="float: right;"/>
                                 <input th:case="*" class="btn btn-default text-center" type="submit" name="k" th:value="#{updateButton}" style="float: right;"/>
-                                <input class="btn btn-default" onclick="javascript:history.back()"  th:value="#{backButton}"  style="float: left;"/>
+                                <input type="button" class="btn btn-default" onclick="javascript:history.back()"  th:value="#{backButton}"  style="float: left;"/>        
                             </div>
                         </div> 
                     </div>

@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <title th:text="#{profilePageTitle}"></title>
+        <link rel="icon" type="image/png" href="images/infiLogo.png"/>
         <script src="../js/jquery.min.js"></script>  
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link th:replace="fragments/commonDependencies :: commonDependencies" th:remove="tag"/>
@@ -43,7 +44,7 @@
                                 </div> 
                                 <div> 
                                     <input class="btn btn-default text-center" type="submit" name="k" th:value="#{updateButton}" style="float: right;"/>
-                                    <input class="btn btn-default col-xs-3" onclick="javascript:history.back()"  th:value="#{backButton}"  style="float: left;"/>
+                                    <input type="button"  class="btn btn-default col-xs-3" onclick="javascript:history.back()"  th:value="#{backButton}"  style="float: left;"/>
                                 </div>
                             </div>
                         </div>

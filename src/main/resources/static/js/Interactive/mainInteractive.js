@@ -95,21 +95,27 @@ var Interactive = {
         var obj = JSON.parse(resp.body);
         var up = $('.vote-value[id=' + obj.idOwner + '].vote-thumbs-up');
         var down = $('.vote-value[id=' + obj.idOwner + '].vote-thumbs-down');
+
         /* 2  - remove down, 1  - don't remove down
          -2 - remove up  , -1 - don't remove up*/
+
         switch (obj.changeVote) {
             case 2:
                 down.text(+down.text() - 1);
                 down.parent().find('.glyphicon-thumbs-down').removeClass('vote_hide');
+                down.parent().find('.glyphicon-thumbs-down').addClass('vote_show');
             case 1:
                 up.text(+up.text() + 1);
+                up.parent().find('.glyphicon-thumbs-up').removeClass('vote_show');
                 up.parent().find('.glyphicon-thumbs-up').addClass('vote_hide');
                 break;
-            case -2:
+            case - 2:
                 up.text(+up.text() - 1);
                 up.parent().find('.glyphicon-thumbs-up').removeClass('vote_hide');
-            case -1:
+                up.parent().find('.glyphicon-thumbs-up').addClass('vote_show');
+            case - 1:
                 down.text(+down.text() + 1);
+                down.parent().find('.glyphicon-thumbs-down').removeClass('vote_show');
                 down.parent().find('.glyphicon-thumbs-down').addClass('vote_hide');
                 break;
             default:
@@ -212,7 +218,7 @@ var Interactive = {
     changeContentComment: function (cont, obj) {
         var mediaBody = $(cont).find("div[class='media-body']").first();
         var mediaLeft = $(cont).find("div[class='media-left']").first();
-        $(mediaLeft).find('img')[0].src=obj.avatarImage;
+        $(mediaLeft).find('img')[0].src = obj.avatarImage;
         $(cont).find("ul").attr("id", obj.messageId);
         $(mediaBody).find("form[action='/profile']")
                 .attr("id", "comment_form" + obj.messageId);
@@ -251,6 +257,12 @@ var Interactive = {
             Interactive.sendLike(event.target);
             return false;
         });
+        if ($("#templateMainComment").find('div').find('.media-body').find('form').find('input').val() == obj.userId) {
+            voteFor.find(".send-vote").removeClass('vote_show');
+            voteFor.find(".send-vote").addClass('vote_hide');
+            voteAgainst.find(".send-vote").removeClass('vote_show');
+            voteAgainst.find(".send-vote").addClass('vote_hide');
+        }
         voteAgainst.find("input[name='id']").attr("value", obj.messageId);
         voteAgainst.find(".vote-value").attr("id", obj.messageId);
         voteAgainst.find(".send-vote").click(function (event) {

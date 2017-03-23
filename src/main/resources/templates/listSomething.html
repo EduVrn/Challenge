@@ -4,6 +4,7 @@
       xmlns:c="http://java.sun.com/jsp/jstl/core">
     <head>
         <title>Challenge</title>
+        <link rel="icon" type="image/png" href="images/infiLogo.png"/>
         <meta name="viewport" content="width=device-width, initial-scale=1" />        
         <link th:replace="fragments/commonDependencies :: commonDependencies" th:remove="tag"/>
         <script src="../js/jquery.min.js"></script>
@@ -40,7 +41,7 @@
             </div>
         </div>
         <div th:replace="fragments/customModal::modalBody" />
-            
+
         <script th:replace="fragments/commonDependencies :: commonJS" th:remove="tag"/>
         <script src="js/csslayoutextenders/listLayout.js"></script>
         <script src="js/responsiveLayout/plugins.js"></script>
