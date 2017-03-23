@@ -43,7 +43,7 @@ public class Comment extends BaseEntity {
 
     @NotNull
     @NotBlank
-    @Size(min = 5, max = 250, message = "{error.comment.length}")
+    @Size(min = 3, max = 250, message = "{error.comment.length}")
     public String getMessage() {
         return message;
     }

@@ -24,6 +24,8 @@ $(document).ready(function ($) {
 });
 
 function searchViaAjax(friends) {
+	$("#friends-form #challengeThrow").prop('disabled', true);
+	
     var search = {};
     var action;
     if (friends) {
