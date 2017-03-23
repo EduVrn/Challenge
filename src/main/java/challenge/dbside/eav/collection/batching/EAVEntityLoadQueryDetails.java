@@ -94,11 +94,6 @@ public class EAVEntityLoadQueryDetails extends AbstractLoadQueryDetails {
     @Override
     protected void applyRootReturnSelectFragments(SelectStatementBuilder selectStatementBuilder) {
         final OuterJoinLoadable outerJoinLoadable = (OuterJoinLoadable) getRootEntityReturn().getEntityPersister();
-        /*String selFragm = outerJoinLoadable.selectFragment(
-				entityReferenceAliases.getTableAlias(),
-				entityReferenceAliases.getColumnAliases().getSuffix()
-
-		);*/
         String key = entityReferenceAliases.getTableAlias() + "." + "entity_id"
                 + " as " + outerJoinLoadable.getKeyColumnNames()[0];
 
@@ -108,30 +103,7 @@ public class EAVEntityLoadQueryDetails extends AbstractLoadQueryDetails {
 
     private String colsBuf = "";
 
-    /*=
-	protected void applyRootReturnTableFragments(SelectStatementBuilder select) {
-		final String fromTableFragment;
-		final String rootAlias = entityReferenceAliases.getTableAlias();
-		final OuterJoinLoadable outerJoinLoadable = (OuterJoinLoadable) getRootEntityReturn().getEntityPersister();
-		if ( getQueryBuildingParameters().getLockOptions() != null ) {
-			fromTableFragment = getSessionFactory().getDialect().appendLockHint(
-					getQueryBuildingParameters().getLockOptions(),
-					outerJoinLoadable.fromTableFragment( rootAlias )
-			);
-			select.setLockOptions( getQueryBuildingParameters().getLockOptions() );
-		}
-		else if ( getQueryBuildingParameters().getLockMode() != null ) {
-			fromTableFragment = getSessionFactory().getDialect().appendLockHint(
-					getQueryBuildingParameters().getLockMode(),
-					outerJoinLoadable.fromTableFragment( rootAlias )
-			);
-			select.setLockMode( getQueryBuildingParameters().getLockMode() );
-		}
-		else {
-			fromTableFragment = outerJoinLoadable.fromTableFragment( rootAlias );
-		}
-		select.appendFromClauseFragment( fromTableFragment + outerJoinLoadable.fromJoinFragment( rootAlias, true, true ) );
-	}*/
+    
     @Override
     protected void applyRootReturnTableFragments(SelectStatementBuilder select) {
         final String fromTableFragment;
