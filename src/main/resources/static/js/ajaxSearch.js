@@ -191,7 +191,7 @@ function displayUsers(data) {
                 });
                 var $submit = $('<input />', {
                     "type": "submit",
-                    "class": "btn btn-default",
+                    "class": "btn btn-default add-friend-button",
                     "value": $('#add-friend-text').val()
                 });
                 $formFriend.append($friendId);

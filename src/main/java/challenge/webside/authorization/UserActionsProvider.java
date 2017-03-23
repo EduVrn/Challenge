@@ -81,7 +81,8 @@ public class UserActionsProvider {
                 actions.add(Action.WATCH_VOTES);
             }
         } else {
-            if (!user.getId().equals(challenge.getAcceptor().getId())) {
+            if (!user.getId().equals(challenge.getAcceptor().getId()) && 
+                    challenge.getStatus() == ChallengeInstanceStatus.ACCEPTED) {
                 actions.add(Action.SUBSCRIBE_CHALLENGE);
             }
             switch (challenge.getStatus()) {
