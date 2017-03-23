@@ -64,12 +64,12 @@
                             </li>
                             <li class="hidden-xs">
                                 <p style="margin-top: 8px; margin-bottom:0px;" th:unless="${currentUserConnection == null}" class="navbar-text navbar-right not_display_on_sm">
-                                    <a th:text="#{signedInText}"/>
+                                    
                                     <a th:if="${currentUserConnection.providerId == 'facebook'}" class="ml btn btn-social-icon btn-sm btn-facebook">   <i class="fa fa-facebook"></i></a>
                                     <a th:if="${currentUserConnection.providerId == 'twitter'}"  class="ml btn btn-social-icon btn-sm btn-twitter">    <i class="fa fa-twitter"></i></a>
                                     <a th:if="${currentUserConnection.providerId == 'github'}"   class="ml btn btn-social-icon btn-sm btn-github">     <i class="fa fa-github"></i></a>
                                     <a th:if="${currentUserConnection.providerId == 'vkontakte'}"   class="ml btn btn-social-icon btn-sm btn-vk"><i class="fa fa-vk"></i></a>
-                                    <a class="navbar-link"><span th:text="${currentUserDisplayName}"/></a>
+                                    <span th:text="${currentUserDisplayName}"/>
                                     <img class="not_display_on_sm" th:src="${currentUserConnection.imageUrl}" width="32" height="32" />
                                 </p>
                             </li>

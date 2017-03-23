@@ -490,6 +490,12 @@ label {
         background-color: rgba(0,0,0,0) !important;
     }
 }
+@media (max-width: 400px) {
+    .mobile_width_of_time{
+        width:50px;
+    } 
+}
+
 
 @media (max-width: 767px) {
     .affix {

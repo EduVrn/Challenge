@@ -88,10 +88,10 @@ public class ChallengeDefinitionController {
         UserProfile userProfile = util.getUserProfile(request.getSession(), currentUser == null ? null : currentUser.getName());
         User user = util.getSignedUpUser(request, currentUser);
         boolean ignore = false;
-    	if(bindingResult.getAllErrors().size() != 0) {
+    	if(bindingResult.getAllErrors().size() == 1) {
     		for(String s : bindingResult.getAllErrors().get(0).getCodes()) {
         		if(s.contains("typeMismatch.challenge.tags")) {
-        			ignore = true;
+       			ignore = true;
         			break;
         		}
         		else if(s.contains("typeMismatch.tags")) {

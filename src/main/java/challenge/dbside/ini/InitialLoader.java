@@ -211,6 +211,7 @@ public class InitialLoader {
                 Logger.getLogger(InitialLoader.class.getName()).log(Level.SEVERE, null, ex);
             }
             userToCreate.addImage(picForUser);
+            userToCreate.addImage(picMinForUser);
             serviceEntityInit.update(userToCreate);
             for (int k = 0; k < countOfChalDefs; k++) {
                 ChallengeDefinition chalToCreate = new ChallengeDefinition();
