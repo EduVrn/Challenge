@@ -21,7 +21,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -138,11 +137,6 @@ public class ChallengeInstanceUtil {
 
             chalIns.addStep(step);
             serviceEntity.save(chalIns);
-
-//            chal.addChallengeInstance(chalIns);
-//            serviceEntity.update(chal);
-//            user.acceptChallenge(chalIns);
-//            serviceEntity.update(user);
         }
         challengeRequest.removeReceiver(user);
         challengeRequest.removeSubject(chal);

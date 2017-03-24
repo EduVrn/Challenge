@@ -99,6 +99,7 @@ public class ChallengeDefinitionUtil {
         chalIns.setName(chalToAccept.getName());
         chalIns.setDate(chalToAccept.getDate());
         chalIns.setDescription(chalToAccept.getDescription());
+        chalIns.setChallengeRoot(chalToAccept);
         serviceEntity.save(chalIns);
 
         chalToAccept.addChallengeInstance(chalIns);
