@@ -9,10 +9,14 @@ import java.util.Set;
 
 import org.apache.commons.collections4.MultiMap;
 import org.apache.commons.collections4.map.MultiValueMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class InteractiveRepository {
 
-    //TODO synchronous it
+	private static final Logger logger = LoggerFactory.getLogger(InteractiveEventListener.class);
+	
+    //TODO synchronous it??
     private MultiMap storageConnections = MultiValueMap.multiValueMap(new HashMap<Integer, ArrayList>(), ArrayList.class);
 
     /* use it for management function */
@@ -33,8 +37,12 @@ public class InteractiveRepository {
     public Boolean rmCommonCon(String userId) {
         Integer mainObjectId = getMainObjectId(userId);
         if (mainObjectId != null) {
-            storageConnections.remove(mainObjectId, userId);
-            actionUser.remove(userId);
+        	boolean isRemCon = storageConnections.removeMapping(mainObjectId, userId);
+            //storageConnections.remove(mainObjectId, userId);
+            boolean isRemUser = actionUser.remove(userId) == null ? false : true;
+            //TODO redundant logging
+            logger.info("remove mainObjectId: " + mainObjectId + ", userId: " + userId
+            		+ ", remCon: " + isRemCon + ", remUser: " + isRemUser );
             return true;
         }
         return false;
@@ -45,7 +53,10 @@ public class InteractiveRepository {
     }
 
     public boolean rmNotificationCon(Integer idUser) {
-        return notificationUsers.remove(idUser) == null ? false : true;
+    	boolean isRemNotifUser = notificationUsers.remove(idUser) == null ? false : true;
+    	//TODO redundant logging 
+    	logger.info("remove idUser: " + idUser + ", isRemNotifUser: " + isRemNotifUser);
+        return isRemNotifUser;
     }
 
     public String getNotificationCon(Integer idUser) {
