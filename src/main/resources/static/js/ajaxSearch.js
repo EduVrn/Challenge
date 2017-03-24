@@ -29,7 +29,7 @@ function searchViaAjax(friends) {
     if (friends) {
         search["filter"] = $("#filter-friends").val();
         search["userId"] = $("#user-id").val();
-        action = "getFriends";
+        action = "/getFriends";
     } else {
         search["filter"] = $("#filter-challenges").val();
         search["userId"] = $("#current-user-id").val();

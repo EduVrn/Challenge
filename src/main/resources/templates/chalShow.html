@@ -195,6 +195,7 @@
                     <div class="row">
                         <div class="main-column">
                             <input th:if="${userProfile!=null}"  type="hidden" id="current-user-id" th:value="${userProfile.getId()}" />
+                            <input th:if="${userProfile!=null}"  type="hidden" id="user-id" th:value="${userProfile.getId()}" />
                             <div>
                                 <h3 style="display: inline-flex;" th:text="#{commentsCount}+': '"></h3><h3 style="display: inline;" id="commentCounter" th:text="${commentsCount}"></h3>
                             </div>
@@ -220,6 +221,7 @@
         <!--modal for friends-->
         <div th:replace="fragments/modals/friendsmodal::friendsmodal" />
 
+        <script type='text/javascript' src='../js/ajaxSearch.js'></script>
         <script th:replace="fragments/commonDependencies :: commonJS" th:remove="tag"/>
         <script src="../js/csslayoutextenders/chalShowLayout.js"></script>
         <script type="text/javascript" src="../js/moment-with-locales.min.js"></script>
